@@ -9,9 +9,7 @@ import theme from "./DSL/Theme";
 ReactDOM.render(
   <React.StrictMode>
       <ChakraProvider theme={theme}>
-      {/*<Suspense>*/}
           <App />
-      {/*</Suspense>*/}
       </ChakraProvider>
   </React.StrictMode>,
   document.getElementById('root')

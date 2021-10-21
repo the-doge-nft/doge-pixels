@@ -6,6 +6,7 @@ import {Scene} from "three/src/scenes/Scene";
 import Stats from "three/examples/jsm/libs/stats.module";
 import KobosuImage from "./images/kobosu.jpeg"
 import Button from "./DSL/Button/Button";
+import {Box} from "@chakra-ui/react";
 
 const renderPixels = (scene: Scene) => {
     const pixelGeometry = new THREE.PlaneGeometry(0.5,0.5)
@@ -72,13 +73,13 @@ const ThreeScene = () => {
 
     const cameraZoomSensitivity = 0.2
 
-    return <div style={{position: "relative"}}>
-        <div id="scene"/>
-        <div style={{position: "absolute", left: "0", bottom: "0", margin: "10px"}}>
+    return <Box pos={"relative"} id="container">
+        <Box id="scene"/>
+        <Box pos={"absolute"} left={0} bottom={0} m={10}>
             <Button onClick={() => camera.position.z -= cameraZoomSensitivity}>+</Button>
             <Button onClick={() => camera.position.z += cameraZoomSensitivity}>-</Button>
-        </div>
-    </div>
+        </Box>
+    </Box>
 }
 
 export default ThreeScene
