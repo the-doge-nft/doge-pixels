@@ -2,9 +2,10 @@ import React, {Suspense, useEffect, useRef, useState} from 'react';
 import * as THREE from 'three';
 import {Canvas, useFrame, useLoader} from "@react-three/fiber";
 import KobosuImage from "./images/kobosu.jpeg"
-import {DoubleSide} from "three/src/constants";
+import KobosuPixels from "./images/kobosu.json"
 
-const Scene = () => {
+
+const FiberScene = () => {
     const canvasRef = useRef(null)
 
     useEffect(() => {
@@ -29,27 +30,22 @@ const Scene = () => {
 }
 
 const Kobosu = () => {
-    const mesh = useRef()
-    const texture = useLoader(THREE.TextureLoader, KobosuImage)
-
-    useFrame((state) => {
-        state.camera.position.z = 400
-        state.camera.updateProjectionMatrix()
-    })
-    useFrame(() => {
-        if (mesh.current) {
-            // //@ts-ignore
-            // mesh.current.rotation.x += 0.005
-            // //@ts-ignore
-            // mesh.current.rotation.y += 0.005
-        }
-    })
+    // const mesh = useRef()
+    // const texture = useLoader(THREE.TextureLoader, KobosuImage)
     return <>
-        <mesh ref={mesh}>
-            <planeBufferGeometry attach={"geometry"} args={[640,480]}/>
-            <meshBasicMaterial map={texture}/>
-        </mesh>
+        {KobosuPixels.map((row, yindex) => {
+            if (yindex > 5) {
+                return <></>
+            } else {
+                return row.map((pixel, xindex) => {
+                    return <mesh key={`${yindex}-${xindex}`} position={new THREE.Vector3(xindex+10-300, yindex+10, -200)}>
+                        <planeBufferGeometry attach={"geometry"} args={[10,10]}/>
+                        <meshBasicMaterial attach={"material"} color={pixel}/>
+                    </mesh>
+                })
+            }
+        })}
     </>
 }
 
-export default Scene
+export default FiberScene

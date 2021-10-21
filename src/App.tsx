@@ -1,5 +1,6 @@
 import React from 'react';
-import Scene from "./Scene";
+import FiberScene from "./FiberScene";
+import ThreeScene from "./ThreeScene";
 
 function App() {
   return (
@@ -7,7 +8,8 @@ function App() {
         width: "100vw",
         height: "100vh"
     }}>
-      <Scene />
+      {/*<FiberScene />*/}
+        <ThreeScene />
     </div>
   );
 }
