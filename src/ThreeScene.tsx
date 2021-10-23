@@ -55,10 +55,11 @@ const ThreeScene = () => {
     renderer.setPixelRatio( window.devicePixelRatio );
     renderer.setSize(window.innerWidth, window.innerHeight)
 
-    // renderImage(scene)
-    renderPixels(scene)
-
     camera.position.z = 20
+    const cameraAction = (callback: () => {}) => {
+        callback()
+        camera.updateProjectionMatrix()
+    }
 
     const raycaster = new THREE.Raycaster();
     const mouse = new THREE.Vector2();
@@ -120,6 +121,9 @@ const ThreeScene = () => {
         renderer.render(scene, camera);
     }
 
+    // renderImage(scene)
+    renderPixels(scene)
+
     // run or render error
     if (WEBGL.isWebGLAvailable()) {
         animate()
@@ -131,14 +135,12 @@ const ThreeScene = () => {
     return <Box pos={"relative"} id="container">
         <Box id="scene"/>
         <Box pos={"absolute"} left={0} bottom={0} m={10}>
-            <Button onClick={() => camera.position.z -= cameraZoomSensitivity}>+</Button>
-            <Button onClick={() => camera.position.z += cameraZoomSensitivity}>-</Button>
-
-            <Button onClick={() => camera.position.x -= cameraZoomSensitivity}>left</Button>
-            <Button onClick={() => camera.position.x += cameraZoomSensitivity}>right</Button>
-
-            <Button onClick={() => camera.position.y -= cameraZoomSensitivity}>down</Button>
-            <Button onClick={() => camera.position.y += cameraZoomSensitivity}>up</Button>
+            <Button onClick={() => cameraAction(() => camera.position.z -= cameraZoomSensitivity)}>+</Button>
+            <Button onClick={() => cameraAction(() => camera.position.z += cameraZoomSensitivity)}>-</Button>
+            <Button onClick={() => cameraAction(() => camera.position.x -= cameraZoomSensitivity)}>left</Button>
+            <Button onClick={() => cameraAction(() => camera.position.x += cameraZoomSensitivity)}>right</Button>
+            <Button onClick={() => cameraAction(() => camera.position.y -= cameraZoomSensitivity)}>down</Button>
+            <Button onClick={() => cameraAction(() => camera.position.y += cameraZoomSensitivity)}>up</Button>
         </Box>
     </Box>
 }
