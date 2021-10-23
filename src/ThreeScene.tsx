@@ -39,23 +39,39 @@ const appendToSceneDom = (node: HTMLElement) => {
     sceneDom!.appendChild(node)
 }
 
+function resizeRendererToDisplaySize(renderer: any) {
+    const canvas = renderer.domElement;
+    const parent = document.getElementById("scene")
+    const width = parent?.clientWidth;
+    const height = parent?.clientHeight;
+    const needResize = canvas.width !== width || canvas.height !== height;
+    if (needResize) {
+        renderer.setSize(width, height, false);
+    }
+    return needResize;
+}
+
 const ThreeScene = () => {
     //@ts-ignore
     var stats = new Stats()
     stats.showPanel( 0 )
+    stats.dom.style.position = "absolute"
 
     useEffect(() => {
         appendToSceneDom(renderer.domElement)
         appendToSceneDom(stats.dom)
+        console.log(renderer.domElement)
     }, [])
 
     const scene = new THREE.Scene()
+    scene.background = new THREE.Color(0xffffff)
     const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000)
     const renderer = new THREE.WebGLRenderer()
-    renderer.setPixelRatio( window.devicePixelRatio );
-    renderer.setSize(window.innerWidth, window.innerHeight)
+    resizeRendererToDisplaySize(renderer)
+    // renderer.setPixelRatio( window.devicePixelRatio );
+    // renderer.setSize(window.innerWidth, window.innerHeight)
 
-    camera.position.z = 20
+    camera.position.z = 5
     const cameraAction = (callback: () => {}) => {
         callback()
         camera.updateProjectionMatrix()
@@ -63,7 +79,7 @@ const ThreeScene = () => {
 
     const raycaster = new THREE.Raycaster();
     const mouse = new THREE.Vector2();
-    const cameraZoomSensitivity = 3
+    const cameraZoomSensitivity = 1
 
 
     function onMouseMove( event: MouseEvent ) {
@@ -73,9 +89,10 @@ const ThreeScene = () => {
     window.addEventListener('mousemove', onMouseMove, false);
 
     function onWindowResize() {
-        camera.aspect = window.innerWidth / window.innerHeight;
-        camera.updateProjectionMatrix();
-        renderer.setSize( window.innerWidth, window.innerHeight );
+        // resizeRendererToDisplaySize(renderer)
+        // camera.aspect = window.innerWidth / window.innerHeight;
+        // camera.updateProjectionMatrix();
+        // renderer.setSize( window.innerWidth, window.innerHeight );
     }
     window.addEventListener( 'resize', onWindowResize );
 
@@ -94,6 +111,12 @@ const ThreeScene = () => {
     const intersectColor = 0xff0000;
 
     const render = () => {
+        if (resizeRendererToDisplaySize(renderer)) {
+            const canvas = renderer.domElement;
+            camera.aspect = canvas.clientWidth / canvas.clientHeight;
+            camera.updateProjectionMatrix();
+        }
+
         raycaster.setFromCamera(mouse, camera);
         const intersects = raycaster.intersectObjects<Mesh<PlaneGeometry, MeshBasicMaterial>>(scene.children, false);
         if (intersects.length > 0) {
@@ -121,6 +144,9 @@ const ThreeScene = () => {
         renderer.render(scene, camera);
     }
 
+    window.addEventListener('mousemove', render, false);
+
+
     // renderImage(scene)
     renderPixels(scene)
 
@@ -132,8 +158,8 @@ const ThreeScene = () => {
         appendToSceneDom(warning)
     }
 
-    return <Box pos={"relative"} id="container">
-        <Box id="scene"/>
+    return <Box pos={"relative"} id="container" w={"full"} h={"full"}>
+        <Box id="scene" w={"full"} h={"full"}/>
         <Box pos={"absolute"} left={0} bottom={0} m={10}>
             <Button onClick={() => cameraAction(() => camera.position.z -= cameraZoomSensitivity)}>+</Button>
             <Button onClick={() => cameraAction(() => camera.position.z += cameraZoomSensitivity)}>-</Button>
