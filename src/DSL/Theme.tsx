@@ -5,9 +5,7 @@ import MenuStyle from "./Menu/Menu.style";
 import TypographyStyle from "./Typography/Typography.style";
 import InputStyle from "./Form/Input/Input.style";
 import AccordionStyle from "./Accordion/Accordion.style";
-import tagStyles from "./Tag/Tag.styles";
 import TagStyle from "./Tag/Tag.styles";
-import NumberInput from "./Form/NumberInput/NumberInput";
 import NumberInputStyle from "./Form/NumberInput/NumberInput.style";
 
 // https://chakra-ui.com/docs/theming/customize-theme

@@ -6,7 +6,7 @@ import {Scene} from "three/src/scenes/Scene";
 import Stats from "three/examples/jsm/libs/stats.module";
 import KobosuImage from "./images/kobosu.jpeg"
 import Button from "./DSL/Button/Button";
-import {Box} from "@chakra-ui/react";
+import {Box, HStack} from "@chakra-ui/react";
 import {Mesh} from "three/src/objects/Mesh";
 import {MeshBasicMaterial, PlaneGeometry} from "three";
 
@@ -79,7 +79,7 @@ const ThreeScene = () => {
 
     const raycaster = new THREE.Raycaster();
     const mouse = new THREE.Vector2();
-    const cameraZoomSensitivity = 1
+    const cameraZoomSensitivity = 0.5
 
 
     function onMouseMove( event: MouseEvent ) {
@@ -110,13 +110,7 @@ const ThreeScene = () => {
     let intersect: IIntersect | null
     const intersectColor = 0xff0000;
 
-    const render = () => {
-        if (resizeRendererToDisplaySize(renderer)) {
-            const canvas = renderer.domElement;
-            camera.aspect = canvas.clientWidth / canvas.clientHeight;
-            camera.updateProjectionMatrix();
-        }
-
+    const colorOnHover = () => {
         raycaster.setFromCamera(mouse, camera);
         const intersects = raycaster.intersectObjects<Mesh<PlaneGeometry, MeshBasicMaterial>>(scene.children, false);
         if (intersects.length > 0) {
@@ -141,14 +135,23 @@ const ThreeScene = () => {
             }
             intersect = null;
         }
+    }
+
+
+    const render = () => {
+        if (resizeRendererToDisplaySize(renderer)) {
+            const canvas = renderer.domElement;
+            camera.aspect = canvas.clientWidth / canvas.clientHeight;
+            camera.updateProjectionMatrix();
+        }
         renderer.render(scene, camera);
     }
 
     window.addEventListener('mousemove', render, false);
 
 
-    // renderImage(scene)
-    renderPixels(scene)
+    renderImage(scene)
+    // renderPixels(scene)
 
     // run or render error
     if (WEBGL.isWebGLAvailable()) {
@@ -160,14 +163,14 @@ const ThreeScene = () => {
 
     return <Box pos={"relative"} id="container" w={"full"} h={"full"}>
         <Box id="scene" w={"full"} h={"full"}/>
-        <Box pos={"absolute"} left={0} bottom={0} m={10}>
+        <HStack spacing={2} pos={"absolute"} left={0} bottom={0} m={10}>
             <Button onClick={() => cameraAction(() => camera.position.z -= cameraZoomSensitivity)}>+</Button>
             <Button onClick={() => cameraAction(() => camera.position.z += cameraZoomSensitivity)}>-</Button>
             <Button onClick={() => cameraAction(() => camera.position.x -= cameraZoomSensitivity)}>left</Button>
             <Button onClick={() => cameraAction(() => camera.position.x += cameraZoomSensitivity)}>right</Button>
             <Button onClick={() => cameraAction(() => camera.position.y -= cameraZoomSensitivity)}>down</Button>
             <Button onClick={() => cameraAction(() => camera.position.y += cameraZoomSensitivity)}>up</Button>
-        </Box>
+        </HStack>
     </Box>
 }
 

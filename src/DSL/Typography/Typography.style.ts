@@ -1,5 +1,5 @@
 
-export const GlobalFont = "Basier Circle, sans-serif"
+export const GlobalFont = "Comic Sans, sans-serif"
 
 const TypographyStyle = {
     baseStyle: {
