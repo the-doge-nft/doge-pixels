@@ -11,7 +11,7 @@ export enum ButtonVariant {
 
 export interface ButtonProps extends ChakraButtonProps {
     submit?: boolean;
-    type?: any;
+    type?: "submit" | "button";
     variant?: ButtonVariant
 }
 
