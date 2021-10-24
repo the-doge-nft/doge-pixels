@@ -1,8 +1,8 @@
 import React, {Suspense, useEffect, useRef, useState} from 'react';
 import * as THREE from 'three';
 import {Canvas, useFrame, useLoader} from "@react-three/fiber";
-import KobosuImage from "./images/kobosu.jpeg"
-import KobosuPixels from "./images/kobosu.json"
+import KobosuImage from "../../images/kobosu.jpeg"
+import KobosuPixels from "../../images/kobosu.json"
 
 
 const FiberScene = () => {

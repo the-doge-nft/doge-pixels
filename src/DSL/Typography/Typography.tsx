@@ -12,6 +12,7 @@ export enum TVariant {
     Body14 = "Body14",
     Body16 = "Body16",
     Body20 = "Body20",
+    Title22 = "Title22",
     Title28 = "Title28",
     Title45 = "Title45"
 }

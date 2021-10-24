@@ -35,6 +35,10 @@ const TypographyStyle = {
             fontWeight: "600",
             fontSize: "20px"
         },
+        Title22: {
+            fontWeight: "bold",
+            fontSize: "22px"
+        },
         Title28: {
             fontWeight: "bold",
             fontSize: "28px"
