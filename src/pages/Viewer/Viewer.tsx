@@ -7,22 +7,11 @@ import Button from "../../DSL/Button/Button";
 const Viewer = () => {
 
     return <Grid templateColumns={"2fr 1fr"} flexGrow={1}>
-        {/*<GridItem border={"1px solid green"}>*/}
-        {/*    <Box w={"100%"} h={"100%"}>*/}
-        {/*        test*/}
-        {/*    </Box>*/}
-        {/*</GridItem>*/}
-        {/*<GridItem border={"1px solid green"}>*/}
-        {/*    <Box w={"100%"} h={"100%"}>*/}
-        {/*        test 2*/}
-        {/*    </Box>*/}
-        {/*</GridItem>*/}
-
         <GridItem border={"solid black 4px"} mr={2}>
             <ThreeScene />
         </GridItem>
         <GridItem border={"solid black 4px"} ml={2}>
-            <Flex color={"black"} p={2} flexDirection={"column"} justifyContent={"space-between"} h={"100%"}>
+            <Flex p={3} color={"black"} flexDirection={"column"} justifyContent={"space-between"} h={"100%"}>
                 <Box>
                     <Typography variant={TVariant.Title22} mb={1} block>Own the Doge</Typography>
                     <Typography variant={TVariant.Body16} block>

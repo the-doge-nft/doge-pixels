@@ -1,4 +1,4 @@
-import React, {useEffect, useRef} from "react"
+import React, {useCallback, useEffect, useRef} from "react"
 import * as THREE from "three"
 import {WEBGL} from "../../helpers/webgl";
 import KobosuPixels from "../../images/kobosu.json"
@@ -36,36 +36,61 @@ const renderImage = (scene: Scene) => {
     scene.add(image)
 }
 
-function resizeRendererToDisplaySize(renderer: WebGLRenderer, parentDom: HTMLDivElement) {
-    const canvas = renderer.domElement;
-    const width = parentDom.clientWidth;
-    const height = parentDom.clientHeight;
-    const needResize = canvas.width !== width || canvas.height !== height;
-    if (needResize) {
-        console.log("debug::needs resize")
-        renderer.setSize(width, height, false);
-    }
-    return needResize;
-}
+// function resizeRendererToDisplaySize(renderer: WebGLRenderer, parentDom: HTMLDivElement) {
+//     const canvas = renderer.domElement;
+//     const width = parentDom.clientWidth;
+//     const height = parentDom.clientHeight;
+//     const needResize = canvas.width !== width || canvas.height !== height;
+//     if (needResize) {
+//         console.log("debug::needs resize")
+//         renderer.setSize(width, height, false);
+//     }
+//     return needResize;
+// }
 
 const ThreeScene = () => {
-    const sceneRef = useRef<HTMLDivElement>(null)
+    // const sceneRef = useRef<HTMLDivElement>(null)
 
     //@ts-ignore
     var stats = new Stats()
     stats.showPanel(0)
     stats.dom.style.position = "absolute"
 
-    useEffect(() => {
-        sceneRef.current?.appendChild(renderer.domElement)
-        sceneRef.current?.appendChild(stats.dom)
-        resizeRendererToDisplaySize(renderer, sceneRef.current!)
+    // const fixScreen = () => {
+    //     if (sceneRef.current && resizeRendererToDisplaySize(renderer, sceneRef.current)) {
+    //         const canvas = renderer.domElement;
+    //         camera.aspect = canvas.clientWidth / canvas.clientHeight;
+    //         camera.updateProjectionMatrix();
+    //     }
+    // }
+
+    // @TODO still not 100% sure about this
+    const sceneRef = useCallback((node: HTMLDivElement) => {
+        // https://reactjs.org/docs/refs-and-the-dom.html#caveats-with-callback-refs
+        setTimeout(() => {
+            if (node !== null) {
+                console.log("debug::node", node)
+                console.log("debug::node", node.getBoundingClientRect())
+                node.appendChild(renderer.domElement)
+                node.appendChild(stats.dom)
+
+                const parentWidth = node.clientWidth
+                const parentHeight = node.clientHeight
+                console.log("debug::width", parentWidth)
+                console.log("debug::height", parentHeight)
+
+                renderer.setSize(parentWidth, parentHeight)
+                camera.aspect = parentWidth / parentHeight;
+                camera.updateProjectionMatrix()
+            }
+        })
+
 
         if (WEBGL.isWebGLAvailable()) {
             animate()
         } else {
             const warning = WEBGL.getWebGLErrorMessage();
-            sceneRef.current?.appendChild(warning)
+            node.appendChild(warning)
         }
     }, [])
 
@@ -77,12 +102,8 @@ const ThreeScene = () => {
     const renderer = new THREE.WebGLRenderer()
 
     function onWindowResize() {
-        // resizeRendererToDisplaySize(renderer)
-        // camera.aspect = window.innerWidth / window.innerHeight;
-        // camera.updateProjectionMatrix();
-        // renderer.setSize( window.innerWidth, window.innerHeight );
-    }
 
+    }
     window.addEventListener('resize', onWindowResize);
 
     const cameraAction = (callback: () => {}) => {
@@ -91,12 +112,12 @@ const ThreeScene = () => {
     }
 
     const render = () => {
-        if (sceneRef.current && resizeRendererToDisplaySize(renderer, sceneRef.current)) {
-            const canvas = renderer.domElement;
-            camera.aspect = canvas.clientWidth / canvas.clientHeight;
-            camera.updateProjectionMatrix();
-        }
-        colorOnHover(camera, scene)
+        // if (sceneRef.current && resizeRendererToDisplaySize(renderer, sceneRef.current)) {
+        //     const canvas = renderer.domElement;
+        //     camera.aspect = canvas.clientWidth / canvas.clientHeight;
+        //     camera.updateProjectionMatrix();
+        // }
+        // colorOnHover(camera, scene)
         renderer.render(scene, camera);
     }
 
@@ -111,7 +132,7 @@ const ThreeScene = () => {
 
     return <Box pos={"relative"} id="container" w={"100%"} h={"100%"}>
         <UITools/>
-        <Box ref={sceneRef} id="scene" w={"100%"} h={"100%"}/>
+        <div ref={sceneRef} id="scene-container" style={{width: "100%", height: "100%"}}/>
         <HStack spacing={2} pos={"absolute"} left={0} bottom={0} m={10}>
             <Button onClick={() => cameraAction(() => camera.position.z -= cameraMovementSensitivity)}>+</Button>
             <Button onClick={() => cameraAction(() => camera.position.z += cameraMovementSensitivity)}>-</Button>
