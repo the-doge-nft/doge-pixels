@@ -5,7 +5,19 @@ import Typography, {TVariant} from "../../DSL/Typography/Typography";
 import Button from "../../DSL/Button/Button";
 
 const Viewer = () => {
-    return <Grid templateColumns={"1fr 0.40fr"} h={"100%"}>
+
+    return <Grid templateColumns={"2fr 1fr"} flexGrow={1}>
+        {/*<GridItem border={"1px solid green"}>*/}
+        {/*    <Box w={"100%"} h={"100%"}>*/}
+        {/*        test*/}
+        {/*    </Box>*/}
+        {/*</GridItem>*/}
+        {/*<GridItem border={"1px solid green"}>*/}
+        {/*    <Box w={"100%"} h={"100%"}>*/}
+        {/*        test 2*/}
+        {/*    </Box>*/}
+        {/*</GridItem>*/}
+
         <GridItem border={"solid black 4px"} mr={2}>
             <ThreeScene />
         </GridItem>

@@ -13,7 +13,7 @@ const AppLayout = ({children}: AppLayoutProps) => {
     const location = useLocation()
     const history = useHistory()
     console.log("location::", location)
-    return  <Box w={"100vw"} h={"100vh"} py={3} px={8}>
+    return  <Flex w={"100vw"} h={"100vh"} p={5} direction={"column"}>
         <Flex mb={3} justifyContent={"space-between"} alignItems={"center"}>
             <Typography variant={TVariant.Title28} color={"black"}>Pupper Pixel Portal 🐕</Typography>
             <Box>
@@ -31,7 +31,7 @@ const AppLayout = ({children}: AppLayoutProps) => {
             </Box>
         </Flex>
         {children}
-    </Box>
+    </Flex>
 }
 
 export default AppLayout;

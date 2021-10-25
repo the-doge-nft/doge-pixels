@@ -42,6 +42,7 @@ function resizeRendererToDisplaySize(renderer: WebGLRenderer, parentDom: HTMLDiv
     const height = parentDom.clientHeight;
     const needResize = canvas.width !== width || canvas.height !== height;
     if (needResize) {
+        console.log("debug::needs resize")
         renderer.setSize(width, height, false);
     }
     return needResize;
@@ -105,12 +106,12 @@ const ThreeScene = () => {
         window.requestAnimationFrame(animate)
     }
 
-    // renderImage(scene)
-    renderPixels(scene)
+    renderImage(scene)
+    // renderPixels(scene)
 
-    return <Box pos={"relative"} id="container" w={"full"} h={"full"}>
+    return <Box pos={"relative"} id="container" w={"100%"} h={"100%"}>
         <UITools/>
-        <Box ref={sceneRef} id="scene" w={"full"} h={"full"}/>
+        <Box ref={sceneRef} id="scene" w={"100%"} h={"100%"}/>
         <HStack spacing={2} pos={"absolute"} left={0} bottom={0} m={10}>
             <Button onClick={() => cameraAction(() => camera.position.z -= cameraMovementSensitivity)}>+</Button>
             <Button onClick={() => cameraAction(() => camera.position.z += cameraMovementSensitivity)}>-</Button>
