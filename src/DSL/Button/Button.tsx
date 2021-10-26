@@ -1,8 +1,5 @@
 import React from "react";
 import {Button as ChakraButton, ButtonProps as ChakraButtonProps} from "@chakra-ui/react";
-import Typography, {TVariant} from "../Typography/Typography";
-
-export type ButtonVariantName = "primary" | "secondary" | "gray"
 
 export enum ButtonVariant {
     Primary = "primary",

@@ -1,7 +1,5 @@
 import React from "react";
 import {Text} from "@chakra-ui/react";
-import {AllowedStyleProps} from "../Form/interfaces";
-import {Trans} from "@lingui/macro";
 import {TextProps} from "@chakra-ui/layout/dist/types/text";
 
 export enum TVariant {

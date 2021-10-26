@@ -12,14 +12,14 @@ interface AppLayoutProps {
 const AppLayout = ({children}: AppLayoutProps) => {
     const location = useLocation()
     const history = useHistory()
-    console.log("location::", location)
     return  <Flex w={"100vw"} h={"100vh"} p={5} direction={"column"}>
         <Flex mb={3} justifyContent={"space-between"} alignItems={"center"}>
             <Typography variant={TVariant.Title28} color={"black"}>Pupper Pixel Portal 🐕</Typography>
             <Box>
-                {routes.map((route) => {
+                {routes.map((route, index) => {
                     const isSelected = location.pathname === route.path
                     return <Button
+                        key={`${route.path}:${index}`}
                         variant={ButtonVariant.Gray}
                         textDecoration={isSelected ? "underline" : "none"}
                         onClick={() => history.push(route.path)}

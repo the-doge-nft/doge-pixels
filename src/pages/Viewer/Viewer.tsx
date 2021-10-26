@@ -1,14 +1,18 @@
-import React from "react";
+import React, { Suspense } from "react";
 import {Box, Flex, Grid, GridItem} from "@chakra-ui/react";
 import ThreeScene from "./ThreeScene";
 import Typography, {TVariant} from "../../DSL/Typography/Typography";
 import Button from "../../DSL/Button/Button";
+import FiberScene from "./FiberScene";
 
 const Viewer = () => {
 
     return <Grid templateColumns={"2fr 1fr"} flexGrow={1}>
         <GridItem border={"solid black 4px"} mr={2}>
-            <ThreeScene />
+            {/*<ThreeScene />*/}
+            <Suspense fallback={"loading doge"}>
+                <FiberScene />
+            </Suspense>
         </GridItem>
         <GridItem border={"solid black 4px"} ml={2}>
             <Flex p={3} color={"black"} flexDirection={"column"} justifyContent={"space-between"} h={"100%"}>
