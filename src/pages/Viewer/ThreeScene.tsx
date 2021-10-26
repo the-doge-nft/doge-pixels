@@ -27,12 +27,14 @@ const renderPixels = (scene: Scene) => {
     })
 }
 
-const renderImage = (scene: Scene) => {
-    const imageTexture = new THREE.TextureLoader().load(KobosuImage)
-    const imageMaterial = new THREE.MeshBasicMaterial({map: imageTexture})
+const renderImage = (scene: Scene, renderer: WebGLRenderer) => {
+    const texture = new THREE.TextureLoader().load(KobosuImage)
+    texture.magFilter = THREE.NearestFilter;
+    texture.anisotropy = renderer.capabilities.getMaxAnisotropy();
+    const material = new THREE.MeshBasicMaterial({map: texture})
     const ratio = 640 / 480
     const imagePlane = new THREE.PlaneGeometry(5 * ratio, 5)
-    const image = new THREE.Mesh(imagePlane, imageMaterial)
+    const image = new THREE.Mesh(imagePlane, material)
     scene.add(image)
 }
 
@@ -49,62 +51,41 @@ const renderImage = (scene: Scene) => {
 // }
 
 const ThreeScene = () => {
-    // const sceneRef = useRef<HTMLDivElement>(null)
-
     //@ts-ignore
     var stats = new Stats()
     stats.showPanel(0)
     stats.dom.style.position = "absolute"
 
-    // const fixScreen = () => {
-    //     if (sceneRef.current && resizeRendererToDisplaySize(renderer, sceneRef.current)) {
-    //         const canvas = renderer.domElement;
-    //         camera.aspect = canvas.clientWidth / canvas.clientHeight;
-    //         camera.updateProjectionMatrix();
-    //     }
-    // }
-
-    // @TODO still not 100% sure about this
     const sceneRef = useCallback((node: HTMLDivElement) => {
         // https://reactjs.org/docs/refs-and-the-dom.html#caveats-with-callback-refs
         setTimeout(() => {
             if (node !== null) {
-                console.log("debug::node", node)
-                console.log("debug::node", node.getBoundingClientRect())
                 node.appendChild(renderer.domElement)
                 node.appendChild(stats.dom)
 
                 const parentWidth = node.clientWidth
                 const parentHeight = node.clientHeight
-                console.log("debug::width", parentWidth)
-                console.log("debug::height", parentHeight)
-
                 renderer.setSize(parentWidth, parentHeight)
                 camera.aspect = parentWidth / parentHeight;
                 camera.updateProjectionMatrix()
+
+                if (WEBGL.isWebGLAvailable()) {
+                    animate()
+                } else {
+                    const warning = WEBGL.getWebGLErrorMessage();
+                    node.appendChild(warning)
+                }
             }
         })
-
-
-        if (WEBGL.isWebGLAvailable()) {
-            animate()
-        } else {
-            const warning = WEBGL.getWebGLErrorMessage();
-            node.appendChild(warning)
-        }
     }, [])
 
     const scene = new THREE.Scene()
     scene.background = new THREE.Color(0xffffff)
     const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000)
-    const cameraMovementSensitivity = 0.5
+    const cameraMovementSensitivity = 0.1
     camera.position.z = 3.5
-    const renderer = new THREE.WebGLRenderer()
-
-    function onWindowResize() {
-
-    }
-    window.addEventListener('resize', onWindowResize);
+    const renderer = new THREE.WebGLRenderer({antialias: true})
+    renderer.setPixelRatio(window.devicePixelRatio);
 
     const cameraAction = (callback: () => {}) => {
         callback()
@@ -127,7 +108,7 @@ const ThreeScene = () => {
         window.requestAnimationFrame(animate)
     }
 
-    renderImage(scene)
+    renderImage(scene, renderer)
     // renderPixels(scene)
 
     return <Box pos={"relative"} id="container" w={"100%"} h={"100%"}>
