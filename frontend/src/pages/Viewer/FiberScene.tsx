@@ -50,8 +50,8 @@ const FiberScene = () => {
                 <meshBasicMaterial attach={"material"} map={texture} lightMapIntensity={0.1}/>
             </mesh>
             <mesh ref={overlayRef} position={[0,0,0.0001]}>
-                <planeGeometry attach={"geometry"} args={[0.0021, 0.0021]}/>
-                <meshBasicMaterial color={0x000000}/>
+                <planeGeometry attach={"geometry"} args={[0.00205, 0.00205]}/>
+                <meshBasicMaterial color={0xff0000} opacity={0.5}/>
             </mesh>
         </Canvas>
         <HStack spacing={2} pos={"absolute"} left={0} bottom={0} m={10}>

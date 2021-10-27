@@ -1,75 +1,30 @@
 {
   "name": "pixel_traders",
-  "version": "0.1.0",
-  "private": true,
-  "dependencies": {
-    "@chakra-ui/react": "^1.6.5",
-    "@emotion/react": "^11.4.0",
-    "@emotion/styled": "^11.3.0",
-    "@lingui/react": "^3.10.2",
-    "@react-three/fiber": "^7.0.15",
-    "@sentry/react": "^6.11.0",
-    "@sentry/tracing": "^6.11.0",
-    "@testing-library/jest-dom": "^5.14.1",
-    "@testing-library/react": "^11.2.7",
-    "@testing-library/user-event": "^12.8.3",
-    "@types/animejs": "^3.1.4",
-    "@types/jest": "^26.0.24",
-    "@types/node": "^12.20.18",
-    "@types/react": "^17.0.15",
-    "@types/react-dom": "^17.0.9",
-    "animejs": "^3.2.1",
-    "axios": "^0.21.1",
-    "customize-cra": "^1.0.0",
-    "final-form": "^4.20.2",
-    "framer-motion": "^4.1.17",
-    "mobx": "^6.3.2",
-    "mobx-react-lite": "^3.2.0",
-    "node-sass": "^6.0.1",
-    "react": "^17.0.2",
-    "react-app-rewired": "^2.1.8",
-    "react-dom": "^17.0.2",
-    "react-final-form": "^6.5.3",
-    "react-icons": "^4.2.0",
-    "react-router-dom": "^5.2.0",
-    "react-scripts": "4.0.3",
-    "stats.js": "^0.17.0",
-    "three": "^0.133.1",
-    "typescript": "^4.3.5",
-    "web-vitals": "^1.1.2"
+  "version": "1.0.0",
+  "description": "",
+  "main": "hardhat.config.js",
+  "directories": {
+    "test": "test"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject",
-    "extract": "lingui extract",
-    "compile": "lingui compile",
-    "prepare_translations": "npm run extract && npm run compile"
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "eslintConfig": {
-    "extends": [
-      "react-app",
-      "react-app/jest"
-    ]
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/calebcarithers/dog.git"
   },
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/calebcarithers/dog/issues"
   },
+  "homepage": "https://github.com/calebcarithers/dog#readme",
   "devDependencies": {
-    "@lingui/cli": "^3.10.2",
-    "@lingui/macro": "^3.10.2",
-    "@types/react-router-dom": "^5.1.8",
-    "@types/three": "^0.133.1",
-    "serve": "^12.0.0"
+    "@nomiclabs/hardhat-ethers": "^2.0.2",
+    "@nomiclabs/hardhat-waffle": "^2.0.1",
+    "chai": "^4.3.4",
+    "ethereum-waffle": "^3.4.0",
+    "ethers": "^5.5.1",
+    "hardhat": "^2.6.7"
   }
 }
