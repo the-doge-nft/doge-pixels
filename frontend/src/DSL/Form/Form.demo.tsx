@@ -80,7 +80,7 @@ const DemoTextInputForm = observer(({store}: {store: DemoFormStore}) => {
             <HStack mt={6}>
                 <Submit w={"100%"}/>
                 <Button
-                    variant={ButtonVariant.Gray}
+                    variant={ButtonVariant.Text}
                     w={"100%"}
                     onClick={() => store.controlledText = Math.random().toString(36).replace(/[^a-z]+/g, '').substr(0, 5)}>
                     change controlled
@@ -101,7 +101,7 @@ const DemoNumberInputForm = observer(({store}: {store: DemoFormStore}) => {
                 <Submit w={"100%"}/>
                 <Button
                     w={"100%"}
-                    variant={ButtonVariant.Gray}
+                    variant={ButtonVariant.Text}
                     onClick={() => store.controlledNumber = Math.round(Math.random() * 10).toString()}>
                     change controlled
                 </Button>
@@ -144,7 +144,7 @@ const ToggleDemo = observer(({store}: {store: DemoFormStore}) => {
                 <Submit w={"100%"}/>
                 <Button
                     w={"100%"}
-                    variant={ButtonVariant.Gray}
+                    variant={ButtonVariant.Text}
                     onClick={() => store.toggle = !store.toggle}>
                     change controlled
                 </Button>

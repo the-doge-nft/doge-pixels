@@ -20,14 +20,18 @@ const AppLayout = ({children}: AppLayoutProps) => {
                     const isSelected = location.pathname === route.path
                     return <Button
                         key={`${route.path}:${index}`}
-                        variant={ButtonVariant.Gray}
+                        variant={ButtonVariant.Text}
                         textDecoration={isSelected ? "underline" : "none"}
                         onClick={() => history.push(route.path)}
                     >
                         {route.title}
                     </Button>
                 })}
-                <Button ml={5}>Connect Wallet</Button>
+                <Button ml={5}>
+                    <Typography variant={TVariant.Body14}>
+                        Connect Wallet
+                    </Typography>
+                </Button>
             </Box>
         </Flex>
         {children}

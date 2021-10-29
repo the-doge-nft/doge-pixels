@@ -16,5 +16,5 @@ for y in range(height):
         hex_color = f"#{r:02x}{g:02x}{b:02x}"
         img[y].append(hex_color)
 
-f = open("./kobosu.json", "w")
+f = open("./kobosu_colors.json", "w")
 f.write(json.dumps(img))

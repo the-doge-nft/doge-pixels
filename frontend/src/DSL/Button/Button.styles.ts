@@ -5,40 +5,50 @@ const ButtonStyle = {
         fontFamily: GlobalFont,
         fontWeight: "600",
         _active: {
-            transform: "translateY(1px)"
+            transform: "translateY(2px)",
+            boxShadow: "none"
+        },
+        _focus: {
+            boxShadow: "none"
+        },
+        _hover: {
+            boxShadow: "none"
         }
     },
     variants: {
         primary: {
-            bg: "blue.500",
-            color: "white",
-            _hover: {
-                bg: "blue.400"
-            }
+            bg: "white",
+            color: "black",
+            borderColor: "black",
+            borderStyle: "solid",
         },
-        gray: {
-            bg: "gray.50",
+        text: {
+            border: "none",
+            bg: "none",
             color: "black",
             _hover: {
-                bg: "gray.100"
+                textDecoration: "underline"
             }
         }
     },
     sizes: {
         xs: {
+            borderWidth: "1px",
             borderRadius: 5,
             px: "4px",
             fontSize: "12px"
         },
         sm: {
+            borderWidth: "3px",
             borderRadius: 9,
             px: "12px",
-            fontSize: "14px"
+            fontSize: "16px"
         },
         md: {
+            borderWidth: "3px",
             borderRadius: 11,
             px: "14px",
-            fontSize: "16px"
+            fontSize: "18px"
         }
     },
     defaultProps: {

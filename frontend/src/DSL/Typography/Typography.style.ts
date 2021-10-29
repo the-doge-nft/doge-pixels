@@ -31,6 +31,10 @@ const TypographyStyle = {
             fontWeight: "600",
             fontSize: "16px"
         },
+        Body18: {
+            fontWeight: "600",
+            fontSize: "18px"
+        },
         Body20: {
             fontWeight: "600",
             fontSize: "20px"

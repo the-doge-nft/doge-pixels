@@ -9,23 +9,6 @@ import {Box, HStack} from "@chakra-ui/react";
 import {Scene} from "three";
 import UITools from "./UITools";
 
-const renderPixels = (scene: Scene) => {
-    const pixelGeometry = new THREE.PlaneGeometry(0.5, 0.5)
-    KobosuPixels.forEach((row, yIndex) => {
-        if (yIndex < 40) {
-            row.forEach((pixel, xIndex) => {
-                if (xIndex > 100 && xIndex < 500) {
-                    const material = new THREE.MeshBasicMaterial({color: pixel})
-                    const plane = new THREE.Mesh(pixelGeometry, material)
-                    plane.position.x = -100 + xIndex / 2
-                    plane.position.y = yIndex / 2
-                    scene.add(plane)
-                }
-            })
-        }
-    })
-}
-
 const renderImage = (scene: Scene) => {
         new THREE.TextureLoader().load(KobosuImage, (texture) => {
         texture.magFilter = THREE.NearestFilter;
@@ -40,7 +23,6 @@ const renderImage = (scene: Scene) => {
 }
 
 const ThreeScene = () => {
-
     //@ts-ignore
     var stats = new Stats()
     stats.showPanel(0)

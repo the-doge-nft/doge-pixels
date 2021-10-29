@@ -7,7 +7,7 @@ function DemoButton() {
     return <Demo title={"Button"}>
         <VStack>
             <Button>Primary</Button>
-            <Button variant={ButtonVariant.Gray}>Gray</Button>
+            <Button variant={ButtonVariant.Text}>Gray</Button>
 
         </VStack>
     </Demo>

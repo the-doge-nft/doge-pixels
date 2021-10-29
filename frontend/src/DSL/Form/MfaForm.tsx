@@ -45,7 +45,7 @@ const MfaForm = observer((props: MfaFormProps) => {
                         <TextInput name={"mfa_code"} placeholder={t`2FA Code`} validate={required} />
                     </VStack>
                     <Flex justifyContent={"space-around"} mt={5}>
-                        <Button variant={ButtonVariant.Gray} onClick={() => {
+                        <Button variant={ButtonVariant.Text} onClick={() => {
                             store.rejectMainQuery()
                             store.hideMfaForm()
                         }}>{t`Cancel`}</Button>

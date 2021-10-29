@@ -28,7 +28,9 @@ const Viewer = () => {
                         original DOGE, hit mint now.
                     </Typography>
                 </Box>
-                <Button>Mint Pixels</Button>
+                <Button size={"md"}>
+                    <Typography variant={TVariant.Body18}>Mint Pixels</Typography>
+                </Button>
             </Flex>
         </GridItem>
     </Grid>

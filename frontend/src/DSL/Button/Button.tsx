@@ -3,7 +3,7 @@ import {Button as ChakraButton, ButtonProps as ChakraButtonProps} from "@chakra-
 
 export enum ButtonVariant {
     Primary = "primary",
-    Gray = "gray"
+    Text = "text"
 }
 
 export interface ButtonProps extends ChakraButtonProps {
