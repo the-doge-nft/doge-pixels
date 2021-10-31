@@ -59,11 +59,9 @@ const FiberScene = () => {
                 position={[imageWorldUnitsWidth/2, imageWorldUnitsHeight/2, 0]}
                 onPointerMove={(e) => {
                     const {point} = e
-
                     if (overlayRef.current) {
-                        const testX = Math.round(point.x / overlayLength) + (overlayLength / 2)
-                        const testY = Math.round(point.y / overlayLength) + (overlayLength / 2)
-                        console.log("debug::position", point.x, imageWorldUnitsWidth, testX)
+                        const testX = Math.round((point.x - 0.5) / overlayLength) + (overlayLength / 2)
+                        const testY = Math.round((point.y - 0.5) / overlayLength) + (overlayLength / 2)
 
                         overlayRef.current.position.x = testX
                         overlayRef.current.position.y = testY
