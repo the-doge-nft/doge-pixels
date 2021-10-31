@@ -1,22 +1,20 @@
-import React, {useCallback, useRef} from 'react';
+import React, {useCallback, useRef, useState} from 'react';
 import * as THREE from 'three';
-import {Object3D} from 'three';
-import {Canvas, useLoader} from "@react-three/fiber";
+import {Box3, Object3D} from 'three';
+import {Camera, Canvas, useLoader, useThree} from "@react-three/fiber";
 import KobosuImage from "../../images/kobosu.jpeg"
 import {Box, HStack} from "@chakra-ui/react";
 import Button from "../../DSL/Button/Button";
 import Typography, {TVariant} from "../../DSL/Typography/Typography";
 
 const FiberScene = () => {
-    const camera = new THREE.PerspectiveCamera(
+    const cam = new THREE.PerspectiveCamera(
         5,
         window.innerWidth / window.innerHeight,
         0.0000001,
-        1000
+        10000
     )
-    camera.lookAt(0,0,0)
-    camera.position.z = 0.1
-    const cameraMovementSensitivity = 0.1
+    const [camera] = useState<THREE.PerspectiveCamera>(cam)
 
     const canvasParentRef = useCallback((node: HTMLDivElement) => {
         if (node) {
@@ -29,39 +27,54 @@ const FiberScene = () => {
 
     const texture = useLoader(THREE.TextureLoader, KobosuImage)
     texture.magFilter = THREE.NearestFilter
-    const scale = 1
+    const scale = 480
     const aspectRatio = texture.image.width / texture.image.height
+    const imageWorldUnitsWidth = aspectRatio * scale
+    const imageWorldUnitsHeight = scale
+    const imageWorldUnitsArea = imageWorldUnitsWidth * imageWorldUnitsHeight
+
+    const worldUnitsPixelArea = imageWorldUnitsArea / (texture.image.width * texture.image.height)
+    const worldUnitPixelLength = Math.sqrt(worldUnitsPixelArea)
+
+    const [boundingBox, setBoundingBox] = useState<Box3 | null>(null)
+    const [overlayLength] = useState<number>(worldUnitPixelLength)
 
     const overlayRef = useRef<Object3D>(null)
-    const imageRef = useCallback(node => {
+    const imageMeshRef = useCallback(node => {
         if (node) {
-            node.geometry.computeBoundingBox()
-            console.log("debug::", node.geometry.boundingBox)
+            const box = new THREE.Box3().setFromObject(node)
+            setBoundingBox(box)
         }
     }, [])
+
+    const cameraMovementSensitivity = 80
+    camera.position.x = imageWorldUnitsWidth/2 - 0.65
+    camera.position.y = imageWorldUnitsHeight/2 + 0.26
+    camera.position.z = 300
 
     return <Box ref={canvasParentRef} position={"relative"} w={"100%"} h={"100%"}>
         <Canvas camera={camera}>
             <mesh
-                ref={imageRef}
-                position={[0,0,0]}
+                ref={imageMeshRef}
+                position={[imageWorldUnitsWidth/2, imageWorldUnitsHeight/2, 0]}
                 onPointerMove={(e) => {
                     const {point} = e
 
-                    console.log("x::", point.x)
-                    console.log("y::", point.y)
-
                     if (overlayRef.current) {
-                        overlayRef.current.position.x = point.x
-                        overlayRef.current.position.y = point.y
+                        const testX = Math.round(point.x / overlayLength) + (overlayLength / 2)
+                        const testY = Math.round(point.y / overlayLength) + (overlayLength / 2)
+                        console.log("debug::position", point.x, imageWorldUnitsWidth, testX)
+
+                        overlayRef.current.position.x = testX
+                        overlayRef.current.position.y = testY
                     }
                 }}
             >
-                <planeGeometry attach={"geometry"} args={[aspectRatio * scale, scale]}/>
+                <planeGeometry attach={"geometry"} args={[imageWorldUnitsWidth, imageWorldUnitsHeight]}/>
                 <meshBasicMaterial attach={"material"} map={texture}/>
             </mesh>
             <mesh ref={overlayRef} position={[0,0,0.0001]}>
-                <planeGeometry attach={"geometry"} args={[0.00205, 0.00205]}/>
+                <planeGeometry attach={"geometry"} args={[overlayLength, overlayLength]}/>
                 <meshBasicMaterial attach={"material"} color={0xff0000} opacity={0.5} transparent={true}/>
             </mesh>
         </Canvas>
@@ -87,5 +100,6 @@ const FiberScene = () => {
         </HStack>
     </Box>
 }
+
 
 export default FiberScene
