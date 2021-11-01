@@ -19,7 +19,7 @@ import {
 import { useExchangeEthPrice } from "eth-hooks/dapps/dex";
 // import Hints from "./Hints";
 import { ExampleUI, Hints, Subgraph } from "./views";
-z;
+
 // contracts
 import deployedContracts from "../../contracts/hardhat_contracts.json";
 import externalContracts from "../../contracts/external_contracts";
