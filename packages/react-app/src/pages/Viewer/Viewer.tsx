@@ -1,5 +1,5 @@
 import React, {Suspense, useMemo} from "react";
-import {Box, Flex, Grid, GridItem} from "@chakra-ui/react";
+import {Box, Flex, Grid, GridItem, useColorMode} from "@chakra-ui/react";
 import Typography, {TVariant} from "../../DSL/Typography/Typography";
 import Button from "../../DSL/Button/Button";
 import ThreeScene from "./ThreeScene";
@@ -12,16 +12,17 @@ import Submit from "../../DSL/Form/Submit";
 import {required} from "../../DSL/Form/validation";
 
 const Viewer = observer(() => {
+  const {colorMode} = useColorMode()
   const store = useMemo(() => new ViewerStore(), []);
   return (
     <>
       <Grid templateColumns={"2fr 1fr"} flexGrow={1}>
-        <GridItem border={"solid black 4px"} mr={2}>
+        <GridItem border={"solid 4px"} borderColor={colorMode === "light" ? "black" : "white"} mr={2}>
           <Suspense fallback={"Loading Kobosu..."}>
             <ThreeScene />
           </Suspense>
         </GridItem>
-        <GridItem border={"solid black 4px"} ml={2}>
+        <GridItem border={"solid 4px"} borderColor={colorMode === "light" ? "black" : "white"} ml={2}>
           <Flex p={3} color={"black"} flexDirection={"column"} justifyContent={"space-between"} h={"100%"}>
             <Box>
               <Typography variant={TVariant.Title22} mb={1} block>
@@ -35,8 +36,8 @@ const Viewer = observer(() => {
                 actually own a pixel of the original DOGE, hit mint now.
               </Typography>
             </Box>
-            <Button size={"md"} onClick={() => (store.isMintModalOpen = true)}>
-              <Typography variant={TVariant.Body18}>Mint Pixels</Typography>
+            <Button size={"lg"} onClick={() => (store.isMintModalOpen = true)}>
+              Mint Pixels
             </Button>
           </Flex>
         </GridItem>

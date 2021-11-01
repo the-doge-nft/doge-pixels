@@ -1,9 +1,8 @@
 import { GlobalFont } from "../Typography/Typography.style";
+import {darkModePrimary} from "../Theme";
 
 const ButtonStyle = {
   baseStyle: {
-    fontFamily: GlobalFont,
-    fontWeight: "600",
     _active: {
       transform: "translateY(2px)",
       boxShadow: "none",
@@ -16,44 +15,37 @@ const ButtonStyle = {
     },
   },
   variants: {
-    primary: {
-      bg: "white",
-      color: "black",
-      borderColor: "black",
+    primary: ({colorMode}: {colorMode: "light" | "dark"}) => ({
+      bg: colorMode === "light" ? "white" : darkModePrimary,
+      borderColor: colorMode === "light" ? "black" : "white",
       borderStyle: "solid",
-    },
-    text: {
+      textDecorationColor: colorMode === "light" ? "black" : "white",
+      color: colorMode === "light" ? "black" : "white"
+    }),
+    text: ({colorMode}: {colorMode: "light" | "dark"}) => ({
       border: "none",
       bg: "none",
-      color: "black",
-      _hover: {
-        textDecoration: "underline",
-      },
-    },
+      textDecorationColor: colorMode === "light" ? "black" : "white",
+      // needed for text decoration coloring
+      color: colorMode === "light" ? "black" : "white"
+    }),
   },
   sizes: {
     xs: {
       borderWidth: "1px",
       borderRadius: 5,
       px: "4px",
-      fontSize: "12px",
     },
     sm: {
       borderWidth: "3px",
       borderRadius: 9,
       px: "12px",
-      fontSize: "16px",
     },
     md: {
       borderWidth: "3px",
       borderRadius: 11,
       px: "14px",
-      fontSize: "18px",
     },
-  },
-  defaultProps: {
-    size: "sm",
-    variant: "primary",
   },
 };
 

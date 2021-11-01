@@ -1,6 +1,8 @@
+import { darkModePrimary } from "../Theme";
+
 const ModalStyle = {
     parts: ["overlay", "dialogContainer", "dialog", "header", "closeButton", "body", "footer"],
-    baseStyle: {
+    baseStyle: ({colorMode}: {colorMode: "light" | "dark"}) => ({
         overlay: {
             bg: "rgba(0,0,0,0.5)",
         },
@@ -8,12 +10,12 @@ const ModalStyle = {
             // border: "2px solid black"
         },
         dialog: {
-            border: "4px solid black",
+            bg: colorMode === "light" ? "white" : darkModePrimary,
+            border: "4px solid",
+            borderColor: colorMode === "light" ? "black" : "white",
             borderRadius: "0px"
         }
-    }
+    })
 }
 
 export default ModalStyle;
-
-
