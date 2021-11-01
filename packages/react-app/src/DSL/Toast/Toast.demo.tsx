@@ -4,18 +4,22 @@ import Demo from "../Demo/Demo";
 import toast from "./Toast";
 
 const DemoToast = () => {
-    return (
-        <Demo title={"Toast"}>
-            <Button onClick={() => toast({
-                title: "🍞🍞🍞🍞",
-                isClosable: true,
-                description: "Time for butter",
-                status: "success"
-            })}>Success Toast</Button>
-        </Demo>
-    )
-}
+  return (
+    <Demo title={"Toast"}>
+      <Button
+        onClick={() =>
+          toast({
+            title: "🍞🍞🍞🍞",
+            isClosable: true,
+            description: "Time for butter",
+            status: "success",
+          })
+        }
+      >
+        Success Toast
+      </Button>
+    </Demo>
+  );
+};
 
-
-export default DemoToast
-
+export default DemoToast;

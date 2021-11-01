@@ -1,18 +1,18 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import App from './App';
-import {ChakraProvider} from "@chakra-ui/react";
+import React from "react";
+import ReactDOM from "react-dom";
+import App from "./App";
+import { ChakraProvider } from "@chakra-ui/react";
 import theme from "./DSL/Theme";
 import Fonts from "./DSL/Fonts/Fonts";
 
 ReactDOM.render(
   <React.StrictMode>
-      <ChakraProvider theme={theme} resetCSS>
-          <Fonts />
-          <App />
-      </ChakraProvider>
+    <ChakraProvider theme={theme} resetCSS>
+      <Fonts />
+      <App />
+    </ChakraProvider>
   </React.StrictMode>,
-  document.getElementById('root')
+  document.getElementById("root"),
 );
 
 // If you want to start measuring performance in your app, pass a function

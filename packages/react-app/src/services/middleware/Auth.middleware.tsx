@@ -1,7 +1,7 @@
 import React from "react";
-import {RouteMiddleware} from "./index";
+import { RouteMiddleware } from "./index";
 // import {AppStore} from "../../store/App.store";
-import {Redirect} from "react-router-dom";
+import { Redirect } from "react-router-dom";
 
 /**
  *
@@ -12,8 +12,8 @@ import {Redirect} from "react-router-dom";
  *
  */
 const AuthMiddleware: RouteMiddleware = (_route: JSX.Element) => {
-    // if (!AppStore.auth.isLoggedIn) {
-    //     return <Redirect to={route(NamedRoutes.AUTH_LOGIN)}/>
-    // }
-}
+  // if (!AppStore.auth.isLoggedIn) {
+  //     return <Redirect to={route(NamedRoutes.AUTH_LOGIN)}/>
+  // }
+};
 export default AuthMiddleware;

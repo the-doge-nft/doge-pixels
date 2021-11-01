@@ -81,7 +81,7 @@ export default function Account({
   }
 
   // const { currentTheme } = useThemeSwitcher();
-  const currentTheme = "light"
+  const currentTheme = "light";
 
   const display = minimized ? (
     ""

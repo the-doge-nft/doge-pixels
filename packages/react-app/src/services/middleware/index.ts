@@ -6,4 +6,4 @@
  * If checks are ok, it can return passed parameter, aka default render
  */
 
-export type RouteMiddleware = (route: JSX.Element) => JSX.Element | undefined | any
+export type RouteMiddleware = (route: JSX.Element) => JSX.Element | undefined | any;

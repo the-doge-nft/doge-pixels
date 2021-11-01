@@ -1,13 +1,6 @@
-
 const developmentEnv = {
-    appEnv: "development",
-    api: {},
-    redirectAfterLogoutURL: "/",
+  appEnv: "development",
+  api: {},
+  redirectAfterLogoutURL: "/",
 };
 export default developmentEnv;
-
-
-
-
-
-

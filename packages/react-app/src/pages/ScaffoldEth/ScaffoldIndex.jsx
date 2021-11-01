@@ -19,7 +19,7 @@ import {
 import { useExchangeEthPrice } from "eth-hooks/dapps/dex";
 // import Hints from "./Hints";
 import { ExampleUI, Hints, Subgraph } from "./views";
-
+z;
 // contracts
 import deployedContracts from "../../contracts/hardhat_contracts.json";
 import externalContracts from "../../contracts/external_contracts";
@@ -28,9 +28,7 @@ import { useContractConfig } from "./hooks";
 import Portis from "@portis/web3";
 import Fortmatic from "fortmatic";
 import Authereum from "authereum";
-import {INFURA_ID, NETWORK, NETWORKS} from "../../constants";
-
-
+import { INFURA_ID, NETWORK, NETWORKS } from "../../constants";
 
 const { ethers } = require("ethers");
 /*

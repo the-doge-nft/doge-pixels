@@ -1,10 +1,10 @@
 const AccordionStyle = {
-    parts: ["container"],
-    baseStyle: {
-        container: {
-            borderColor: "gray.50",
-        },
+  parts: ["container"],
+  baseStyle: {
+    container: {
+      borderColor: "gray.50",
     },
-}
+  },
+};
 
-export default AccordionStyle
+export default AccordionStyle;

@@ -1,23 +1,23 @@
-import {GlobalFont} from "../../Typography/Typography.style";
+import { GlobalFont } from "../../Typography/Typography.style";
 
 export const InputStyle = {
-    parts: ["field", "addon"],
-    baseStyle: {
-        field: {
-            fontFamily: GlobalFont,
-        }
+  parts: ["field", "addon"],
+  baseStyle: {
+    field: {
+      fontFamily: GlobalFont,
     },
-    variants: {
-        gray: {
-            field: {
-                color: "black",
-                bg: "gray.50"
-            }
-        }
+  },
+  variants: {
+    gray: {
+      field: {
+        color: "black",
+        bg: "gray.50",
+      },
     },
-    defaultProps: {
-        variant: "gray"
-    }
-}
+  },
+  defaultProps: {
+    variant: "gray",
+  },
+};
 
-export default InputStyle
+export default InputStyle;

@@ -1,18 +1,16 @@
 import React from "react";
-import {isDevModeEnabled} from "../environment/helpers";
+import { isDevModeEnabled } from "../environment/helpers";
 
 interface DevProps {
-    children: JSX.Element
+  children: JSX.Element;
 }
 
-const Dev = ({children}: DevProps) => {
-    if (isDevModeEnabled()) {
-        return <>
-            {children}
-        </>
-    } else {
-        return <></>
-    }
-}
+const Dev = ({ children }: DevProps) => {
+  if (isDevModeEnabled()) {
+    return <>{children}</>;
+  } else {
+    return <></>;
+  }
+};
 
-export default Dev
+export default Dev;
