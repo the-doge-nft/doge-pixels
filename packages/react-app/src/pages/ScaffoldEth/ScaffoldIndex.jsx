@@ -30,6 +30,8 @@ import Fortmatic from "fortmatic";
 import Authereum from "authereum";
 import {INFURA_ID, NETWORK, NETWORKS} from "../../constants";
 
+
+
 const { ethers } = require("ethers");
 /*
     Welcome to 🏗 scaffold-eth !
