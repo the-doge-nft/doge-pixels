@@ -43,7 +43,7 @@ const routes: AppRouteInterface[] = [
     exact: true,
     layout: AppLayout,
     component: Viewer,
-    title: "Viewer",
+    title: "viewer",
   },
   {
     path: "/stats",
@@ -51,7 +51,7 @@ const routes: AppRouteInterface[] = [
     exact: true,
     layout: AppLayout,
     component: PoolStats,
-    title: "Stats",
+    title: "stats",
   },
   {
     path: "/dev",
@@ -59,7 +59,7 @@ const routes: AppRouteInterface[] = [
     exact: true,
     layout: BlankLayout,
     component: Scaffold,
-    title: "Dev",
+    title: "dev",
   },
 ];
 export default routes;

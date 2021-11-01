@@ -1,143 +1,106 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useRef, useState } from "react";
 import * as THREE from "three";
-import { WEBGL } from "../../helpers/webgl";
-import KobosuPixels from "../../images/kobosu.json";
-import Stats from "three/examples/jsm/libs/stats.module";
+import { Box3, Object3D } from "three";
+import { Camera, Canvas, useLoader, useThree } from "@react-three/fiber";
 import KobosuImage from "../../images/kobosu.jpeg";
-import Button from "../../DSL/Button/Button";
 import { Box, HStack } from "@chakra-ui/react";
-import { Scene } from "three";
-import UITools from "./UITools";
+import Button from "../../DSL/Button/Button";
+import Typography, { TVariant } from "../../DSL/Typography/Typography";
 
-const renderImage = (scene: Scene) => {
-  new THREE.TextureLoader().load(KobosuImage, texture => {
-    texture.magFilter = THREE.NearestFilter;
+const ThreeScene = React.memo(() => {
+  const cam = new THREE.PerspectiveCamera(5, window.innerWidth / window.innerHeight, 0.0000001, 10000);
+  const [camera] = useState<THREE.PerspectiveCamera>(cam);
 
-    const material = new THREE.MeshBasicMaterial({ map: texture });
-    const scale = 1;
-    const ratio = texture.image.width / texture.image.height;
-    const imagePlane = new THREE.PlaneGeometry(scale * ratio, scale);
-    const image = new THREE.Mesh(imagePlane, material);
-    scene.add(image);
-  });
-};
-
-const ThreeScene = () => {
-  //@ts-ignore
-  var stats = new Stats();
-  stats.showPanel(0);
-  stats.dom.style.position = "absolute";
-
-  const sceneRef = useCallback((node: HTMLDivElement) => {
-    // https://reactjs.org/docs/refs-and-the-dom.html#caveats-with-callback-refs
-    setTimeout(() => {
-      if (node !== null) {
-        console.log("debug::node width", node.clientWidth);
-        console.log("debug::node height", node.clientHeight);
-
-        node.appendChild(renderer.domElement);
-        node.appendChild(stats.dom);
-
-        const parentWidth = node.clientWidth;
-        const parentHeight = node.clientHeight;
-        renderer.setSize(parentWidth, parentHeight);
-        camera.aspect = parentWidth / parentHeight;
-        camera.updateProjectionMatrix();
-
-        if (WEBGL.isWebGLAvailable()) {
-          animate();
-        } else {
-          const warning = WEBGL.getWebGLErrorMessage();
-          node.appendChild(warning);
-        }
-      }
-    });
+  const canvasParentRef = useCallback((node: HTMLDivElement) => {
+    if (node) {
+      const width = node.clientWidth;
+      const height = node.clientHeight;
+      camera.aspect = width / height;
+      camera.updateProjectionMatrix();
+    }
   }, []);
 
-  const scene = new THREE.Scene();
-  scene.background = new THREE.Color(0xffffff);
+  const texture = useLoader(THREE.TextureLoader, KobosuImage);
+  texture.magFilter = THREE.NearestFilter;
+  const scale = 480;
+  const aspectRatio = texture.image.width / texture.image.height;
+  const imageWorldUnitsWidth = aspectRatio * scale;
+  const imageWorldUnitsHeight = scale;
+  const imageWorldUnitsArea = imageWorldUnitsWidth * imageWorldUnitsHeight;
 
-  const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.000001, 1000);
-  const cameraMovementSensitivity = 0.01;
-  camera.position.z = 0.1;
+  const worldUnitsPixelArea = imageWorldUnitsArea / (texture.image.width * texture.image.height);
+  const worldUnitPixelLength = Math.sqrt(worldUnitsPixelArea);
 
-  const renderer = new THREE.WebGLRenderer({ antialias: true });
-  renderer.setPixelRatio(window.devicePixelRatio);
+  const [boundingBox, setBoundingBox] = useState<Box3 | null>(null);
+  const [overlayLength] = useState<number>(worldUnitPixelLength);
 
-  const render = () => {
-    // if (sceneRef.current && resizeRendererToDisplaySize(renderer, sceneRef.current)) {
-    //     const canvas = renderer.domElement;
-    //     camera.aspect = canvas.clientWidth / canvas.clientHeight;
-    //     camera.updateProjectionMatrix();
-    // }
-    // colorOnHover(camera, scene)
-    renderer.render(scene, camera);
-  };
+  const overlayRef = useRef<Object3D>(null);
+  const imageMeshRef = useCallback(node => {
+    if (node) {
+      const box = new THREE.Box3().setFromObject(node);
+      setBoundingBox(box);
+    }
+  }, []);
 
-  const animate = () => {
-    render();
-    stats.update();
-    window.requestAnimationFrame(animate);
-  };
+  const cameraMovementSensitivity = 80;
+  camera.position.x = imageWorldUnitsWidth / 2 - 0.65;
+  camera.position.y = imageWorldUnitsHeight / 2 + 0.26;
+  camera.position.z = 6000;
 
-  renderImage(scene);
-
-  const [cameraX, setCameraX] = useState(camera.position.x);
-  useEffect(() => {
-    console.log("effect running");
-    setCameraX(camera.position.x);
-  }, [camera.position.x]);
+  const onDocumentMouseWheel = (event: Event) => {
+    const {deltaY} = event as WheelEvent
+    const maxCameraZ = 6000;
+    const minCameraZ = 80;
+    const moveZBy = deltaY / 3;
+    const newZ = camera.position.z + moveZBy;
+    console.log("debug::newz", newZ)
+    if (newZ >= minCameraZ && newZ <= maxCameraZ) {
+      camera.position.z = newZ;
+    }
+  }
+  document.addEventListener('wheel', onDocumentMouseWheel, false)
 
   return (
-    <Box pos={"relative"} id="container" w={"100%"} h={"100%"}>
-      <UITools />
-      <div ref={sceneRef} id="scene-container" style={{ width: "100%", height: "100%" }} />
-      <HStack spacing={2} pos={"absolute"} left={0} bottom={0} m={10}>
-        <Button onClick={() => (camera.position.z -= cameraMovementSensitivity)}>+</Button>
-        <Button onClick={() => (camera.position.z += cameraMovementSensitivity)}>-</Button>
-        <Button
-          onClick={() => {
-            camera.position.x -= cameraMovementSensitivity;
-            console.log("debug::camera position", camera.position.x);
+    <Box ref={canvasParentRef} position={"relative"} w={"100%"} h={"100%"}>
+      <Canvas camera={camera}>
+        <mesh
+          ref={imageMeshRef}
+          position={[imageWorldUnitsWidth / 2, imageWorldUnitsHeight / 2, 0]}
+          onPointerMove={e => {
+            const { point } = e;
+            if (overlayRef.current) {
+              const testX = Math.round((point.x - 0.5) / overlayLength) + overlayLength / 2;
+              const testY = Math.round((point.y - 0.5) / overlayLength) + overlayLength / 2;
+
+              overlayRef.current.position.x = testX;
+              overlayRef.current.position.y = testY;
+            }
           }}
         >
-          left
+          <planeGeometry attach={"geometry"} args={[imageWorldUnitsWidth, imageWorldUnitsHeight]} />
+          <meshBasicMaterial attach={"material"} map={texture} />
+        </mesh>
+        <mesh ref={overlayRef} position={[0, 0, 1]}>
+          <planeGeometry attach={"geometry"} args={[overlayLength, overlayLength]} />
+          <meshBasicMaterial attach={"material"} color={0xff0000} opacity={0.5} transparent={true} />
+        </mesh>
+      </Canvas>
+      <HStack spacing={2} pos={"absolute"} left={0} bottom={0} m={10}>
+        <Button onClick={() => (camera.position.x -= cameraMovementSensitivity)}>
+          <Typography variant={TVariant.Body14}>left</Typography>
         </Button>
-        <Button onClick={() => (camera.position.x += cameraMovementSensitivity)}>right</Button>
-        <Button onClick={() => (camera.position.y -= cameraMovementSensitivity)}>down</Button>
-        <Button onClick={() => (camera.position.y += cameraMovementSensitivity)}>up</Button>
-        {camera && <CameraStats x={cameraX} />}
+        <Button onClick={() => (camera.position.x += cameraMovementSensitivity)}>
+          <Typography variant={TVariant.Body14}>right</Typography>
+        </Button>
+        <Button onClick={() => (camera.position.y -= cameraMovementSensitivity)}>
+          <Typography variant={TVariant.Body14}>down</Typography>
+        </Button>
+        <Button onClick={() => (camera.position.y += cameraMovementSensitivity)}>
+          <Typography variant={TVariant.Body14}>up</Typography>
+        </Button>
       </HStack>
     </Box>
   );
-};
-
-const CameraStats = ({ x }: { x: number }) => {
-  // const [x, setX] = useState(cameraPosition.x)
-  // const [y, setY] = useState(cameraPosition.y)
-  // const [z, setZ] = useState(cameraPosition.z)
-
-  // useEffect(() => {
-  //     console.log("debug::run effect")
-  //     setX(cameraPosition.x)
-  //     setY(cameraPosition.y)
-  //     setZ(cameraPosition.z)
-  //
-  // }, [cameraPosition.x, cameraPosition.y, cameraPosition.z])
-
-  console.log("debug::x", x);
-  // console.log("debug::y", y)
-  // console.log("debug::z", z)
-
-  console.log("debug::render");
-
-  return (
-    <HStack>
-      <Box>camera x: {x}</Box>
-      {/*<Box>camera y: {y}</Box>*/}
-      {/*<Box>camera z: {z}</Box>*/}
-    </HStack>
-  );
-};
+});
 
 export default ThreeScene;
