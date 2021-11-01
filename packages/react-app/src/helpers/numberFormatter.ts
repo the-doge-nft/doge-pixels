@@ -1,8 +1,7 @@
-import {currencyMap, CurrencyTicker, isCrypto, isFiat} from "./currency"
-
+import { currencyMap, CurrencyTicker, isCrypto, isFiat } from "./currency";
 
 const _currencyFormatters: any = {};
-export const STILL_LOADING_SIGN = '-';
+export const STILL_LOADING_SIGN = "-";
 /**
  *
  * getCurrencyFormatter
@@ -15,17 +14,17 @@ export const STILL_LOADING_SIGN = '-';
  * @return currency string ie. $10,000
  **/
 export const getCurrencyFormatter = (currency: CurrencyTicker = "USD", maximumFractionDigits?: number) => {
-    const key = maximumFractionDigits !== undefined ? `${currency}-${maximumFractionDigits}` : currency
-    if (!_currencyFormatters[key]) {
-        _currencyFormatters[key] = new Intl.NumberFormat('en-US', {
-            style: 'currency',
-            minimumFractionDigits: 0,
-            currency,
-            maximumFractionDigits
-        });
-    }
-    return _currencyFormatters[key];
-}
+  const key = maximumFractionDigits !== undefined ? `${currency}-${maximumFractionDigits}` : currency;
+  if (!_currencyFormatters[key]) {
+    _currencyFormatters[key] = new Intl.NumberFormat("en-US", {
+      style: "currency",
+      minimumFractionDigits: 0,
+      currency,
+      maximumFractionDigits,
+    });
+  }
+  return _currencyFormatters[key];
+};
 
 /**
  *
@@ -35,8 +34,8 @@ export const getCurrencyFormatter = (currency: CurrencyTicker = "USD", maximumFr
  * @param amount
  */
 export const formatUsd = (amount: string | number) => {
-    return getCurrencyFormatter("USD").format(amount);
-}
+  return getCurrencyFormatter("USD").format(amount);
+};
 
 /**
  *
@@ -46,11 +45,11 @@ export const formatUsd = (amount: string | number) => {
  * @param amount
  */
 export const formatUsdSafe = (amount: string | number | undefined | null) => {
-    if (amount === undefined || amount === null) {
-        return STILL_LOADING_SIGN;
-    }
-    return formatUsd(amount);
-}
+  if (amount === undefined || amount === null) {
+    return STILL_LOADING_SIGN;
+  }
+  return formatUsd(amount);
+};
 
 /**
  *
@@ -69,11 +68,11 @@ export const formatUsdSafe = (amount: string | number | undefined | null) => {
  * @return string 100,000,000
  **/
 export const formatWithThousandsSeparators = (val: number | string, maxDigits: number = 8): string => {
-    return Number(val).toLocaleString(undefined, {minimumFractionDigits: 0, maximumFractionDigits: maxDigits});
-    // line below is probably the cause for the exception on safari: https://stackoverflow.com/questions/51568821/works-in-chrome-but-breaks-in-safari-invalid-regular-expression-invalid-group
-    // return val.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g,    ",");
-    // return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-}
+  return Number(val).toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: maxDigits });
+  // line below is probably the cause for the exception on safari: https://stackoverflow.com/questions/51568821/works-in-chrome-but-breaks-in-safari-invalid-regular-expression-invalid-group
+  // return val.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g,    ",");
+  // return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+};
 
 /**
  *
@@ -89,23 +88,23 @@ export const formatWithThousandsSeparators = (val: number | string, maxDigits: n
  * @return ("$100", "R$234,928.43", "1.00948376")
  **/
 export const formatToCurrency = (currency: CurrencyTicker, amount: string | number, maxDigits?: number): string => {
-    const currencyConfig = currencyMap[currency]
-    const digits = maxDigits !== undefined ? maxDigits : currencyConfig?.decimalPrecision
+  const currencyConfig = currencyMap[currency];
+  const digits = maxDigits !== undefined ? maxDigits : currencyConfig?.decimalPrecision;
 
-    let amountFormatted;
-    if (digits !== undefined) {
-        if (isFiat(currency)) {
-            amountFormatted = getCurrencyFormatter(currency, digits).format(amount)
-        } else if (isCrypto(currency)) {
-            amountFormatted = formatWithThousandsSeparators(amount, digits)
-        } else if (maxDigits !== undefined) {
-            amountFormatted = formatWithThousandsSeparators(amount, digits)
-        }
-    } else {
-        amountFormatted = formatWithThousandsSeparators(amount)
+  let amountFormatted;
+  if (digits !== undefined) {
+    if (isFiat(currency)) {
+      amountFormatted = getCurrencyFormatter(currency, digits).format(amount);
+    } else if (isCrypto(currency)) {
+      amountFormatted = formatWithThousandsSeparators(amount, digits);
+    } else if (maxDigits !== undefined) {
+      amountFormatted = formatWithThousandsSeparators(amount, digits);
     }
-    return amountFormatted
-}
+  } else {
+    amountFormatted = formatWithThousandsSeparators(amount);
+  }
+  return amountFormatted;
+};
 
 /**
  *
@@ -117,11 +116,11 @@ export const formatToCurrency = (currency: CurrencyTicker, amount: string | numb
  * @return (0.42%)
  **/
 export const formatPercentageTwoDecimals = (val: string | number | null | undefined) => {
-    if (val === null || val === undefined) {
-        return STILL_LOADING_SIGN
-    }
-    return `${Number(val).toFixed(2)}%`
-}
+  if (val === null || val === undefined) {
+    return STILL_LOADING_SIGN;
+  }
+  return `${Number(val).toFixed(2)}%`;
+};
 
 /**
  *
@@ -132,17 +131,17 @@ export const formatPercentageTwoDecimals = (val: string | number | null | undefi
  *
  */
 export const formatInteger = (val: number) => {
-    return val.toFixed();
-}
+  return val.toFixed();
+};
 
 export function bytesToHumanReadable(bytes: number, decimals = 2) {
-    if (bytes === 0) return '0 Bytes';
+  if (bytes === 0) return "0 Bytes";
 
-    const k = 1024;
-    const dm = decimals < 0 ? 0 : decimals;
-    const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
+  const k = 1024;
+  const dm = decimals < 0 ? 0 : decimals;
+  const sizes = ["Bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"];
 
-    const i = Math.floor(Math.log(bytes) / Math.log(k));
+  const i = Math.floor(Math.log(bytes) / Math.log(k));
 
-    return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
+  return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + " " + sizes[i];
 }

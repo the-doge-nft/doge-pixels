@@ -3,7 +3,7 @@ import { Button, Input, Form, Select, InputNumber, Table, Radio } from "antd";
 import React, { useState, useEffect } from "react";
 import { useContractLoader, useOnBlock } from "eth-hooks";
 import { Transactor } from "../helpers";
-import {NETWORKS} from "../../../constants";
+import { NETWORKS } from "../../../constants";
 
 /*
 This is a component for bridging between L1 & L2

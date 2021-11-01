@@ -4,8 +4,9 @@ import ComicSans from "./ComicSansMS.woff2";
 import React from "react";
 
 const Fonts = () => {
-    return <Global
-        styles={`
+  return (
+    <Global
+      styles={`
             @font-face {
                 font-family: 'Comic Sans';
                 font-style: 'normal';
@@ -14,6 +15,7 @@ const Fonts = () => {
             }
         `}
     />
-}
+  );
+};
 
 export default Fonts;

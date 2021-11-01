@@ -1,18 +1,18 @@
-import axios, {AxiosRequestConfig} from "axios";
+import axios, { AxiosRequestConfig } from "axios";
 import env from "../environment";
 
 const HttpConfig: AxiosRequestConfig = {};
 if (env.api.proxyURL !== null) {
-    HttpConfig.baseURL = env.api.proxyURL;
-    HttpConfig.headers = {
-        'x-api-proxy-dst-host': env.api.baseURL
-    };
+  HttpConfig.baseURL = env.api.proxyURL;
+  HttpConfig.headers = {
+    "x-api-proxy-dst-host": env.api.baseURL,
+  };
 } else {
-    HttpConfig.baseURL = env.api.baseURL;
+  HttpConfig.baseURL = env.api.baseURL;
 }
 
 const httpFactory = (HttpConfig: AxiosRequestConfig) => {
-    return axios.create(HttpConfig)
-}
+  return axios.create(HttpConfig);
+};
 
-export {httpFactory, HttpConfig}
+export { httpFactory, HttpConfig };
