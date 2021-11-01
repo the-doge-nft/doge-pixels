@@ -6,6 +6,7 @@ import Viewer from "./pages/Viewer/Viewer";
 import PoolStats from "./pages/PoolStats/PoolStats";
 import ScaffoldIndex from "./pages/ScaffoldEth/ScaffoldIndex";
 import Scaffold from "./pages/ScaffoldEth/Scaffold";
+import BlankLayout from "./layouts/BlankLayout";
 
 export enum NamedRoutes {
     VIEWER = "viewer",
@@ -56,7 +57,7 @@ const routes: AppRouteInterface[] = [
         path: "/dev",
         name: NamedRoutes.DEV,
         exact: true,
-        layout: AppLayout,
+        layout: BlankLayout,
         component: Scaffold,
         title: "Dev"
     }
