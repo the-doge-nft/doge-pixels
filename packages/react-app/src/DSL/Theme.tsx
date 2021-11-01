@@ -9,18 +9,18 @@ import TagStyle from "./Tag/Tag.styles";
 import NumberInputStyle from "./Form/NumberInput/NumberInput.style";
 import ModalStyle from "./Modal/Modal.style";
 
-export const darkModePrimary = "#180E30"
+export const darkModePrimary = "#180E30";
 
 // https://chakra-ui.com/docs/theming/customize-theme
 const theme = extendTheme({
   initialColorMode: "light",
   useSystemColorMode: false,
   styles: {
-    global: ({colorMode}: { colorMode: "light" | "dark" }) => ({
+    global: ({ colorMode }: { colorMode: "light" | "dark" }) => ({
       "html, body": {
         // detect what text is not intentionally themed
         color: "fuchsia",
-        bg: colorMode === "light" ? "white" : darkModePrimary
+        bg: colorMode === "light" ? "white" : darkModePrimary,
       },
     }),
   },
@@ -59,7 +59,7 @@ const theme = extendTheme({
     NumberInput: NumberInputStyle,
     Accordion: AccordionStyle,
     Tag: TagStyle,
-    Modal: ModalStyle
+    Modal: ModalStyle,
   },
 });
 

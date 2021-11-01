@@ -48,7 +48,7 @@ const ThreeScene = React.memo(() => {
   camera.position.z = 6000;
 
   const onDocumentMouseWheel = (event: Event) => {
-    const {deltaY} = event as WheelEvent
+    const { deltaY } = event as WheelEvent;
     const maxCameraZ = 6000;
     const minCameraZ = 80;
     const moveZBy = deltaY / 2;
@@ -56,14 +56,13 @@ const ThreeScene = React.memo(() => {
     if (newZ >= minCameraZ && newZ <= maxCameraZ) {
       camera.position.z = newZ;
     }
-  }
+  };
   useEffect(() => {
-    document.addEventListener('wheel', onDocumentMouseWheel, false)
+    document.addEventListener("wheel", onDocumentMouseWheel, false);
     return () => {
-      document.removeEventListener('wheel', onDocumentMouseWheel)
-    }
-
-  }, [])
+      document.removeEventListener("wheel", onDocumentMouseWheel);
+    };
+  }, []);
 
   return (
     <Box ref={canvasParentRef} position={"relative"} w={"100%"} h={"100%"}>

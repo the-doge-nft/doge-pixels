@@ -1,7 +1,7 @@
 import React from "react";
 import { Button as ChakraButton, ButtonProps as ChakraButtonProps } from "@chakra-ui/react";
-import {ThemeTypings} from "@chakra-ui/styled-system/dist/types/theming.types";
-import Typography, {TVariant} from "../Typography/Typography";
+import { ThemeTypings } from "@chakra-ui/styled-system/dist/types/theming.types";
+import Typography, { TVariant } from "../Typography/Typography";
 
 export enum ButtonVariant {
   Primary = "primary",
@@ -14,18 +14,16 @@ export interface ButtonProps extends ChakraButtonProps {
   variant?: ButtonVariant;
 }
 
-const buttonTypographyMap: {[k: string]: TVariant} = {
+const buttonTypographyMap: { [k: string]: TVariant } = {
   sm: TVariant.Body14,
   md: TVariant.Body16,
-  lg: TVariant.Body18
-}
+  lg: TVariant.Body18,
+};
 
-const Button = ({ submit, children, variant = ButtonVariant.Primary, size="sm", ...rest }: ButtonProps) => {
+const Button = ({ submit, children, variant = ButtonVariant.Primary, size = "sm", ...rest }: ButtonProps) => {
   return (
     <ChakraButton type={submit ? "submit" : "button"} variant={variant} {...rest}>
-      <Typography variant={buttonTypographyMap[size]}>
-        {children}
-      </Typography>
+      <Typography variant={buttonTypographyMap[size]}>{children}</Typography>
     </ChakraButton>
   );
 };

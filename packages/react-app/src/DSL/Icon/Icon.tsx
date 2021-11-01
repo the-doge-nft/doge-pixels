@@ -17,7 +17,8 @@ import {
   TiWarning,
   GoEye,
   GoEyeClosed,
-  BsSunFill, BsMoonFill,
+  BsSunFill,
+  BsMoonFill,
 } from "react-icons/all";
 
 export type IconName =
@@ -56,7 +57,7 @@ const iconStringToComponentMap = {
   "eye-open": GoEye,
   "eye-closed": GoEyeClosed,
   sun: BsSunFill,
-  moon: BsMoonFill
+  moon: BsMoonFill,
 };
 
 interface IconProps extends ChakraIconProps {
