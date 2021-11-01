@@ -49,6 +49,7 @@ const NumberInput = ({
           inputOnChange(value);
         }}
         isDisabled={isDisabled}
+        isRequired={isRequired}
       >
         <NumberInputField
           {...restInput}

@@ -8,13 +8,14 @@ export const NumberInputStyle = {
       _disabled: {
         bg: "gray.100",
       },
+      border: "3px solid black",
+      bg: "white",
     },
   },
   variants: {
     gray: {
       field: {
         color: "black",
-        bg: "gray.50",
       },
     },
   },

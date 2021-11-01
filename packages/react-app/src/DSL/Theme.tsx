@@ -7,6 +7,7 @@ import InputStyle from "./Form/Input/Input.style";
 import AccordionStyle from "./Accordion/Accordion.style";
 import TagStyle from "./Tag/Tag.styles";
 import NumberInputStyle from "./Form/NumberInput/NumberInput.style";
+import ModalStyle from "./Modal/Modal.style";
 
 // https://chakra-ui.com/docs/theming/customize-theme
 const theme = extendTheme({
@@ -53,6 +54,7 @@ const theme = extendTheme({
     NumberInput: NumberInputStyle,
     Accordion: AccordionStyle,
     Tag: TagStyle,
+    Modal: ModalStyle
   },
 });
 

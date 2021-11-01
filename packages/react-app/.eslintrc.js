@@ -2,7 +2,7 @@ module.exports = {
   env: {
     browser: true,
   },
-  parser: "babel-eslint",
+  parser: "@typescript-eslint/parser",
   // airbnb disabled after upgrade to cra 4 due to errors in our code
   extends: [/*"airbnb"*/ "plugin:prettier/recommended"],
   plugins: [
