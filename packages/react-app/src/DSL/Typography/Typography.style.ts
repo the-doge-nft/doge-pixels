@@ -1,10 +1,11 @@
 export const GlobalFont = "Comic Sans, sans-serif";
 
 const TypographyStyle = {
-  baseStyle: {
+  baseStyle: ({colorMode}: {colorMode: "light" | "dark"}) => ({
     fontFamily: GlobalFont,
-    // color: "black"
-  },
+    color: colorMode === "light" ? "black" : "white",
+    textDecorationColor: colorMode === "light" ? "black" : "white"
+  }),
   variants: {
     Detail12: {
       fontWeight: "normal",

@@ -1,4 +1,4 @@
-import React, { useCallback, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import * as THREE from "three";
 import { Box3, Object3D } from "three";
 import { Camera, Canvas, useLoader, useThree } from "@react-three/fiber";
@@ -51,14 +51,19 @@ const ThreeScene = React.memo(() => {
     const {deltaY} = event as WheelEvent
     const maxCameraZ = 6000;
     const minCameraZ = 80;
-    const moveZBy = deltaY / 3;
+    const moveZBy = deltaY / 2;
     const newZ = camera.position.z + moveZBy;
-    console.log("debug::newz", newZ)
     if (newZ >= minCameraZ && newZ <= maxCameraZ) {
       camera.position.z = newZ;
     }
   }
-  document.addEventListener('wheel', onDocumentMouseWheel, false)
+  useEffect(() => {
+    document.addEventListener('wheel', onDocumentMouseWheel, false)
+    return () => {
+      document.removeEventListener('wheel', onDocumentMouseWheel)
+    }
+
+  }, [])
 
   return (
     <Box ref={canvasParentRef} position={"relative"} w={"100%"} h={"100%"}>
@@ -80,7 +85,7 @@ const ThreeScene = React.memo(() => {
           <planeGeometry attach={"geometry"} args={[imageWorldUnitsWidth, imageWorldUnitsHeight]} />
           <meshBasicMaterial attach={"material"} map={texture} />
         </mesh>
-        <mesh ref={overlayRef} position={[0, 0, 1]}>
+        <mesh ref={overlayRef} position={[0, 0, 0.001]}>
           <planeGeometry attach={"geometry"} args={[overlayLength, overlayLength]} />
           <meshBasicMaterial attach={"material"} color={0xff0000} opacity={0.5} transparent={true} />
         </mesh>
