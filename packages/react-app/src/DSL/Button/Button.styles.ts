@@ -1,5 +1,5 @@
 import { GlobalFont } from "../Typography/Typography.style";
-import {darkModePrimary} from "../Theme";
+import { darkModePrimary } from "../Theme";
 
 const ButtonStyle = {
   baseStyle: {
@@ -15,19 +15,19 @@ const ButtonStyle = {
     },
   },
   variants: {
-    primary: ({colorMode}: {colorMode: "light" | "dark"}) => ({
+    primary: ({ colorMode }: { colorMode: "light" | "dark" }) => ({
       bg: colorMode === "light" ? "white" : darkModePrimary,
       borderColor: colorMode === "light" ? "black" : "white",
       borderStyle: "solid",
       textDecorationColor: colorMode === "light" ? "black" : "white",
-      color: colorMode === "light" ? "black" : "white"
+      color: colorMode === "light" ? "black" : "white",
     }),
-    text: ({colorMode}: {colorMode: "light" | "dark"}) => ({
+    text: ({ colorMode }: { colorMode: "light" | "dark" }) => ({
       border: "none",
       bg: "none",
       textDecorationColor: colorMode === "light" ? "black" : "white",
       // needed for text decoration coloring
-      color: colorMode === "light" ? "black" : "white"
+      color: colorMode === "light" ? "black" : "white",
     }),
   },
   sizes: {

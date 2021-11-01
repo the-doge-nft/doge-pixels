@@ -1,8 +1,8 @@
 import React from "react";
-import {Box, Flex, useColorMode} from "@chakra-ui/react";
-import Typography, {TVariant} from "../DSL/Typography/Typography";
-import Button, {ButtonVariant} from "../DSL/Button/Button";
-import {useHistory, useLocation} from "react-router-dom";
+import { Box, Flex, useColorMode } from "@chakra-ui/react";
+import Typography, { TVariant } from "../DSL/Typography/Typography";
+import Button, { ButtonVariant } from "../DSL/Button/Button";
+import { useHistory, useLocation } from "react-router-dom";
 import routes from "../App.routes";
 import Icon from "../DSL/Icon/Icon";
 
@@ -13,13 +13,11 @@ interface AppLayoutProps {
 const AppLayout = ({ children }: AppLayoutProps) => {
   const location = useLocation();
   const history = useHistory();
-  const {colorMode} = useColorMode()
+  const { colorMode } = useColorMode();
   return (
     <Flex w={"100vw"} h={"100vh"} p={5} direction={"column"}>
       <Flex mb={3} justifyContent={"space-between"} alignItems={"center"}>
-        <Typography variant={TVariant.Title28}>
-          Pupper Pixel Portal 🐕
-        </Typography>
+        <Typography variant={TVariant.Title28}>Pupper Pixel Portal 🐕</Typography>
         <Flex alignItems={"center"}>
           {routes.map((route, index) => {
             const isSelected = location.pathname === route.path;
@@ -36,9 +34,7 @@ const AppLayout = ({ children }: AppLayoutProps) => {
             );
           })}
           <ThemeChangeButton />
-          <Button ml={5}>
-            Connect Wallet
-          </Button>
+          <Button ml={5}>Connect Wallet</Button>
         </Flex>
       </Flex>
       {children}
@@ -47,15 +43,17 @@ const AppLayout = ({ children }: AppLayoutProps) => {
 };
 
 const ThemeChangeButton = () => {
-  const {colorMode, toggleColorMode} = useColorMode()
-  return <Box ml={3}>
-    <Icon
+  const { colorMode, toggleColorMode } = useColorMode();
+  return (
+    <Box ml={3}>
+      <Icon
         icon={colorMode === "light" ? "moon" : "sun"}
-        color={colorMode ===  "light" ? "black" : "white"}
+        color={colorMode === "light" ? "black" : "white"}
         cursor={"pointer"}
         onClick={toggleColorMode}
-    />
-  </Box>
-}
+      />
+    </Box>
+  );
+};
 
 export default AppLayout;
