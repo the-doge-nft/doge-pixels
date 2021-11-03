@@ -6,6 +6,7 @@ import KobosuImage from "../../images/kobosu.jpeg";
 import { Box, HStack } from "@chakra-ui/react";
 import Button from "../../DSL/Button/Button";
 import Typography, { TVariant } from "../../DSL/Typography/Typography";
+import {RGBEEncoding, sRGBEncoding} from "three/src/constants";
 
 const ThreeScene = React.memo(() => {
   const cam = new THREE.PerspectiveCamera(5, window.innerWidth / window.innerHeight, 0.0000001, 10000);
@@ -42,69 +43,125 @@ const ThreeScene = React.memo(() => {
     }
   }, []);
 
-  const cameraMovementSensitivity = 80;
   camera.position.x = imageWorldUnitsWidth / 2 - 0.65;
   camera.position.y = imageWorldUnitsHeight / 2 + 0.26;
   camera.position.z = 6000;
 
-  const onDocumentMouseWheel = (event: Event) => {
+  const onDocumentMouseWheel = useCallback((event: Event) => {
     const { deltaY } = event as WheelEvent;
     const maxCameraZ = 6000;
     const minCameraZ = 80;
-    const moveZBy = deltaY / 2;
-    const newZ = camera.position.z + moveZBy;
+    const newZ = camera.position.z + deltaY;
     if (newZ >= minCameraZ && newZ <= maxCameraZ) {
       camera.position.z = newZ;
     }
-  };
+  }, []);
+
+
+  const runOnUnmount: any[] = []
+  const canvasRef = useCallback((node: HTMLCanvasElement) => {
+    if (node) {
+      let dragging = false;
+      let startMouseX: number;
+      let startMouseY: number;
+
+      const downListener = (event: MouseEvent) => {
+        dragging = true;
+        startMouseX = event.clientX;
+        startMouseY = event.clientY;
+        node.style.cursor = "grabbing";
+      };
+      const upListener = (event: MouseEvent) => {
+        dragging = false;
+        node.style.cursor = "pointer";
+      };
+      const moveListener = (event: MouseEvent) => {
+        const deltaX = 1;
+        const deltaY = 1;
+        const mouseXNow = event.clientX;
+        const mouseYNow = event.clientY;
+
+        const diffX = startMouseX - mouseXNow;
+        const diffY = startMouseY - mouseYNow;
+
+        if (dragging) {
+          if (Math.abs(diffX) >= deltaX) {
+            camera.position.x += diffX / 2;
+            startMouseX = mouseXNow;
+          }
+
+          if (Math.abs(diffY) >= deltaY) {
+            camera.position.y -= diffY / 2;
+            startMouseY = mouseYNow;
+          }
+        }
+      };
+      const mouseEnterListener = (event: Event) => {
+        node.style.cursor = "pointer";
+      };
+      const onDrag = (event: Event) => {
+        console.log("debug::drag event", event);
+      };
+
+      node.addEventListener("wheel", onDocumentMouseWheel, false);
+      node.addEventListener("mousedown", downListener, false);
+      node.addEventListener("mousemove", moveListener, false);
+      node.addEventListener("mouseup", upListener, false);
+      node.addEventListener("mouseenter", upListener, false);
+
+      const removeScrollListener = () => node.removeEventListener("wheel", onDocumentMouseWheel);
+      const removeDownListener = () => node.removeEventListener("mousedown", downListener);
+      const removeMoveListener = () => node.removeEventListener("mousemove", moveListener);
+      const removeUpListener = () => node.removeEventListener("mouseup", upListener);
+      const removeEnterListener = () => node.removeEventListener("mouseup", mouseEnterListener);
+
+      runOnUnmount.push(removeScrollListener);
+      runOnUnmount.push(removeDownListener);
+      runOnUnmount.push(removeMoveListener);
+      runOnUnmount.push(removeUpListener);
+      runOnUnmount.push(removeEnterListener);
+    }
+  } ,[])
+
   useEffect(() => {
-    document.addEventListener("wheel", onDocumentMouseWheel, false);
     return () => {
-      document.removeEventListener("wheel", onDocumentMouseWheel);
-    };
+      runOnUnmount.forEach(fn => {
+        console.log("running cleanup::", fn.name)
+        fn()
+      })
+    }
   }, []);
 
   return (
     <Box ref={canvasParentRef} position={"relative"} w={"100%"} h={"100%"}>
-      <Canvas camera={camera}>
+      <Canvas ref={canvasRef} camera={camera} onCreated={({gl}) => {
+        gl.toneMapping = THREE.NoToneMapping;
+      }}>
         <mesh
           ref={imageMeshRef}
           position={[imageWorldUnitsWidth / 2, imageWorldUnitsHeight / 2, 0]}
           onPointerMove={e => {
             const { point } = e;
             if (overlayRef.current) {
-              const testX = Math.round((point.x - 0.5) / overlayLength) + overlayLength / 2;
-              const testY = Math.round((point.y - 0.5) / overlayLength) + overlayLength / 2;
-
-              overlayRef.current.position.x = testX;
-              overlayRef.current.position.y = testY;
+              const overlayX = Math.round((point.x - 0.5) / overlayLength) + overlayLength / 2;
+              const overlayY = Math.round((point.y - 0.5) / overlayLength) + overlayLength / 2;
+              overlayRef.current.position.x = overlayX;
+              overlayRef.current.position.y = overlayY;
             }
           }}
         >
           <planeGeometry attach={"geometry"} args={[imageWorldUnitsWidth, imageWorldUnitsHeight]} />
           <meshBasicMaterial attach={"material"} map={texture} />
         </mesh>
-        <mesh ref={overlayRef} position={[0, 0, 0.001]}>
+        <mesh ref={overlayRef} position={[0, 0, 0.0001]}>
           <planeGeometry attach={"geometry"} args={[overlayLength, overlayLength]} />
           <meshBasicMaterial attach={"material"} color={0xff0000} opacity={0.5} transparent={true} />
         </mesh>
       </Canvas>
-      <HStack spacing={2} pos={"absolute"} left={0} bottom={0} m={10}>
-        <Button onClick={() => (camera.position.x -= cameraMovementSensitivity)}>
-          <Typography variant={TVariant.Body14}>left</Typography>
-        </Button>
-        <Button onClick={() => (camera.position.x += cameraMovementSensitivity)}>
-          <Typography variant={TVariant.Body14}>right</Typography>
-        </Button>
-        <Button onClick={() => (camera.position.y -= cameraMovementSensitivity)}>
-          <Typography variant={TVariant.Body14}>down</Typography>
-        </Button>
-        <Button onClick={() => (camera.position.y += cameraMovementSensitivity)}>
-          <Typography variant={TVariant.Body14}>up</Typography>
-        </Button>
-      </HStack>
     </Box>
   );
 });
+
+
 
 export default ThreeScene;
