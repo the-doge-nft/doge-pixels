@@ -76,22 +76,24 @@ const ThreeScene = React.memo(() => {
         node.style.cursor = "pointer";
       };
       const moveListener = (event: MouseEvent) => {
-        const deltaX = 1;
-        const deltaY = 1;
+        const deltaX = 3;
+        const deltaY = 3;
         const mouseXNow = event.clientX;
         const mouseYNow = event.clientY;
 
         const diffX = startMouseX - mouseXNow;
         const diffY = startMouseY - mouseYNow;
 
+        const sensitivityFactor = camera.position.z / 20000
+
         if (dragging) {
           if (Math.abs(diffX) >= deltaX) {
-            camera.position.x += diffX / 2;
+            camera.position.x += diffX * sensitivityFactor;
             startMouseX = mouseXNow;
           }
 
           if (Math.abs(diffY) >= deltaY) {
-            camera.position.y -= diffY / 2;
+            camera.position.y -= diffY * sensitivityFactor;
             startMouseY = mouseYNow;
           }
         }
