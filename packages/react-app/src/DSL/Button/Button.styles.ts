@@ -12,6 +12,8 @@ const ButtonStyle = {
     },
     _hover: {
       boxShadow: "none",
+      backgroundImage: "linear-gradient(#7014AC, #B467B6)",
+      color: "yellow"
     },
   },
   variants: {

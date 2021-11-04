@@ -21,7 +21,7 @@ const ModalHead = ({ children }: ModalHeaderProps) => {
   return <ChakraModalHeader>{children}</ChakraModalHeader>;
 };
 
-interface ModalProps extends ChakraModalProps {
+export interface ModalProps extends ChakraModalProps {
   isOpen: boolean;
   renderHeader?: () => JSX.Element;
   renderFooter?: () => JSX.Element;
@@ -33,7 +33,9 @@ const Modal = ({ isOpen, onClose, renderHeader, renderFooter, children, ...rest 
       <ModalOverlay />
       <ModalContent color={"black"}>
         <ModalHead>{renderHeader && renderHeader()}</ModalHead>
-        <ModalCloseButton />
+        <ModalCloseButton size={"sm"}>
+          x
+        </ModalCloseButton>
         <ModalBody>{children}</ModalBody>
 
         <ModalFoot>{renderFooter && renderFooter()}</ModalFoot>

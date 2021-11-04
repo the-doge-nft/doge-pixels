@@ -8,16 +8,16 @@ export const InputStyle = {
     },
   },
   variants: {
-    gray: {
-      field: {
-        color: "black",
-        bg: "gray.50",
-      },
-    },
+    // gray: {
+    //   field: {
+    //     color: "black",
+    //     bg: "gray.50",
+    //   },
+    // },
   },
-  defaultProps: {
-    variant: "gray",
-  },
+  // defaultProps: {
+  //   variant: "gray",
+  // },
 };
 
 export default InputStyle;

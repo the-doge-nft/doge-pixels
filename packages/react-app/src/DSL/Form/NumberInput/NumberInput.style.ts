@@ -1,24 +1,36 @@
 import { GlobalFont } from "../../Typography/Typography.style";
+import { darkModePrimary } from "../../Theme";
 
 export const NumberInputStyle = {
   parts: ["root", "field", "stepperGroup", "stepper"],
-  baseStyle: {
+  baseStyle: ({ colorMode }: { colorMode: "light" | "dark" }) => ({
     field: {
       fontFamily: GlobalFont,
       _disabled: {
-        bg: "gray.100",
+        bg: "pink.500",
       },
-      border: "3px solid black",
-      bg: "white",
+      bg: colorMode === "light" ? "white" : darkModePrimary,
+      color: colorMode === "light" ? "black" : "white",
+      borderWidth: '3px',
+      borderStyle: 'solid',
+      borderColor: colorMode === "light" ? "black" : "white",
+      // borderRadius: "3px",
     },
-  },
-  variants: {
+    stepper: {
+      borderColor: colorMode === "light" ? "black" : "white",
+      borderWidth: "2px"
+    }
+  }),
+  variants: ({colorMode}: {colorMode: "light" | "dark"}) => ({
     gray: {
       field: {
-        color: "black",
+        borderWidth: '2px',
+        borderStyle: 'solid',
+        borderColor: colorMode === "light" ? "black" : "white",
+        borderRadius: '3px'
       },
     },
-  },
+  }),
   defaultProps: {
     variant: "gray",
   },

@@ -2,17 +2,17 @@ import { composeValidators, required } from "./validation";
 import { useField } from "react-final-form";
 import { useEffect } from "react";
 
+const parse = (value: any) => {
+  if (value === undefined || value === null) {
+    return "";
+  } else {
+    return value;
+  }
+};
+
 export const useFormField = (validate: any, name: any, initialValue: any, isCheckbox: boolean = false) => {
   const isRequired = Array.isArray(validate) ? validate.includes(required) : validate === required;
   const validators = Array.isArray(validate) ? composeValidators(...validate) : validate;
-
-  const parse = (value: any) => {
-    if (value === undefined || value === null) {
-      return "";
-    } else {
-      return value;
-    }
-  };
 
   const { input, meta } = useField(name, {
     validate: validators,

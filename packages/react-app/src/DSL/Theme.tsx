@@ -8,6 +8,8 @@ import AccordionStyle from "./Accordion/Accordion.style";
 import TagStyle from "./Tag/Tag.styles";
 import NumberInputStyle from "./Form/NumberInput/NumberInput.style";
 import ModalStyle from "./Modal/Modal.style";
+import SliderStyle from "./Slider/Slider.style";
+import TabsStyle from "./Tabs/Tabs.style";
 
 export const darkModePrimary = "#180E30";
 
@@ -60,6 +62,8 @@ const theme = extendTheme({
     Accordion: AccordionStyle,
     Tag: TagStyle,
     Modal: ModalStyle,
+    Slider: SliderStyle,
+    Tabs: TabsStyle
   },
 });
 

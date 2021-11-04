@@ -6,7 +6,7 @@ import KobosuImage from "../../images/kobosu.jpeg";
 import { Box, HStack } from "@chakra-ui/react";
 import Button from "../../DSL/Button/Button";
 import Typography, { TVariant } from "../../DSL/Typography/Typography";
-import {RGBEEncoding, sRGBEncoding} from "three/src/constants";
+import { RGBEEncoding, sRGBEncoding } from "three/src/constants";
 
 const ThreeScene = React.memo(() => {
   const cam = new THREE.PerspectiveCamera(5, window.innerWidth / window.innerHeight, 0.0000001, 10000);
@@ -48,6 +48,7 @@ const ThreeScene = React.memo(() => {
   camera.position.z = 6000;
 
   const onDocumentMouseWheel = useCallback((event: Event) => {
+    event.preventDefault()
     const { deltaY } = event as WheelEvent;
     const maxCameraZ = 6000;
     const minCameraZ = 80;
@@ -57,8 +58,7 @@ const ThreeScene = React.memo(() => {
     }
   }, []);
 
-
-  const runOnUnmount: any[] = []
+  const runOnUnmount: any[] = [];
   const canvasRef = useCallback((node: HTMLCanvasElement) => {
     if (node) {
       let dragging = false;
@@ -69,7 +69,6 @@ const ThreeScene = React.memo(() => {
         dragging = true;
         startMouseX = event.clientX;
         startMouseY = event.clientY;
-        node.style.cursor = "grabbing";
       };
       const upListener = (event: MouseEvent) => {
         dragging = false;
@@ -84,7 +83,7 @@ const ThreeScene = React.memo(() => {
         const diffX = startMouseX - mouseXNow;
         const diffY = startMouseY - mouseYNow;
 
-        const sensitivityFactor = camera.position.z / 20000
+        const sensitivityFactor = camera.position.z / 20000;
 
         if (dragging) {
           if (Math.abs(diffX) >= deltaX) {
@@ -96,6 +95,7 @@ const ThreeScene = React.memo(() => {
             camera.position.y -= diffY * sensitivityFactor;
             startMouseY = mouseYNow;
           }
+          node.style.cursor = "grabbing";
         }
       };
       const mouseEnterListener = (event: Event) => {
@@ -123,33 +123,48 @@ const ThreeScene = React.memo(() => {
       runOnUnmount.push(removeUpListener);
       runOnUnmount.push(removeEnterListener);
     }
-  } ,[])
+  }, []);
 
   useEffect(() => {
     return () => {
       runOnUnmount.forEach(fn => {
-        console.log("running cleanup::", fn.name)
-        fn()
-      })
-    }
+        console.log("running cleanup::", fn.name);
+        fn();
+      });
+    };
   }, []);
+
+  let isOverlayActive = true;
 
   return (
     <Box ref={canvasParentRef} position={"relative"} w={"100%"} h={"100%"}>
-      <Canvas ref={canvasRef} camera={camera} onCreated={({gl}) => {
-        gl.toneMapping = THREE.NoToneMapping;
-      }}>
+      <Canvas
+        ref={canvasRef}
+        camera={camera}
+        onCreated={({ gl }) => {
+          gl.toneMapping = THREE.NoToneMapping;
+        }}
+      >
         <mesh
           ref={imageMeshRef}
           position={[imageWorldUnitsWidth / 2, imageWorldUnitsHeight / 2, 0]}
           onPointerMove={e => {
             const { point } = e;
-            if (overlayRef.current) {
+            if (overlayRef.current && isOverlayActive) {
               const overlayX = Math.round((point.x - 0.5) / overlayLength) + overlayLength / 2;
               const overlayY = Math.round((point.y - 0.5) / overlayLength) + overlayLength / 2;
               overlayRef.current.position.x = overlayX;
               overlayRef.current.position.y = overlayY;
+              console.log("debugg::x", overlayX, "::y::", overlayY);
             }
+          }}
+          onClick={e => {
+            if (isOverlayActive) {
+              // isOverlayActive = false;
+            } else {
+              // isOverlayActive = true;
+            }
+            console.log("debug::trigger query about pixel data");
           }}
         >
           <planeGeometry attach={"geometry"} args={[imageWorldUnitsWidth, imageWorldUnitsHeight]} />
@@ -163,7 +178,5 @@ const ThreeScene = React.memo(() => {
     </Box>
   );
 });
-
-
 
 export default ThreeScene;

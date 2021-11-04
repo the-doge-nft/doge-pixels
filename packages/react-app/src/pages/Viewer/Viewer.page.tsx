@@ -10,8 +10,9 @@ import Form from "../../DSL/Form/Form";
 import NumberInput from "../../DSL/Form/NumberInput/NumberInput";
 import Submit from "../../DSL/Form/Submit";
 import { required } from "../../DSL/Form/validation";
+import MintPixelsModal from "./MintPixelsModal";
 
-const Viewer = observer(() => {
+const ViewerPage = observer(() => {
   const { colorMode } = useColorMode();
   const store = useMemo(() => new ViewerStore(), []);
   return (
@@ -42,49 +43,9 @@ const Viewer = observer(() => {
           </Flex>
         </GridItem>
       </Grid>
-      {store.isMintModalOpen && (
-        <Modal
-          size={"xl"}
-          isOpen={store.isMintModalOpen}
-          onClose={() => (store.isMintModalOpen = false)}
-          renderHeader={() => <Typography variant={TVariant.Title22}>Mint Pixels</Typography>}
-        >
-          <Box>
-            <Typography variant={TVariant.Body14} color={"gray.300"}>
-              Trade your $DOG for pixels. "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
-              tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation
-              ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in
-              voluptate velit esse cillum dolore eu fugiat nulla pariatur.
-            </Typography>
-          </Box>
-          <Form
-            onSubmit={async (data, form) => {
-              console.log("debug::formdata", data);
-            }}
-          >
-            <Grid templateColumns={"repeat(3, 1fr)"} templateRows={"repeat(3, 1fr)"}>
-              <GridItem colSpan={1}>
-                <NumberInput name={"dog_tokens"} label={"Send"} validate={required} showValidation={false} w={"100%"} />
-              </GridItem>
-              <GridItem colSpan={1}></GridItem>
-              <GridItem colSpan={1}></GridItem>
-
-              <GridItem colSpan={3} my={3}>
-                <NumberInput name={"test"} validate={required} showValidation={false} />
-              </GridItem>
-
-              <GridItem colSpan={1}></GridItem>
-              <GridItem colSpan={1}></GridItem>
-              <GridItem colSpan={1}>
-                <NumberInput name={"dog_pixels"} label={"Receive"} validate={required} showValidation={false} />
-              </GridItem>
-            </Grid>
-            <Submit label={"Mint"} w={"100%"} size={"md"} mt={10} />
-          </Form>
-        </Modal>
-      )}
+      <MintPixelsModal isOpen={store.isMintModalOpen} onClose={() => (store.isMintModalOpen = false)} />
     </>
   );
 });
 
-export default Viewer;
+export default ViewerPage;
