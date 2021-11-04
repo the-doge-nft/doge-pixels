@@ -1,8 +1,8 @@
 import { Box } from "@chakra-ui/react";
 import React from "react";
 
-const PoolStats = () => {
+const PoolStatsPage = () => {
   return <Box>stats here</Box>;
 };
 
-export default PoolStats;
+export default PoolStatsPage;

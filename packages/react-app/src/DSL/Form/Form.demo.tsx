@@ -172,7 +172,7 @@ const ToggleDemo = observer(({ store }: { store: DemoFormStore }) => {
   );
 });
 
-const SubDemo = ({ title, children }: { title: string; children: any }) => {
+export const SubDemo = ({ title, children }: { title: string; children: any }) => {
   return (
     <Box w={"100%"} mb={10}>
       <Box>
