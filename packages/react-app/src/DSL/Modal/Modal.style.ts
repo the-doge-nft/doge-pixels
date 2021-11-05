@@ -1,5 +1,5 @@
 import { darkModePrimary } from "../Theme";
-import {GlobalFont} from "../Typography/Typography.style";
+import { GlobalFont } from "../Typography/Typography.style";
 
 const ModalStyle = {
   parts: ["overlay", "dialogContainer", "dialog", "header", "closeButton", "body", "footer"],
@@ -13,19 +13,19 @@ const ModalStyle = {
     closeButton: {
       color: colorMode === "light" ? "black" : "white",
       _hover: {
-        bg: 'none',
-        border: 'none',
+        bg: "none",
+        border: "none",
         fontWeight: "bold",
-        boxShadow: 'none'
+        boxShadow: "none",
       },
       _active: {
-        boxShadow: 'none'
+        boxShadow: "none",
       },
       _focus: {
-        boxShadow: 'none'
+        boxShadow: "none",
       },
       fontSize: "18px",
-      fontFamily: GlobalFont
+      fontFamily: GlobalFont,
     },
     dialog: {
       bg: colorMode === "light" ? "white" : darkModePrimary,

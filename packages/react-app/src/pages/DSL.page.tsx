@@ -1,19 +1,17 @@
 import React from "react";
-import SliderDemo from "../DSL/Slider/Slider.demo";
 import { Box } from "@chakra-ui/react";
 import Typography, { TVariant } from "../DSL/Typography/Typography";
-import TabsDemo from "../DSL/Tabs/Tabs.demo";
+import DemoButton from "../DSL/Button/Button.demo";
 
 const DSLPage = () => {
   return (
-    <Box px={100}>
+    <Box px={250}>
       <Box textAlign={"center"}>
         <Typography variant={TVariant.Title28} block mb={7}>
           ✨ DSL ✨
         </Typography>
+        <DemoButton />
       </Box>
-      <SliderDemo />
-        <TabsDemo />
     </Box>
   );
 };

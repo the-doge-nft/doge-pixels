@@ -33,9 +33,7 @@ const Modal = ({ isOpen, onClose, renderHeader, renderFooter, children, ...rest 
       <ModalOverlay />
       <ModalContent color={"black"}>
         <ModalHead>{renderHeader && renderHeader()}</ModalHead>
-        <ModalCloseButton size={"sm"}>
-          x
-        </ModalCloseButton>
+        <ModalCloseButton size={"sm"}>x</ModalCloseButton>
         <ModalBody>{children}</ModalBody>
 
         <ModalFoot>{renderFooter && renderFooter()}</ModalFoot>

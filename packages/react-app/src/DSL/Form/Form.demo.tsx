@@ -174,9 +174,9 @@ const ToggleDemo = observer(({ store }: { store: DemoFormStore }) => {
 
 export const SubDemo = ({ title, children }: { title: string; children: any }) => {
   return (
-    <Box w={"100%"} mb={10}>
+    <Box w={"100%"}>
       <Box>
-        <Typography variant={TVariant.Body14} color={"gray.400"}>
+        <Typography variant={TVariant.Body14} color={"gray.400"} block mb={3}>
           {title}
         </Typography>
       </Box>

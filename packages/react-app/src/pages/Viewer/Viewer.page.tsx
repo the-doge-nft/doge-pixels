@@ -37,7 +37,7 @@ const ViewerPage = observer(() => {
                 actually own a pixel of the original DOGE, hit mint now.
               </Typography>
             </Box>
-            <Button size={"lg"} onClick={() => (store.isMintModalOpen = true)}>
+            <Button size={"md"} onClick={() => (store.isMintModalOpen = true)}>
               Mint Pixels
             </Button>
           </Flex>

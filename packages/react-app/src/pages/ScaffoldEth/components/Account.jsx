@@ -107,7 +107,7 @@ export default function Account({
   return (
     <div>
       {display}
-      {modalButtons}
+      {/*{modalButtons}*/}
     </div>
   );
 }

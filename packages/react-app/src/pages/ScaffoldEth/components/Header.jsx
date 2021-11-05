@@ -6,11 +6,7 @@ import React from "react";
 export default function Header() {
   return (
     <a href="https://github.com/austintgriffith/scaffold-eth" target="_blank" rel="noopener noreferrer">
-      <PageHeader
-        title="🏗 scaffold-eth"
-        subTitle="forkable Ethereum dev stack focused on fast product iteration"
-        style={{ cursor: "pointer" }}
-      />
+      <PageHeader title="🏗 DOG" subTitle="bringing pixels to the people" style={{ cursor: "pointer" }} />
     </a>
   );
 }
