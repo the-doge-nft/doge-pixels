@@ -8,7 +8,6 @@ import Typography from "../Typography/Typography";
 interface SubmitProps extends ButtonProps {
   label?: string;
   isLoading?: boolean;
-  size?: string;
 }
 
 const Submit = ({ label, onClick, isLoading, ...rest }: SubmitProps) => {

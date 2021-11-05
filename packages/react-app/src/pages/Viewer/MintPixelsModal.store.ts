@@ -2,6 +2,9 @@ import { computed, makeObservable, observable } from "mobx";
 
 class MintPixelsModalStore {
   @observable
+  view: "mint" | "loading" | "complete" = "mint";
+
+  @observable
   pixel_count?: number;
 
   @observable

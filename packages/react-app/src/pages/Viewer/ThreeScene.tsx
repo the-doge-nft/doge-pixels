@@ -48,7 +48,7 @@ const ThreeScene = React.memo(() => {
   camera.position.z = 6000;
 
   const onDocumentMouseWheel = useCallback((event: Event) => {
-    event.preventDefault()
+    event.preventDefault();
     const { deltaY } = event as WheelEvent;
     const maxCameraZ = 6000;
     const minCameraZ = 80;

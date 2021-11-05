@@ -10,7 +10,7 @@ const mustBeANumber = (value: any) => (isNaN(value) ? t`Must be a number` : unde
 const minValue = (min: any, customString?: string) => (value: any) => {
   const stringToReturn = customString ? customString : t`Must be greater than ${min}`;
   return isNaN(value) || value >= min ? undefined : stringToReturn;
-}
+};
 
 const maxValue = (max: any, customString?: string) => (value: any) => {
   const stringToReturn = customString ? customString : t`Must be less than ${max}`;

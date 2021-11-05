@@ -1,33 +1,32 @@
 import { GlobalFont } from "../../Typography/Typography.style";
-import { darkModePrimary } from "../../Theme";
+import { colorModeType, darkModePrimary, lightOrDark } from "../../Theme";
 
 export const NumberInputStyle = {
   parts: ["root", "field", "stepperGroup", "stepper"],
-  baseStyle: ({ colorMode }: { colorMode: "light" | "dark" }) => ({
+  baseStyle: ({ colorMode }: { colorMode: colorModeType }) => ({
     field: {
       fontFamily: GlobalFont,
       _disabled: {
-        bg: "pink.500",
+        bg: "purple.50",
       },
-      bg: colorMode === "light" ? "white" : darkModePrimary,
-      color: colorMode === "light" ? "black" : "white",
-      borderWidth: '3px',
-      borderStyle: 'solid',
-      borderColor: colorMode === "light" ? "black" : "white",
-      // borderRadius: "3px",
+      bg: lightOrDark(colorMode, "white", darkModePrimary),
+      color: lightOrDark(colorMode, "black", "white"),
+      borderWidth: "3px",
+      borderStyle: "solid",
+      borderColor: lightOrDark(colorMode, "black", "white"),
     },
     stepper: {
-      borderColor: colorMode === "light" ? "black" : "white",
-      borderWidth: "2px"
-    }
+      borderColor: lightOrDark(colorMode, "black", "white"),
+      borderWidth: "2px",
+    },
   }),
-  variants: ({colorMode}: {colorMode: "light" | "dark"}) => ({
+  variants: ({ colorMode }: { colorMode: colorModeType }) => ({
     gray: {
       field: {
-        borderWidth: '2px',
-        borderStyle: 'solid',
-        borderColor: colorMode === "light" ? "black" : "white",
-        borderRadius: '3px'
+        borderWidth: "2px",
+        borderStyle: "solid",
+        borderColor: lightOrDark(colorMode, "black", "white"),
+        borderRadius: "3px",
       },
     },
   }),
