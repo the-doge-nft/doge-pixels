@@ -7,8 +7,13 @@ import { Box, HStack } from "@chakra-ui/react";
 import Button from "../../DSL/Button/Button";
 import Typography, { TVariant } from "../../DSL/Typography/Typography";
 import { RGBEEncoding, sRGBEncoding } from "three/src/constants";
+import Icon from "../../DSL/Icon/Icon";
 
-const ThreeScene = React.memo(() => {
+interface ThreeSceneProps {
+  onPixelSelect: (x: number, y: number, index: THREE.Vector3) => void;
+}
+
+const ThreeScene = React.memo(({ onPixelSelect }: ThreeSceneProps) => {
   const cam = new THREE.PerspectiveCamera(5, window.innerWidth / window.innerHeight, 0.0000001, 10000);
   const [camera] = useState<THREE.PerspectiveCamera>(cam);
 
@@ -59,19 +64,29 @@ const ThreeScene = React.memo(() => {
   }, []);
 
   const runOnUnmount: any[] = [];
+  let isDragging = false;
+
   const canvasRef = useCallback((node: HTMLCanvasElement) => {
     if (node) {
-      let dragging = false;
+      console.log("debug:: CANVAS REF CALL");
+      let isDown = false;
       let startMouseX: number;
       let startMouseY: number;
 
       const downListener = (event: MouseEvent) => {
-        dragging = true;
+        isDown = true;
         startMouseX = event.clientX;
         startMouseY = event.clientY;
       };
       const upListener = (event: MouseEvent) => {
-        dragging = false;
+        isDown = false;
+        if (isDragging) {
+          // console.log("debug::IS DRAGGING")
+          isDragging = false;
+        } else {
+          // console.log("debug::is not dragging")
+        }
+        // console.log("debug:: test call")
         node.style.cursor = "pointer";
       };
       const moveListener = (event: MouseEvent) => {
@@ -83,15 +98,17 @@ const ThreeScene = React.memo(() => {
         const diffX = startMouseX - mouseXNow;
         const diffY = startMouseY - mouseYNow;
 
-        const sensitivityFactor = camera.position.z / 20000;
+        const sensitivityFactor = camera.position.z / 25000;
 
-        if (dragging) {
+        if (isDown) {
           if (Math.abs(diffX) >= deltaX) {
+            isDragging = true;
             camera.position.x += diffX * sensitivityFactor;
             startMouseX = mouseXNow;
           }
 
           if (Math.abs(diffY) >= deltaY) {
+            isDragging = true;
             camera.position.y -= diffY * sensitivityFactor;
             startMouseY = mouseYNow;
           }
@@ -100,9 +117,6 @@ const ThreeScene = React.memo(() => {
       };
       const mouseEnterListener = (event: Event) => {
         node.style.cursor = "pointer";
-      };
-      const onDrag = (event: Event) => {
-        console.log("debug::drag event", event);
       };
 
       node.addEventListener("wheel", onDocumentMouseWheel, false);
@@ -126,6 +140,8 @@ const ThreeScene = React.memo(() => {
   }, []);
 
   useEffect(() => {
+    console.log("debug:: three scene useEffect");
+
     return () => {
       runOnUnmount.forEach(fn => {
         console.log("running cleanup::", fn.name);
@@ -134,7 +150,12 @@ const ThreeScene = React.memo(() => {
     };
   }, []);
 
-  let isOverlayActive = true;
+  let isOverlayMovable = true;
+  // const [isOverlayMovable, setIsOverlayMovable] = useState(true)
+
+  const getPixelIndex = (point: number, length: number) => {
+    return Math.round(point - 0.5) / length + length / 2;
+  };
 
   return (
     <Box ref={canvasParentRef} position={"relative"} w={"100%"} h={"100%"}>
@@ -150,21 +171,23 @@ const ThreeScene = React.memo(() => {
           position={[imageWorldUnitsWidth / 2, imageWorldUnitsHeight / 2, 0]}
           onPointerMove={e => {
             const { point } = e;
-            if (overlayRef.current && isOverlayActive) {
-              const overlayX = Math.round((point.x - 0.5) / overlayLength) + overlayLength / 2;
-              const overlayY = Math.round((point.y - 0.5) / overlayLength) + overlayLength / 2;
+            if (overlayRef.current && isOverlayMovable) {
+              const overlayX = getPixelIndex(point.x, overlayLength);
+              const overlayY = getPixelIndex(point.y, overlayLength);
               overlayRef.current.position.x = overlayX;
               overlayRef.current.position.y = overlayY;
-              console.log("debugg::x", overlayX, "::y::", overlayY);
             }
           }}
           onClick={e => {
-            if (isOverlayActive) {
-              // isOverlayActive = false;
-            } else {
-              // isOverlayActive = true;
+            if (!isDragging) {
+              isOverlayMovable = false;
+              const { point } = e;
+              const pixelX = getPixelIndex(point.x, overlayLength);
+              const pixelY = getPixelIndex(point.y, overlayLength);
+              const indexX = Math.floor(pixelX + overlayLength);
+              const indexY = Math.floor(pixelY + overlayLength);
+              onPixelSelect(indexX, indexY, point);
             }
-            console.log("debug::trigger query about pixel data");
           }}
         >
           <planeGeometry attach={"geometry"} args={[imageWorldUnitsWidth, imageWorldUnitsHeight]} />
@@ -175,6 +198,9 @@ const ThreeScene = React.memo(() => {
           <meshBasicMaterial attach={"material"} color={0xff0000} opacity={0.5} transparent={true} />
         </mesh>
       </Canvas>
+      <Button position={"absolute"} left={2} top={2}>
+        <Icon icon={"close"} onClick={() => (isOverlayMovable = true)} />
+      </Button>
     </Box>
   );
 });

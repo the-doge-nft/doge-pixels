@@ -9,6 +9,7 @@ import TagStyle from "./Tag/Tag.styles";
 import NumberInputStyle from "./Form/NumberInput/NumberInput.style";
 import ModalStyle from "./Modal/Modal.style";
 import DemoStyle from "./Demo/Demo.style";
+import Colors from "./Colors/Colors";
 
 export const darkModePrimary = "purple.700";
 
@@ -30,33 +31,7 @@ const theme = extendTheme({
       },
     }),
   },
-  colors: {
-    blue: {
-      "50": "#7587CB",
-      "100": "#98DDF1",
-    },
-    yellow: {
-      "50": "#F6E274",
-      "100": "#FFD801",
-    },
-    purple: {
-      "50": "#B467B6",
-      "100": "#7014AC",
-      "700": "#180E30",
-    },
-    gray: {
-      "50": "#F1F2F3",
-      "100": "#D8DBDF",
-      "200": "#BFC4CA",
-      "300": "#A6ADB5",
-      "400": "#8D96A0",
-      "500": "#74808B",
-      "600": "#5D666F",
-      "700": "#464D53",
-      "800": "#2E3338",
-      "900": "#171A1C",
-    },
-  },
+  colors: Colors,
   components: {
     Button: ButtonStyle,
     Select: SelectStyle,

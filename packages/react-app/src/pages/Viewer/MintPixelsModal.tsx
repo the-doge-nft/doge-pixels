@@ -13,25 +13,23 @@ import { observer } from "mobx-react-lite";
 interface MintPixelsModalProps extends Pick<ModalProps, "isOpen" | "onClose"> {}
 
 const MintPixelsModal = observer(({ isOpen, onClose }: MintPixelsModalProps) => {
-  const store = useMemo(() => new MintPixelsModalStore(), []);
+  const store = useMemo(() => new MintPixelsModalStore(), [isOpen]);
   return (
     <Modal
       size={"lg"}
       isOpen={isOpen}
-      onClose={() => onClose()}
+      onClose={() => {
+        onClose();
+      }}
       renderHeader={() => <Typography variant={TVariant.Title22}>Mint Pixels</Typography>}
     >
-      {store.view === "mint" && <MintForm store={store} />}
-      {store.view === "loading" && <Loading />}
+      {store.currentView === "mint" && <MintForm store={store} />}
+      {store.currentView === "loading" && <Loading />}
     </Modal>
   );
 });
 
-interface MintFormProps {
-  store: MintPixelsModalStore;
-}
-
-const MintForm = observer(({ store }: MintFormProps) => {
+const MintForm = observer(({ store }: { store: MintPixelsModalStore }) => {
   return (
     <>
       <Box>
@@ -45,7 +43,7 @@ const MintForm = observer(({ store }: MintFormProps) => {
       <Form
         onSubmit={async (data, form) => {
           console.log("debug::formdata::", data);
-          store.view = "loading";
+          store.pushNavigation("loading");
         }}
       >
         <Grid templateColumns={"repeat(2, 1fr)"} mt={5}>
@@ -75,7 +73,11 @@ const MintForm = observer(({ store }: MintFormProps) => {
 });
 
 const Loading = () => {
-  return <Box>cool loading animation!!</Box>;
+  return (
+    <Box>
+      <Typography variant={TVariant.Body12}>cool loading animation!!</Typography>
+    </Box>
+  );
 };
 
 export default MintPixelsModal;

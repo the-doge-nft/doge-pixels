@@ -1,5 +1,6 @@
 import { GlobalFont } from "../Typography/Typography.style";
 import { colorModeType, darkModePrimary, lightOrDark } from "../Theme";
+import { SystemStyleObject } from "@chakra-ui/react";
 
 const ButtonStyle = {
   baseStyle: ({ colorMode }: { colorMode: colorModeType }) => ({
@@ -41,23 +42,23 @@ const ButtonStyle = {
     }),
   },
   sizes: {
-    xs: {
-      borderWidth: "1px",
-      borderRadius: 5,
-      paddingLeft: "4px",
-      paddingRight: "4px",
-    },
     sm: {
-      borderWidth: "3px",
-      borderRadius: 9,
-      px: "12px",
+      borderWidth: "2px",
+      borderRadius: 7,
+      px: "2px",
     },
     md: {
-      borderWidth: "3px",
+      borderWidth: "2px",
+      borderRadius: 9,
+      px: "8px",
+    },
+    lg: {
+      borderWidth: "2px",
       borderRadius: 11,
-      px: "14px",
+      px: "10px",
     },
   },
+  defaultProps: {},
 };
 
 export default ButtonStyle;

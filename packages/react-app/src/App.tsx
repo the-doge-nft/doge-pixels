@@ -3,6 +3,7 @@ import { BrowserRouter, Route, Switch } from "react-router-dom";
 import routes from "./App.routes";
 
 function App() {
+  console.log("debug:: app mount");
   return (
     <BrowserRouter>
       <Switch>
