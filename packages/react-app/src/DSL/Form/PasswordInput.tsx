@@ -55,7 +55,7 @@ const PasswordInput = ({
           overflow={"scroll"}
         />
         <InputRightElement mr={1}>
-          <Button size={"xs"} variant={ButtonVariant.Text} onClick={handleClick}>
+          <Button size={"sm"} variant={ButtonVariant.Text} onClick={handleClick}>
             <Icon boxSize={3} icon={show ? "eye-closed" : "eye-open"} color={"gray.600"} />
           </Button>
         </InputRightElement>

@@ -2,6 +2,8 @@ import React from "react";
 import { Box } from "@chakra-ui/react";
 import Typography, { TVariant } from "../DSL/Typography/Typography";
 import DemoButton from "../DSL/Button/Button.demo";
+import DemoModal from "../DSL/Modal/Modal.demo";
+import DemoColors from "../DSL/Colors/Colors.demo";
 
 const DSLPage = () => {
   return (
@@ -11,6 +13,8 @@ const DSLPage = () => {
           ✨ DSL ✨
         </Typography>
         <DemoButton />
+        <DemoModal />
+        <DemoColors />
       </Box>
     </Box>
   );

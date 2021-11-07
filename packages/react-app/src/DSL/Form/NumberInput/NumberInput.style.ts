@@ -11,13 +11,13 @@ export const NumberInputStyle = {
       },
       bg: lightOrDark(colorMode, "white", darkModePrimary),
       color: lightOrDark(colorMode, "black", "white"),
-      borderWidth: "3px",
+      borderWidth: "2px",
       borderStyle: "solid",
       borderColor: lightOrDark(colorMode, "black", "white"),
     },
     stepper: {
       borderColor: lightOrDark(colorMode, "black", "white"),
-      borderWidth: "2px",
+      borderWidth: "1px",
     },
   }),
   variants: ({ colorMode }: { colorMode: colorModeType }) => ({

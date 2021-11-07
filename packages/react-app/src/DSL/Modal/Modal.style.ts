@@ -29,7 +29,7 @@ const ModalStyle = {
     },
     dialog: {
       bg: colorMode === "light" ? "white" : darkModePrimary,
-      border: "4px solid",
+      border: "2px solid",
       borderColor: colorMode === "light" ? "black" : "white",
       borderRadius: "0px",
     },

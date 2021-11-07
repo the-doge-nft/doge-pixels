@@ -15,17 +15,17 @@ export interface ButtonProps extends ChakraButtonProps {
   size?: ButtonSize;
 }
 
-type ButtonSize = "xs" | "sm" | "md";
+type ButtonSize = "sm" | "md" | "lg";
 
-const buttonTypographyMap: { [k: string]: TVariant } = {
+const buttonTypographyMap: { [key in ButtonSize]: TVariant } = {
   sm: TVariant.Body14,
   md: TVariant.Body16,
-  lg: TVariant.Body18,
+  lg: TVariant.Body20,
 };
 
 const Button = ({ submit, children, variant = ButtonVariant.Primary, size = "sm", ...rest }: ButtonProps) => {
   return (
-    <ChakraButton type={submit ? "submit" : "button"} variant={variant} {...rest}>
+    <ChakraButton type={submit ? "submit" : "button"} variant={variant} size={size} {...rest}>
       <Typography variant={buttonTypographyMap[size]} color={"inherit"}>
         {children}
       </Typography>

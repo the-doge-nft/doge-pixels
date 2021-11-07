@@ -33,7 +33,9 @@ const AppLayout = ({ children }: AppLayoutProps) => {
             })}
           </HStack>
           <ThemeChangeButton />
-          <Button ml={5}>Connect Wallet</Button>
+          <Button size={"md"} ml={5}>
+            Connect Wallet
+          </Button>
         </Flex>
       </Flex>
       {children}

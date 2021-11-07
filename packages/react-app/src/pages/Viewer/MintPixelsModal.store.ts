@@ -1,9 +1,10 @@
 import { computed, makeObservable, observable } from "mobx";
+import { Navigable } from "../../services/mixins/navigable";
+import { AbstractConstructor, EmptyClass } from "../../helpers/mixins";
 
-class MintPixelsModalStore {
-  @observable
-  view: "mint" | "loading" | "complete" = "mint";
+type MintModalView = "mint" | "loading" | "complete";
 
+class MintPixelsModalStore extends Navigable<AbstractConstructor, MintModalView>(EmptyClass) {
   @observable
   pixel_count?: number;
 
@@ -11,6 +12,8 @@ class MintPixelsModalStore {
   dog_count: number = 0;
 
   constructor() {
+    super();
+    this.pushNavigation("mint");
     makeObservable(this);
   }
 
@@ -21,6 +24,11 @@ class MintPixelsModalStore {
     } else {
       return Number(0).toString();
     }
+  }
+
+  @computed
+  get stepperItems() {
+    return [];
   }
 }
 
