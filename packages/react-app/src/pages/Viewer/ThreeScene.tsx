@@ -8,12 +8,15 @@ import Button from "../../DSL/Button/Button";
 import Typography, { TVariant } from "../../DSL/Typography/Typography";
 import { RGBEEncoding, sRGBEncoding } from "three/src/constants";
 import Icon from "../../DSL/Icon/Icon";
+import {addListenerIfNotExists, getPixelIndex, getWorldPixelCoordinate, useCleanup} from "./helpers";
+import {onPixelClearType, onPixelSelectType} from "./Viewer.page";
 
 interface ThreeSceneProps {
-  onPixelSelect: (x: number, y: number, index: THREE.Vector3) => void;
+  onPixelSelect: onPixelSelectType;
+  onPixelClear: onPixelClearType
 }
 
-const ThreeScene = React.memo(({ onPixelSelect }: ThreeSceneProps) => {
+const ThreeScene = React.memo(({ onPixelSelect, onPixelClear }: ThreeSceneProps) => {
   const cam = new THREE.PerspectiveCamera(5, window.innerWidth / window.innerHeight, 0.0000001, 10000);
   const [camera] = useState<THREE.PerspectiveCamera>(cam);
 
@@ -23,6 +26,10 @@ const ThreeScene = React.memo(({ onPixelSelect }: ThreeSceneProps) => {
       const height = node.clientHeight;
       camera.aspect = width / height;
       camera.updateProjectionMatrix();
+
+      camera.position.x = imageWorldUnitsWidth / 2 - 0.65;
+      camera.position.y = imageWorldUnitsHeight / 2 + 0.26;
+      camera.position.z = 6000;
     }
   }, []);
 
@@ -37,22 +44,23 @@ const ThreeScene = React.memo(({ onPixelSelect }: ThreeSceneProps) => {
   const worldUnitsPixelArea = imageWorldUnitsArea / (texture.image.width * texture.image.height);
   const worldUnitPixelLength = Math.sqrt(worldUnitsPixelArea);
 
-  const [boundingBox, setBoundingBox] = useState<Box3 | null>(null);
   const [overlayLength] = useState<number>(worldUnitPixelLength);
 
+  const [isOverlayMovable, setIsOverlayMovable] = useState(true);
+
   const overlayRef = useRef<Object3D>(null);
-  const imageMeshRef = useCallback(node => {
-    if (node) {
-      const box = new THREE.Box3().setFromObject(node);
-      setBoundingBox(box);
-    }
-  }, []);
 
-  camera.position.x = imageWorldUnitsWidth / 2 - 0.65;
-  camera.position.y = imageWorldUnitsHeight / 2 + 0.26;
-  camera.position.z = 6000;
 
-  const onDocumentMouseWheel = useCallback((event: Event) => {
+  // @TODO: bounding box ref if we need it
+  // const [boundingBox, setBoundingBox] = useState<Box3 | null>(null);
+  // const imageMeshRef = useCallback(node => {
+  //   if (node) {
+  //     const box = new THREE.Box3().setFromObject(node);
+  //     setBoundingBox(box);
+  //   }
+  // }, []);
+
+  const onDocumentMouseWheel = useCallback(function onDocumentMouseWheel(event: Event) {
     event.preventDefault();
     const { deltaY } = event as WheelEvent;
     const maxCameraZ = 6000;
@@ -63,12 +71,15 @@ const ThreeScene = React.memo(({ onPixelSelect }: ThreeSceneProps) => {
     }
   }, []);
 
+  // const [runOnUnmount, setRunOnUnmount] = useState<(() => void)[]>([])
   const runOnUnmount: any[] = [];
+
   let isDragging = false;
 
   const canvasRef = useCallback((node: HTMLCanvasElement) => {
     if (node) {
-      console.log("debug:: CANVAS REF CALL");
+      console.log("debug:: canvas - ref call useCallback");
+
       let isDown = false;
       let startMouseX: number;
       let startMouseY: number;
@@ -100,6 +111,8 @@ const ThreeScene = React.memo(({ onPixelSelect }: ThreeSceneProps) => {
 
         const sensitivityFactor = camera.position.z / 25000;
 
+        // console.log("debug:: isDragging", isDragging);
+
         if (isDown) {
           if (Math.abs(diffX) >= deltaX) {
             isDragging = true;
@@ -119,43 +132,27 @@ const ThreeScene = React.memo(({ onPixelSelect }: ThreeSceneProps) => {
         node.style.cursor = "pointer";
       };
 
-      node.addEventListener("wheel", onDocumentMouseWheel, false);
-      node.addEventListener("mousedown", downListener, false);
-      node.addEventListener("mousemove", moveListener, false);
-      node.addEventListener("mouseup", upListener, false);
-      node.addEventListener("mouseenter", upListener, false);
+      // setRunOnUnmount((prevState) => {
+      //   const dewy = [
+      //     addListenerIfNotExists(node, "wheel", onDocumentMouseWheel),
+      //     addListenerIfNotExists(node, "mousedown", downListener),
+      //     addListenerIfNotExists(node, "mousemove", moveListener),
+      //     addListenerIfNotExists(node, "mouseup", upListener),
+      //     addListenerIfNotExists(node, "mouseenter", upListener)
+      //   ]
+      //   return prevState.concat(dewy)
+      // })
 
-      const removeScrollListener = () => node.removeEventListener("wheel", onDocumentMouseWheel);
-      const removeDownListener = () => node.removeEventListener("mousedown", downListener);
-      const removeMoveListener = () => node.removeEventListener("mousemove", moveListener);
-      const removeUpListener = () => node.removeEventListener("mouseup", upListener);
-      const removeEnterListener = () => node.removeEventListener("mouseup", mouseEnterListener);
-
-      runOnUnmount.push(removeScrollListener);
-      runOnUnmount.push(removeDownListener);
-      runOnUnmount.push(removeMoveListener);
-      runOnUnmount.push(removeUpListener);
-      runOnUnmount.push(removeEnterListener);
+      runOnUnmount.push(addListenerIfNotExists(node, "wheel", onDocumentMouseWheel))
+      runOnUnmount.push(addListenerIfNotExists(node, "mousedown", downListener))
+      runOnUnmount.push(addListenerIfNotExists(node, "mousemove", moveListener))
+      runOnUnmount.push(addListenerIfNotExists(node, "mouseup", upListener))
+      runOnUnmount.push(addListenerIfNotExists(node, "mouseenter", upListener))
+      // console.log("debug:: clean runOnUnmount length", runOnUnmount.length)
     }
   }, []);
 
-  useEffect(() => {
-    console.log("debug:: three scene useEffect");
-
-    return () => {
-      runOnUnmount.forEach(fn => {
-        console.log("running cleanup::", fn.name);
-        fn();
-      });
-    };
-  }, []);
-
-  let isOverlayMovable = true;
-  // const [isOverlayMovable, setIsOverlayMovable] = useState(true)
-
-  const getPixelIndex = (point: number, length: number) => {
-    return Math.round(point - 0.5) / length + length / 2;
-  };
+  useCleanup(runOnUnmount);
 
   return (
     <Box ref={canvasParentRef} position={"relative"} w={"100%"} h={"100%"}>
@@ -167,26 +164,27 @@ const ThreeScene = React.memo(({ onPixelSelect }: ThreeSceneProps) => {
         }}
       >
         <mesh
-          ref={imageMeshRef}
+          // ref={imageMeshRef}
           position={[imageWorldUnitsWidth / 2, imageWorldUnitsHeight / 2, 0]}
           onPointerMove={e => {
-            const { point } = e;
             if (overlayRef.current && isOverlayMovable) {
-              const overlayX = getPixelIndex(point.x, overlayLength);
-              const overlayY = getPixelIndex(point.y, overlayLength);
-              overlayRef.current.position.x = overlayX;
-              overlayRef.current.position.y = overlayY;
+              [overlayRef.current.position.x, overlayRef.current.position.y] = getWorldPixelCoordinate(
+                e.point,
+                overlayLength,
+              );
+              overlayRef.current.position.z = 0.0001
             }
           }}
           onClick={e => {
             if (!isDragging) {
-              isOverlayMovable = false;
-              const { point } = e;
-              const pixelX = getPixelIndex(point.x, overlayLength);
-              const pixelY = getPixelIndex(point.y, overlayLength);
+              setIsOverlayMovable(false);
+              const [pixelX, pixelY] = getWorldPixelCoordinate(
+                  e.point,
+                  overlayLength,
+              );
               const indexX = Math.floor(pixelX + overlayLength);
               const indexY = Math.floor(pixelY + overlayLength);
-              onPixelSelect(indexX, indexY, point);
+              onPixelSelect(indexX, indexY, e.point);
             }
           }}
         >
@@ -198,8 +196,11 @@ const ThreeScene = React.memo(({ onPixelSelect }: ThreeSceneProps) => {
           <meshBasicMaterial attach={"material"} color={0xff0000} opacity={0.5} transparent={true} />
         </mesh>
       </Canvas>
-      <Button position={"absolute"} left={2} top={2}>
-        <Icon icon={"close"} onClick={() => (isOverlayMovable = true)} />
+      <Button position={"absolute"} left={2} top={2} onClick={() => {
+        setIsOverlayMovable(true);
+        onPixelClear()
+      }}>
+        <Icon icon={"close"}/>
       </Button>
     </Box>
   );
