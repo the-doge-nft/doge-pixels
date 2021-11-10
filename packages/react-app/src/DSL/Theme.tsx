@@ -4,12 +4,12 @@ import SelectStyle from "./Form/Select/Select.style";
 import MenuStyle from "./Menu/Menu.style";
 import TypographyStyle from "./Typography/Typography.style";
 import InputStyle from "./Form/Input/Input.style";
-import AccordionStyle from "./Accordion/Accordion.style";
 import TagStyle from "./Tag/Tag.styles";
 import NumberInputStyle from "./Form/NumberInput/NumberInput.style";
 import ModalStyle from "./Modal/Modal.style";
 import DemoStyle from "./Demo/Demo.style";
 import Colors from "./Colors/Colors";
+import PaneStyle from "./Pane/Pane.styles";
 
 export const darkModePrimary = "purple.700";
 
@@ -17,6 +17,9 @@ export type colorModeType = "light" | "dark";
 export const lightOrDark = (colorMode: colorModeType, ifLight: string, ifDark: string) => {
   return colorMode === "light" ? ifLight : ifDark;
 };
+
+// TODO: would be nice to limit the design system further - tracking here
+// https://github.com/chakra-ui/chakra-ui/issues/3931
 
 // https://chakra-ui.com/docs/theming/customize-theme
 const theme = extendTheme({
@@ -39,10 +42,10 @@ const theme = extendTheme({
     Text: TypographyStyle,
     Input: InputStyle,
     NumberInput: NumberInputStyle,
-    Accordion: AccordionStyle,
     Tag: TagStyle,
     Modal: ModalStyle,
     Demo: DemoStyle,
+    Pane: PaneStyle,
   },
 });
 
