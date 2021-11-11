@@ -7,8 +7,10 @@ import "../ERC20/ERC20.sol";
 import "../ERC721/ERC721.sol";
 import "../../access/Ownable.sol";
 import "hardhat/console.sol";
+import "./ERC721Custom.sol";
 
-contract PX is ERC721, Ownable {
+contract PX is ERC721Custom, Ownable {
+//    using ERC721Custom for ERC721;
     // Fractional.art ERC20 contract holding $DOG tokens
     IERC20 private immutable DOG20;
 
@@ -20,14 +22,14 @@ contract PX is ERC721, Ownable {
     uint256 public totalSupply;
 
     mapping(uint256 => uint256) indexToPupper;
-    mapping(uint256 => address) pupperToOwner;
+//    mapping(uint256 => address) _owners;
     mapping(uint256 => uint256) pupperToIndex;
 
     // production version:
     // uint256 immutable DOG_TO_PIXEL_SATOSHIS = 5523989899;
     uint256 public DOG_TO_PIXEL_SATOSHIS = 5523989899;
 
-    constructor(string memory name_, string memory symbol_, address DOG20Address) ERC721(name_, symbol_){
+    constructor(string memory name_, string memory symbol_, address DOG20Address) ERC721Custom(name_, symbol_){
         require(DOG20Address != address(0));
         DOG20 = IERC20(DOG20Address);
 //        _setBaseURI("https://ipfs.io/ipfs/");
@@ -36,6 +38,62 @@ contract PX is ERC721, Ownable {
 //        for(uint256 i = 0; i < totalSupply; ++i){
 //            indexToPupper[i] = i;
 //        }
+    }
+
+    /**
+     * @dev Mints `tokenId` and transfers it to `to`.
+     *
+     * WARNING: Usage of this method is discouraged, use {_safeMint} whenever possible
+     *
+     * Requirements:
+     *
+     * - `tokenId` must not exist.
+     * - `to` cannot be the zero address.
+     *
+     * Emits a {Transfer} event.
+     */
+    function _mint(address to, uint256 tokenId) internal virtual override {
+        require(to != address(0), "ERC721: mint to the zero address");
+        require(!_exists(tokenId), "ERC721: token already minted");
+
+        _beforeTokenTransfer(address(0), to, tokenId);
+
+        //        console.log("new pupper");
+        //        console.log(pupper);
+        _balances[to] += 1;
+        _owners[tokenId] = to;
+        puppersRemaining -= 1;
+
+        emit Transfer(address(0), to, tokenId);
+    }
+
+    /**
+     * @dev Destroys `tokenId`.
+     * The approval is cleared when the token is burned.
+     *
+     * Requirements:
+     *
+     * - `tokenId` must exist.
+     *
+     * Emits a {Transfer} event.
+     */
+    function _burn(uint256 tokenId) internal virtual override {
+        address owner = ERC721Custom.ownerOf(tokenId);
+
+        _beforeTokenTransfer(owner, address(0), tokenId);
+
+        // Clear approvals
+        _approve(address(0), tokenId);
+
+        console.log("burning pupper");
+        console.log(tokenId);
+
+        _balances[owner] -= 1;
+        puppersRemaining += 1;
+
+        delete _owners[tokenId];
+
+        emit Transfer(owner, address(0), tokenId);
     }
 
     //
@@ -115,12 +173,7 @@ contract PX is ERC721, Ownable {
         indexToPupper[index] = indexToPupper[puppersRemaining - 1];
         indexToPupper[puppersRemaining - 1] = pupper;
         pupperToIndex[pupper] = puppersRemaining - 1;
-        pupperToOwner[pupper] = msg.sender;
-        puppersRemaining -= 1;
-        pupperToOwner[pupper] = msg.sender;
 
-        //        console.log("new pupper");
-        //        console.log(pupper);
         _mint(msg.sender, pupper);
         // transfer collateral to contract's address
         DOG20.transferFrom(msg.sender, address(this), DOG_TO_PIXEL_SATOSHIS);
@@ -144,11 +197,7 @@ contract PX is ERC721, Ownable {
         pupperToIndex[tmpPupper] = oldIndex;
         indexToPupper[oldIndex] = tmpPupper;
         indexToPupper[puppersRemaining] = pupper;
-        puppersRemaining += 1;
-        pupperToOwner[pupper] = address(0)  ;
 
-        console.log("burning pupper");
-        console.log(pupper);
         _burn(pupper);
         // transfer collateral to the burner
         DOG20.transfer( msg.sender, DOG_TO_PIXEL_SATOSHIS);
