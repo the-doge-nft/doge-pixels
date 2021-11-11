@@ -188,6 +188,7 @@ contract PX is ERC721Custom, Ownable {
     //
     function burnPupper(uint256 pupper) public {
         // todo: asserts
+        require(ERC721Custom.ownerOf(pupper) == msg.sender, "Pupper is not yours");
         // todo: near 0-len(mappings) indices handling
 
         // swap burnt pupper with one at N+1 index
