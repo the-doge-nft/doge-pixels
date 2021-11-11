@@ -1,4 +1,4 @@
-import {action, makeObservable, observable} from "mobx";
+import { action, makeObservable, observable } from "mobx";
 import { THREE } from "@uniswap/sdk/dist/constants";
 
 class ViewerStore {
@@ -20,7 +20,7 @@ class ViewerStore {
 
   @action
   clearPixelPosition() {
-    this.pixelX = null
+    this.pixelX = null;
     this.pixelY = null;
     this.selectedPixel = null;
   }

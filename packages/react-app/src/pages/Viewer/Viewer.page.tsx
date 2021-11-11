@@ -22,8 +22,8 @@ const ViewerPage = observer(function ViewerPage() {
   }, []);
 
   const onPixelClear = useCallback(() => {
-    store.clearPixelPosition()
-  }, [])
+    store.clearPixelPosition();
+  }, []);
 
   return (
     <>
@@ -31,7 +31,7 @@ const ViewerPage = observer(function ViewerPage() {
         <GridItem mr={2}>
           <Pane w={"100%"} h={"100%"}>
             <Suspense fallback={"Loading Kobosu..."}>
-              <ThreeScene onPixelSelect={onPixelSelect} onPixelClear={onPixelClear}/>
+              <ThreeScene onPixelSelect={onPixelSelect} onPixelClear={onPixelClear} />
             </Suspense>
           </Pane>
         </GridItem>
