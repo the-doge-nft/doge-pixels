@@ -3,7 +3,7 @@
 
 pragma solidity ^0.8.0;
 
-import "./open-zeppelin/token/ERC20/ERC20.sol";
+import "./ERC20/ERC20.sol";
 
 contract DOG20 is ERC20 {
 

@@ -3,9 +3,9 @@
 
 pragma solidity ^0.8.0;
 
-import "./open-zeppelin/token/ERC20/ERC20.sol";
-import "./open-zeppelin/token/ERC721/ERC721.sol";
-import "./open-zeppelin/access/Ownable.sol";
+import "./ERC20/ERC20.sol";
+import "./ERC721/ERC721.sol";
+import "../access/Ownable.sol";
 import "hardhat/console.sol";
 
 contract PX is ERC721, Ownable {
