@@ -447,52 +447,52 @@ function App(props) {
       {networkDisplay}
       <BrowserRouter>
         <Menu style={{ textAlign: "center" }} selectedKeys={[route]} mode="horizontal">
-          <Menu.Item key="/">
+          <Menu.Item key="/scaffold">
             <Link
               onClick={() => {
-                setRoute("/");
+                setRoute("/scaffold");
               }}
-              to="/"
+              to="/scaffold"
             >
               YourContract
             </Link>
           </Menu.Item>
-          <Menu.Item key="/hints">
+          <Menu.Item key="/scaffold/hints">
             <Link
               onClick={() => {
-                setRoute("/hints");
+                setRoute("/scaffold/hints");
               }}
-              to="/hints"
+              to="/scaffold/hints"
             >
               Hints
             </Link>
           </Menu.Item>
-          <Menu.Item key="/exampleui">
+          <Menu.Item key="/scaffold/exampleui">
             <Link
               onClick={() => {
-                setRoute("/exampleui");
+                setRoute("/scaffold/exampleui");
               }}
-              to="/exampleui"
+              to="/scaffold/exampleui"
             >
               ExampleUI
             </Link>
           </Menu.Item>
-          <Menu.Item key="/mainnetdai">
+          <Menu.Item key="/scaffold/mainnetdai">
             <Link
               onClick={() => {
-                setRoute("/mainnetdai");
+                setRoute("/scaffold/mainnetdai");
               }}
-              to="/mainnetdai"
+              to="/scaffold/mainnetdai"
             >
               Mainnet DAI
             </Link>
           </Menu.Item>
-          <Menu.Item key="/subgraph">
+          <Menu.Item key="/scaffold/subgraph">
             <Link
               onClick={() => {
-                setRoute("/subgraph");
+                setRoute("/scaffold/subgraph");
               }}
-              to="/subgraph"
+              to="/scaffold/subgraph"
             >
               Subgraph
             </Link>
@@ -500,7 +500,7 @@ function App(props) {
         </Menu>
 
         <Switch>
-          <Route exact path="/">
+          <Route exact path="/scaffold/scaffold">
             {/*
                 🎛 this scaffolding is full of commonly used components
                 this <Contract/> component will automatically parse your ABI
@@ -517,7 +517,7 @@ function App(props) {
               contractConfig={contractConfig}
             />
           </Route>
-          <Route path="/hints">
+          <Route path="/scaffold/hints">
             <Hints
               address={address}
               yourLocalBalance={yourLocalBalance}
@@ -525,7 +525,7 @@ function App(props) {
               price={price}
             />
           </Route>
-          <Route path="/exampleui">
+          <Route path="/scaffold/exampleui">
             <ExampleUI
               address={address}
               userSigner={userSigner}
@@ -539,7 +539,7 @@ function App(props) {
               purpose={purpose}
             />
           </Route>
-          <Route path="/mainnetdai">
+          <Route path="/scaffold/mainnetdai">
             <Contract
               name="DAI"
               customContract={mainnetContracts && mainnetContracts.contracts && mainnetContracts.contracts.DAI}
@@ -561,7 +561,7 @@ function App(props) {
             />
             */}
           </Route>
-          <Route path="/subgraph">
+          <Route path="/scaffold/subgraph">
             <Subgraph
               subgraphUri={props.subgraphUri}
               tx={tx}

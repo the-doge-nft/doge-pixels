@@ -1,6 +1,9 @@
 import React from "react";
 import { BrowserRouter, Route, Switch } from "react-router-dom";
 import routes from "./App.routes";
+import AppStore from "./App.store";
+
+AppStore.init()
 
 function App() {
   console.log("debug:: app mount");
