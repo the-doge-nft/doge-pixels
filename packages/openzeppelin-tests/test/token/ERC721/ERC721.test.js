@@ -3,16 +3,18 @@ const {
   shouldBehaveLikeERC721Metadata,
 } = require('./ERC721.behavior');
 
-const ERC721Mock = artifacts.require('ERC721Mock');
+const DOG20Mock = artifacts.require('DOG20');
+const ERC721Mock = artifacts.require('PXMock');
 
-contract('ERC721', function (accounts) {
+contract('PX', function (accounts) {
   const name = 'Non Fungible Token';
   const symbol = 'NFT';
 
   beforeEach(async function () {
-    this.token = await ERC721Mock.new(name, symbol);
+    const mock =  await DOG20Mock.new();
+    this.token = await ERC721Mock.new(name, symbol, mock.address);
   });
 
-  shouldBehaveLikeERC721('ERC721', ...accounts);
-  shouldBehaveLikeERC721Metadata('ERC721', name, symbol, ...accounts);
+  shouldBehaveLikeERC721('PX', ...accounts);
+  shouldBehaveLikeERC721Metadata('PX', name, symbol, ...accounts);
 });
