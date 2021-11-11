@@ -1,5 +1,6 @@
 const {ethers} = require("hardhat");
 const {use, expect} = require("chai");
+const {shuffle, range, randFromArray} = require("./utils");
 const {solidity} = require("ethereum-waffle");
 const {
   expectRevert, // Assertions for transactions that should fail
@@ -44,14 +45,20 @@ describe("[PX]", function () {
     // console.log(PX)
   });
 
-  async function mintPupperWithValidation(addr) {
+  async function mintPupperWithValidation(addr, _expectToRevert = false) {
     // console.log("minting for " + addr.address);
     const addrDog20BalanceBefore = await DOG20.balanceOf(addr.address);
     const pxDog20BalanceBefore = await DOG20.balanceOf(PX.address);
     const addrPXBalanceBefore = await PX.balanceOf(addr.address);
     const supplyPXBalanceBefore = await PX.puppersRemaining();
-    await DOG20.connect(addr).approve(PX.address, DOG_TO_PIXEL_SATOSHIS)
-    const tx = await PX.connect(addr).mintPupper()
+    await DOG20.connect(addr).approve(PX.address, DOG_TO_PIXEL_SATOSHIS);
+    let tx;
+    if (_expectToRevert) {
+      tx = await expectRevert(PX.connect(addr).mintPupper(), 'No puppers remaining');
+      return;
+    } else {
+      tx = await PX.connect(addr).mintPupper()
+    }
     expect(await DOG20.balanceOf(PX.address)).to.equal(pxDog20BalanceBefore.toNumber() + DOG_TO_PIXEL_SATOSHIS)
     expect(await DOG20.balanceOf(addr.address)).to.equal(addrDog20BalanceBefore.toNumber() - DOG_TO_PIXEL_SATOSHIS)
 
@@ -79,13 +86,21 @@ describe("[PX]", function () {
     }
   }
 
-  async function burnPupperWithValidation(addr, pupper) {
+  async function burnPupperWithValidation(addr, pupper, _shouldRevertWithMessage = undefined) {
     // console.log("minting for " + addr.address);
     const addrDog20BalanceBefore = await DOG20.balanceOf(addr.address);
     const pxDog20BalanceBefore = await DOG20.balanceOf(PX.address);
     const addrPXBalanceBefore = await PX.balanceOf(addr.address);
     const supplyPXBalanceBefore = await PX.puppersRemaining();
-    const tx = await PX.connect(addr).burnPupper(pupper)
+    let tx;
+    console.log(`trying to burn ${pupper} with addr ${addr.address}`)
+    if (_shouldRevertWithMessage) {
+      tx = await expectRevert(PX.connect(addr).burnPupper(pupper), _shouldRevertWithMessage);
+      return;
+    } else {
+      tx = await PX.connect(addr).burnPupper(pupper)
+    }
+
     expect(await DOG20.balanceOf(PX.address)).to.equal(pxDog20BalanceBefore.toNumber() - DOG_TO_PIXEL_SATOSHIS)
     expect(await DOG20.balanceOf(addr.address)).to.equal(addrDog20BalanceBefore.toNumber() + DOG_TO_PIXEL_SATOSHIS)
 
@@ -125,13 +140,55 @@ describe("[PX]", function () {
       await expectRevert(mintPupperWithValidation(addr1), 'No puppers remaining');
     });
     it('burn all supply', async function () {
-      for (let i = 0; i < MOCK_SUPPLY; ++i) {
-        const o = await PX.ownerOf(i);
+      const arr = shuffle(range(MOCK_SUPPLY));
+      // burn in random order
+      for (let i = 0; i < arr.length; ++i) {
+        const tokenId = arr[i];
+        const o = await PX.ownerOf(tokenId);
         const signer = getSignerFromAddress(o);
-        console.log(`owner of ${i} is ${signer.address}`)
-        await burnPupperWithValidation(signer, i);
-        await expectRevert(burnPupperWithValidation(signer, i), 'ERC721: owner query for nonexistent token');
+        console.log(`owner of ${tokenId} is ${signer.address}`)
+        await burnPupperWithValidation(signer, tokenId);
+        await expectRevert(burnPupperWithValidation(signer, tokenId), 'ERC721: owner query for nonexistent token');
       }
+    });
+    it('mint/burn cycle', async function () {
+      const cyclesQty = MOCK_SUPPLY * 50;
+      let divider = 2;
+      for (let i = 0; i < cyclesQty; ++i) {
+        const remaining = (await PX.puppersRemaining()).toNumber();
+        if (i % 10 === 0) {
+          // mingle divider every 10 steps
+          divider = (Math.floor(Math.random() * 10000) % 7) + 2;
+          console.log(`divider is now ${divider}`)
+        }
+        if (Math.floor(Math.random() * 100000) % divider) {
+          await mintPupperWithValidation(randFromArray(signers), remaining === 0);
+        } else {
+          const signer = randFromArray(signers);
+          const tokenId = randFromArray(range(MOCK_SUPPLY));
+          let shouldRevert = true;
+          let isOwnerOf;
+          try {
+            isOwnerOf = (await PX.ownerOf(tokenId)) === signer.address;
+          } catch (e) {
+
+          }
+          if (isOwnerOf) {
+            await burnPupperWithValidation(signer, tokenId);
+          } else if (isOwnerOf === false) {
+            await burnPupperWithValidation(signer, tokenId, 'Pupper is not yours');
+          } else {
+            await burnPupperWithValidation(signer, tokenId, 'ERC721: owner query for nonexistent token');
+          }
+        }
+      }
+
+    });
+    it('sender is a contract', function () {
+
+    });
+    it('try to mint with sender having no $DOG balance', function () {
+
     });
     it('minting decreases available supply', function () {
 
