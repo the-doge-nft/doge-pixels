@@ -7,11 +7,11 @@ import { Box } from "@chakra-ui/react";
 import Button from "../../DSL/Button/Button";
 import Icon from "../../DSL/Icon/Icon";
 import { getWorldPixelCoordinate } from "./helpers";
-import { onPixelClearType, onPixelSelectType } from "./Viewer.page";
+import { onPixelSelectType } from "./Viewer.page";
 
 interface ThreeSceneProps {
   onPixelSelect: onPixelSelectType;
-  onPixelClear: onPixelClearType;
+  onPixelClear: () => void;
 }
 
 const ThreeScene = React.memo(({ onPixelSelect, onPixelClear }: ThreeSceneProps) => {
@@ -109,6 +109,7 @@ const ThreeScene = React.memo(({ onPixelSelect, onPixelClear }: ThreeSceneProps)
       onPixelSelect(indexX, indexY, e.point);
 
       if (selectedPixelOverlayRef.current) {
+        selectedPixelOverlayRef.current.visible = true;
         [selectedPixelOverlayRef.current.position.x, selectedPixelOverlayRef.current.position.y] = [pixelX, pixelY];
         selectedPixelOverlayRef.current.position.z = 0.0001;
       }
@@ -148,9 +149,10 @@ const ThreeScene = React.memo(({ onPixelSelect, onPixelClear }: ThreeSceneProps)
         </mesh>
         <mesh ref={hoverPixelOverlayRef} position={[0, 0, 0.0001]}>
           <planeGeometry attach={"geometry"} args={[overlayLength, overlayLength]} />
+          {/* @TODO mesh lines here instead so we can control width */}
           <meshBasicMaterial
             wireframe={true}
-            wireframeLinewidth={3}
+            wireframeLinewidth={10}
             attach={"material"}
             color={0xffff00}
             opacity={0.5}
@@ -164,6 +166,9 @@ const ThreeScene = React.memo(({ onPixelSelect, onPixelClear }: ThreeSceneProps)
         top={2}
         onClick={() => {
           onPixelClear();
+          if (selectedPixelOverlayRef.current) {
+            selectedPixelOverlayRef.current.visible = false;
+          }
         }}
       >
         <Icon icon={"close"} />

@@ -9,13 +9,11 @@ import MintPixelsModal from "./MintPixelsModal";
 import Pane from "../../DSL/Pane/Pane";
 
 export type onPixelSelectType = (x: number, y: number, pixelPosition: THREE.Vector3) => void;
-export type onPixelClearType = () => void;
 
 const ViewerPage = observer(function ViewerPage() {
-  const { colorMode } = useColorMode();
   const store = useMemo(() => new ViewerStore(), []);
 
-  const onPixelSelect = useCallback((x: number, y: number, pixelPosition: THREE.Vector3) => {
+  const onPixelSelect: onPixelSelectType = useCallback((x: number, y: number, pixelPosition: THREE.Vector3) => {
     store.pixelX = x;
     store.pixelY = y;
     store.selectedPixel = pixelPosition;
