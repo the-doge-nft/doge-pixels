@@ -3,9 +3,9 @@
 
 pragma solidity ^0.8.0;
 
-import "./ERC20/ERC20.sol";
-import "./ERC721/ERC721.sol";
-import "../access/Ownable.sol";
+import "../ERC20/ERC20.sol";
+import "../ERC721/ERC721.sol";
+import "../../access/Ownable.sol";
 import "hardhat/console.sol";
 
 contract PX is ERC721, Ownable {
@@ -27,7 +27,7 @@ contract PX is ERC721, Ownable {
     // uint256 immutable DOG_TO_PIXEL_SATOSHIS = 5523989899;
     uint256 public DOG_TO_PIXEL_SATOSHIS = 5523989899;
 
-    constructor(address DOG20Address) ERC721("LONG LIVE D O G", "PX"){
+    constructor(string memory name_, string memory symbol_, address DOG20Address) ERC721(name_, symbol_){
         require(DOG20Address != address(0));
         DOG20 = IERC20(DOG20Address);
 //        _setBaseURI("https://ipfs.io/ipfs/");

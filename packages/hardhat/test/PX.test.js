@@ -34,7 +34,7 @@ describe("[PX]", function () {
 
     factory = await ethers.getContractFactory("PXMock");
 
-    PX = await factory.deploy(DOG20.address);
+    PX = await factory.deploy("LONG LIVE D O G", "PX", DOG20.address);
 
     await Promise.all([
                         PX.setSupply(MOCK_SUPPLY),

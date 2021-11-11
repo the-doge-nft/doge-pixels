@@ -9,7 +9,7 @@ import "./PX.sol";
  * This mock just provides a public safeMint, mint, and burn functions for testing purposes
  */
 contract PXMock is PX {
-    constructor(address DOG20Address) PX(DOG20Address) {}
+    constructor(string memory name_, string memory symbol_, address DOG20Address) PX(name_, symbol_, DOG20Address) {}
 
     function setSupply(uint256 amount) public {
         puppersRemaining = amount;
