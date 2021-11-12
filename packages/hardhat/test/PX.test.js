@@ -16,6 +16,7 @@ describe("[PX]", function () {
   let addr1;
   let addr2;
   let addr3;
+  let addr4;
   let signers;
 
   // quick fix to let gas reporter fetch data from gas station & coinmarketcap
@@ -26,7 +27,7 @@ describe("[PX]", function () {
   // beforeEach(())
   before("Should deploy contract", async function () {
     signers = await ethers.getSigners();
-    [owner, addr1, addr2, addr3] = signers
+    [owner, addr1, addr2, addr3, addr4] = signers
     let factory;
     factory = await ethers.getContractFactory("DOG20");
     DOG20 = await factory.deploy();
@@ -184,6 +185,13 @@ describe("[PX]", function () {
       }
 
     });
+
+    //@TODO: minting multiple puppers rn does not work
+    it('single address can mint multipler puppers', async function() {
+      await mintPupperWithValidation(addr4);
+      await mintPupperWithValidation(addr4);
+    })
+
     it('sender is a contract', function () {
 
     });

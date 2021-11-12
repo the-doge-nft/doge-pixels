@@ -21,6 +21,7 @@ module.exports = async ({ getNamedAccounts, deployments }) => {
     ], log: true,
   });
   const PX = await ethers.getContractAt("PX", deployed.address);
-  console.log(await DOG20.initMock([]))
+  // const initMock = await DOG20.initMock([])
+  // console.log(initMock)
 };
 module.exports.tags = ["YourContract"];

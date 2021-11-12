@@ -1,14 +1,15 @@
-import React, { useMemo } from "react";
-import Typography, { TVariant } from "../../DSL/Typography/Typography";
-import { Box, Grid, GridItem } from "@chakra-ui/react";
+import React, {useMemo} from "react";
+import Typography, {TVariant} from "../../DSL/Typography/Typography";
+import {Box, Grid, GridItem} from "@chakra-ui/react";
 import Form from "../../DSL/Form/Form";
 import NumberInput from "../../DSL/Form/NumberInput/NumberInput";
-import { maxValue, minValue, required } from "../../DSL/Form/validation";
+import {maxValue, minValue, required} from "../../DSL/Form/validation";
 import Submit from "../../DSL/Form/Submit";
-import Modal, { ModalProps } from "../../DSL/Modal/Modal";
+import Modal, {ModalProps} from "../../DSL/Modal/Modal";
 import MintPixelsModalStore from "./MintPixelsModal.store";
 import model from "../../DSL/Form/model";
-import { observer } from "mobx-react-lite";
+import {observer} from "mobx-react-lite";
+import AppStore from "../../store/App.store";
 
 interface MintPixelsModalProps extends Pick<ModalProps, "isOpen" | "onClose"> {}
 
@@ -43,6 +44,8 @@ const MintForm = observer(({ store }: { store: MintPixelsModalStore }) => {
       <Form
         onSubmit={async (data, form) => {
           console.log("debug::formdata::", data);
+          const res = AppStore.web3.mintPupper()
+            console.log("debug:: res", res)
           store.pushNavigation("loading");
         }}
       >
@@ -64,6 +67,7 @@ const MintForm = observer(({ store }: { store: MintPixelsModalStore }) => {
               value={store.dogCount}
               isDisabled={true}
             />
+          {AppStore.web3.dogBalance && <Typography variant={TVariant.Detail14}>$DOG avail: {AppStore.web3.dogBalance}</Typography>}
           </GridItem>
         </Grid>
         <Submit label={"Mint"} w={"100%"} size={"md"} mt={10} />
