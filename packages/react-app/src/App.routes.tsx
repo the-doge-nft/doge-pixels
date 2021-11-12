@@ -63,13 +63,13 @@ const routes: AppRouteInterface[] = [
     component: DSLPage,
     title: "dsl",
   },
-  {
-    path: "/scaffold",
-    name: NamedRoutes.DEV,
-    exact: true,
-    layout: BlankLayout,
-    component: Scaffold,
-    title: "scaffold",
-  },
+  // {
+  //   path: "/scaffold",
+  //   name: NamedRoutes.DEV,
+  //   exact: true,
+  //   layout: BlankLayout,
+  //   component: Scaffold,
+  //   title: "scaffold",
+  // },
 ];
 export default routes;

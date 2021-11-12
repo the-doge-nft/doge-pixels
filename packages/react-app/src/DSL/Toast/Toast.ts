@@ -3,7 +3,7 @@ import theme from "../Theme";
 import { isDevModeEnabled } from "../../environment/helpers";
 import { t } from "@lingui/macro";
 
-const toast = createStandaloneToast({ theme });
+const toast = createStandaloneToast({ theme: theme });
 
 export const showErrorToast = (description: string) => {
   toast({
@@ -11,6 +11,7 @@ export const showErrorToast = (description: string) => {
     isClosable: true,
     description: description,
     status: "error",
+    variant: "solid"
   });
 };
 
@@ -20,6 +21,7 @@ export const showSuccessToast = (description: string) => {
     isClosable: true,
     description: description,
     status: "success",
+    variant: "solid",
   });
 };
 
@@ -30,6 +32,7 @@ export const showDebugToast = (description: string) => {
       isClosable: true,
       description: description,
       status: "warning",
+      variant: "solid"
     });
   }
 };

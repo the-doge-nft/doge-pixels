@@ -10,6 +10,7 @@ import ModalStyle from "./Modal/Modal.style";
 import DemoStyle from "./Demo/Demo.style";
 import Colors from "./Colors/Colors";
 import PaneStyle from "./Pane/Pane.styles";
+import ToastStyle from "./Toast/Toast.style";
 
 export const darkModePrimary = "purple.700";
 
@@ -46,6 +47,7 @@ const theme = extendTheme({
     Modal: ModalStyle,
     Demo: DemoStyle,
     Pane: PaneStyle,
+    Toast: ToastStyle
   },
 });
 

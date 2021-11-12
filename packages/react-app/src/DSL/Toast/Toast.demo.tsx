@@ -1,23 +1,23 @@
+import { VStack } from "@chakra-ui/react";
 import React from "react";
 import Button from "../Button/Button";
 import Demo from "../Demo/Demo";
-import toast from "./Toast";
+import toast, {showDebugToast, showErrorToast, showSuccessToast} from "./Toast";
 
 const DemoToast = () => {
   return (
     <Demo title={"Toast"}>
-      <Button
-        onClick={() =>
-          toast({
-            title: "🍞🍞🍞🍞",
-            isClosable: true,
-            description: "Time for butter",
-            status: "success",
-          })
-        }
-      >
-        Success Toast
-      </Button>
+        <VStack>
+            <Button onClick={() => showSuccessToast("nice!")}>
+                Success
+            </Button>
+            <Button onClick={() => showDebugToast("nice!")}>
+                Debug
+            </Button>
+            <Button onClick={() => showErrorToast("nice!")}>
+                Error
+            </Button>
+        </VStack>
     </Demo>
   );
 };
