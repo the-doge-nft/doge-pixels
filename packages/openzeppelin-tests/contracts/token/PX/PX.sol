@@ -122,6 +122,9 @@ contract PX is ERC721, Ownable {
         //        console.log("new pupper");
         //        console.log(pupper);
         _mint(msg.sender, pupper);
+
+        console.log(DOG20.balanceOf(msg.sender))
+
         // transfer collateral to contract's address
         DOG20.transferFrom(msg.sender, address(this), DOG_TO_PIXEL_SATOSHIS);
     }

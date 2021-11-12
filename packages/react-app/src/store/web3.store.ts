@@ -1,6 +1,6 @@
 import {action, makeObservable, observable} from "mobx";
 import {web3Modal} from "../services/web3Modal";
-import {BaseContract, providers} from "ethers";
+import {BaseContract, BigNumber, providers} from "ethers";
 import {showDebugToast} from "../DSL/Toast/Toast";
 import {ExternalProvider, JsonRpcFetchFunc, Web3Provider} from "@ethersproject/providers/src.ts/web3-provider";
 import deployedContracts from "../contracts/hardhat_contracts.json"
@@ -21,6 +21,18 @@ class Web3Store {
 
     @observable
     chainId?: string
+
+    @observable
+    dogBalance?: number
+
+    @observable
+    pupperBalance?: number
+
+    @observable
+    dogContract?: BaseContract
+
+    @observable
+    pxContract?: BaseContract
 
     constructor() {
         makeObservable(this)
@@ -59,30 +71,71 @@ class Web3Store {
             this.provider = undefined
             this.web3Provider = undefined
             this.chainId = undefined
+            this.dogBalance = undefined
         } catch (e) {
             console.error(e)
         }
     }
 
-    connectToContract(signerOrProvider?: Signer | Provider) {
-        const pxContract = new BaseContract(
+    async connectToContract(signerOrProvider?: Signer | Provider) {
+        this.pxContract = new BaseContract(
             deployedContracts["31337"]["localhost"]["contracts"]["PX"]["address"],
             deployedContracts["31337"]["localhost"]["contracts"]["PX"].abi,
             signerOrProvider
         )
-        const dogContract = new BaseContract(
+        this.dogContract = new BaseContract(
             deployedContracts["31337"]["localhost"]["contracts"]["DOG20"]["address"],
             deployedContracts["31337"]["localhost"]["contracts"]["DOG20"].abi,
             signerOrProvider
         )
-        console.log("debug:: pixel contract", pxContract)
-        console.log("debug:: dog contract", dogContract)
-        //@ts-ignore
-        dogContract.symbol().then(res => console.log(res)).catch(e => console.error(e))
-        //@ts-ignore
-        pxContract.symbol().then(res => console.log(res)).catch(e => console.error(e))
-        // console.log("debug:: dog contract", dogContract)
+        const allowance = await this.getPxDogSpendAllowance()
+        if (allowance <= 0) {
+            await this.approvePxSpendDog(5523989899*100)
+        }
 
+        this.dogBalance = await this.getDogBalance()
+        this.pupperBalance = await this.getPupperBalance()
+        if (this.dogBalance == 0) {
+            await this.getD20ToWallet()
+        }
+        this.dogBalance = await this.getDogBalance()
+
+        console.log("dog balance: ", this.dogBalance)
+        console.log("pupper balance: ", this.pupperBalance)
+    }
+
+    async approvePxSpendDog(amount: number) {
+        //@ts-ignore
+        return this.dogContract.approve(this.pxContract.address, amount)
+    }
+
+    async getPxDogSpendAllowance() {
+        //@ts-ignore
+        const allowance = await this.dogContract.allowance(this.address, this.pxContract?.address)
+        return allowance.toNumber()
+    }
+
+    async getDogBalance() {
+        //@ts-ignore
+        const balance = await this.dogContract!.balanceOf(this.address)
+        return balance.toNumber()
+    }
+
+    async getD20ToWallet() {
+        //@ts-ignore
+        await this.dogContract.initMock([this.address])
+    }
+
+    async mintPupper() {
+        //@ts-ignore
+        return await this.pxContract!.mintPupper()
+        // console.log("debug:: mint res", res)
+    }
+
+    async getPupperBalance() {
+        //@ts-ignore
+        const pupperBalance = await this.pxContract.balanceOf(this.address)
+        return pupperBalance.toNumber()
     }
 }
 

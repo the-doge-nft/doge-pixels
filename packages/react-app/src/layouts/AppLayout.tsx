@@ -1,5 +1,5 @@
 import React, {useCallback, useEffect, useState} from "react";
-import {Box, Flex, HStack, useColorMode} from "@chakra-ui/react";
+import {Box, Flex, HStack, VStack, useColorMode} from "@chakra-ui/react";
 import Typography, {TVariant} from "../DSL/Typography/Typography";
 import Button, {ButtonVariant} from "../DSL/Button/Button";
 import {useHistory, useLocation} from "react-router-dom";
@@ -88,7 +88,10 @@ const AppLayout = observer(function AppLayout({ children }: AppLayoutProps) {
           }}>
             Connect Wallet
           </Button>}
-          {AppStore.web3.address && <Typography variant={TVariant.Detail14}>{AppStore.web3.address}</Typography>}
+          <VStack>
+            {AppStore.web3.address && <Typography variant={TVariant.Detail14}>{AppStore.web3.address}</Typography>}
+            {AppStore.web3.dogBalance && <Typography variant={TVariant.Detail14}>{AppStore.web3.dogBalance}</Typography>}
+          </VStack>
         </Flex>
       </Flex>
       {children}
