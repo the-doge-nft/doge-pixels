@@ -3,14 +3,16 @@
 const {ethers} = require("hardhat");
 
 module.exports = async ({ getNamedAccounts, deployments }) => {
-  const {getNamedAccounts, deployments, getChainId, ContractFactory} = args
+  // const {getNamedAccounts, deployments, getChainId, ContractFactory} = args
 
   const {deploy} = deployments;
   const {deployer} = await getNamedAccounts();
-  const chainId = await getChainId();
+  // const chainId = await getChainId();
 
   let deployed = await deploy("DOG20", {
-    from: deployer, args: [[deployer,]], log: true,
+    from: deployer,
+    // args: [[deployer,]],
+    log: true,
   });
   const DOG20 = await ethers.getContractAt("DOG20", deployed.address);
   deployed = await deploy("PX", {

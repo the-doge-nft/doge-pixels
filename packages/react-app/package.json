@@ -110,7 +110,7 @@
     "prestart": "node ./scripts/create_contracts.js",
     "start": "react-app-rewired start",
     "test": "react-app-rewired test",
-    "lint": "eslint --config ./.eslintrc.js --ignore-path ./.eslintignore ./src/**/*",
+    "lint": "eslint --config ___.eslintrc.js --ignore-path ./.eslintignore ./src/**/*",
     "ipfs": "node ./scripts/ipfs.js",
     "surge": "cp build/index.html build/200.html && surge ./build",
     "s3": "node ./scripts/s3.js",

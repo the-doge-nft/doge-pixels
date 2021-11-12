@@ -4,10 +4,11 @@ import Typography, { TVariant } from "../DSL/Typography/Typography";
 import DemoButton from "../DSL/Button/Button.demo";
 import DemoModal from "../DSL/Modal/Modal.demo";
 import DemoColors from "../DSL/Colors/Colors.demo";
+import DemoToast from "../DSL/Toast/Toast.demo";
 
 const DSLPage = () => {
   return (
-    <Box px={250}>
+    <Box px={250} mb={20}>
       <Box textAlign={"center"}>
         <Typography variant={TVariant.Title28} block mb={7}>
           ✨ DSL ✨
@@ -15,6 +16,7 @@ const DSLPage = () => {
         <DemoButton />
         <DemoModal />
         <DemoColors />
+        <DemoToast />
       </Box>
     </Box>
   );
