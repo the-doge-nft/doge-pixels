@@ -16,7 +16,6 @@ describe("[PX]", function () {
   let addr1;
   let addr2;
   let addr3;
-  let addr4;
   let signers;
 
   // quick fix to let gas reporter fetch data from gas station & coinmarketcap
@@ -27,12 +26,17 @@ describe("[PX]", function () {
   // beforeEach(())
   before("Should deploy contract", async function () {
     signers = await ethers.getSigners();
-    [owner, addr1, addr2, addr3, addr4] = signers
+    [owner, addr1, addr2, addr3] = signers
+    console.log("second:: ", owner.address, addr1.address, addr2.address)
+
     let factory;
     factory = await ethers.getContractFactory("DOG20");
     DOG20 = await factory.deploy();
     // console.log(signers)
     await DOG20.initMock(signers.map(item => item.address), 100000);
+
+    const addr1DogBalance = await DOG20.balanceOf(addr1.address)
+    console.log("addr1 DOG balance", addr1DogBalance.toNumber())
 
     factory = await ethers.getContractFactory("PXMock");
 
@@ -185,17 +189,25 @@ describe("[PX]", function () {
       }
 
     });
-    
+
     it('single address can mint multipler puppers', async function() {
-      await mintPupperWithValidation(addr4);
-      await mintPupperWithValidation(addr4);
+      const [, , , , signer4] = await ethers.getSigners()
+      await DOG20.initMock([signer4.address]);
+
+      await mintPupperWithValidation(signer4);
+      await mintPupperWithValidation(signer4);
     })
 
     it('sender is a contract', function () {
 
     });
-    it('try to mint with sender having no $DOG balance', function () {
-
+    it('try to mint with sender having no $DOG balance', async function () {
+      // signers = await ethers.getSigners()
+      // const [owner, signer1, signer2] = signers
+      // console.log("second:: ", owner.address, signer1.address, signer2.address)
+      //
+      // const addr1DogBalance = await DOG20.balanceOf(addr1.address)
+      // console.log("addr1 DOG balance", addr1DogBalance.toNumber())
     });
     it('minting decreases available supply', function () {
 

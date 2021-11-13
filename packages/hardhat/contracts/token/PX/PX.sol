@@ -175,6 +175,8 @@ contract PX is ERC721Custom, Ownable {
         indexToPupper[puppersRemaining - 1] = pupper;
         pupperToIndex[pupper] = puppersRemaining - 1;
 
+        console.log("pupper: ", pupper);
+
         _mint(msg.sender, pupper);
         // transfer collateral to contract's address
         DOG20.transferFrom(msg.sender, address(this), DOG_TO_PIXEL_SATOSHIS);
