@@ -16,7 +16,8 @@ module.exports = async ({ getNamedAccounts, deployments }) => {
   });
   const DOG20 = await ethers.getContractAt("DOG20", deployed.address);
   deployed = await deploy("PX", {
-    from: deployer, args: [
+    from: deployer,
+    args: [
       "LONG LIVE D O G", "PX", DOG20.address
     ], log: true,
   });

@@ -33,8 +33,9 @@ contract PX is ERC721Custom, Ownable {
         require(DOG20Address != address(0));
         DOG20 = IERC20(DOG20Address);
 //        _setBaseURI("https://ipfs.io/ipfs/");
-        totalSupply = 521*384; // 200064
-        puppersRemaining = 521*384;
+        totalSupply = 640*480; // 307200
+        puppersRemaining = 640*480;
+
 //        for(uint256 i = 0; i < totalSupply; ++i){
 //            indexToPupper[i] = i;
 //        }
@@ -167,15 +168,12 @@ contract PX is ERC721Custom, Ownable {
         // todo: near 0-len(mappings) indices handling
         require(puppersRemaining > 0, "No puppers remaining");
         uint256 index = randYishInRange(puppersRemaining);
-        console.log("token index", index);
         // swap minted pupper with one from available pool
         // == move minted pupper to the edge. move pupper from the edge to the minted index
         pupper = indexToPupper[index];
         indexToPupper[index] = indexToPupper[puppersRemaining - 1];
         indexToPupper[puppersRemaining - 1] = pupper;
         pupperToIndex[pupper] = puppersRemaining - 1;
-
-        console.log("pupper", pupper);
 
         _mint(msg.sender, pupper);
         // transfer collateral to contract's address

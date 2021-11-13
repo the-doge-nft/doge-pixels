@@ -126,9 +126,9 @@ class Web3Store {
         await this.dogContract.initMock([this.address])
     }
 
-    async mintPupper() {
+    mintPupper() {
         //@ts-ignore
-        return await this.pxContract!.mintPupper()
+        return this.pxContract!.mintPupper()
         // console.log("debug:: mint res", res)
     }
 
