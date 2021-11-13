@@ -185,8 +185,7 @@ describe("[PX]", function () {
       }
 
     });
-
-    //@TODO: minting multiple puppers rn does not work
+    
     it('single address can mint multipler puppers', async function() {
       await mintPupperWithValidation(addr4);
       await mintPupperWithValidation(addr4);

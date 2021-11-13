@@ -44,7 +44,7 @@ const MintForm = observer(({ store }: { store: MintPixelsModalStore }) => {
       <Form
         onSubmit={async (data, form) => {
           console.log("debug::formdata::", data);
-          const res = AppStore.web3.mintPupper()
+          const res = await AppStore.web3.mintPupper()
             console.log("debug:: res", res)
           store.pushNavigation("loading");
         }}
