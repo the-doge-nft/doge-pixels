@@ -1,14 +1,18 @@
-import {action, makeObservable, observable} from "mobx";
+import {action, computed, makeObservable, observable} from "mobx";
 import {web3Modal} from "../services/web3Modal";
 import {BaseContract, BigNumber, providers} from "ethers";
-import {showDebugToast} from "../DSL/Toast/Toast";
+import {showDebugToast, showErrorToast} from "../DSL/Toast/Toast";
 import {ExternalProvider, JsonRpcFetchFunc, Web3Provider} from "@ethersproject/providers/src.ts/web3-provider";
 import deployedContracts from "../contracts/hardhat_contracts.json"
 import {Signer} from "@ethersproject/abstract-signer";
 import {Provider} from "@ethersproject/abstract-provider";
+import {isDevModeEnabled} from "../environment/helpers";
+import {Network} from "@ethersproject/networks";
 
 
 class Web3Store {
+
+    DOG_TO_PIXEL_SATOSHIS = 5523989899
 
     @observable
     address?: string
@@ -34,6 +38,9 @@ class Web3Store {
     @observable
     pxContract?: BaseContract
 
+    @observable
+    network?: Network
+
     constructor() {
         makeObservable(this)
     }
@@ -47,15 +54,19 @@ class Web3Store {
             const network = await web3Provider.getNetwork()
             showDebugToast(`connected: ${address} on : ${network.name} (chain ID: ${network.chainId})`)
 
+            this.network = network
             this.address = address
             this.provider = provider
             this.address = address
             this.web3Provider = web3Provider
 
             this.connectToContract(signer)
-
         } catch (e) {
             console.log("modal closed")
+        }
+
+        if (isDevModeEnabled() && this.network?.name === "homestead") {
+            throw Error("We don't test on prod here, switch to a testnet or local")
         }
     }
 
@@ -88,20 +99,29 @@ class Web3Store {
             deployedContracts["31337"]["localhost"]["contracts"]["DOG20"].abi,
             signerOrProvider
         )
-        const allowance = await this.getPxDogSpendAllowance()
-        if (allowance <= 0) {
-            await this.approvePxSpendDog(5523989899*100)
-        }
 
-        this.dogBalance = await this.getDogBalance()
-        this.pupperBalance = await this.getPupperBalance()
-        if (this.dogBalance == 0) {
-            await this.getD20ToWallet()
-        }
-        this.dogBalance = await this.getDogBalance()
+        this.refreshDogBalance()
+        this.refreshPupperBalance()
+    }
 
-        console.log("dog balance: ", this.dogBalance)
-        console.log("pupper balance: ", this.pupperBalance)
+    async refreshDogBalance() {
+        try {
+            this.dogBalance = await this.getDogBalance()
+        } catch (e) {
+            this.dogBalance = 0
+            //@ts-ignore
+            showErrorToast(e.message)
+        }
+    }
+
+    async refreshPupperBalance() {
+        try {
+            this.pupperBalance = await this.getPupperBalance()
+        } catch (e) {
+            this.pupperBalance = 0
+            //@ts-ignore
+            showErrorToast(e.message)
+        }
     }
 
     async approvePxSpendDog(amount: number) {
@@ -121,21 +141,29 @@ class Web3Store {
         return balance.toNumber()
     }
 
-    async getD20ToWallet() {
+    async getPupperBalance() {
         //@ts-ignore
-        await this.dogContract.initMock([this.address], 10000000000000)
+        const pupperBalance = await this.pxContract.balanceOf(this.address)
+        return pupperBalance.toNumber()
+    }
+
+    async getDogToAccount() {
+        //@ts-ignore
+        return this.dogContract.initMock([this.address], 10000000000)
     }
 
     mintPupper() {
         //@ts-ignore
         return this.pxContract!.mintPupper()
-        // console.log("debug:: mint res", res)
     }
 
-    async getPupperBalance() {
-        //@ts-ignore
-        const pupperBalance = await this.pxContract.balanceOf(this.address)
-        return pupperBalance.toNumber()
+    @computed
+    get addressForDisplay() {
+        if (this.address) {
+            return `${this.address.substring(0,4)}...${this.address.substring(this.address.length-4, this.address.length)}`
+        } else {
+            return "-"
+        }
     }
 }
 
