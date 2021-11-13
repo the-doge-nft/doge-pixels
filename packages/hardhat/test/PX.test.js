@@ -6,6 +6,9 @@ const {
   expectRevert, // Assertions for transactions that should fail
 } = require('@openzeppelin/test-helpers');
 
+const ERROR_NO_PX_REMAINING = "No puppers remaining"
+const ERROR_D20_TX_EXCEEDS_BALANCE = "ERC20: transfer amount exceeds balance"
+
 use(solidity);
 describe("[PX]", function () {
   const MOCK_SUPPLY = 10;
@@ -27,16 +30,12 @@ describe("[PX]", function () {
   before("Should deploy contract", async function () {
     signers = await ethers.getSigners();
     [owner, addr1, addr2, addr3] = signers
-    console.log("second:: ", owner.address, addr1.address, addr2.address)
 
     let factory;
     factory = await ethers.getContractFactory("DOG20");
     DOG20 = await factory.deploy();
     // console.log(signers)
-    await DOG20.initMock(signers.map(item => item.address), 100000);
-
-    const addr1DogBalance = await DOG20.balanceOf(addr1.address)
-    console.log("addr1 DOG balance", addr1DogBalance.toNumber())
+    await DOG20.initMock(signers.map(item => item.address), DOG_TO_PIXEL_SATOSHIS * MOCK_SUPPLY);
 
     factory = await ethers.getContractFactory("PXMock");
 
@@ -50,24 +49,24 @@ describe("[PX]", function () {
     // console.log(PX)
   });
 
-  async function mintPupperWithValidation(addr, _expectToRevert = false) {
-    // console.log("minting for " + addr.address);
-    const addrDog20BalanceBefore = await DOG20.balanceOf(addr.address);
+  async function mintPupperWithValidation(signer, _shouldRevertWithMessage = undefined) {
+    // console.log("minting for " + signer.address);
+    const addrDog20BalanceBefore = await DOG20.balanceOf(signer.address);
     const pxDog20BalanceBefore = await DOG20.balanceOf(PX.address);
-    const addrPXBalanceBefore = await PX.balanceOf(addr.address);
+    const addrPXBalanceBefore = await PX.balanceOf(signer.address);
     const supplyPXBalanceBefore = await PX.puppersRemaining();
-    await DOG20.connect(addr).approve(PX.address, DOG_TO_PIXEL_SATOSHIS);
+    await DOG20.connect(signer).approve(PX.address, DOG_TO_PIXEL_SATOSHIS);
     let tx;
-    if (_expectToRevert) {
-      tx = await expectRevert(PX.connect(addr).mintPupper(), 'No puppers remaining');
+    if (_shouldRevertWithMessage) {
+      tx = await expectRevert(PX.connect(signer).mintPupper(), _shouldRevertWithMessage);
       return;
     } else {
-      tx = await PX.connect(addr).mintPupper()
+      tx = await PX.connect(signer).mintPupper()
     }
     expect(await DOG20.balanceOf(PX.address)).to.equal(pxDog20BalanceBefore.toNumber() + DOG_TO_PIXEL_SATOSHIS)
-    expect(await DOG20.balanceOf(addr.address)).to.equal(addrDog20BalanceBefore.toNumber() - DOG_TO_PIXEL_SATOSHIS)
+    expect(await DOG20.balanceOf(signer.address)).to.equal(addrDog20BalanceBefore.toNumber() - DOG_TO_PIXEL_SATOSHIS)
 
-    expect(await PX.balanceOf(addr.address)).to.equal(addrPXBalanceBefore.toNumber() + 1)
+    expect(await PX.balanceOf(signer.address)).to.equal(addrPXBalanceBefore.toNumber() + 1)
     expect(await PX.puppersRemaining()).to.equal(supplyPXBalanceBefore.toNumber() - 1);
 
 
@@ -76,7 +75,7 @@ describe("[PX]", function () {
       const event = receipt.events[i];
       if (event.event === 'Transfer') {
         const tokenId = event.args.tokenId;
-        console.log(`minted ${tokenId.toNumber()} for ${addr.address}`);
+        console.log(`minted ${tokenId.toNumber()} for ${signer.address}`);
         return tokenId;
       }
     }
@@ -91,25 +90,25 @@ describe("[PX]", function () {
     }
   }
 
-  async function burnPupperWithValidation(addr, pupper, _shouldRevertWithMessage = undefined) {
+  async function burnPupperWithValidation(signer, pupper, _shouldRevertWithMessage = undefined) {
     // console.log("minting for " + addr.address);
-    const addrDog20BalanceBefore = await DOG20.balanceOf(addr.address);
+    const addrDog20BalanceBefore = await DOG20.balanceOf(signer.address);
     const pxDog20BalanceBefore = await DOG20.balanceOf(PX.address);
-    const addrPXBalanceBefore = await PX.balanceOf(addr.address);
+    const addrPXBalanceBefore = await PX.balanceOf(signer.address);
     const supplyPXBalanceBefore = await PX.puppersRemaining();
     let tx;
-    console.log(`trying to burn ${pupper} with addr ${addr.address}`)
+    console.log(`trying to burn ${pupper} with addr ${signer.address}`)
     if (_shouldRevertWithMessage) {
-      tx = await expectRevert(PX.connect(addr).burnPupper(pupper), _shouldRevertWithMessage);
+      tx = await expectRevert(PX.connect(signer).burnPupper(pupper), _shouldRevertWithMessage);
       return;
     } else {
-      tx = await PX.connect(addr).burnPupper(pupper)
+      tx = await PX.connect(signer).burnPupper(pupper)
     }
 
     expect(await DOG20.balanceOf(PX.address)).to.equal(pxDog20BalanceBefore.toNumber() - DOG_TO_PIXEL_SATOSHIS)
-    expect(await DOG20.balanceOf(addr.address)).to.equal(addrDog20BalanceBefore.toNumber() + DOG_TO_PIXEL_SATOSHIS)
+    expect(await DOG20.balanceOf(signer.address)).to.equal(addrDog20BalanceBefore.toNumber() + DOG_TO_PIXEL_SATOSHIS)
 
-    expect(await PX.balanceOf(addr.address)).to.equal(addrPXBalanceBefore.toNumber() - 1)
+    expect(await PX.balanceOf(signer.address)).to.equal(addrPXBalanceBefore.toNumber() - 1)
     expect(await PX.puppersRemaining()).to.equal(supplyPXBalanceBefore.toNumber() + 1);
 
     //
@@ -142,7 +141,7 @@ describe("[PX]", function () {
           break;
         }
       }
-      await expectRevert(mintPupperWithValidation(addr1), 'No puppers remaining');
+      await expectRevert(mintPupperWithValidation(addr1), ERROR_NO_PX_REMAINING);
     });
     it('burn all supply', async function () {
       const arr = shuffle(range(MOCK_SUPPLY));
@@ -153,7 +152,7 @@ describe("[PX]", function () {
         const signer = getSignerFromAddress(o);
         console.log(`owner of ${tokenId} is ${signer.address}`)
         await burnPupperWithValidation(signer, tokenId);
-        await expectRevert(burnPupperWithValidation(signer, tokenId), 'ERC721: owner query for nonexistent token');
+        await burnPupperWithValidation(signer, tokenId, 'ERC721: owner query for nonexistent token');
       }
     });
     it('mint/burn cycle', async function () {
@@ -167,7 +166,9 @@ describe("[PX]", function () {
           console.log(`divider is now ${divider}`)
         }
         if (Math.floor(Math.random() * 100000) % divider) {
-          await mintPupperWithValidation(randFromArray(signers), remaining === 0);
+          if (remaining === 0) {
+            await mintPupperWithValidation(randFromArray(signers), ERROR_NO_PX_REMAINING);
+          }
         } else {
           const signer = randFromArray(signers);
           const tokenId = randFromArray(range(MOCK_SUPPLY));
@@ -187,27 +188,34 @@ describe("[PX]", function () {
           }
         }
       }
-
     });
+    it('address can only mint up to their $DOG balance', async function() {
+      const [owner, , , , signer4] = await ethers.getSigners()
+      // clear D20 balance
+      const balance = (await DOG20.balanceOf(signer4.address)).toNumber()
+      if (balance !== 0) {
+        await DOG20.connect(signer4).transfer(owner.address, balance)
+      }
 
-    it('single address can mint multipler puppers', async function() {
-      const [, , , , signer4] = await ethers.getSigners()
-      await DOG20.initMock([signer4.address]);
-
-      await mintPupperWithValidation(signer4);
-      await mintPupperWithValidation(signer4);
+      // credit 2PX worth of D20
+      const amountOfPXtoMint = 2
+      await DOG20.initMock([signer4.address], DOG_TO_PIXEL_SATOSHIS * amountOfPXtoMint);
+      for (let i = 0; i < amountOfPXtoMint; i++) {
+        await mintPupperWithValidation(signer4);
+      }
+      await mintPupperWithValidation(signer4, ERROR_D20_TX_EXCEEDS_BALANCE);
     })
-
     it('sender is a contract', function () {
 
     });
     it('try to mint with sender having no $DOG balance', async function () {
-      // signers = await ethers.getSigners()
-      // const [owner, signer1, signer2] = signers
-      // console.log("second:: ", owner.address, signer1.address, signer2.address)
-      //
-      // const addr1DogBalance = await DOG20.balanceOf(addr1.address)
-      // console.log("addr1 DOG balance", addr1DogBalance.toNumber())
+      signers = await ethers.getSigners()
+      const [owner, , , , signer4] = signers
+      const balance = (await DOG20.balanceOf(signer4.address)).toNumber()
+      if (balance !== 0) {
+        await DOG20.connect(signer4).transfer(owner.address, balance)
+      }
+      await mintPupperWithValidation(signer4, ERROR_D20_TX_EXCEEDS_BALANCE)
     });
     it('minting decreases available supply', function () {
 
