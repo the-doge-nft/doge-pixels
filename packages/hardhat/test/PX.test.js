@@ -32,7 +32,7 @@ describe("[PX]", function () {
     factory = await ethers.getContractFactory("DOG20");
     DOG20 = await factory.deploy();
     // console.log(signers)
-    await DOG20.initMock(signers.map(item => item.address));
+    await DOG20.initMock(signers.map(item => item.address), 100000);
 
     factory = await ethers.getContractFactory("PXMock");
 
