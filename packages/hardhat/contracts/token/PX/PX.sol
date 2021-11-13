@@ -32,9 +32,11 @@ contract PX is ERC721Custom, Ownable {
     constructor(string memory name_, string memory symbol_, address DOG20Address) ERC721Custom(name_, symbol_){
         require(DOG20Address != address(0));
         DOG20 = IERC20(DOG20Address);
+        uint256 _width = 10;
+        uint256 _height = 10;
 //        _setBaseURI("https://ipfs.io/ipfs/");
-        totalSupply = 640*480; // 307200
-        puppersRemaining = 640*480;
+        totalSupply = _width*_height; // 307200
+        puppersRemaining = _width*_height;
 
 //        for(uint256 i = 0; i < totalSupply; ++i){
 //            indexToPupper[i] = i;

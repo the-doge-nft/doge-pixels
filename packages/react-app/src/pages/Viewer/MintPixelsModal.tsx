@@ -41,14 +41,7 @@ const MintForm = observer(({ store }: { store: MintPixelsModalStore }) => {
           esse cillum dolore eu fugiat nulla pariatur.
         </Typography>
       </Box>
-      <Form
-        onSubmit={async (data, form) => {
-          console.log("debug::formdata::", data);
-          const res = await AppStore.web3.mintPupper()
-            console.log("debug:: res", res)
-          store.pushNavigation("loading");
-        }}
-      >
+      <Form onSubmit={(data) => store.mintPixels(data.pixel_count)}>
         <Grid templateColumns={"repeat(2, 1fr)"} mt={5}>
           <GridItem colSpan={1} mr={3}>
             <NumberInput
@@ -79,9 +72,16 @@ const MintForm = observer(({ store }: { store: MintPixelsModalStore }) => {
 const Loading = () => {
   return (
     <Box>
-      <Typography variant={TVariant.Body12}>cool loading animation!!</Typography>
+      <Typography variant={TVariant.Body12}>Loading ⏳</Typography>
     </Box>
   );
 };
+
+const Complete = () => {
+    return <Box>
+        <Typography variant={TVariant.Body12}>✨ Mint complete ✨</Typography>
+
+    </Box>
+}
 
 export default MintPixelsModal;

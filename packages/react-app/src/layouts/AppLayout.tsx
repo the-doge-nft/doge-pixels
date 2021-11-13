@@ -25,8 +25,11 @@ const AppLayout = observer(function AppLayout({ children }: AppLayoutProps) {
   }, [])
 
   useEffect(() => {
-    if (AppStore.web3.web3Provider?.on) {
+    //@ts-ignore
+    if (AppStore.web3.provider?.on) {
+      console.log("debug:: adding handlers")
       const handleAccountsChanged = (accounts: string[]) => {
+        console.log("debug:: handling accounts changed")
         showDebugToast("accounts changed")
         AppStore.web3.address = accounts[0]
       }
@@ -40,16 +43,22 @@ const AppLayout = observer(function AppLayout({ children }: AppLayoutProps) {
         showDebugToast('disconnecting')
         AppStore.web3.disconnect()
       }
-
-      AppStore.web3.web3Provider.on('accountsChanged', handleAccountsChanged)
-      AppStore.web3.web3Provider.on('chainChanged', handleChainChanged)
-      AppStore.web3.web3Provider.on('disconnect', handleDisconnect)
+      //@ts-ignore
+      AppStore.web3.provider.on('accountsChanged', handleAccountsChanged)
+      //@ts-ignore
+      AppStore.web3.provider.on('chainChanged', handleChainChanged)
+      //@ts-ignore
+      AppStore.web3.provider.on('disconnect', handleDisconnect)
 
       return () => {
-        if (AppStore.web3.web3Provider?.removeListener) {
-          AppStore.web3.web3Provider.removeListener('accountsChanged', handleAccountsChanged)
-          AppStore.web3.web3Provider.removeListener('chainChanged', handleChainChanged)
-          AppStore.web3.web3Provider.removeListener('disconnect', handleDisconnect)
+        //@ts-ignore
+        if (AppStore.web3.provider?.removeListener) {
+          //@ts-ignore
+          AppStore.web3.provider.removeListener('accountsChanged', handleAccountsChanged)
+          //@ts-ignore
+          AppStore.web3.provider.removeListener('chainChanged', handleChainChanged)
+          //@ts-ignore
+          AppStore.web3.provider.removeListener('disconnect', handleDisconnect)
         }
       }
     }
@@ -88,9 +97,29 @@ const AppLayout = observer(function AppLayout({ children }: AppLayoutProps) {
           }}>
             Connect Wallet
           </Button>}
-          <VStack>
-            {AppStore.web3.address && <Typography variant={TVariant.Detail14}>{AppStore.web3.address}</Typography>}
-            {AppStore.web3.dogBalance && <Typography variant={TVariant.Detail14}>{AppStore.web3.dogBalance}</Typography>}
+          <VStack ml={3}>
+            {AppStore.web3.address && <Typography variant={TVariant.Detail14}>{AppStore.web3.addressForDisplay}</Typography>}
+            {AppStore.web3.web3Provider && <HStack>
+              <VStack mr={1}>
+                <Typography variant={TVariant.Body14}>$DOG</Typography>
+                <Typography variant={TVariant.Detail14}>{AppStore.web3.dogBalance}</Typography>
+                <Box>
+                  <Button onClick={async () => {
+                    const tx = await AppStore.web3.getDogToAccount()
+                    await tx.wait()
+                    AppStore.web3.refreshDogBalance()
+                  }}>+</Button>
+                  <Button onClick={async () => AppStore.web3.refreshDogBalance()}>refresh</Button>
+                </Box>
+              </VStack>
+              <VStack ml={1}>
+                <Typography variant={TVariant.Body14}>$PX</Typography>
+                <Typography variant={TVariant.Detail14}>{AppStore.web3.pupperBalance}</Typography>
+                <Box>
+                  <Button onClick={async () => AppStore.web3.refreshPupperBalance()}>refresh</Button>
+                </Box>
+              </VStack>
+            </HStack>}
           </VStack>
         </Flex>
       </Flex>
