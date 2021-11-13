@@ -123,7 +123,7 @@ class Web3Store {
 
     async getD20ToWallet() {
         //@ts-ignore
-        await this.dogContract.initMock([this.address])
+        await this.dogContract.initMock([this.address], 10000000000000)
     }
 
     mintPupper() {
