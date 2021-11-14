@@ -10,7 +10,7 @@ const Demo = ({ title, children }: DemoProps) => {
   const styles = useStyleConfig("Demo");
   return (
     <Box w={"100%"} p={5} mb={5} __css={styles}>
-      <Typography block mb={3} color={"gray.400"} variant={TVariant.Body20} textAlign={"left"}>
+      <Typography block mb={3} color={"gray.400"} variant={TVariant.ComicSans20} textAlign={"left"}>
         {title}
       </Typography>
       {children}

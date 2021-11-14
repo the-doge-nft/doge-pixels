@@ -3,17 +3,18 @@ import { Text } from "@chakra-ui/react";
 import { TextProps } from "@chakra-ui/layout/dist/types/text";
 
 export enum TVariant {
-  Detail12 = "Detail12",
-  Detail14 = "Detail14",
-  Detail16 = "Detail16",
-  Body12 = "Body12",
-  Body14 = "Body14",
-  Body16 = "Body16",
-  Body18 = "Body18",
-  Body20 = "Body20",
-  Title22 = "Title22",
-  Title28 = "Title28",
-  Title45 = "Title45",
+  PresStart12 = "PresStart12",
+  PresStart14 = "PresStart14",
+  PresStart16 = "PresStart16",
+  PresStart24 = "PresStart24",
+  PresStart28 = "PresStart28",
+  ComicSans12 = "ComicSans12",
+  ComicSans14 = "ComicSans14",
+  ComicSans16 = "ComicSans16",
+  ComicSans18 = "ComicSans18",
+  ComicSans20 = "ComicSans20",
+  ComicSans22 = "ComicSans22",
+  ComicSans45 = "ComicSans45",
 }
 
 interface TypographyProps extends TextProps {

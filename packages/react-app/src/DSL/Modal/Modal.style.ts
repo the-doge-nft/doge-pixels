@@ -20,6 +20,7 @@ const ModalStyle = {
       },
       _active: {
         boxShadow: "none",
+        transform: "translate(2px, 2px)"
       },
       _focus: {
         boxShadow: "none",

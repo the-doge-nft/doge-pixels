@@ -8,9 +8,9 @@ import DemoToast from "../DSL/Toast/Toast.demo";
 
 const DSLPage = () => {
   return (
-    <Box px={250} mb={20}>
+    <Box px={{lg:250, sm:50}} mb={20}>
       <Box textAlign={"center"}>
-        <Typography variant={TVariant.Title28} block mb={7}>
+        <Typography variant={TVariant.PresStart28} block mb={7}>
           ✨ DSL ✨
         </Typography>
         <DemoButton />

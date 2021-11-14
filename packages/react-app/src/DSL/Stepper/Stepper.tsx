@@ -40,7 +40,7 @@ const ProgressCircle = ({ title, isActive }: { title: string; isActive: boolean 
     <Flex direction={"column"} alignItems={"center"} position={"relative"} zIndex={2}>
       <Circle size={"8px"} bg={isActive ? "blue.500" : "gray.400"} />
       <Typography
-        variant={isActive ? TVariant.Body12 : TVariant.Detail12}
+        variant={isActive ? TVariant.ComicSans12 : TVariant.PresStart12}
         color={isActive ? "blue.500" : "gray.400"}
         position={"absolute"}
         top={"15px"}

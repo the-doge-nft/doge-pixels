@@ -18,7 +18,7 @@ export interface ButtonProps extends ChakraButtonProps {
 type ButtonSize = "sm"
 
 const buttonTypographyMap: { [key in ButtonSize]: TVariant } = {
-  sm: TVariant.Body14,
+  sm: TVariant.PresStart16,
   // md: TVariant.Body16,
   // lg: TVariant.Body20,
 };

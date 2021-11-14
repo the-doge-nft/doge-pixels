@@ -7,12 +7,12 @@ import Typography, { TVariant } from "../Typography/Typography";
 const ColorBox = ({ name, hex }: { name: string; hex: string }) => {
   return (
     <Flex direction={"column"} m={3}>
-      <Typography variant={TVariant.Body14} mb={2} color={"gray.400"}>
+      <Typography variant={TVariant.ComicSans14} mb={2} color={"gray.400"}>
         {name}
       </Typography>
       <Box position={"relative"}>
         <Typography
-          variant={TVariant.Body12}
+          variant={TVariant.ComicSans12}
           color={"gray.400"}
           position={"absolute"}
           left={"50%"}

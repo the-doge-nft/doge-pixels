@@ -17,7 +17,7 @@ const Control = ({ name, children, label, horizontal = false, ...rest }: Control
         <GridItem>
           {label && (
             <FormLabel htmlFor={name} mb={1}>
-              <Typography variant={TVariant.Detail14}>{label}</Typography>
+              <Typography variant={TVariant.PresStart14}>{label}</Typography>
             </FormLabel>
           )}
         </GridItem>

@@ -14,7 +14,7 @@ const Tag = ({ variant, children, ...rest }: TagProps) => {
   const styles = useStyleConfig("Tag", { variant });
   return (
     <Flex borderRadius={5} alignItems={"center"} px={2} py={1} as={"span"} display={"inline"} {...rest} __css={styles}>
-      <Typography variant={TVariant.Body14}>{children}</Typography>
+      <Typography variant={TVariant.ComicSans14}>{children}</Typography>
     </Flex>
   );
 };

@@ -39,7 +39,7 @@ function BigInput<T extends object>({
       <Box bg={isDisabled ? "gray.100" : "gray.50"} pt={3} pb={4} px={5} borderRadius={9}>
         <VStack spacing={3} align={"flex-start"}>
           <Box>
-            <Typography variant={TVariant.Body16} color={"gray.500"}>
+            <Typography variant={TVariant.ComicSans16} color={"gray.500"}>
               {label}
             </Typography>
           </Box>
@@ -134,7 +134,7 @@ function BigInputEmblem({ icon, isError = false, children }: BigInputEmblem) {
         </Circle>
         <Typography
           alignSelf={"center"}
-          variant={TVariant.Body14}
+          variant={TVariant.ComicSans14}
           ml={3}
           color={isError ? "red.500" : "gray.500"}
           wordBreak={"break-word"}

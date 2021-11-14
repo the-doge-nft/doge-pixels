@@ -1,6 +1,6 @@
 import { Type } from "../Fonts/Fonts";
 
-export const GlobalFont = `${Type.PresStart2P}, sans-serif`;
+export const GlobalFont = `${Type.PresStart}, sans-serif`;
 
 const TypographyStyle = {
   baseStyle: ({ colorMode }: { colorMode: "light" | "dark" }) => ({
@@ -9,47 +9,63 @@ const TypographyStyle = {
     textDecorationColor: colorMode === "light" ? "black" : "white",
   }),
   variants: {
-    Detail12: {
+    PresStart12: {
+      fontFamily: Type.PresStart,
       fontWeight: "normal",
       fontSize: "12px",
     },
-    Detail14: {
+    PresStart14: {
+      fontFamily: Type.PresStart,
       fontWeight: "normal",
       fontSize: "14px",
     },
-    Detail16: {
+    PresStart16: {
+      fontFamily: Type.PresStart,
       fontWeight: "normal",
       fontSize: "16px",
     },
-    Body12: {
-      fontWeight: "normal",
-      fontSize: "12px",
-    },
-    Body14: {
-      fontWeight: "normal",
-      fontSize: "14px",
-    },
-    Body16: {
-      fontWeight: "normal",
-      fontSize: "16px",
-    },
-    Body18: {
-      fontWeight: "normal",
-      fontSize: "18px",
-    },
-    Body20: {
-      fontWeight: "normal",
-      fontSize: "20px",
-    },
-    Title22: {
+    PresStart22: {
+      fontFamily: Type.PresStart,
       fontWeight: "normal",
       fontSize: "22px",
     },
-    Title28: {
+    PresStart28: {
+      fontFamily: Type.PresStart,
       fontWeight: "normal",
       fontSize: "28px",
     },
-    Title45: {
+    ComicSans12: {
+      fontFamily: Type.ComicSans,
+      fontWeight: "normal",
+      fontSize: "12px",
+    },
+    ComicSans14: {
+      fontFamily: Type.ComicSans,
+      fontWeight: "normal",
+      fontSize: "14px",
+    },
+    ComicSans16: {
+      fontFamily: Type.ComicSans,
+      fontWeight: "normal",
+      fontSize: "16px",
+    },
+    ComicSans18: {
+      fontFamily: Type.ComicSans,
+      fontWeight: "normal",
+      fontSize: "18px",
+    },
+    ComicSans20: {
+      fontFamily: Type.ComicSans,
+      fontWeight: "normal",
+      fontSize: "20px",
+    },
+    ComicSans22: {
+      fontFamily: Type.ComicSans,
+      fontWeight: "normal",
+      fontSize: "22px",
+    },
+    ComicSans45: {
+      fontFamily: Type.ComicSans,
       fontWeight: "normal",
       fontSize: "45px",
     },

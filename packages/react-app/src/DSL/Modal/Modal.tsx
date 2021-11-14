@@ -12,6 +12,7 @@ import {
 } from "@chakra-ui/react";
 import { ModalFooterProps, ModalHeaderProps } from "@chakra-ui/modal/dist/types/modal";
 import Typography, { TVariant } from "../Typography/Typography";
+import Button, { ButtonVariant } from "../Button/Button";
 
 const ModalFoot = ({ children }: ModalFooterProps) => {
   return <ModalFooter>{children}</ModalFooter>;
@@ -33,7 +34,7 @@ const Modal = ({ isOpen, onClose, renderHeader, renderFooter, children, ...rest 
       <ModalOverlay />
       <ModalContent color={"black"}>
         <ModalHead>{renderHeader && renderHeader()}</ModalHead>
-        <ModalCloseButton size={"sm"}>x</ModalCloseButton>
+        <ModalCloseButton variant={ButtonVariant.Text} size={"sm"}>x</ModalCloseButton>
         <ModalBody>{children}</ModalBody>
 
         <ModalFoot>{renderFooter && renderFooter()}</ModalFoot>
@@ -42,12 +43,5 @@ const Modal = ({ isOpen, onClose, renderHeader, renderFooter, children, ...rest 
   );
 };
 
-export const ModalHeader = ({ title }: { title: string }) => {
-  return (
-    <Box>
-      <Typography variant={TVariant.Title28}>{title}</Typography>
-    </Box>
-  );
-};
 
 export default Modal;
