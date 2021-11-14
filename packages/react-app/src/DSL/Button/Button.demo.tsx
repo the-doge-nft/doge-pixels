@@ -12,20 +12,12 @@ const DemoButton = observer(() => {
         <SubDemo title={"Primary"}>
           <VStack spacing={2}>
             <Button size={"sm"}>sm</Button>
-            <Button size={"md"}>md</Button>
-            <Button size={"lg"}>lg</Button>
           </VStack>
         </SubDemo>
         <SubDemo title={"Text"}>
           <VStack spacing={2}>
             <Button variant={ButtonVariant.Text} size={"sm"}>
               sm
-            </Button>
-            <Button variant={ButtonVariant.Text} size={"md"}>
-              md
-            </Button>
-            <Button variant={ButtonVariant.Text} size={"lg"}>
-              lg
             </Button>
           </VStack>
         </SubDemo>

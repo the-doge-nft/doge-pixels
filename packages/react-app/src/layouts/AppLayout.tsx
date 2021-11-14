@@ -65,8 +65,8 @@ const AppLayout = observer(function AppLayout({ children }: AppLayoutProps) {
   }, [AppStore.web3.provider])
 
   return (
-    <Flex w={"100vw"} h={"100vh"} p={5} direction={"column"}>
-      <Flex mb={3} justifyContent={"space-between"} alignItems={"center"}>
+    <Flex w={"100vw"} h={"100vh"} p={8} direction={"column"}>
+      <Flex mb={5} justifyContent={"space-between"} alignItems={"center"}>
         <Typography variant={TVariant.Title28}>Pupper Pixel Portal 🐕</Typography>
         <Flex alignItems={"center"}>
           <HStack spacing={2}>
@@ -86,13 +86,13 @@ const AppLayout = observer(function AppLayout({ children }: AppLayoutProps) {
           </HStack>
           <ThemeChangeButton />
 
-          {AppStore.web3.web3Provider && <Button size={"md"} ml={5} onClick={() => {
+          {AppStore.web3.web3Provider && <Button ml={5} onClick={() => {
             AppStore.web3.disconnect()
           }}>
             Disconnect
           </Button>}
 
-          {!AppStore.web3.web3Provider && <Button size={"md"} ml={5} onClick={() => {
+          {!AppStore.web3.web3Provider && <Button ml={5} onClick={() => {
             AppStore.web3.connect()
           }}>
             Connect Wallet

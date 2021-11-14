@@ -15,12 +15,12 @@ export interface ButtonProps extends ChakraButtonProps {
   size?: ButtonSize;
 }
 
-type ButtonSize = "sm" | "md" | "lg";
+type ButtonSize = "sm"
 
 const buttonTypographyMap: { [key in ButtonSize]: TVariant } = {
   sm: TVariant.Body14,
-  md: TVariant.Body16,
-  lg: TVariant.Body20,
+  // md: TVariant.Body16,
+  // lg: TVariant.Body20,
 };
 
 const Button = ({ submit, children, variant = ButtonVariant.Primary, size = "sm", ...rest }: ButtonProps) => {

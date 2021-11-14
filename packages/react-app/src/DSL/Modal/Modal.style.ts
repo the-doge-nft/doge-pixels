@@ -28,7 +28,7 @@ const ModalStyle = {
       fontFamily: GlobalFont,
     },
     dialog: {
-      bg: colorMode === "light" ? "white" : darkModePrimary,
+      bg: colorMode === "light" ? "yellow.50" : darkModePrimary,
       border: "2px solid",
       borderColor: colorMode === "light" ? "black" : "white",
       borderRadius: "0px",

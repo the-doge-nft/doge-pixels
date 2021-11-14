@@ -4,32 +4,38 @@ import { SystemStyleObject } from "@chakra-ui/react";
 
 const ButtonStyle = {
   baseStyle: ({ colorMode }: { colorMode: colorModeType }) => ({
-    _active: {
-      transform: "translateY(2px)",
-      boxShadow: "none",
-      _disabled: {
-        transform: "none",
-      },
-    },
-    _focus: {
-      boxShadow: "none",
-    },
     _hover: {
-      boxShadow: "none",
+      // boxShadow: "none",
     },
     color: lightOrDark(colorMode, "black", "white"),
     textDecorationColor: lightOrDark(colorMode, "black", "white"),
+    borderWidth: "1px",
   }),
   variants: {
     primary: ({ colorMode }: { colorMode: colorModeType }) => ({
-      bg: lightOrDark(colorMode, "white", darkModePrimary),
+      bg: lightOrDark(colorMode, "yellow.50", darkModePrimary),
       borderColor: lightOrDark(colorMode, "black", "white"),
+      borderRadius: "0px",
       borderStyle: "solid",
+      boxShadow: "8px 8px 0px 0px black",
+      _active: {
+        transform: "translate(4px, 4px)",
+        boxShadow: "4px 4px 0px 0px black",
+        _disabled: {
+        },
+      },
+      _focus: {
+        boxShadow: "8px 8px 0px 0px black",
+        // "boxShadow": "auto"
+      },
       _hover: {
-        color: "yellow.100",
-        backgroundImage: "linear-gradient(#7014AC, #B467B6)",
+        bg: "yellow.700",
         _disabled: {
           color: "gray.900",
+        },
+        _focus: {
+          // boxShadow: "4px 4px 0px 0px black",
+          // "boxShadow": "auto"
         },
       },
     }),
@@ -43,20 +49,15 @@ const ButtonStyle = {
   },
   sizes: {
     sm: {
-      borderWidth: "2px",
-      borderRadius: 7,
-      px: "2px",
+      p: "14px",
+      height: "inherit"
     },
-    md: {
-      borderWidth: "2px",
-      borderRadius: 9,
-      px: "8px",
-    },
-    lg: {
-      borderWidth: "2px",
-      borderRadius: 11,
-      px: "10px",
-    },
+    // md: {
+    //   px: "8px",
+    // },
+    // lg: {
+    //   px: "10px",
+    // },
   },
   defaultProps: {},
 };

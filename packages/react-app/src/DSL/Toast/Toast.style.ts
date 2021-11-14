@@ -11,7 +11,7 @@ const ToastStyle = {
             bg: "white"
         },
         debug: {
-            bg: "yellow.100"
+            bg: "yellow.700"
         }
     },
 }

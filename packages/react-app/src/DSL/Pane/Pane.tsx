@@ -9,8 +9,10 @@ interface PaneProps extends AllowedStyleProps {
 const Pane = ({ children, ...rest }: PaneProps) => {
   const styles = useStyleConfig("Pane");
   return (
-    <Box __css={styles} {...rest}>
-      {children && children}
+    <Box position={"relative"} zIndex={1} w={"100%"} h={"100%"}>
+      <Box __css={styles} {...rest}>
+        {children && children}
+      </Box>
     </Box>
   );
 };

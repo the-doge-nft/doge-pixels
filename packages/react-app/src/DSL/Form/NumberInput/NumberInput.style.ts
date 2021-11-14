@@ -9,29 +9,45 @@ export const NumberInputStyle = {
       _disabled: {
         bg: "purple.50",
       },
-      bg: lightOrDark(colorMode, "white", darkModePrimary),
+      bg: lightOrDark(colorMode, "yellow.50", darkModePrimary),
       color: lightOrDark(colorMode, "black", "white"),
-      borderWidth: "2px",
+      borderWidth: "1px",
       borderStyle: "solid",
       borderColor: lightOrDark(colorMode, "black", "white"),
+      borderRadius: "0px"
     },
     stepper: {
       borderColor: lightOrDark(colorMode, "black", "white"),
       borderWidth: "1px",
+      borderRadius: "0px",
+      border: "none"
     },
   }),
   variants: ({ colorMode }: { colorMode: colorModeType }) => ({
     gray: {
       field: {
-        borderWidth: "2px",
+        borderWidth: "1px",
         borderStyle: "solid",
         borderColor: lightOrDark(colorMode, "black", "white"),
-        borderRadius: "3px",
       },
+      stepper: {
+        borderRadius: "0px"
+      }
     },
   }),
+  sizes: {
+    md: {
+      field: {
+        borderRadius: "0px"
+      },
+      stepper: {
+        borderRadius: "0px"
+      }
+    }
+  },
   defaultProps: {
     variant: "gray",
+    size: "md"
   },
 };
 

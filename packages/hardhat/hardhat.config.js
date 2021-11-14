@@ -12,6 +12,8 @@ require("hardhat-gas-reporter");
 require("@eth-optimism/hardhat-ovm");
 require("@nomiclabs/hardhat-ethers");
 
+require('@typechain/hardhat');
+
 const { isAddress, getAddress, formatUnits, parseUnits } = utils;
 
 /*
