@@ -34,7 +34,7 @@ const Form = ({ onSubmit, children }: FormProps) => {
             </form>
             <Dev>
               <Box w={"100%"} mt={2}>
-                <Typography color={"gray.400"} variant={TVariant.Detail12}>
+                <Typography color={"gray.400"} variant={TVariant.PresStart12}>
                   {JSON.stringify(values)}
                 </Typography>
               </Box>

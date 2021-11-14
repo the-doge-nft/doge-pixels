@@ -6,7 +6,7 @@ import PressStart from "./PressStart2P-Regular.ttf";
 import React from "react";
 
 export enum Type {
-  PresStart2P = "PressStart2P",
+  PresStart = "PressStart2P",
   ComicSans = "Comic Sans"
 }
 
@@ -15,7 +15,7 @@ const Fonts = () => {
     <Global
       styles={`
             @font-face {
-                font-family: '${Type.PresStart2P}';
+                font-family: '${Type.PresStart}';
                 font-style: 'normal';
                 font-weight: '400';
                 src: url(${PressStart}) format('woff2');

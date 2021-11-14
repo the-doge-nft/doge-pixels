@@ -58,6 +58,13 @@ module.exports = {
     coinmarketcap: process.env.COINMARKETCAP || null,
   },
 
+  typechain: {
+    outDir: "types",
+    target: "ethers-v5",
+    alwaysGenerateOverloads: false,
+    // externalArtifacts: []
+  },
+
   // if you want to deploy to a testnet, mainnet, or xdai, you will need to configure:
   // 1. An Infura key (or similar)
   // 2. A private key for the deployer

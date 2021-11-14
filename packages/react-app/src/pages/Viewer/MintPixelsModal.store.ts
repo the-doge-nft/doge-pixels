@@ -34,15 +34,19 @@ class MintPixelsModalStore extends Navigable<AbstractConstructor, MintModalView>
   }
 
   async mintPixels(amount: number) {
-    const allowance = await AppStore.web3.getPxDogSpendAllowance()
-    console.log("pixel spend allowance", allowance)
+    try {
+      const allowance = await AppStore.web3.getPxDogSpendAllowance()
+      console.log("pixel spend allowance", allowance)
 
-    const dogToBeSpent = this.pixel_count! * AppStore.web3.DOG_TO_PIXEL_SATOSHIS
-    if (allowance < dogToBeSpent) {
+      const dogToBeSpent = this.pixel_count! * AppStore.web3.DOG_TO_PIXEL_SATOSHIS
+      if (allowance < dogToBeSpent) {
 
-      const tx = await AppStore.web3.approvePxSpendDog(dogToBeSpent)
-      showDebugToast(`approving DOG spend: ${dogToBeSpent}`)
-      await tx.wait()
+        const tx = await AppStore.web3.approvePxSpendDog(dogToBeSpent)
+        showDebugToast(`approving DOG spend: ${dogToBeSpent}`)
+        await tx.wait()
+      }
+    } catch (e) {
+      showErrorToast("Error committing spending allowance")
     }
 
     try {

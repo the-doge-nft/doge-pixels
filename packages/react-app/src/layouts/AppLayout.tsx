@@ -9,12 +9,14 @@ import Icon from "../DSL/Icon/Icon";
 import {showDebugToast} from "../DSL/Toast/Toast";
 import {observer} from "mobx-react-lite";
 import AppStore from "../store/App.store";
+import Pane from "../DSL/Pane/Pane";
+import Dev from "../common/Dev";
 
 interface AppLayoutProps {
   children?: any;
 }
 
-const AppLayout = observer(function AppLayout({ children }: AppLayoutProps) {
+const AppLayout = observer(function AppLayout({children}: AppLayoutProps) {
   const location = useLocation();
   const history = useHistory();
 
@@ -27,9 +29,7 @@ const AppLayout = observer(function AppLayout({ children }: AppLayoutProps) {
   useEffect(() => {
     //@ts-ignore
     if (AppStore.web3.provider?.on) {
-      console.log("debug:: adding handlers")
       const handleAccountsChanged = (accounts: string[]) => {
-        console.log("debug:: handling accounts changed")
         showDebugToast("accounts changed")
         AppStore.web3.address = accounts[0]
       }
@@ -39,7 +39,7 @@ const AppLayout = observer(function AppLayout({ children }: AppLayoutProps) {
         window.location.reload()
       }
 
-      const handleDisconnect = (error: {code: number, message: string}) => {
+      const handleDisconnect = (error: { code: number, message: string }) => {
         showDebugToast('disconnecting')
         AppStore.web3.disconnect()
       }
@@ -67,7 +67,32 @@ const AppLayout = observer(function AppLayout({ children }: AppLayoutProps) {
   return (
     <Flex w={"100vw"} h={"100vh"} p={8} direction={"column"}>
       <Flex mb={5} justifyContent={"space-between"} alignItems={"center"}>
-        <Typography variant={TVariant.Title28}>Pupper Pixel Portal 🐕</Typography>
+        <Flex alignItems={"center"} mb={2}>
+          <Box bg={"yellow.700"} py={3} px={5} boxShadow={"11px 11px 0px black"}>
+            <Box position={"relative"} zIndex={0}>
+              <Typography
+                variant={TVariant.PresStart28}
+                mr={1}
+                color={"white"}
+                zIndex={1}
+                //@ts-ignore
+                sx={{"-webkit-text-stroke": "1px black"}}
+              >
+                PUPPER PIXEL PICKER
+              </Typography>
+              {/*<Typography variant={TVariant.Title28} ml={2}>🐕</Typography>*/}
+              <Typography
+                position={"absolute"}
+                left={-1}
+                top={1}
+                color={"black"}
+                zIndex={-1}
+                variant={TVariant.PresStart28}>
+                PUPPER PIXEL PICKER
+              </Typography>
+            </Box>
+          </Box>
+        </Flex>
         <Flex alignItems={"center"}>
           <HStack spacing={2}>
             {routes.map((route, index) => {
@@ -84,42 +109,53 @@ const AppLayout = observer(function AppLayout({ children }: AppLayoutProps) {
               );
             })}
           </HStack>
-          <ThemeChangeButton />
+          <ThemeChangeButton/>
 
           {AppStore.web3.web3Provider && <Button ml={5} onClick={() => {
             AppStore.web3.disconnect()
           }}>
-            Disconnect
+              Disconnect
           </Button>}
 
-          {!AppStore.web3.web3Provider && <Button ml={5} onClick={() => {
+          {!AppStore.web3.web3Provider && <Button ml={8} onClick={() => {
             AppStore.web3.connect()
           }}>
-            Connect Wallet
+              Connect Wallet
           </Button>}
-          <VStack ml={3}>
-            {AppStore.web3.address && <Typography variant={TVariant.Detail14}>{AppStore.web3.addressForDisplay}</Typography>}
-            {AppStore.web3.web3Provider && <HStack>
-              <VStack mr={1}>
-                <Typography variant={TVariant.Body14}>$DOG</Typography>
-                <Typography variant={TVariant.Detail14}>{AppStore.web3.dogBalance}</Typography>
-                <Box>
-                  <Button onClick={async () => {
-                    const tx = await AppStore.web3.getDogToAccount()
-                    await tx.wait()
-                    AppStore.web3.refreshDogBalance()
-                  }}>+</Button>
-                  <Button onClick={async () => AppStore.web3.refreshDogBalance()}>refresh</Button>
-                </Box>
-              </VStack>
-              <VStack ml={1}>
-                <Typography variant={TVariant.Body14}>$PX</Typography>
-                <Typography variant={TVariant.Detail14}>{AppStore.web3.pupperBalance}</Typography>
-                <Box>
-                  <Button onClick={async () => AppStore.web3.refreshPupperBalance()}>refresh</Button>
-                </Box>
-              </VStack>
-            </HStack>}
+          <VStack ml={12}>
+            {AppStore.web3.address &&
+            <Typography variant={TVariant.PresStart14}>{AppStore.web3.addressForDisplay}</Typography>}
+            <Dev>
+              {AppStore.web3.web3Provider && <HStack>
+                  <VStack mr={1}>
+                      <Typography variant={TVariant.ComicSans14}>$DOG</Typography>
+                      <Typography variant={TVariant.PresStart14}>{AppStore.web3.dogBalance}</Typography>
+                      <Box>
+                          <Button
+                              variant={ButtonVariant.Text}
+                              onClick={async () => {
+                                const tx = await AppStore.web3.getDogToAccount()
+                                await tx.wait()
+                                AppStore.web3.refreshDogBalance()
+                              }}
+                          >
+                              💰
+                          </Button>
+                          <Button variant={ButtonVariant.Text} onClick={async () => AppStore.web3.refreshDogBalance()}>
+                              🔄
+                          </Button>
+                      </Box>
+                  </VStack>
+                  <VStack ml={1}>
+                      <Typography variant={TVariant.ComicSans14}>$PX</Typography>
+                      <Typography variant={TVariant.PresStart14}>{AppStore.web3.pupperBalance}</Typography>
+                      <Box>
+                          <Button variant={ButtonVariant.Text}
+                                  onClick={async () => AppStore.web3.refreshPupperBalance()}>🔄</Button>
+                      </Box>
+                  </VStack>
+              </HStack>}
+            </Dev>
           </VStack>
         </Flex>
       </Flex>
@@ -129,7 +165,7 @@ const AppLayout = observer(function AppLayout({ children }: AppLayoutProps) {
 });
 
 const ThemeChangeButton = () => {
-  const { colorMode, toggleColorMode } = useColorMode();
+  const {colorMode, toggleColorMode} = useColorMode();
   return (
     <Box ml={3}>
       <Icon

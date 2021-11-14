@@ -16,11 +16,11 @@ const DemoModal = () => {
       </Box>
       <Modal
         isOpen={isOpen}
-        renderHeader={() => <Typography variant={TVariant.Title28}>Header</Typography>}
-        renderFooter={() => <Typography variant={TVariant.Body20}>Footer</Typography>}
+        renderHeader={() => <Typography variant={TVariant.PresStart28}>Header</Typography>}
+        renderFooter={() => <Typography variant={TVariant.ComicSans20}>Footer</Typography>}
         onClose={() => setIsOpen(false)}
       >
-        <Typography variant={TVariant.Body16}>✨✨✨ wow ✨✨✨</Typography>
+        <Typography variant={TVariant.ComicSans16}>✨✨✨ wow ✨✨✨</Typography>
       </Modal>
     </Demo>
   );

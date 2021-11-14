@@ -9,7 +9,7 @@ interface FormErrorProps {
 const FormError = ({ error }: FormErrorProps) => {
   return (
     <Box textAlign={"center"} mt={4}>
-      <Typography color={"red.500"} variant={TVariant.Body16}>
+      <Typography color={"red.500"} variant={TVariant.ComicSans16}>
         {error}
       </Typography>
     </Box>

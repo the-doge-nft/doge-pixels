@@ -2,12 +2,12 @@ import React from "react";
 import { isDevModeEnabled } from "../environment/helpers";
 
 interface DevProps {
-  children: JSX.Element;
+  children?: JSX.Element;
 }
 
 const Dev = ({ children }: DevProps) => {
   if (isDevModeEnabled()) {
-    return <>{children}</>;
+    return <>{children && children}</>;
   } else {
     return <></>;
   }

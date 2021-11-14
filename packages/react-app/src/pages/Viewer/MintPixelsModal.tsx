@@ -22,7 +22,7 @@ const MintPixelsModal = observer(({ isOpen, onClose }: MintPixelsModalProps) => 
       onClose={() => {
         onClose();
       }}
-      renderHeader={() => <Typography variant={TVariant.Title22}>Mint Pixels</Typography>}
+      renderHeader={() => <Typography variant={TVariant.PresStart24}>Mint Pixels</Typography>}
     >
       {store.currentView === "mint" && <MintForm store={store} />}
       {store.currentView === "approval" && <Approval />}
@@ -36,7 +36,7 @@ const MintForm = observer(({ store }: { store: MintPixelsModalStore }) => {
   return (
     <>
       <Box>
-        <Typography variant={TVariant.Body14}>
+        <Typography variant={TVariant.ComicSans14}>
           Trade your $DOG for pixels. "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
           incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco
           laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit
@@ -62,7 +62,7 @@ const MintForm = observer(({ store }: { store: MintPixelsModalStore }) => {
               value={store.dogCount}
               isDisabled={true}
             />
-          {AppStore.web3.dogBalance && <Typography variant={TVariant.Detail14}>$DOG avail: {AppStore.web3.dogBalance}</Typography>}
+          {AppStore.web3.dogBalance && <Typography variant={TVariant.PresStart14}>$DOG avail: {AppStore.web3.dogBalance}</Typography>}
           </GridItem>
         </Grid>
         <Submit label={"Mint"} w={"100%"} mt={10} />
@@ -74,7 +74,7 @@ const MintForm = observer(({ store }: { store: MintPixelsModalStore }) => {
 const Approval = () => {
   return (
     <Box>
-      <Typography variant={TVariant.Body12}>Must approve token spend</Typography>
+      <Typography variant={TVariant.ComicSans12}>Must approve token spend</Typography>
     </Box>
   );
 };
@@ -82,14 +82,14 @@ const Approval = () => {
 const Loading = () => {
   return (
     <Box>
-      <Typography variant={TVariant.Body12}>Loading ⏳</Typography>
+      <Typography variant={TVariant.ComicSans12}>Loading ⏳</Typography>
     </Box>
   );
 };
 
 const Complete = () => {
   return <Box>
-      <Typography variant={TVariant.Body12}>✨ Mint complete ✨</Typography>
+      <Typography variant={TVariant.ComicSans12}>✨ Mint complete ✨</Typography>
   </Box>
 }
 
