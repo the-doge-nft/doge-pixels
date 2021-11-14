@@ -16,7 +16,9 @@ const PaneStyle = {
       height: "100%",
       left: "14px",
       bottom: "-14px",
-      border: "1px solid black"
+      borderStyle: "solid",
+      borderWidth: "1px",
+      borderColor: lightOrDark(colorMode, "black", "white")
     }
   }),
   defaultProps: {},

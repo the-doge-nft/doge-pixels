@@ -1,5 +1,5 @@
-import React, {useCallback, useEffect, useState} from "react";
-import {Box, Flex, HStack, VStack, useColorMode} from "@chakra-ui/react";
+import React, {useEffect} from "react";
+import {Box, Flex, HStack, useColorMode, VStack} from "@chakra-ui/react";
 import Typography, {TVariant} from "../DSL/Typography/Typography";
 import Button, {ButtonVariant} from "../DSL/Button/Button";
 import {useHistory, useLocation} from "react-router-dom";
@@ -9,8 +9,8 @@ import Icon from "../DSL/Icon/Icon";
 import {showDebugToast} from "../DSL/Toast/Toast";
 import {observer} from "mobx-react-lite";
 import AppStore from "../store/App.store";
-import Pane from "../DSL/Pane/Pane";
 import Dev from "../common/Dev";
+import ColorModeToggle from "../DSL/ColorModeToggle/ColorModeToggle";
 
 interface AppLayoutProps {
   children?: any;
@@ -22,6 +22,7 @@ const AppLayout = observer(function AppLayout({children}: AppLayoutProps) {
 
   useEffect(() => {
     if (web3Modal.cachedProvider) {
+      alert("connect called")
       AppStore.web3.connect()
     }
   }, [])
@@ -68,19 +69,18 @@ const AppLayout = observer(function AppLayout({children}: AppLayoutProps) {
     <Flex w={"100vw"} h={"100vh"} p={8} direction={"column"}>
       <Flex mb={5} justifyContent={"space-between"} alignItems={"center"}>
         <Flex alignItems={"center"} mb={2}>
-          <Box bg={"yellow.700"} py={3} px={5} boxShadow={"11px 11px 0px black"}>
+          <Flex alignItems={"center"}>
             <Box position={"relative"} zIndex={0}>
               <Typography
                 variant={TVariant.PresStart28}
                 mr={1}
-                color={"white"}
+                color={"yellow.700"}
                 zIndex={1}
                 //@ts-ignore
                 sx={{"-webkit-text-stroke": "1px black"}}
               >
-                PUPPER PIXEL PICKER
+                PUPPER PIXEL PORTAL
               </Typography>
-              {/*<Typography variant={TVariant.Title28} ml={2}>🐕</Typography>*/}
               <Typography
                 position={"absolute"}
                 left={-1}
@@ -88,10 +88,11 @@ const AppLayout = observer(function AppLayout({children}: AppLayoutProps) {
                 color={"black"}
                 zIndex={-1}
                 variant={TVariant.PresStart28}>
-                PUPPER PIXEL PICKER
+                PUPPER PIXEL PORTAL
               </Typography>
             </Box>
-          </Box>
+            <Typography variant={TVariant.PresStart28} ml={2} pb={"5px"}>🐕</Typography>
+          </Flex>
         </Flex>
         <Flex alignItems={"center"}>
           <HStack spacing={2}>
@@ -109,7 +110,10 @@ const AppLayout = observer(function AppLayout({children}: AppLayoutProps) {
               );
             })}
           </HStack>
-          <ThemeChangeButton/>
+
+          <Box ml={3}>
+            <ColorModeToggle/>
+          </Box>
 
           {AppStore.web3.web3Provider && <Button ml={5} onClick={() => {
             AppStore.web3.disconnect()
@@ -163,19 +167,5 @@ const AppLayout = observer(function AppLayout({children}: AppLayoutProps) {
     </Flex>
   );
 });
-
-const ThemeChangeButton = () => {
-  const {colorMode, toggleColorMode} = useColorMode();
-  return (
-    <Box ml={3}>
-      <Icon
-        icon={colorMode === "light" ? "moon" : "sun"}
-        color={colorMode === "light" ? "black" : "white"}
-        cursor={"pointer"}
-        onClick={toggleColorMode}
-      />
-    </Box>
-  );
-};
 
 export default AppLayout;

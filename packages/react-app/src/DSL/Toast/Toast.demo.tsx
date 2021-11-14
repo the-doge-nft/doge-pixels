@@ -7,7 +7,7 @@ import toast, {showDebugToast, showErrorToast, showSuccessToast} from "./Toast";
 const DemoToast = () => {
   return (
     <Demo title={"Toast"}>
-        <VStack>
+        <VStack spacing={6}>
             <Button onClick={() => showSuccessToast("nice!")}>
                 Success
             </Button>
