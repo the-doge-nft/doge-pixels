@@ -17,7 +17,7 @@ const MintPixelsModal = observer(({ isOpen, onClose }: MintPixelsModalProps) => 
   const store = useMemo(() => new MintPixelsModalStore(), [isOpen]);
   return (
     <Modal
-      size={"lg"}
+      size={"xl"}
       isOpen={isOpen}
       onClose={() => {
         onClose();
@@ -25,7 +25,9 @@ const MintPixelsModal = observer(({ isOpen, onClose }: MintPixelsModalProps) => 
       renderHeader={() => <Typography variant={TVariant.Title22}>Mint Pixels</Typography>}
     >
       {store.currentView === "mint" && <MintForm store={store} />}
+      {store.currentView === "approval" && <Approval />}
       {store.currentView === "loading" && <Loading />}
+      {store.currentView === "complete" && <Complete />}
     </Modal>
   );
 });
@@ -63,11 +65,19 @@ const MintForm = observer(({ store }: { store: MintPixelsModalStore }) => {
           {AppStore.web3.dogBalance && <Typography variant={TVariant.Detail14}>$DOG avail: {AppStore.web3.dogBalance}</Typography>}
           </GridItem>
         </Grid>
-        <Submit label={"Mint"} w={"100%"} size={"md"} mt={10} />
+        <Submit label={"Mint"} w={"100%"} mt={10} />
       </Form>
     </>
   );
 });
+
+const Approval = () => {
+  return (
+    <Box>
+      <Typography variant={TVariant.Body12}>Must approve token spend</Typography>
+    </Box>
+  );
+};
 
 const Loading = () => {
   return (
@@ -78,10 +88,9 @@ const Loading = () => {
 };
 
 const Complete = () => {
-    return <Box>
-        <Typography variant={TVariant.Body12}>✨ Mint complete ✨</Typography>
-
-    </Box>
+  return <Box>
+      <Typography variant={TVariant.Body12}>✨ Mint complete ✨</Typography>
+  </Box>
 }
 
 export default MintPixelsModal;

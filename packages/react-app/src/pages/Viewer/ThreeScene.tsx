@@ -1,4 +1,4 @@
-import React, { useCallback, useRef, useState } from "react";
+import React, {useCallback, useEffect, useRef, useState} from "react";
 import * as THREE from "three";
 import { Object3D } from "three";
 import { Canvas, useLoader } from "@react-three/fiber";
@@ -116,11 +116,24 @@ const ThreeScene = React.memo(({ onPixelSelect, onPixelClear }: ThreeSceneProps)
     }
   };
 
+  // useEffect(() => {
+  //   window.addEventListener("resize", () => {
+  //     camera.aspect = window.innerWidth / window.innerHeight;
+  //     camera.updateProjectionMatrix();
+  //     renderer.setSize( window.innerWidth, window.innerHeight );
+  //   })
+  // }, [])
+
   return (
-    <Box ref={canvasParentRef} position={"relative"} w={"100%"} h={"100%"}>
+    <Box ref={canvasParentRef} position={"absolute"} w={"100%"} h={"100%"}>
       <Canvas
         camera={camera}
         onCreated={({ gl }) => {
+          window.addEventListener("resize", () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            gl.setSize( window.innerWidth, window.innerHeight );
+            camera.updateProjectionMatrix();
+          })
           gl.domElement.addEventListener("wheel", e => onDocumentMouseWheel(e));
           gl.domElement.addEventListener("mousedown", e => downListener(e));
           gl.domElement.addEventListener("mousemove", e => moveListener(e, gl.domElement));
@@ -160,19 +173,18 @@ const ThreeScene = React.memo(({ onPixelSelect, onPixelClear }: ThreeSceneProps)
           />
         </mesh>
       </Canvas>
-      <Button
-        position={"absolute"}
-        left={2}
-        top={2}
-        onClick={() => {
-          onPixelClear();
-          if (selectedPixelOverlayRef.current) {
-            selectedPixelOverlayRef.current.visible = false;
-          }
-        }}
-      >
-        <Icon icon={"close"} />
-      </Button>
+      <Box position={"absolute"} left={2} top={2}>
+        <Button
+          onClick={() => {
+            onPixelClear();
+            if (selectedPixelOverlayRef.current) {
+              selectedPixelOverlayRef.current.visible = false;
+            }
+          }}
+        >
+          <Icon icon={"close"} />
+        </Button>
+      </Box>
     </Box>
   );
 });

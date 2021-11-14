@@ -1,4 +1,6 @@
-export const GlobalFont = "Comic Sans, sans-serif";
+import { Type } from "../Fonts/Fonts";
+
+export const GlobalFont = `${Type.PresStart2P}, sans-serif`;
 
 const TypographyStyle = {
   baseStyle: ({ colorMode }: { colorMode: "light" | "dark" }) => ({
@@ -20,35 +22,35 @@ const TypographyStyle = {
       fontSize: "16px",
     },
     Body12: {
-      fontWeight: "600",
+      fontWeight: "normal",
       fontSize: "12px",
     },
     Body14: {
-      fontWeight: "600",
+      fontWeight: "normal",
       fontSize: "14px",
     },
     Body16: {
-      fontWeight: "600",
+      fontWeight: "normal",
       fontSize: "16px",
     },
     Body18: {
-      fontWeight: "600",
+      fontWeight: "normal",
       fontSize: "18px",
     },
     Body20: {
-      fontWeight: "600",
+      fontWeight: "normal",
       fontSize: "20px",
     },
     Title22: {
-      fontWeight: "bold",
+      fontWeight: "normal",
       fontSize: "22px",
     },
     Title28: {
-      fontWeight: "bold",
+      fontWeight: "normal",
       fontSize: "28px",
     },
     Title45: {
-      fontWeight: "bold",
+      fontWeight: "normal",
       fontSize: "45px",
     },
   },

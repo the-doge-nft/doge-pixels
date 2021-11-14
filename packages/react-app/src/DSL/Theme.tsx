@@ -31,7 +31,7 @@ const theme = extendTheme({
       "html, body": {
         // detect what text is not intentionally themed
         color: "fuchsia",
-        bg: lightOrDark(colorMode, "white", darkModePrimary),
+        bg: lightOrDark(colorMode, "yellow.50", darkModePrimary),
       },
     }),
   },

@@ -1,14 +1,27 @@
 import { Global } from "@emotion/react";
 //@ts-ignore
 import ComicSans from "./ComicSansMS.woff2";
+//@ts-ignore
+import PressStart from "./PressStart2P-Regular.ttf";
 import React from "react";
+
+export enum Type {
+  PresStart2P = "PressStart2P",
+  ComicSans = "Comic Sans"
+}
 
 const Fonts = () => {
   return (
     <Global
       styles={`
             @font-face {
-                font-family: 'Comic Sans';
+                font-family: '${Type.PresStart2P}';
+                font-style: 'normal';
+                font-weight: '400';
+                src: url(${PressStart}) format('woff2');
+            }
+              @font-face {
+                font-family: '${Type.ComicSans}';
                 font-style: 'normal';
                 font-weight: '400';
                 src: url(${ComicSans}) format('woff2');

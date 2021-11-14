@@ -4,7 +4,7 @@ import { AbstractConstructor, EmptyClass } from "../../helpers/mixins";
 import AppStore from "../../store/App.store";
 import {showDebugToast, showErrorToast} from "../../DSL/Toast/Toast";
 
-type MintModalView = "mint" | "loading" | "complete";
+type MintModalView = "mint" | "approval" | "loading" | "complete";
 
 class MintPixelsModalStore extends Navigable<AbstractConstructor, MintModalView>(EmptyClass) {
   @observable
@@ -17,10 +17,6 @@ class MintPixelsModalStore extends Navigable<AbstractConstructor, MintModalView>
     super();
     this.pushNavigation("mint");
     makeObservable(this);
-  }
-
-  init() {
-
   }
 
   @computed
@@ -41,10 +37,11 @@ class MintPixelsModalStore extends Navigable<AbstractConstructor, MintModalView>
     const allowance = await AppStore.web3.getPxDogSpendAllowance()
     console.log("pixel spend allowance", allowance)
 
-    if (allowance < this.pixel_count! * AppStore.web3.DOG_TO_PIXEL_SATOSHIS) {
-      const dogAmountForApproval = this.pixel_count! * AppStore.web3.DOG_TO_PIXEL_SATOSHIS
-      const tx = await AppStore.web3.approvePxSpendDog(dogAmountForApproval)
-      showDebugToast(`approving DOG spend: ${dogAmountForApproval}`)
+    const dogToBeSpent = this.pixel_count! * AppStore.web3.DOG_TO_PIXEL_SATOSHIS
+    if (allowance < dogToBeSpent) {
+
+      const tx = await AppStore.web3.approvePxSpendDog(dogToBeSpent)
+      showDebugToast(`approving DOG spend: ${dogToBeSpent}`)
       await tx.wait()
     }
 
@@ -54,6 +51,7 @@ class MintPixelsModalStore extends Navigable<AbstractConstructor, MintModalView>
       this.pushNavigation("loading")
       await tx.wait()
       this.pushNavigation("complete")
+      AppStore.web3.refreshPupperBalance()
     } catch (e) {
       //@ts-ignore
       showErrorToast(e.message)
