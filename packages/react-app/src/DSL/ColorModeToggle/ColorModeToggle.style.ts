@@ -2,9 +2,14 @@ import {colorModeType, lightOrDark} from "../Theme";
 
 const containerWidth = 130
 const containerXPadding = 10
+const handleSize = 40
+
+export const colorModeToggleSizes = {
+
+}
 
 const ColorModeToggleStyle = {
-  parts: ["container", "handle", "dogImage"],
+  parts: ["container", "handle", "dogImage", "leftIcon", "rightIcon"],
   baseStyle: ({colorMode}: { colorMode: colorModeType }) => ({
     container: {
       color: lightOrDark(colorMode,"black", "white"),
@@ -16,7 +21,7 @@ const ColorModeToggleStyle = {
       borderStyle: "solid",
       borderWidth: "1px",
       borderColor: lightOrDark(colorMode,"black", "white"),
-      boxShadow: "8px 8px 0px black",
+      boxShadow: "8px 8px 0px",
       _hover: {
         cursor: "pointer"
       },
@@ -27,6 +32,34 @@ const ColorModeToggleStyle = {
       px: `${containerXPadding}px`,
       py: "8px"
     },
+    handle: {
+      position: "relative",
+      background: lightOrDark(colorMode, "black", "white"),
+      borderRadius: 100,
+      width: `${handleSize}px`,
+      height: `${handleSize}px`,
+      zIndex: 1,
+      overflow: "hidden",
+      left: lightOrDark(colorMode, "0", `${containerWidth - (2*containerXPadding) - handleSize}px`)
+    },
+    dogeImage: {
+      maxWidth: "140%",
+      width: "140%",
+      height: "140%",
+      position: "absolute",
+      transform: lightOrDark(colorMode, "scaleX(-1)", "none"),
+      right: lightOrDark(colorMode, "2px", "")
+    },
+    leftIcon: {
+      left: `${containerXPadding}px`,
+      position: "absolute",
+      ml: 2
+    },
+    rightIcon: {
+      right: `${containerXPadding}px`,
+      position: "absolute",
+      mr: 2
+    }
   })
 }
 
