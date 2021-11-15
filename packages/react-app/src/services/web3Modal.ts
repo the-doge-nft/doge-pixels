@@ -43,16 +43,26 @@ const providerOptions = {
     },
 }
 
-const theme = {
-    background: "rgb(29, 49, 56)",
-    color: "white"
+export const web3ModalLightTheme = {
+    background: "var(--chakra-colors-yellow-50)",
+    main: "var(--chakra-colors-black)",
+    secondary: "var(--chakra-colors-black)",
+    border: "var(--chakra-colors-black)",
+    hover: "var(--chakra-colors-yellow-700)"
+}
+
+export const web3ModalDarkTheme = {
+    background: "var(--chakra-colors-purple-700)",
+    main: "var(--chakra-colors-white)",
+    secondary: "var(--chakra-colors-white)",
+    border: "var(--chakra-colors-white)",
+    hover: "var(--chakra-colors-yellow-700)"
 }
 
 export const web3Modal = new Web3Modal({
     network: "mainnet", // Optional. If using WalletConnect on xDai, change network to "xdai" and add RPC info below for xDai chain.
     cacheProvider: true, // optional
     //@ts-ignore
-    theme: theme, // optional. Change to "dark" for a dark theme.
+    theme: web3ModalLightTheme, // optional. Change to "dark" for a dark theme.
     providerOptions,
-
 });
