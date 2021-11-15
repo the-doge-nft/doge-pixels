@@ -11,10 +11,10 @@ const ERROR_D20_TX_EXCEEDS_BALANCE = "ERC20: transfer amount exceeds balance"
 
 use(solidity);
 describe("[PX]", function () {
-  const MOCK_SUPPLY = 10;
+  const MOCK_SUPPLY = 100;//512 * 384;
   const DOG_TO_PIXEL_SATOSHIS = 5;
 
-  const INDEX_OFFSET = 1;
+  const INDEX_OFFSET = 1000000;
 
   let PX, DOG20;
   let owner;
@@ -136,13 +136,22 @@ describe("[PX]", function () {
       await mintPupperWithValidation(addr3);
     });
     it('mint all supply', async function () {
+      this.timeout(0);
+      let count = 0;
       while (true) {
         await mintPupperWithValidation(addr1);
+        ++count;
         const remaining = await PX.puppersRemaining();
         if (remaining.toNumber() === 0) {
           break;
         }
+        if (count % 1000 == 0) {
+          const p = (count / MOCK_SUPPLY * 100).toFixed(2);
+          console.log(`progress ${p}%`);
+        }
       }
+      console.log("=== END ===")
+      console.log(`minted ${count} tokens`)
       await expectRevert(mintPupperWithValidation(addr1), ERROR_NO_PX_REMAINING);
     });
     it('burn all supply', async function () {
@@ -191,7 +200,7 @@ describe("[PX]", function () {
         }
       }
     });
-    it('address can only mint up to their $DOG balance', async function() {
+    it('address can only mint up to their $DOG balance', async function () {
       const [owner, , , , signer4] = await ethers.getSigners()
       // clear D20 balance
       const balance = (await DOG20.balanceOf(signer4.address)).toNumber()
