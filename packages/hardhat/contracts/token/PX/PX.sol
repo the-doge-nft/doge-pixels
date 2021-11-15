@@ -155,7 +155,7 @@ contract PX is ERC721Custom, Ownable {
     // Description:
     // `mintPupper` but for minting multiple puppers with one ETH transaction
     //
-    function mintPuppers(address to, uint256 qty) public onlyOwner {
+    function mintPuppers(address to, uint256 qty) public {
         for (uint256 i = 0; i < qty; ++i) {
             mintPupper();
         }
