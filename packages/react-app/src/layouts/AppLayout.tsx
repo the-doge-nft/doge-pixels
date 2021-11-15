@@ -5,7 +5,6 @@ import Button, {ButtonVariant} from "../DSL/Button/Button";
 import {useHistory, useLocation} from "react-router-dom";
 import routes from "../App.routes";
 import {web3Modal} from "../services/web3Modal";
-import Icon from "../DSL/Icon/Icon";
 import {showDebugToast} from "../DSL/Toast/Toast";
 import {observer} from "mobx-react-lite";
 import AppStore from "../store/App.store";
@@ -21,10 +20,8 @@ const AppLayout = observer(function AppLayout({children}: AppLayoutProps) {
   const location = useLocation();
   const history = useHistory();
 
-  //@TODO: applayout is mounting on tab changes calling connect repeatedly
   useEffect(() => {
     if (web3Modal.cachedProvider && !AppStore.web3.web3Provider?.connection) {
-      // alert("connect called")
       AppStore.web3.connect()
     }
   }, [])
