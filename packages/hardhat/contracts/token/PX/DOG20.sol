@@ -3,14 +3,17 @@
 
 pragma solidity ^0.8.0;
 
-import "../ERC20/ERC20.sol";
+import "../ERC20/ERC20Upgradeable.sol";
 
-contract DOG20 is ERC20 {
+contract DOG20 is ERC20Upgradeable {
 
-    constructor() ERC20("DOG20", "D20"){
+    constructor() {
+
     }
 
-    function initMock(address[] memory holders, uint256 amount) public {
+    function __DOG20_init(address[] memory holders, uint256 amount) public initializer  {
+        __ERC20_init("DOG20", "D20");
+//        __ERC20_init(_name, _symbol);
         // give 10 pixels worth of mock dog to an address
         for (uint i = 0; i < holders.length; i++) {
             _mint(holders[i], amount);

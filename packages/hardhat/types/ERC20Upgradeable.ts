@@ -24,9 +24,8 @@ import type {
   OnEvent,
 } from "./common";
 
-export interface DOG20Interface extends ethers.utils.Interface {
+export interface ERC20UpgradeableInterface extends ethers.utils.Interface {
   functions: {
-    "__DOG20_init(address[],uint256)": FunctionFragment;
     "allowance(address,address)": FunctionFragment;
     "approve(address,uint256)": FunctionFragment;
     "balanceOf(address)": FunctionFragment;
@@ -40,10 +39,6 @@ export interface DOG20Interface extends ethers.utils.Interface {
     "transferFrom(address,address,uint256)": FunctionFragment;
   };
 
-  encodeFunctionData(
-    functionFragment: "__DOG20_init",
-    values: [string[], BigNumberish]
-  ): string;
   encodeFunctionData(
     functionFragment: "allowance",
     values: [string, string]
@@ -77,10 +72,6 @@ export interface DOG20Interface extends ethers.utils.Interface {
     values: [string, string, BigNumberish]
   ): string;
 
-  decodeFunctionResult(
-    functionFragment: "__DOG20_init",
-    data: BytesLike
-  ): Result;
   decodeFunctionResult(functionFragment: "allowance", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "approve", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "balanceOf", data: BytesLike): Result;
@@ -128,12 +119,12 @@ export type TransferEvent = TypedEvent<
 
 export type TransferEventFilter = TypedEventFilter<TransferEvent>;
 
-export interface DOG20 extends BaseContract {
+export interface ERC20Upgradeable extends BaseContract {
   connect(signerOrProvider: Signer | Provider | string): this;
   attach(addressOrName: string): this;
   deployed(): Promise<this>;
 
-  interface: DOG20Interface;
+  interface: ERC20UpgradeableInterface;
 
   queryFilter<TEvent extends TypedEvent>(
     event: TypedEventFilter<TEvent>,
@@ -155,12 +146,6 @@ export interface DOG20 extends BaseContract {
   removeListener: OnEvent<this>;
 
   functions: {
-    __DOG20_init(
-      holders: string[],
-      amount: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
-
     allowance(
       owner: string,
       spender: string,
@@ -208,12 +193,6 @@ export interface DOG20 extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
   };
-
-  __DOG20_init(
-    holders: string[],
-    amount: BigNumberish,
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
 
   allowance(
     owner: string,
@@ -263,12 +242,6 @@ export interface DOG20 extends BaseContract {
   ): Promise<ContractTransaction>;
 
   callStatic: {
-    __DOG20_init(
-      holders: string[],
-      amount: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
     allowance(
       owner: string,
       spender: string,
@@ -342,12 +315,6 @@ export interface DOG20 extends BaseContract {
   };
 
   estimateGas: {
-    __DOG20_init(
-      holders: string[],
-      amount: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
-
     allowance(
       owner: string,
       spender: string,
@@ -397,12 +364,6 @@ export interface DOG20 extends BaseContract {
   };
 
   populateTransaction: {
-    __DOG20_init(
-      holders: string[],
-      amount: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
-
     allowance(
       owner: string,
       spender: string,
