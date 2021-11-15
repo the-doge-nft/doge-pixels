@@ -44,6 +44,8 @@ export interface PXMockInterface extends ethers.utils.Interface {
     "name()": FunctionFragment;
     "owner()": FunctionFragment;
     "ownerOf(uint256)": FunctionFragment;
+    "pupperToPixel(uint256)": FunctionFragment;
+    "pupperToPixelCoords(uint256)": FunctionFragment;
     "puppersRemaining()": FunctionFragment;
     "randYish()": FunctionFragment;
     "randYishInRange(uint256)": FunctionFragment;
@@ -116,6 +118,14 @@ export interface PXMockInterface extends ethers.utils.Interface {
   encodeFunctionData(functionFragment: "owner", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "ownerOf",
+    values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "pupperToPixel",
+    values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "pupperToPixelCoords",
     values: [BigNumberish]
   ): string;
   encodeFunctionData(
@@ -209,6 +219,14 @@ export interface PXMockInterface extends ethers.utils.Interface {
   decodeFunctionResult(functionFragment: "name", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "owner", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "ownerOf", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "pupperToPixel",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "pupperToPixelCoords",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(
     functionFragment: "puppersRemaining",
     data: BytesLike
@@ -396,6 +414,16 @@ export interface PXMock extends BaseContract {
       overrides?: CallOverrides
     ): Promise<[string]>;
 
+    pupperToPixel(
+      pupper: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<[BigNumber]>;
+
+    pupperToPixelCoords(
+      pupper: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<[[BigNumber, BigNumber]]>;
+
     puppersRemaining(overrides?: CallOverrides): Promise<[BigNumber]>;
 
     randYish(
@@ -548,6 +576,16 @@ export interface PXMock extends BaseContract {
 
   ownerOf(tokenId: BigNumberish, overrides?: CallOverrides): Promise<string>;
 
+  pupperToPixel(
+    pupper: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
+
+  pupperToPixelCoords(
+    pupper: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<[BigNumber, BigNumber]>;
+
   puppersRemaining(overrides?: CallOverrides): Promise<BigNumber>;
 
   randYish(overrides?: CallOverrides): Promise<BigNumber>;
@@ -686,6 +724,16 @@ export interface PXMock extends BaseContract {
     owner(overrides?: CallOverrides): Promise<string>;
 
     ownerOf(tokenId: BigNumberish, overrides?: CallOverrides): Promise<string>;
+
+    pupperToPixel(
+      pupper: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    pupperToPixelCoords(
+      pupper: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<[BigNumber, BigNumber]>;
 
     puppersRemaining(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -880,6 +928,16 @@ export interface PXMock extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    pupperToPixel(
+      pupper: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    pupperToPixelCoords(
+      pupper: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     puppersRemaining(overrides?: CallOverrides): Promise<BigNumber>;
 
     randYish(overrides?: CallOverrides): Promise<BigNumber>;
@@ -1039,6 +1097,16 @@ export interface PXMock extends BaseContract {
 
     ownerOf(
       tokenId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    pupperToPixel(
+      pupper: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    pupperToPixelCoords(
+      pupper: BigNumberish,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
