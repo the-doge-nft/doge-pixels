@@ -10,9 +10,10 @@ const ButtonStyle = {
     primary: ({ colorMode }: { colorMode: colorModeType }) => ({
       bg: lightOrDark(colorMode, "yellow.50", darkModePrimary),
       borderColor: lightOrDark(colorMode, "black", "white"),
+      color: lightOrDark(colorMode, "black", "white"),
       borderRadius: "0px",
       borderStyle: "solid",
-      boxShadow: "8px 8px 0px 0px black",
+      boxShadow: "8px 8px 0px 0px",
       _hover: {
         bg: "yellow.700",
         _disabled: {
@@ -20,11 +21,11 @@ const ButtonStyle = {
         },
       },
       _focus: {
-        boxShadow: "8px 8px 0px 0px black",
+        boxShadow: "8px 8px 0px 0px",
       },
       _active: {
         transform: "translate(4px, 4px)",
-        boxShadow: "4px 4px 0px 0px black",
+        boxShadow: "4px 4px 0px 0px",
         _disabled: {
           boxShadow: "none"
         }
