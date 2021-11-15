@@ -14,20 +14,30 @@ contract PX is ERC721Custom, Ownable {
     // Fractional.art ERC20 contract holding $DOG tokens
     IERC20 private immutable DOG20;
 
-    // TODO: are we actually good with sticking with pseudo random generator?
-    // TODO: could we be actually good with sticking no-random, consecutive numbes in `indexToPupper` == 1....N numbers in order
-    // TODO: HOW much optimizations do we actually need?
+    //
+    // puppersRemaining
+    //
+    // Description:
+    // Keeps track of available puppers pool size. Divides indexToPupper into subsets:
+    // - indexToPupper[1...puppersRemaining] -> available puppers
+    // - indexToPupper(puppersRemaining...totalSupply] -> used puppers
+    //
     uint256 public puppersRemaining;
-//    uint256 public immutable totalSupply;
+
+//  PROD:  uint256 public immutable totalSupply;
     uint256 public totalSupply;
 
+    // index => pupper; needed for keeping track of available puppers pool
     mapping(uint256 => uint256) indexToPupper;
-//    mapping(uint256 => address) _owners;
+    // pupper => index; needed for burning functionality and returning pupper to available pool
     mapping(uint256 => uint256) pupperToIndex;
 
-    // production version:
-    // uint256 immutable DOG_TO_PIXEL_SATOSHIS = 5523989899;
+    // PROD: uint256 immutable DOG_TO_PIXEL_SATOSHIS = 5523989899;
     uint256 public DOG_TO_PIXEL_SATOSHIS = 5523989899;
+    // ALL ids & indexes are offset by 1, to be able to use default uint256 value - zero - as null/not initialized flag
+    uint256 public INDEX_OFFSET = 1;
+    // 0 value is flag for not initialized. There is no pupper with id = 0, and there is no index = 0
+    uint256 public MAGIC_NULL = 0;
 
     constructor(string memory name_, string memory symbol_, address DOG20Address) ERC721Custom(name_, symbol_){
         require(DOG20Address != address(0));
@@ -37,10 +47,6 @@ contract PX is ERC721Custom, Ownable {
 //        _setBaseURI("https://ipfs.io/ipfs/");
         totalSupply = _width*_height; // 307200
         puppersRemaining = _width*_height;
-
-//        for(uint256 i = 0; i < totalSupply; ++i){
-//            indexToPupper[i] = i;
-//        }
     }
 
     /**
@@ -126,9 +132,6 @@ contract PX is ERC721Custom, Ownable {
                 puppersRemaining
             )));
         ret = (seed - ((seed / 1000) * 1000));
-//        console.log("seed: ");
-//        console.log(seed);
-//        console.log(ret);
     }
 
 
@@ -169,13 +172,23 @@ contract PX is ERC721Custom, Ownable {
         // todo: asserts
         // todo: near 0-len(mappings) indices handling
         require(puppersRemaining > 0, "No puppers remaining");
-        uint256 index = randYishInRange(puppersRemaining);
-        // swap minted pupper with one from available pool
-        // == move minted pupper to the edge. move pupper from the edge to the minted index
+        uint256 index = INDEX_OFFSET + randYishInRange(puppersRemaining);
+        // if indexToPupper[index] == null, initialize it with `index` pupper
+        // this on-the-go initialization is optimization so gas fees for `indexToPupper` array initialization is delegated to the minter
+        if(indexToPupper[index] == MAGIC_NULL){
+            indexToPupper[index] = index;
+        }
+        uint256 LAST_INDEX = INDEX_OFFSET + puppersRemaining - 1;
+        if(indexToPupper[LAST_INDEX] == MAGIC_NULL){
+            indexToPupper[LAST_INDEX] = LAST_INDEX;
+        }
+        // return pupper @ `index`
         pupper = indexToPupper[index];
-        indexToPupper[index] = indexToPupper[puppersRemaining - 1];
-        indexToPupper[puppersRemaining - 1] = pupper;
-        pupperToIndex[pupper] = puppersRemaining - 1;
+        // move pupper from `LAST_INDEX` to just used pupper
+        indexToPupper[index] = indexToPupper[LAST_INDEX];
+        // move used pupper to `unavailable` pool
+        indexToPupper[LAST_INDEX] = pupper;
+        pupperToIndex[pupper] = LAST_INDEX;
         _mint(msg.sender, pupper);
         // transfer collateral to contract's address
         DOG20.transferFrom(msg.sender, address(this), DOG_TO_PIXEL_SATOSHIS);
@@ -190,16 +203,17 @@ contract PX is ERC721Custom, Ownable {
     //
     function burnPupper(uint256 pupper) public {
         // todo: asserts
+        require(pupper != MAGIC_NULL, "Pupper is magic");
         require(ERC721Custom.ownerOf(pupper) == msg.sender, "Pupper is not yours");
-        // todo: near 0-len(mappings) indices handling
 
         // swap burnt pupper with one at N+1 index
         uint256 oldIndex = pupperToIndex[pupper];
-        uint256 tmpPupper = indexToPupper[puppersRemaining];
-        pupperToIndex[pupper] = puppersRemaining;
+        uint256 LAST_INDEX = INDEX_OFFSET + puppersRemaining;
+        uint256 tmpPupper = indexToPupper[LAST_INDEX];
+        pupperToIndex[pupper] = LAST_INDEX;
         pupperToIndex[tmpPupper] = oldIndex;
         indexToPupper[oldIndex] = tmpPupper;
-        indexToPupper[puppersRemaining] = pupper;
+        indexToPupper[LAST_INDEX] = pupper;
 
         _burn(pupper);
         // transfer collateral to the burner
