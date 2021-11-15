@@ -1,4 +1,4 @@
-const {ethers} = require("hardhat");
+const {ethers, upgrades} = require("hardhat");
 const {use, expect} = require("chai");
 const {shuffle, range, randFromArray} = require("./utils");
 const {solidity} = require("ethereum-waffle");
@@ -34,21 +34,21 @@ describe("[PX]", function () {
     [owner, addr1, addr2, addr3] = signers
 
     let factory;
+
     factory = await ethers.getContractFactory("DOG20");
-    DOG20 = await factory.deploy();
-    // console.log(signers)
-    await DOG20.initMock(signers.map(item => item.address), DOG_TO_PIXEL_SATOSHIS * MOCK_SUPPLY);
+    DOG20 = await upgrades.deployProxy(factory);
+    await DOG20.deployed();
+    await DOG20.__DOG20_init(signers.map(item => item.address), DOG_TO_PIXEL_SATOSHIS * MOCK_SUPPLY);
 
     factory = await ethers.getContractFactory("PXMock");
-
-    PX = await factory.deploy("LONG LIVE D O G", "PX", DOG20.address);
+    PX = await upgrades.deployProxy(factory);
+    await PX.deployed();
+    await PX.__PXMock_init("LONG LIVE D O G", "PX", DOG20.address);
 
     await Promise.all([
                         PX.setSupply(MOCK_SUPPLY),
                         PX.setDOG_TO_PIXEL_SATOSHIS(DOG_TO_PIXEL_SATOSHIS)
                       ]);
-
-    // console.log(PX)
   });
 
   async function mintPupperWithValidation(signer, _shouldRevertWithMessage = undefined) {
