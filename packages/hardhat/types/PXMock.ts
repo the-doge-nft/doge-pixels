@@ -27,6 +27,8 @@ import type {
 export interface PXMockInterface extends ethers.utils.Interface {
   functions: {
     "DOG_TO_PIXEL_SATOSHIS()": FunctionFragment;
+    "INDEX_OFFSET()": FunctionFragment;
+    "MAGIC_NULL()": FunctionFragment;
     "approve(address,uint256)": FunctionFragment;
     "balanceOf(address)": FunctionFragment;
     "baseURI()": FunctionFragment;
@@ -61,6 +63,14 @@ export interface PXMockInterface extends ethers.utils.Interface {
 
   encodeFunctionData(
     functionFragment: "DOG_TO_PIXEL_SATOSHIS",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "INDEX_OFFSET",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "MAGIC_NULL",
     values?: undefined
   ): string;
   encodeFunctionData(
@@ -167,6 +177,11 @@ export interface PXMockInterface extends ethers.utils.Interface {
     functionFragment: "DOG_TO_PIXEL_SATOSHIS",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(
+    functionFragment: "INDEX_OFFSET",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(functionFragment: "MAGIC_NULL", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "approve", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "balanceOf", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "baseURI", data: BytesLike): Result;
@@ -310,6 +325,10 @@ export interface PXMock extends BaseContract {
 
   functions: {
     DOG_TO_PIXEL_SATOSHIS(overrides?: CallOverrides): Promise<[BigNumber]>;
+
+    INDEX_OFFSET(overrides?: CallOverrides): Promise<[BigNumber]>;
+
+    MAGIC_NULL(overrides?: CallOverrides): Promise<[BigNumber]>;
 
     approve(
       to: string,
@@ -465,6 +484,10 @@ export interface PXMock extends BaseContract {
 
   DOG_TO_PIXEL_SATOSHIS(overrides?: CallOverrides): Promise<BigNumber>;
 
+  INDEX_OFFSET(overrides?: CallOverrides): Promise<BigNumber>;
+
+  MAGIC_NULL(overrides?: CallOverrides): Promise<BigNumber>;
+
   approve(
     to: string,
     tokenId: BigNumberish,
@@ -607,6 +630,10 @@ export interface PXMock extends BaseContract {
 
   callStatic: {
     DOG_TO_PIXEL_SATOSHIS(overrides?: CallOverrides): Promise<BigNumber>;
+
+    INDEX_OFFSET(overrides?: CallOverrides): Promise<BigNumber>;
+
+    MAGIC_NULL(overrides?: CallOverrides): Promise<BigNumber>;
 
     approve(
       to: string,
@@ -783,6 +810,10 @@ export interface PXMock extends BaseContract {
   estimateGas: {
     DOG_TO_PIXEL_SATOSHIS(overrides?: CallOverrides): Promise<BigNumber>;
 
+    INDEX_OFFSET(overrides?: CallOverrides): Promise<BigNumber>;
+
+    MAGIC_NULL(overrides?: CallOverrides): Promise<BigNumber>;
+
     approve(
       to: string,
       tokenId: BigNumberish,
@@ -937,6 +968,10 @@ export interface PXMock extends BaseContract {
     DOG_TO_PIXEL_SATOSHIS(
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
+
+    INDEX_OFFSET(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    MAGIC_NULL(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     approve(
       to: string,

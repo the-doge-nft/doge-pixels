@@ -14,9 +14,6 @@ contract PXMock is PX {
     function setSupply(uint256 amount) public {
         puppersRemaining = amount;
         totalSupply = amount;
-        for(uint256 i = 0; i < totalSupply; ++i){
-            indexToPupper[i] = i;
-        }
     }
 
     function setDOG_TO_PIXEL_SATOSHIS(uint256 amount) public {
