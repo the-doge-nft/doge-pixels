@@ -28,10 +28,10 @@ contract ERC721CustomUpgradeable is Initializable, ContextUpgradeable, ERC165Upg
     string private _symbol;
 
     // Mapping from token ID to owner address
-    mapping(uint256 => address) private _owners;
+    mapping(uint256 => address) internal _owners;
 
     // Mapping owner address to token count
-    mapping(address => uint256) private _balances;
+    mapping(address => uint256) internal _balances;
 
     // Mapping from token ID to approved address
     mapping(uint256 => address) private _tokenApprovals;
@@ -42,13 +42,13 @@ contract ERC721CustomUpgradeable is Initializable, ContextUpgradeable, ERC165Upg
     /**
      * @dev Initializes the contract by setting a `name` and a `symbol` to the token collection.
      */
-    function __ERC721_init(string memory name_, string memory symbol_) internal initializer {
+    function __ERC721Custom_init(string memory name_, string memory symbol_) internal initializer {
         __Context_init_unchained();
         __ERC165_init_unchained();
-        __ERC721_init_unchained(name_, symbol_);
+        __ERC721Custom_init_unchained(name_, symbol_);
     }
 
-    function __ERC721_init_unchained(string memory name_, string memory symbol_) internal initializer {
+    function __ERC721Custom_init_unchained(string memory name_, string memory symbol_) internal initializer {
         _name = name_;
         _symbol = symbol_;
     }
@@ -117,7 +117,7 @@ contract ERC721CustomUpgradeable is Initializable, ContextUpgradeable, ERC165Upg
      * @dev See {IERC721-approve}.
      */
     function approve(address to, uint256 tokenId) public virtual override {
-        address owner = ERC721Upgradeable.ownerOf(tokenId);
+        address owner = ERC721CustomUpgradeable.ownerOf(tokenId);
         require(to != owner, "ERC721: approval to current owner");
 
         require(
@@ -238,7 +238,7 @@ contract ERC721CustomUpgradeable is Initializable, ContextUpgradeable, ERC165Upg
      */
     function _isApprovedOrOwner(address spender, uint256 tokenId) internal view virtual returns (bool) {
         require(_exists(tokenId), "ERC721: operator query for nonexistent token");
-        address owner = ERC721Upgradeable.ownerOf(tokenId);
+        address owner = ERC721CustomUpgradeable.ownerOf(tokenId);
         return (spender == owner || getApproved(tokenId) == spender || isApprovedForAll(owner, spender));
     }
 
@@ -307,7 +307,7 @@ contract ERC721CustomUpgradeable is Initializable, ContextUpgradeable, ERC165Upg
      * Emits a {Transfer} event.
      */
     function _burn(uint256 tokenId) internal virtual {
-        address owner = ERC721Upgradeable.ownerOf(tokenId);
+        address owner = ERC721CustomUpgradeable.ownerOf(tokenId);
 
         _beforeTokenTransfer(owner, address(0), tokenId);
 
@@ -336,7 +336,7 @@ contract ERC721CustomUpgradeable is Initializable, ContextUpgradeable, ERC165Upg
         address to,
         uint256 tokenId
     ) internal virtual {
-        require(ERC721Upgradeable.ownerOf(tokenId) == from, "ERC721: transfer of token that is not own");
+        require(ERC721CustomUpgradeable.ownerOf(tokenId) == from, "ERC721: transfer of token that is not own");
         require(to != address(0), "ERC721: transfer to the zero address");
 
         _beforeTokenTransfer(from, to, tokenId);
@@ -358,7 +358,7 @@ contract ERC721CustomUpgradeable is Initializable, ContextUpgradeable, ERC165Upg
      */
     function _approve(address to, uint256 tokenId) internal virtual {
         _tokenApprovals[tokenId] = to;
-        emit Approval(ERC721Upgradeable.ownerOf(tokenId), to, tokenId);
+        emit Approval(ERC721CustomUpgradeable.ownerOf(tokenId), to, tokenId);
     }
 
     /**
@@ -397,7 +397,7 @@ contract ERC721CustomUpgradeable is Initializable, ContextUpgradeable, ERC165Upg
                 return retval == IERC721ReceiverUpgradeable.onERC721Received.selector;
             } catch (bytes memory reason) {
                 if (reason.length == 0) {
-                    revert("ERC721: transfer to non ERC721Receiver implementer");
+                    revert("ERC721Custom: transfer to non ERC721Receiver implementer");
                 } else {
                     assembly {
                         revert(add(32, reason), mload(reason))
