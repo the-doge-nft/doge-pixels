@@ -14,7 +14,7 @@ export enum TVariant {
   ComicSans18 = "ComicSans18",
   ComicSans20 = "ComicSans20",
   ComicSans22 = "ComicSans22",
-  ComicSans45 = "ComicSans45",
+  ComicSans28 = "ComicSans28",
 }
 
 interface TypographyProps extends TextProps {

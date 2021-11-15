@@ -11,6 +11,7 @@ import {observer} from "mobx-react-lite";
 import AppStore from "../store/App.store";
 import Dev from "../common/Dev";
 import ColorModeToggle from "../DSL/ColorModeToggle/ColorModeToggle";
+import {lightOrDark} from "../DSL/Theme";
 
 interface AppLayoutProps {
   children?: any;
@@ -20,9 +21,10 @@ const AppLayout = observer(function AppLayout({children}: AppLayoutProps) {
   const location = useLocation();
   const history = useHistory();
 
+  //@TODO: applayout is mounting on tab changes calling connect repeatedly
   useEffect(() => {
-    if (web3Modal.cachedProvider) {
-      alert("connect called")
+    if (web3Modal.cachedProvider && !AppStore.web3.web3Provider?.connection) {
+      // alert("connect called")
       AppStore.web3.connect()
     }
   }, [])
@@ -69,30 +71,7 @@ const AppLayout = observer(function AppLayout({children}: AppLayoutProps) {
     <Flex w={"100vw"} h={"100vh"} p={8} direction={"column"}>
       <Flex mb={5} justifyContent={"space-between"} alignItems={"center"}>
         <Flex alignItems={"center"} mb={2}>
-          <Flex alignItems={"center"}>
-            <Box position={"relative"} zIndex={0}>
-              <Typography
-                variant={TVariant.PresStart28}
-                mr={1}
-                color={"yellow.700"}
-                zIndex={1}
-                //@ts-ignore
-                sx={{"-webkit-text-stroke": "1px black"}}
-              >
-                PUPPER PIXEL PORTAL
-              </Typography>
-              <Typography
-                position={"absolute"}
-                left={-1}
-                top={1}
-                color={"black"}
-                zIndex={-1}
-                variant={TVariant.PresStart28}>
-                PUPPER PIXEL PORTAL
-              </Typography>
-            </Box>
-            <Typography variant={TVariant.PresStart28} ml={2} pb={"5px"}>🐕</Typography>
-          </Flex>
+          <Title/>
         </Flex>
         <Flex alignItems={"center"}>
           <HStack spacing={2}>
@@ -167,5 +146,33 @@ const AppLayout = observer(function AppLayout({children}: AppLayoutProps) {
     </Flex>
   );
 });
+
+const Title = () => {
+  const {colorMode} = useColorMode()
+  return <Flex alignItems={"center"}>
+    <Box position={"relative"} zIndex={0}>
+      <Typography
+        variant={TVariant.PresStart28}
+        mr={1}
+        color={"yellow.700"}
+        zIndex={1}
+        //@ts-ignore
+        sx={{"-webkit-text-stroke": lightOrDark(colorMode, "1px black", "1px white")}}
+      >
+        PUPPER PIXEL PORTAL
+      </Typography>
+      <Typography
+        position={"absolute"}
+        left={-1}
+        top={1}
+        color={lightOrDark(colorMode, "black", "white")}
+        zIndex={-1}
+        variant={TVariant.PresStart28}>
+        PUPPER PIXEL PORTAL
+      </Typography>
+    </Box>
+    <Typography variant={TVariant.PresStart28} ml={2} pb={"5px"}>🐕</Typography>
+  </Flex>
+}
 
 export default AppLayout;

@@ -151,7 +151,7 @@ class Web3Store {
     }
 
     async getDogToAccount() {
-        return this.dogContract!.initMock([this.address!], 10000000000)
+        return this.dogContract!.initMock([this.address!], this.DOG_TO_PIXEL_SATOSHIS * 2)
     }
 
     mintPupper() {

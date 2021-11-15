@@ -27,6 +27,11 @@ const ModalStyle = {
       },
       fontSize: "18px",
       fontFamily: GlobalFont,
+      position: "static",
+      borderRadius: "0px",
+      borderLeft: "1px solid black"
+      // top: 0,
+      // right: 0
     },
     dialog: {
       bg: colorMode === "light" ? "yellow.50" : darkModePrimary,
@@ -34,6 +39,9 @@ const ModalStyle = {
       borderColor: colorMode === "light" ? "black" : "white",
       borderRadius: "0px",
     },
+    header: {
+
+    }
   }),
 };
 
