@@ -29,6 +29,8 @@ export interface PXMockInterface extends ethers.utils.Interface {
     "DOG_TO_PIXEL_SATOSHIS()": FunctionFragment;
     "INDEX_OFFSET()": FunctionFragment;
     "MAGIC_NULL()": FunctionFragment;
+    "__PXMock_init(string,string,address)": FunctionFragment;
+    "__PX_init(string,string,address)": FunctionFragment;
     "approve(address,uint256)": FunctionFragment;
     "balanceOf(address)": FunctionFragment;
     "baseURI()": FunctionFragment;
@@ -74,6 +76,14 @@ export interface PXMockInterface extends ethers.utils.Interface {
   encodeFunctionData(
     functionFragment: "MAGIC_NULL",
     values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "__PXMock_init",
+    values: [string, string, string]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "__PX_init",
+    values: [string, string, string]
   ): string;
   encodeFunctionData(
     functionFragment: "approve",
@@ -192,6 +202,11 @@ export interface PXMockInterface extends ethers.utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "MAGIC_NULL", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "__PXMock_init",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(functionFragment: "__PX_init", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "approve", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "balanceOf", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "baseURI", data: BytesLike): Result;
@@ -347,6 +362,20 @@ export interface PXMock extends BaseContract {
     INDEX_OFFSET(overrides?: CallOverrides): Promise<[BigNumber]>;
 
     MAGIC_NULL(overrides?: CallOverrides): Promise<[BigNumber]>;
+
+    __PXMock_init(
+      name_: string,
+      symbol_: string,
+      DOG20Address: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
+    __PX_init(
+      name_: string,
+      symbol_: string,
+      DOG20Address: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
 
     approve(
       to: string,
@@ -516,6 +545,20 @@ export interface PXMock extends BaseContract {
 
   MAGIC_NULL(overrides?: CallOverrides): Promise<BigNumber>;
 
+  __PXMock_init(
+    name_: string,
+    symbol_: string,
+    DOG20Address: string,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
+  __PX_init(
+    name_: string,
+    symbol_: string,
+    DOG20Address: string,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
   approve(
     to: string,
     tokenId: BigNumberish,
@@ -672,6 +715,20 @@ export interface PXMock extends BaseContract {
     INDEX_OFFSET(overrides?: CallOverrides): Promise<BigNumber>;
 
     MAGIC_NULL(overrides?: CallOverrides): Promise<BigNumber>;
+
+    __PXMock_init(
+      name_: string,
+      symbol_: string,
+      DOG20Address: string,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    __PX_init(
+      name_: string,
+      symbol_: string,
+      DOG20Address: string,
+      overrides?: CallOverrides
+    ): Promise<void>;
 
     approve(
       to: string,
@@ -862,6 +919,20 @@ export interface PXMock extends BaseContract {
 
     MAGIC_NULL(overrides?: CallOverrides): Promise<BigNumber>;
 
+    __PXMock_init(
+      name_: string,
+      symbol_: string,
+      DOG20Address: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    __PX_init(
+      name_: string,
+      symbol_: string,
+      DOG20Address: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
     approve(
       to: string,
       tokenId: BigNumberish,
@@ -1030,6 +1101,20 @@ export interface PXMock extends BaseContract {
     INDEX_OFFSET(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     MAGIC_NULL(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    __PXMock_init(
+      name_: string,
+      symbol_: string,
+      DOG20Address: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    __PX_init(
+      name_: string,
+      symbol_: string,
+      DOG20Address: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
 
     approve(
       to: string,

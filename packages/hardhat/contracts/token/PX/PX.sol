@@ -5,14 +5,14 @@ pragma solidity ^0.8.0;
 
 import "../ERC20/ERC20.sol";
 import "../ERC721/ERC721.sol";
-import "../../access/Ownable.sol";
+import "../../access/OwnableUpgradeable.sol";
 import "hardhat/console.sol";
-import "./ERC721Custom.sol";
+import "./ERC721CustomUpgradeable.sol";
 
-contract PX is ERC721Custom, Ownable {
+contract PX is ERC721CustomUpgradeable, OwnableUpgradeable {
     //    using ERC721Custom for ERC721;
     // Fractional.art ERC20 contract holding $DOG tokens
-    IERC20 private immutable DOG20;
+    IERC20 private DOG20;
 
     //
     // puppersRemaining
@@ -33,21 +33,26 @@ contract PX is ERC721Custom, Ownable {
     mapping(uint256 => uint256) pupperToIndex;
 
     // PROD: uint256 immutable DOG_TO_PIXEL_SATOSHIS = 5523989899;
-    uint256 public DOG_TO_PIXEL_SATOSHIS = 5523989899;
+    uint256 public DOG_TO_PIXEL_SATOSHIS;
     // ALL ids & indexes are offset by 1, to be able to use default uint256 value - zero - as null/not initialized flag
-    uint256 public INDEX_OFFSET = 1000000;
+    uint256 public INDEX_OFFSET;
     // 0 value is flag for not initialized. There is no pupper with id = 0, and there is no index = 0
-    uint256 public MAGIC_NULL = 0;
+    uint256 public MAGIC_NULL;
 
-    constructor(string memory name_, string memory symbol_, address DOG20Address) ERC721Custom(name_, symbol_){
+    function __PX_init(string memory name_, string memory symbol_, address DOG20Address) public initializer {
+        __ERC721Custom_init(name_, symbol_);
         require(DOG20Address != address(0));
         DOG20 = IERC20(DOG20Address);
         uint256 _width = 10;
         uint256 _height = 10;
-        //        _setBaseURI("https://ipfs.io/ipfs/");
         totalSupply = _width * _height;
-        // 307200
         puppersRemaining = _width * _height;
+
+        // Proxy initialization
+        // https://docs.openzeppelin.com/upgrades-plugins/1.x/writing-upgradeable#avoid-initial-values-in-field-declarations
+        DOG_TO_PIXEL_SATOSHIS = 5523989899;
+        INDEX_OFFSET = 1000000;
+        MAGIC_NULL = 0;
     }
 
     /**
@@ -88,7 +93,7 @@ contract PX is ERC721Custom, Ownable {
      * Emits a {Transfer} event.
      */
     function _burn(uint256 tokenId) internal virtual override {
-        address owner = ERC721Custom.ownerOf(tokenId);
+        address owner = ERC721CustomUpgradeable.ownerOf(tokenId);
 
         _beforeTokenTransfer(owner, address(0), tokenId);
 
@@ -205,7 +210,7 @@ contract PX is ERC721Custom, Ownable {
     function burnPupper(uint256 pupper) public {
         // todo: asserts
         require(pupper != MAGIC_NULL, "Pupper is magic");
-        require(ERC721Custom.ownerOf(pupper) == msg.sender, "Pupper is not yours");
+        require(ERC721CustomUpgradeable.ownerOf(pupper) == msg.sender, "Pupper is not yours");
 
         // swap burnt pupper with one at N+1 index
         uint256 oldIndex = pupperToIndex[pupper];
