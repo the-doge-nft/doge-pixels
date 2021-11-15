@@ -10,7 +10,7 @@ import "hardhat/console.sol";
 import "./ERC721Custom.sol";
 
 contract PX is ERC721Custom, Ownable {
-//    using ERC721Custom for ERC721;
+    //    using ERC721Custom for ERC721;
     // Fractional.art ERC20 contract holding $DOG tokens
     IERC20 private immutable DOG20;
 
@@ -24,7 +24,7 @@ contract PX is ERC721Custom, Ownable {
     //
     uint256 public puppersRemaining;
 
-//  PROD:  uint256 public immutable totalSupply;
+    //  PROD:  uint256 public immutable totalSupply;
     uint256 public totalSupply;
 
     // index => pupper; needed for keeping track of available puppers pool
@@ -35,7 +35,7 @@ contract PX is ERC721Custom, Ownable {
     // PROD: uint256 immutable DOG_TO_PIXEL_SATOSHIS = 5523989899;
     uint256 public DOG_TO_PIXEL_SATOSHIS = 5523989899;
     // ALL ids & indexes are offset by 1, to be able to use default uint256 value - zero - as null/not initialized flag
-    uint256 public INDEX_OFFSET = 1;
+    uint256 public INDEX_OFFSET = 1000000;
     // 0 value is flag for not initialized. There is no pupper with id = 0, and there is no index = 0
     uint256 public MAGIC_NULL = 0;
 
@@ -44,9 +44,10 @@ contract PX is ERC721Custom, Ownable {
         DOG20 = IERC20(DOG20Address);
         uint256 _width = 10;
         uint256 _height = 10;
-//        _setBaseURI("https://ipfs.io/ipfs/");
-        totalSupply = _width*_height; // 307200
-        puppersRemaining = _width*_height;
+        //        _setBaseURI("https://ipfs.io/ipfs/");
+        totalSupply = _width * _height;
+        // 307200
+        puppersRemaining = _width * _height;
     }
 
     /**
@@ -120,7 +121,7 @@ contract PX is ERC721Custom, Ownable {
     // Notes:
     // - https://stackoverflow.com/questions/58188832/solidity-generate-unpredictable-random-number-that-does-not-depend-on-input
     //
-    function randYish() public view returns(uint256 ret) {
+    function randYish() public view returns (uint256 ret) {
         // todo: do we need any assertions here?
 
         uint256 seed = uint256(keccak256(abi.encodePacked(
@@ -141,11 +142,11 @@ contract PX is ERC721Custom, Ownable {
     // Description:
     // randYish in 0...maxRand range
     //
-    function randYishInRange(uint256 maxRand) public view returns(uint256 ret) {
+    function randYishInRange(uint256 maxRand) public view returns (uint256 ret) {
         // todo: do we need any assertions here?
         ret = randYish() % maxRand;
-//        console.log("randyishinrange");
-//        console.log(ret);
+        //        console.log("randyishinrange");
+        //        console.log(ret);
     }
 
     //
@@ -155,7 +156,7 @@ contract PX is ERC721Custom, Ownable {
     // `mintPupper` but for minting multiple puppers with one ETH transaction
     //
     function mintPuppers(address to, uint256 qty) public onlyOwner {
-        for(uint256 i = 0; i < qty; ++i){
+        for (uint256 i = 0; i < qty; ++i) {
             mintPupper();
         }
     }
@@ -175,11 +176,11 @@ contract PX is ERC721Custom, Ownable {
         uint256 index = INDEX_OFFSET + randYishInRange(puppersRemaining);
         // if indexToPupper[index] == null, initialize it with `index` pupper
         // this on-the-go initialization is optimization so gas fees for `indexToPupper` array initialization is delegated to the minter
-        if(indexToPupper[index] == MAGIC_NULL){
+        if (indexToPupper[index] == MAGIC_NULL) {
             indexToPupper[index] = index;
         }
         uint256 LAST_INDEX = INDEX_OFFSET + puppersRemaining - 1;
-        if(indexToPupper[LAST_INDEX] == MAGIC_NULL){
+        if (indexToPupper[LAST_INDEX] == MAGIC_NULL) {
             indexToPupper[LAST_INDEX] = LAST_INDEX;
         }
         // return pupper @ `index`
@@ -217,7 +218,7 @@ contract PX is ERC721Custom, Ownable {
 
         _burn(pupper);
         // transfer collateral to the burner
-        DOG20.transfer( msg.sender, DOG_TO_PIXEL_SATOSHIS);
+        DOG20.transfer(msg.sender, DOG_TO_PIXEL_SATOSHIS);
     }
 
     //
@@ -232,4 +233,23 @@ contract PX is ERC721Custom, Ownable {
         DOG20.transferFrom(msg.sender, address(this), DOG_TO_PIXEL_SATOSHIS);
     }
 
+    //
+    // pupperToPixel
+    //
+    // Description:
+    // Returns pixel index on .png from tokenId
+    //
+    function pupperToPixel(uint256 pupper) view public returns (uint256){
+        return pupper - INDEX_OFFSET;
+    }
+    //
+    // pupperToPixelCoords
+    //
+    // Description:
+    // Returns pixel x,y on .png from tokenId
+    //
+    function pupperToPixelCoords(uint256 pupper) view public returns (uint256[2] memory) {
+        uint256 index = pupper - INDEX_OFFSET;
+        return [index % 512, index / 512];
+    }
 }
