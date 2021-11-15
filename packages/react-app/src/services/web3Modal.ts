@@ -5,6 +5,7 @@ import Portis from "@portis/web3";
 import Fortmatic from "fortmatic";
 import Authereum from "authereum";
 import WalletLink from "walletlink";
+import "./web3Modal.css";
 
 const walletLink = new WalletLink({
     appName: "coinbase",

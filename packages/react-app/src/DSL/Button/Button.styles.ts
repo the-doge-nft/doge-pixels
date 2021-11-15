@@ -32,6 +32,7 @@ const ButtonStyle = {
       },
     }),
     text: ({ colorMode }: { colorMode: colorModeType }) => ({
+      borderRadius: "0px",
       border: "none",
       bg: "none",
       textUnderlineOffset: "4px",

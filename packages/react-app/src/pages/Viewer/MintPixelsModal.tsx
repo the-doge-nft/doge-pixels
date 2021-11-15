@@ -6,7 +6,7 @@ import NumberInput from "../../DSL/Form/NumberInput/NumberInput";
 import {maxValue, minValue, required} from "../../DSL/Form/validation";
 import Submit from "../../DSL/Form/Submit";
 import Modal, {ModalProps} from "../../DSL/Modal/Modal";
-import MintPixelsModalStore from "./MintPixelsModal.store";
+import MintPixelsModalStore, { MintModalView } from "./MintPixelsModal.store";
 import model from "../../DSL/Form/model";
 import {observer} from "mobx-react-lite";
 import AppStore from "../../store/App.store";
@@ -22,12 +22,12 @@ const MintPixelsModal = observer(({ isOpen, onClose }: MintPixelsModalProps) => 
       onClose={() => {
         onClose();
       }}
-      renderHeader={() => <Typography variant={TVariant.PresStart24}>Mint Pixels</Typography>}
+      renderHeader={() => <Typography variant={TVariant.ComicSans28}>Mint Pixels</Typography>}
     >
-      {store.currentView === "mint" && <MintForm store={store} />}
-      {store.currentView === "approval" && <Approval />}
-      {store.currentView === "loading" && <Loading />}
-      {store.currentView === "complete" && <Complete />}
+      {store.currentView === MintModalView.Mint && <MintForm store={store} />}
+      {store.currentView === MintModalView.Approval && <Approval />}
+      {store.currentView === MintModalView.Loading && <Loading />}
+      {store.currentView === MintModalView.Complete && <Complete />}
     </Modal>
   );
 });
@@ -58,7 +58,7 @@ const MintForm = observer(({ store }: { store: MintPixelsModalStore }) => {
               label={"$DOG"}
               onChange={() => {}}
               name={"dog_count"}
-              validate={required}
+              validate={[required, maxValue(AppStore.web3.dogBalance)]}
               value={store.dogCount}
               isDisabled={true}
             />

@@ -1,7 +1,6 @@
-import {Box, Switch, useStyleConfig, Image, useColorMode, useMultiStyleConfig} from "@chakra-ui/react";
+import {Box, Image, useColorMode, useMultiStyleConfig} from "@chakra-ui/react";
 import { motion } from "framer-motion";
-import React, {useState} from "react";
-import Icon from "../Icon/Icon";
+import React from "react";
 import PixelDog from "./pixelDog.svg";
 import PixelSun from "./sunPixel.svg";
 import PixelMoon from "./moonPixel.svg";

@@ -4,7 +4,12 @@ import { AbstractConstructor, EmptyClass } from "../../helpers/mixins";
 import AppStore from "../../store/App.store";
 import {showDebugToast, showErrorToast} from "../../DSL/Toast/Toast";
 
-type MintModalView = "mint" | "approval" | "loading" | "complete";
+export enum MintModalView {
+  Mint = "mint",
+  Approval = "approval",
+  Loading = "loading",
+  Complete = "complete"
+}
 
 class MintPixelsModalStore extends Navigable<AbstractConstructor, MintModalView>(EmptyClass) {
   @observable
@@ -15,8 +20,8 @@ class MintPixelsModalStore extends Navigable<AbstractConstructor, MintModalView>
 
   constructor() {
     super();
-    this.pushNavigation("mint");
     makeObservable(this);
+    this.pushNavigation(MintModalView.Mint);
   }
 
   @computed
@@ -52,13 +57,29 @@ class MintPixelsModalStore extends Navigable<AbstractConstructor, MintModalView>
     try {
       const tx = await AppStore.web3.mintPupper()
       showDebugToast(`minting ${this.pixel_count!} pixel`)
-      this.pushNavigation("loading")
+      this.pushNavigation(MintModalView.Loading)
       await tx.wait()
-      this.pushNavigation("complete")
+      this.pushNavigation(MintModalView.Complete)
       AppStore.web3.refreshPupperBalance()
     } catch (e) {
       //@ts-ignore
       showErrorToast(e.message)
+    }
+  }
+
+  @computed
+  get modalTitle() {
+    switch(this.currentView) {
+      case MintModalView.Mint:
+        return "Mint Pixels"
+      case MintModalView.Approval:
+        return "Approve Pixels"
+      case MintModalView.Loading:
+        return "..."
+      case MintModalView.Complete:
+        return "complete"
+      default:
+        return ""
     }
   }
 }
