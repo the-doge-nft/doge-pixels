@@ -1,4 +1,4 @@
-const {ethers} = require("hardhat");
+const {ethers, upgrades} = require("hardhat");
 const {use, expect} = require("chai");
 const {shuffle, range, randFromArray} = require("./utils");
 const {solidity} = require("ethereum-waffle");
@@ -35,9 +35,10 @@ describe("[PX]", function () {
 
     let factory;
     factory = await ethers.getContractFactory("DOG20");
-    DOG20 = await factory.deploy();
+    DOG20 = await upgrades.deployProxy(factory);
+    await DOG20.deployed();
     // console.log(signers)
-    await DOG20.initMock(signers.map(item => item.address), DOG_TO_PIXEL_SATOSHIS * MOCK_SUPPLY);
+    await DOG20.__DOG20_init(signers.map(item => item.address), DOG_TO_PIXEL_SATOSHIS * MOCK_SUPPLY);
 
     factory = await ethers.getContractFactory("PXMock");
 
