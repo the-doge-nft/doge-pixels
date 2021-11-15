@@ -14,6 +14,8 @@ describe("[PX]", function () {
   const MOCK_SUPPLY = 10;
   const DOG_TO_PIXEL_SATOSHIS = 5;
 
+  const INDEX_OFFSET = 1;
+
   let PX, DOG20;
   let owner;
   let addr1;
@@ -147,7 +149,7 @@ describe("[PX]", function () {
       const arr = shuffle(range(MOCK_SUPPLY));
       // burn in random order
       for (let i = 0; i < arr.length; ++i) {
-        const tokenId = arr[i];
+        const tokenId = arr[i] + INDEX_OFFSET;
         const o = await PX.ownerOf(tokenId);
         const signer = getSignerFromAddress(o);
         console.log(`owner of ${tokenId} is ${signer.address}`)
@@ -156,7 +158,7 @@ describe("[PX]", function () {
       }
     });
     it('mint/burn cycle', async function () {
-      const cyclesQty = MOCK_SUPPLY * 50;
+      const cyclesQty = MOCK_SUPPLY * 20;
       let divider = 2;
       for (let i = 0; i < cyclesQty; ++i) {
         const remaining = (await PX.puppersRemaining()).toNumber();
@@ -171,7 +173,7 @@ describe("[PX]", function () {
           }
         } else {
           const signer = randFromArray(signers);
-          const tokenId = randFromArray(range(MOCK_SUPPLY));
+          const tokenId = randFromArray(range(MOCK_SUPPLY)) + INDEX_OFFSET;
           let shouldRevert = true;
           let isOwnerOf;
           try {
