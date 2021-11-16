@@ -160,7 +160,7 @@ contract PX is ERC721CustomUpgradeable, OwnableUpgradeable {
     // Description:
     // `mintPupper` but for minting multiple puppers with one ETH transaction
     //
-    function mintPuppers(address to, uint256 qty) public {
+    function mintPuppers(uint256 qty) public {
         for (uint256 i = 0; i < qty; ++i) {
             mintPupper();
         }
