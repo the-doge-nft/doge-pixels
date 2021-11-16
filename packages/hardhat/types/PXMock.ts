@@ -42,7 +42,7 @@ export interface PXMockInterface extends ethers.utils.Interface {
     "isApprovedForAll(address,address)": FunctionFragment;
     "mint(address,uint256)": FunctionFragment;
     "mintPupper()": FunctionFragment;
-    "mintPuppers(address,uint256)": FunctionFragment;
+    "mintPuppers(uint256)": FunctionFragment;
     "name()": FunctionFragment;
     "owner()": FunctionFragment;
     "ownerOf(uint256)": FunctionFragment;
@@ -122,7 +122,7 @@ export interface PXMockInterface extends ethers.utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "mintPuppers",
-    values: [string, BigNumberish]
+    values: [BigNumberish]
   ): string;
   encodeFunctionData(functionFragment: "name", values?: undefined): string;
   encodeFunctionData(functionFragment: "owner", values?: undefined): string;
@@ -429,7 +429,6 @@ export interface PXMock extends BaseContract {
     ): Promise<ContractTransaction>;
 
     mintPuppers(
-      to: string,
       qty: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
@@ -608,7 +607,6 @@ export interface PXMock extends BaseContract {
   ): Promise<ContractTransaction>;
 
   mintPuppers(
-    to: string,
     qty: BigNumberish,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
@@ -770,11 +768,7 @@ export interface PXMock extends BaseContract {
 
     mintPupper(overrides?: CallOverrides): Promise<BigNumber>;
 
-    mintPuppers(
-      to: string,
-      qty: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<void>;
+    mintPuppers(qty: BigNumberish, overrides?: CallOverrides): Promise<void>;
 
     name(overrides?: CallOverrides): Promise<string>;
 
@@ -985,7 +979,6 @@ export interface PXMock extends BaseContract {
     ): Promise<BigNumber>;
 
     mintPuppers(
-      to: string,
       qty: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
@@ -1171,7 +1164,6 @@ export interface PXMock extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     mintPuppers(
-      to: string,
       qty: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
