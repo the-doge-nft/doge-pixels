@@ -1,5 +1,6 @@
 var Jimp = require('jimp');
-
+var path = require('path');
+const OUT_PATH = path.join(__dirname, 'ipfs-test', 'tiles-test');
 function toColor(num) {
     num >>>= 0;
     var b = num & 0xFF,
@@ -17,7 +18,7 @@ function createTile(x, y, hex) {
     }else{
         size = 1;
     }
-    prefix = `tiles_${size}x${size}`
+    prefix = '';//`tiles_${size}x${size}`
     return new Promise((resolve)=>{
         let image = new Jimp(size, size, function (err, image) {
             if (err) throw err;
@@ -28,7 +29,7 @@ function createTile(x, y, hex) {
                 }
             }
 
-            image.write(`${prefix}/${x}_${y}.png`, (err) => {
+            image.write(path.join(OUT_PATH,prefix, `${x}_${y}.png`), (err) => {
                 if (err) throw err;
                 console.log(`saved ${x}_${y}.png`);
                 resolve();
@@ -55,13 +56,14 @@ Jimp.read('shiba.png')
     .then(img => {
         const width = img.getWidth();
         const height = img.getHeight();
+        const TEST_SIZE = 50;
         let image = new Jimp(width, height, async function (err, image) {
             if (err) throw err;
 
             for (let h = 0; h < height; ++h) {
                 for (let w = 0; w < width; ++w) {
-                    if (w > 10 || h > 10) {
-                        // break;
+                    if (w > TEST_SIZE || h > TEST_SIZE) {
+                        break;
                     }
                     const percentage = (w + h * width) / (width * height) * 100;
                     if ((w + h * width) % 1000 == 0) {
