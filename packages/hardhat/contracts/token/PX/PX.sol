@@ -137,7 +137,7 @@ contract PX is ERC721CustomUpgradeable, OwnableUpgradeable {
                 block.number +
                 puppersRemaining
             )));
-        ret = (seed - ((seed / 1000) * 1000));
+        ret = seed;
     }
 
 
