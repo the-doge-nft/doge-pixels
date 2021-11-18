@@ -6,6 +6,9 @@ class ViewerStore {
   isMintModalOpen = false;
 
   @observable
+  isBurnModalOpen = false;
+
+  @observable
   selectedPixel: THREE.Vector3 | null = null;
 
   @observable

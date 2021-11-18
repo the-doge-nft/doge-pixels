@@ -1,5 +1,5 @@
 import React, {Suspense, useCallback, useMemo} from "react";
-import {Box, Flex, Grid, GridItem} from "@chakra-ui/react";
+import {Box, Flex, Grid, GridItem, HStack, VStack} from "@chakra-ui/react";
 import Typography, {TVariant} from "../../DSL/Typography/Typography";
 import ThreeScene from "./ThreeScene";
 import ViewerStore from "./Viewer.store";
@@ -7,6 +7,9 @@ import {observer} from "mobx-react-lite";
 import Button from "../../DSL/Button/Button";
 import MintPixelsModal from "./MintPixelsModal";
 import Pane from "../../DSL/Pane/Pane";
+import AppStore from "../../store/App.store";
+import {showDebugToast} from "../../DSL/Toast/Toast";
+import BurnPixelsModal from "./BurnPixelsModal/BurnPixelsModal";
 
 export type onPixelSelectType = (x: number, y: number, pixelPosition: THREE.Vector3) => void;
 
@@ -60,15 +63,20 @@ const ViewerPage = observer(function ViewerPage() {
               </Typography>
             </Box>
             {store.selectedPixel && <PixelPosition store={store} />}
-            <Flex justifyContent={"center"} mb={10}>
+            <PixelGrid pixels={AppStore.web3.tokenIdsOwned} />
+            <Flex justifyContent={"center"} mb={10} mt={15}>
               <Button onClick={() => (store.isMintModalOpen = true)}>
                 Mint Pixels
               </Button>
+              {AppStore.web3.tokenIdsOwned.length > 0 && <Button onClick={() => store.isBurnModalOpen = true}>
+                Burn Pixels
+              </Button>}
             </Flex>
           </Pane>
         </GridItem>
       </Grid>
-      <MintPixelsModal isOpen={store.isMintModalOpen} onClose={() => (store.isMintModalOpen = false)} />
+      <MintPixelsModal isOpen={store.isMintModalOpen} onClose={() => store.isMintModalOpen = false}/>
+      <BurnPixelsModal isOpen={store.isBurnModalOpen} onClose={() => store.isBurnModalOpen = false}/>
     </>
   );
 });
@@ -91,5 +99,32 @@ const PixelPosition = observer(function PixelPosition({ store }: { store: Viewer
     </Box>
   );
 });
+
+const PixelGrid = observer(({pixels}: {pixels: number[]}) => {
+  return <Flex flexWrap={"wrap"}>
+    {pixels.map(px => <Flex
+      m={1}
+      borderRadius={3}
+      justifyContent={"center"}
+      alignItems={"center"}
+      width={"40px"}
+      height={"40px"}
+      bg={"yellow.700"}
+      onClick={async () => {
+        const [x, y] = await AppStore.web3.pupperToPixelCoords(px)
+        showDebugToast(`${x.toNumber()}, ${y.toNumber()}`)
+        console.log("debug:: px click ", px, x.toNumber(), y.toNumber())
+      }}
+      _hover={{
+        bg: "yellow.50",
+        cursor: "pointer"
+      }}
+    >
+      <Typography variant={TVariant.ComicSans10}>
+        {px - AppStore.web3.PIXEL_TO_ID_OFFSET}
+      </Typography>
+    </Flex>)}
+  </Flex>
+})
 
 export default ViewerPage;

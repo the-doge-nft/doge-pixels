@@ -1,6 +1,6 @@
-import {action, computed, makeObservable, observable} from "mobx";
+import {computed, makeObservable, observable} from "mobx";
 import {web3Modal} from "../services/web3Modal";
-import {BaseContract, BigNumber, Contract, providers} from "ethers";
+import {BigNumber, Contract, providers} from "ethers";
 import {showDebugToast, showErrorToast} from "../DSL/Toast/Toast";
 import {ExternalProvider, JsonRpcFetchFunc, Web3Provider} from "@ethersproject/providers/src.ts/web3-provider";
 import deployedContracts from "../contracts/hardhat_contracts.json"
@@ -16,8 +16,9 @@ interface EthersContractError {
 }
 
 class Web3Store {
-
+    D20_PRECISION = 5
     DOG_TO_PIXEL_SATOSHIS = 5523989899
+    PIXEL_TO_ID_OFFSET = 1000000
 
     @observable
     address?: string
@@ -46,6 +47,9 @@ class Web3Store {
     @observable
     network?: Network
 
+    @observable
+    tokenIdsOwned: number[] = []
+
     constructor() {
         makeObservable(this)
     }
@@ -65,14 +69,47 @@ class Web3Store {
             this.address = address
             this.web3Provider = web3Provider
 
-            this.connectToContract(signer)
+            this.connectToContracts(signer)
+            this.initPxListeners()
+            this.getPastPXReceives()
         } catch (e) {
             console.error("connection error: ", e)
+            showErrorToast("error connecting")
         }
 
         if (isDevModeEnabled() && this.network?.name === "homestead") {
             throw Error("🚨 We don't test on prod here, switch to a testnet or local 🚨")
         }
+    }
+
+    initPxListeners() {
+        console.log("debug:: initPxListeners called")
+        this.pxContract?.on("Transfer(address,address,uint256)", (fromAddress: string, toAddress: string, tokenId: BigNumber) => {
+            console.log("debug:: from address", fromAddress)
+            console.log("debug:: to address", toAddress)
+            if (toAddress === this.address) {
+                console.log("debug:: hit on transfer event", fromAddress, toAddress, tokenId.toNumber())
+                if (!this.tokenIdsOwned.includes(tokenId.toNumber())) {
+                    this.tokenIdsOwned.push(tokenId.toNumber())
+                }
+            } else if (fromAddress === this.address) {
+                if (this.tokenIdsOwned.includes(tokenId.toNumber())) {
+                    const index = this.tokenIdsOwned.indexOf(tokenId.toNumber())
+                    this.tokenIdsOwned.splice(index, 1)
+                }
+            }
+        })
+    }
+
+    async getPastPXReceives() {
+        const filter = this.pxContract!.filters.Transfer(null, this.address)
+        const logs = await this.pxContract!.queryFilter(filter)
+        logs.forEach(tx => {
+            const tokenId = tx.args.tokenId.toNumber()
+            if (!this.tokenIdsOwned.includes(tokenId)) {
+                this.tokenIdsOwned.push(tokenId)
+            }
+        })
     }
 
     async disconnect() {
@@ -93,7 +130,7 @@ class Web3Store {
         }
     }
 
-    async connectToContract(signerOrProvider?: Signer | Provider) {
+    async connectToContracts(signerOrProvider?: Signer | Provider) {
         //@ts-ignore
         this.pxContract = new Contract(
             deployedContracts["31337"]["localhost"]["contracts"]["PX"]["address"],
@@ -151,11 +188,19 @@ class Web3Store {
     }
 
     async getDogToAccount() {
-        return this.dogContract!.initMock([this.address!], this.DOG_TO_PIXEL_SATOSHIS * 2)
+        return this.dogContract!.initMock([this.address!], this.DOG_TO_PIXEL_SATOSHIS * 10)
     }
 
     mintPuppers(pixel_amount: number) {
         return this.pxContract!.mintPuppers(pixel_amount)
+    }
+
+    pupperToPixelCoords(pupper: number) {
+        return this.pxContract!.pupperToPixelCoords(pupper)
+    }
+
+    burnPupper(pupper: number) {
+        return this.pxContract!.burnPupper(pupper)
     }
 
     @computed

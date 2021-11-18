@@ -12,6 +12,7 @@ import { useField } from "react-final-form";
 import Control from "../Control";
 import { AllowedStyleProps, BaseInputProps } from "../interfaces";
 import { useControlledFormField, useFormField } from "../useFormField";
+import Typography, {TVariant} from "../../Typography/Typography";
 
 export interface NumberInputProps extends BaseInputProps, AllowedStyleProps {
   stepper?: boolean;
@@ -65,7 +66,11 @@ const NumberInput = ({
           </NumberInputStepper>
         )}
       </ChakraNumberInput>
-      {showValidation && <FormErrorMessage>{meta.error}</FormErrorMessage>}
+      {showValidation && <FormErrorMessage>
+        <Typography color={"red.500"} variant={TVariant.ComicSans14}>
+          {meta.error}
+        </Typography>
+      </FormErrorMessage>}
     </Control>
   );
 };

@@ -27,7 +27,7 @@ const ColorModeToggleStyle = {
       },
       _active: {
         transform: "translate(4px, 4px)",
-        boxShadow: "4px 4px 0px black"
+        boxShadow: `4px 4px 0px ${lightOrDark(colorMode,"black", "white")}`
       },
       px: `${containerXPadding}px`,
       py: "8px"

@@ -106,35 +106,39 @@ const AppLayout = observer(function AppLayout({children}: AppLayoutProps) {
             {AppStore.web3.address &&
             <Typography variant={TVariant.PresStart14}>{AppStore.web3.addressForDisplay}</Typography>}
             <Dev>
-              {AppStore.web3.web3Provider && <HStack>
-                  <VStack mr={1}>
-                      <Typography variant={TVariant.ComicSans14}>$DOG</Typography>
-                      <Typography variant={TVariant.PresStart14}>{AppStore.web3.dogBalance}</Typography>
-                      <Box>
-                          <Button
-                              variant={ButtonVariant.Text}
-                              onClick={async () => {
-                                const tx = await AppStore.web3.getDogToAccount()
-                                await tx.wait()
-                                AppStore.web3.refreshDogBalance()
-                              }}
-                          >
-                              💰
-                          </Button>
-                          <Button variant={ButtonVariant.Text} onClick={async () => AppStore.web3.refreshDogBalance()}>
-                              🔄
-                          </Button>
-                      </Box>
-                  </VStack>
-                  <VStack ml={1}>
-                      <Typography variant={TVariant.ComicSans14}>$PX</Typography>
-                      <Typography variant={TVariant.PresStart14}>{AppStore.web3.pupperBalance}</Typography>
-                      <Box>
-                          <Button variant={ButtonVariant.Text}
-                                  onClick={async () => AppStore.web3.refreshPupperBalance()}>🔄</Button>
-                      </Box>
-                  </VStack>
-              </HStack>}
+              <>
+                {AppStore.web3.web3Provider && <HStack>
+                    <VStack mr={1}>
+                        <Typography variant={TVariant.ComicSans14}>$DOG</Typography>
+                        <Typography variant={TVariant.PresStart14}>
+                          {AppStore.web3.dogBalance !== undefined ? AppStore.web3.dogBalance / (10 ** AppStore.web3.D20_PRECISION) : 0}
+                        </Typography>
+                        <Box>
+                            <Button
+                                variant={ButtonVariant.Text}
+                                onClick={async () => {
+                                  const tx = await AppStore.web3.getDogToAccount()
+                                  await tx.wait()
+                                  AppStore.web3.refreshDogBalance()
+                                }}
+                            >
+                                💰
+                            </Button>
+                            <Button variant={ButtonVariant.Text} onClick={async () => AppStore.web3.refreshDogBalance()}>
+                                🔄
+                            </Button>
+                        </Box>
+                    </VStack>
+                    <VStack ml={1}>
+                        <Typography variant={TVariant.ComicSans14}>$PX</Typography>
+                        <Typography variant={TVariant.PresStart14}>{AppStore.web3.pupperBalance}</Typography>
+                        <Box>
+                            <Button variant={ButtonVariant.Text}
+                                    onClick={async () => AppStore.web3.refreshPupperBalance()}>🔄</Button>
+                        </Box>
+                    </VStack>
+                </HStack>}
+              </>
             </Dev>
           </VStack>
         </Flex>
