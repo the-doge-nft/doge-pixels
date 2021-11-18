@@ -11,10 +11,11 @@ import { onPixelSelectType } from "./Viewer.page";
 
 interface ThreeSceneProps {
   onPixelSelect: onPixelSelectType;
-  onPixelClear: () => void;
+  onPixelClear?: () => void;
+  selectedPixel: any;
 }
 
-const ThreeScene = React.memo(({ onPixelSelect, onPixelClear }: ThreeSceneProps) => {
+const ThreeScene = React.memo(({ onPixelSelect, onPixelClear, selectedPixel }: ThreeSceneProps) => {
   const cam = new THREE.PerspectiveCamera(5, window.innerWidth / window.innerHeight, 0.0000001, 10000);
   const [camera] = useState<THREE.PerspectiveCamera>(cam);
 
@@ -30,6 +31,9 @@ const ThreeScene = React.memo(({ onPixelSelect, onPixelClear }: ThreeSceneProps)
       camera.position.z = 6000;
     }
   }, []);
+
+  //@TODO: CC FIX
+  const anotherRef = useRef()
 
   const texture = useLoader(THREE.TextureLoader, KobosuImage);
   texture.magFilter = THREE.NearestFilter;
@@ -118,14 +122,36 @@ const ThreeScene = React.memo(({ onPixelSelect, onPixelClear }: ThreeSceneProps)
     }
   };
 
+  useEffect(() => {
+    if (selectedPixel) {
+      console.log("blah")
+    } else {
+      if (selectedPixelOverlayRef.current) {
+        selectedPixelOverlayRef.current.visible = false;
+      }
+    }
+  }, [selectedPixel])
+
   return (
     <Box ref={canvasParentRef} position={"absolute"} w={"100%"} h={"100%"}>
       <Canvas
+        //@ts-ignore
+        ref={anotherRef}
         camera={camera}
         onCreated={({ gl }) => {
           window.addEventListener("resize", () => {
-            camera.aspect = window.innerWidth / window.innerHeight;
-            gl.setSize( window.innerWidth, window.innerHeight );
+
+            //@TODO: CC FIX
+            //@ts-ignore
+            const width = anotherRef!.current!.clientWidth;
+            //@ts-ignore
+            const height = anotherRef!.current!.clientHeight;
+            camera.aspect = width / height;
+
+            // console.log("debug:: canvas parent ref", anotherRef.current)
+            // canvasParentRef(anotherRef.current!)
+
+            gl.setSize( width, height );
             camera.updateProjectionMatrix();
           })
 
@@ -181,18 +207,18 @@ const ThreeScene = React.memo(({ onPixelSelect, onPixelClear }: ThreeSceneProps)
           </mesh>
         </group>
       </Canvas>
-      <Box position={"absolute"} left={2} top={2}>
-        <Button
-          onClick={() => {
-            onPixelClear();
-            if (selectedPixelOverlayRef.current) {
-              selectedPixelOverlayRef.current.visible = false;
-            }
-          }}
-        >
-          <Icon icon={"close"} />
-        </Button>
-      </Box>
+      {/*<Box position={"absolute"} left={2} top={2}>*/}
+      {/*  <Button*/}
+      {/*    onClick={() => {*/}
+      {/*      onPixelClear && onPixelClear();*/}
+      {/*      if (selectedPixelOverlayRef.current) {*/}
+      {/*        selectedPixelOverlayRef.current.visible = false;*/}
+      {/*      }*/}
+      {/*    }}*/}
+      {/*  >*/}
+      {/*    <Icon icon={"close"} />*/}
+      {/*  </Button>*/}
+      {/*</Box>*/}
     </Box>
   );
 });

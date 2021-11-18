@@ -32,6 +32,11 @@ const AppLayout = observer(function AppLayout({children}: AppLayoutProps) {
       const handleAccountsChanged = (accounts: string[]) => {
         showDebugToast("accounts changed")
         AppStore.web3.address = accounts[0]
+        AppStore.web3.refreshDogBalance()
+        AppStore.web3.refreshPupperBalance()
+        AppStore.web3.tokenIdsOwned = []
+        AppStore.web3.getPastPXReceives()
+
       }
 
       const handleChainChanged = (_hexChainId: string) => {
@@ -164,7 +169,7 @@ const Title = () => {
       </Typography>
       <Typography
         position={"absolute"}
-        left={-1}
+        left={1}
         top={1}
         color={lightOrDark(colorMode, "black", "white")}
         zIndex={-1}
