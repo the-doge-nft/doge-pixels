@@ -55,12 +55,13 @@ class MintPixelsModalStore extends Navigable<AbstractConstructor, MintModalView>
     }
 
     try {
-      const tx = await AppStore.web3.mintPupper()
+      const tx = await AppStore.web3.mintPuppers(amount)
       showDebugToast(`minting ${this.pixel_count!} pixel`)
       this.pushNavigation(MintModalView.Loading)
       await tx.wait()
       this.pushNavigation(MintModalView.Complete)
       AppStore.web3.refreshPupperBalance()
+      AppStore.web3.refreshDogBalance()
     } catch (e) {
       //@ts-ignore
       showErrorToast(e.message)

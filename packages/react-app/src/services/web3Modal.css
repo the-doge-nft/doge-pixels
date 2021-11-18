@@ -1,16 +1,14 @@
 .web3modal-modal-card {
     border-radius: 0px !important;
-    background-color: var(--chakra-colors-yellow-50) !important;
-    border-width: 1px;
-    border-style: solid;
-    border-color: black;
+    /*border-width: 1px;*/
+    /*border-style: solid;*/
     font-family: 'Comic Sans';
 }
 
 .web3modal-provider-container {
-    background-color: var(--chakra-colors-yellow-50) !important;
-    border: 1px solid black;
+    border-width: 1px;
+    border-style: solid;
+    border-color: transparent;
     border-radius: 0px !important;
-    color: black;
 }
 

@@ -154,8 +154,8 @@ class Web3Store {
         return this.dogContract!.initMock([this.address!], this.DOG_TO_PIXEL_SATOSHIS * 2)
     }
 
-    mintPupper() {
-        return this.pxContract!.mintPupper()
+    mintPuppers(pixel_amount: number) {
+        return this.pxContract!.mintPuppers(pixel_amount)
     }
 
     @computed

@@ -1,7 +1,7 @@
 import React, {useCallback, useEffect, useRef, useState} from "react";
 import * as THREE from "three";
 import { Object3D } from "three";
-import { Canvas, useLoader } from "@react-three/fiber";
+import { Canvas, useLoader, Vector2 } from "@react-three/fiber";
 import KobosuImage from "../../images/kobosu.jpeg";
 import { Box } from "@chakra-ui/react";
 import Button from "../../DSL/Button/Button";
@@ -45,6 +45,8 @@ const ThreeScene = React.memo(({ onPixelSelect, onPixelClear }: ThreeSceneProps)
   const selectedPixelOverlayRef = useRef<Object3D>(null);
   const hoverPixelOverlayRef = useRef<Object3D>(null);
   const [isDragging, setIsDragging] = useState(false);
+
+  const newHoverOverlayRef = useRef<Object3D>(null)
 
   let isDown = false;
   let startMouseX: number;
@@ -111,18 +113,10 @@ const ThreeScene = React.memo(({ onPixelSelect, onPixelClear }: ThreeSceneProps)
       if (selectedPixelOverlayRef.current) {
         selectedPixelOverlayRef.current.visible = true;
         [selectedPixelOverlayRef.current.position.x, selectedPixelOverlayRef.current.position.y] = [pixelX, pixelY];
-        selectedPixelOverlayRef.current.position.z = 0.0001;
+        selectedPixelOverlayRef.current.position.z = 0.001;
       }
     }
   };
-
-  // useEffect(() => {
-  //   window.addEventListener("resize", () => {
-  //     camera.aspect = window.innerWidth / window.innerHeight;
-  //     camera.updateProjectionMatrix();
-  //     renderer.setSize( window.innerWidth, window.innerHeight );
-  //   })
-  // }, [])
 
   return (
     <Box ref={canvasParentRef} position={"absolute"} w={"100%"} h={"100%"}>
@@ -134,6 +128,7 @@ const ThreeScene = React.memo(({ onPixelSelect, onPixelClear }: ThreeSceneProps)
             gl.setSize( window.innerWidth, window.innerHeight );
             camera.updateProjectionMatrix();
           })
+
           gl.domElement.addEventListener("wheel", e => onDocumentMouseWheel(e));
           gl.domElement.addEventListener("mousedown", e => downListener(e));
           gl.domElement.addEventListener("mousemove", e => moveListener(e, gl.domElement));
@@ -150,6 +145,12 @@ const ThreeScene = React.memo(({ onPixelSelect, onPixelClear }: ThreeSceneProps)
                 getWorldPixelCoordinate(e.point, overlayLength);
               hoverPixelOverlayRef.current.position.z = 0.0001;
             }
+
+            if (newHoverOverlayRef.current) {
+              [newHoverOverlayRef.current.position.x, newHoverOverlayRef.current.position.y] =
+                getWorldPixelCoordinate(e.point, overlayLength);
+              newHoverOverlayRef.current.position.z = 0.001;
+            }
           }}
           onPointerUp={onPointUp}
         >
@@ -160,18 +161,25 @@ const ThreeScene = React.memo(({ onPixelSelect, onPixelClear }: ThreeSceneProps)
           <planeGeometry attach={"geometry"} args={[overlayLength, overlayLength]} />
           <meshBasicMaterial attach={"material"} color={0xff00ff} opacity={0.8} transparent={true} />
         </mesh>
-        <mesh ref={hoverPixelOverlayRef} position={[0, 0, 0.0001]}>
-          <planeGeometry attach={"geometry"} args={[overlayLength, overlayLength]} />
-          {/* @TODO mesh lines here instead so we can control width */}
-          <meshBasicMaterial
-            wireframe={true}
-            wireframeLinewidth={10}
-            attach={"material"}
-            color={0xffff00}
-            opacity={0.5}
-            transparent={true}
-          />
-        </mesh>
+
+        <group ref={newHoverOverlayRef}>
+          <mesh position={[-0.5, 0, 0.001]}>
+            <planeGeometry attach={"geometry"} args={[0.05, 1.05]} />
+            <meshBasicMaterial attach={"material"} color={0xf1c232} opacity={1} transparent={true} />
+          </mesh>
+          <mesh position={[0.5, 0, 0.001]}>
+            <planeGeometry attach={"geometry"} args={[0.05, 1.05]} />
+            <meshBasicMaterial attach={"material"} color={0xf1c232} opacity={1} transparent={true} />
+          </mesh>
+          <mesh position={[0, 0.5, 0.001]} rotation={new THREE.Euler(0, 0, Math.PI / 2)}>
+            <planeGeometry attach={"geometry"} args={[0.05, 1]} />
+            <meshBasicMaterial attach={"material"} color={0xf1c232} opacity={1} transparent={true} />
+          </mesh>
+          <mesh position={[0, -0.5, 0.001]} rotation={new THREE.Euler(0, 0, -Math.PI / 2)}>
+            <planeGeometry attach={"geometry"} args={[0.05, 1]} />
+            <meshBasicMaterial attach={"material"} color={0xf1c232} opacity={1} transparent={true} />
+          </mesh>
+        </group>
       </Canvas>
       <Box position={"absolute"} left={2} top={2}>
         <Button
@@ -188,5 +196,6 @@ const ThreeScene = React.memo(({ onPixelSelect, onPixelClear }: ThreeSceneProps)
     </Box>
   );
 });
+
 
 export default ThreeScene;
