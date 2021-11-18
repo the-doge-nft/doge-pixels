@@ -1,4 +1,4 @@
-import { darkModePrimary } from "../Theme";
+import {darkModePrimary, lightOrDark} from "../Theme";
 import { GlobalFont } from "../Typography/Typography.style";
 
 const ModalStyle = {
@@ -38,6 +38,7 @@ const ModalStyle = {
       border: "2px solid",
       borderColor: colorMode === "light" ? "black" : "white",
       borderRadius: "0px",
+      boxShadow: `-14px 14px 0px ${lightOrDark(colorMode, "black", "white")}`
     },
     header: {
 

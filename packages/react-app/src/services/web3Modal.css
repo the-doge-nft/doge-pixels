@@ -2,7 +2,12 @@
     border-radius: 0px !important;
     /*border-width: 1px;*/
     /*border-style: solid;*/
-    font-family: 'Comic Sans';
+    font-family: 'PressStart2P';
+    border-color: transparent;
+}
+
+.web3modal-provider-wrapper {
+    /*border-color: transparent !important;*/
 }
 
 .web3modal-provider-container {
@@ -10,5 +15,26 @@
     border-style: solid;
     border-color: transparent;
     border-radius: 0px !important;
+    height: 100%;
 }
 
+.web3modal-modal-card {
+    /*padding: 20px 0px !important;*/
+    box-shadow: -14px 14px 0px black;
+    height: 60%;
+}
+
+.web3modal-provider-description {
+    width: 57%!important;
+}
+
+.web3modal-provider-name {
+    margin-top: 22px!important;
+    font-size: 18px!important;
+}
+
+.web3modal-provider-description {
+    font-family: 'Comic Sans';
+    font-size: 16px!important;
+    display: none;
+}

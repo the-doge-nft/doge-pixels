@@ -34,6 +34,11 @@ const TypographyStyle = {
       fontWeight: "normal",
       fontSize: "28px",
     },
+    ComicSans10: {
+      fontFamily: Type.ComicSans,
+      fontWeight: "normal",
+      fontSize: "10px"
+    },
     ComicSans12: {
       fontFamily: Type.ComicSans,
       fontWeight: "normal",

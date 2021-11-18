@@ -12,7 +12,8 @@ class _AppStore {
     }
 
     init() {
-        console.log("initializing AppStore")
+        // this.web3.init()
+        console.log("debug:: initializing AppStore")
     }
 }
 

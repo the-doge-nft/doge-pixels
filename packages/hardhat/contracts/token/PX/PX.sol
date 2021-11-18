@@ -43,8 +43,8 @@ contract PX is ERC721CustomUpgradeable, OwnableUpgradeable {
         __ERC721Custom_init(name_, symbol_);
         require(DOG20Address != address(0));
         DOG20 = IERC20(DOG20Address);
-        uint256 _width = 10;
-        uint256 _height = 10;
+        uint256 _width = 640;
+        uint256 _height = 480;
         totalSupply = _width * _height;
         puppersRemaining = _width * _height;
 
@@ -255,6 +255,6 @@ contract PX is ERC721CustomUpgradeable, OwnableUpgradeable {
     //
     function pupperToPixelCoords(uint256 pupper) view public returns (uint256[2] memory) {
         uint256 index = pupper - INDEX_OFFSET;
-        return [index % 512, index / 512];
+            return [index % 640, index / 640];
     }
 }
