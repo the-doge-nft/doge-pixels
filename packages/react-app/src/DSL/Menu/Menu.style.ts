@@ -38,6 +38,7 @@ const MenuStyle = {
       },
     },
     list: {
+      borderRadius: "0px",
       borderWidth: "1px",
       borderStyle: "solid",
       borderColor: lightOrDark(colorMode, "black", "white"),

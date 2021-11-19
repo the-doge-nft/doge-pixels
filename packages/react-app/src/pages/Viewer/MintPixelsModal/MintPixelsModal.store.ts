@@ -1,5 +1,5 @@
 import {computed, makeObservable, observable } from "mobx";
-import { showDebugToast } from "../../../DSL/Toast/Toast";
+import { showDebugToast, showErrorToast } from "../../../DSL/Toast/Toast";
 import { EmptyClass } from "../../../helpers/mixins";
 import { Navigable } from "../../../services/mixins/navigable";
 import { Reactionable } from "../../../services/mixins/reactionable";
@@ -24,7 +24,7 @@ class MintPixelsModalStore extends Reactionable((Navigable(EmptyClass))) {
   allowance?: number
 
   @observable
-  allowanceInput: number = 0
+  allowanceToGrant: number = 0
 
   constructor() {
     super();
@@ -60,22 +60,6 @@ class MintPixelsModalStore extends Reactionable((Navigable(EmptyClass))) {
     return [];
   }
 
-
-  async mintPixels(amount: number) {
-    try {
-      const tx = await AppStore.web3.mintPuppers(amount)
-      showDebugToast(`minting ${this.pixel_count!} pixel`)
-      this.pushNavigation(MintModalView.Loading)
-      await tx.wait()
-      this.pushNavigation(MintModalView.Complete)
-      AppStore.web3.refreshPupperBalance()
-      AppStore.web3.refreshDogBalance()
-    } catch (e) {
-      //@ts-ignore
-      showErrorToast("error minting")
-    }
-  }
-
   @computed
   get maxPixelsToPurchase() {
     if (AppStore.web3.dogBalance) {
@@ -83,20 +67,46 @@ class MintPixelsModalStore extends Reactionable((Navigable(EmptyClass))) {
     } else return 0
   }
 
-  handleMintSubmit(amount: number) {
-    if (this.allowance! < (this.pixel_count! * AppStore.web3.DOG_TO_PIXEL_SATOSHIS)) {
-      this.pushNavigation(MintModalView.Approval)
-      this.allowanceInput = this.pixel_count! * AppStore.web3.DOG_TO_PIXEL_SATOSHIS
+  async handleMintSubmit(pixel_amount: number) {
+    const dogToSpend = pixel_amount * AppStore.web3.DOG_TO_PIXEL_SATOSHIS
+    if (this.allowance !== undefined) {
+      this.allowanceToGrant = dogToSpend - (this.allowance)
     } else {
-      this.mintPixels(amount)
+      this.allowanceToGrant = dogToSpend
+    }
+
+    if (this.allowanceToGrant > 0) {
+      this.pushNavigation(MintModalView.Approval)
+    } else {
+      this.mintPixels(pixel_amount)
+    }
+  }
+
+  async mintPixels(amount: number) {
+    try {
+      const tx = await AppStore.web3.mintPuppers(amount)
+      showDebugToast(`minting ${this.pixel_count!} pixel`)
+      this.pushNavigation(MintModalView.Loading)
+      const ret = await tx.wait()
+      console.log("debug:: ret", ret)
+      this.pushNavigation(MintModalView.Complete)
+      AppStore.web3.refreshPupperBalance()
+      AppStore.web3.refreshDogBalance()
+
+    } catch (e) {
+      showErrorToast("error minting")
     }
   }
 
   async handleApproveSubmit(allowance: number) {
-    const tx = await AppStore.web3.approvePxSpendDog(allowance)
-    showDebugToast(`approving DOG spend: ${allowance}`)
-    await tx.wait()
-    this.mintPixels(this.pixel_count!)
+    try {
+      const tx = await AppStore.web3.approvePxSpendDog(allowance)
+      showDebugToast(`approving DOG spend: ${allowance}`)
+      await tx.wait()
+      this.mintPixels(this.pixel_count!)
+    } catch (e) {
+      showErrorToast("Error approving $DOG spend")
+    }
   }
 
   @computed
