@@ -3,21 +3,26 @@ import * as THREE from "three";
 import { Object3D } from "three";
 import { Canvas, useLoader, Vector2 } from "@react-three/fiber";
 import KobosuImage from "../../images/kobosu.jpeg";
+import Kobosu from "../../images/THE_ACTUAL_NFT_IMAGE.png"
 import { Box } from "@chakra-ui/react";
-import Button from "../../DSL/Button/Button";
-import Icon from "../../DSL/Icon/Icon";
 import { getWorldPixelCoordinate } from "./helpers";
 import { onPixelSelectType } from "./Viewer.page";
+import ViewerStore from "./Viewer.store";
+import { SET_CAMERA } from "../../services/mixins/eventable";
+import { BigNumber } from "ethers";
 
 interface ThreeSceneProps {
   onPixelSelect: onPixelSelectType;
-  onPixelClear?: () => void;
   selectedPixel: any;
+  store?: ViewerStore;
 }
 
-const ThreeScene = React.memo(({ onPixelSelect, onPixelClear, selectedPixel }: ThreeSceneProps) => {
+const ThreeScene = React.memo(({ onPixelSelect, selectedPixel, store }: ThreeSceneProps) => {
   const cam = new THREE.PerspectiveCamera(5, window.innerWidth / window.innerHeight, 0.0000001, 10000);
   const [camera] = useState<THREE.PerspectiveCamera>(cam);
+
+  //@TODO: CC FIX
+  const aDiffRef = useRef<HTMLDivElement | null>(null)
 
   const canvasParentRef = useCallback((node: HTMLDivElement) => {
     if (node) {
@@ -27,15 +32,15 @@ const ThreeScene = React.memo(({ onPixelSelect, onPixelClear, selectedPixel }: T
       camera.updateProjectionMatrix();
 
       camera.position.x = imageWorldUnitsWidth / 2 - 0.65;
-      camera.position.y = imageWorldUnitsHeight / 2 + 0.26;
+      camera.position.y = -1*imageWorldUnitsHeight / 2 + 0.26;
       camera.position.z = 6000;
+
+      aDiffRef.current = node
     }
   }, []);
 
-  //@TODO: CC FIX
-  const anotherRef = useRef()
 
-  const texture = useLoader(THREE.TextureLoader, KobosuImage);
+  const texture = useLoader(THREE.TextureLoader, Kobosu);
   texture.magFilter = THREE.NearestFilter;
   const scale = 480;
   const aspectRatio = texture.image.width / texture.image.height;
@@ -56,11 +61,12 @@ const ThreeScene = React.memo(({ onPixelSelect, onPixelClear, selectedPixel }: T
   let startMouseX: number;
   let startMouseY: number;
 
+  const maxCameraZ = 6000;
+  const minCameraZ = 80;
+
   const onDocumentMouseWheel = (event: Event) => {
     event.preventDefault();
     const { deltaY } = event as WheelEvent;
-    const maxCameraZ = 6000;
-    const minCameraZ = 80;
     const newZ = camera.position.z + deltaY;
     if (newZ >= minCameraZ && newZ <= maxCameraZ) {
       camera.position.z = newZ;
@@ -112,7 +118,7 @@ const ThreeScene = React.memo(({ onPixelSelect, onPixelClear, selectedPixel }: T
       const [pixelX, pixelY] = getWorldPixelCoordinate(e.point, overlayLength);
       const indexX = Math.floor(pixelX + overlayLength);
       const indexY = Math.floor(pixelY + overlayLength);
-      onPixelSelect(indexX, indexY, e.point);
+      onPixelSelect(indexX, -1*indexY);
 
       if (selectedPixelOverlayRef.current) {
         selectedPixelOverlayRef.current.visible = true;
@@ -123,36 +129,59 @@ const ThreeScene = React.memo(({ onPixelSelect, onPixelClear, selectedPixel }: T
   };
 
   useEffect(() => {
-    if (selectedPixel) {
+    if (store?.selectedPupper) {
       console.log("blah")
     } else {
       if (selectedPixelOverlayRef.current) {
         selectedPixelOverlayRef.current.visible = false;
       }
     }
-  }, [selectedPixel])
+  }, [store?.selectedPupper])
+
+  const setCam = useCallback((data) => {
+
+  }, [])
+
+
+  useEffect(() => {
+    const CameraTools = {
+      setCamera: ([x, y]: [BigNumber, BigNumber]) => {
+        const xPos = x.toNumber()
+        const yPos = -1*y.toNumber()
+
+        camera.position.x = xPos
+        camera.position.y = yPos
+        camera.position.z = minCameraZ
+
+        if (selectedPixelOverlayRef.current) {
+          selectedPixelOverlayRef.current.visible = true;
+          [selectedPixelOverlayRef.current.position.x, selectedPixelOverlayRef.current.position.y] = [
+            xPos - (overlayLength/2),
+            yPos - (overlayLength/2)
+          ];
+          selectedPixelOverlayRef.current.position.z = 0.001;
+        }
+      }
+    }
+    store?.subscribe(SET_CAMERA, CameraTools, "setCamera")
+    return () => {
+      store?.unsubscribeAllFrom(CameraTools)
+    }
+  }, [])
 
   return (
     <Box ref={canvasParentRef} position={"absolute"} w={"100%"} h={"100%"}>
       <Canvas
-        //@ts-ignore
-        ref={anotherRef}
         camera={camera}
         onCreated={({ gl }) => {
           window.addEventListener("resize", () => {
-
-            //@TODO: CC FIX
-            //@ts-ignore
-            const width = anotherRef!.current!.clientWidth;
-            //@ts-ignore
-            const height = anotherRef!.current!.clientHeight;
-            camera.aspect = width / height;
-
-            // console.log("debug:: canvas parent ref", anotherRef.current)
-            // canvasParentRef(anotherRef.current!)
-
-            gl.setSize( width, height );
-            camera.updateProjectionMatrix();
+            if (aDiffRef.current) {
+              const width = aDiffRef.current.clientWidth;
+              const height = aDiffRef.current.clientHeight;
+              camera.aspect = width / height;
+              gl.setSize( width, height );
+              camera.updateProjectionMatrix();
+            }
           })
 
           gl.domElement.addEventListener("wheel", e => onDocumentMouseWheel(e));
@@ -164,7 +193,7 @@ const ThreeScene = React.memo(({ onPixelSelect, onPixelClear, selectedPixel }: T
         }}
       >
         <mesh
-          position={[imageWorldUnitsWidth / 2, imageWorldUnitsHeight / 2, 0]}
+          position={[(imageWorldUnitsWidth / 2) - 1, -1*imageWorldUnitsHeight / 2, 0]}
           onPointerMove={e => {
             if (hoverPixelOverlayRef.current) {
               [hoverPixelOverlayRef.current.position.x, hoverPixelOverlayRef.current.position.y] =
@@ -207,18 +236,6 @@ const ThreeScene = React.memo(({ onPixelSelect, onPixelClear, selectedPixel }: T
           </mesh>
         </group>
       </Canvas>
-      {/*<Box position={"absolute"} left={2} top={2}>*/}
-      {/*  <Button*/}
-      {/*    onClick={() => {*/}
-      {/*      onPixelClear && onPixelClear();*/}
-      {/*      if (selectedPixelOverlayRef.current) {*/}
-      {/*        selectedPixelOverlayRef.current.visible = false;*/}
-      {/*      }*/}
-      {/*    }}*/}
-      {/*  >*/}
-      {/*    <Icon icon={"close"} />*/}
-      {/*  </Button>*/}
-      {/*</Box>*/}
     </Box>
   );
 });

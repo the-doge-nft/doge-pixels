@@ -1,5 +1,5 @@
 import React from "react";
-import { Icon as ChakraIcon, IconProps as ChakraIconProps } from "@chakra-ui/react";
+import {Icon as ChakraIcon, IconProps as ChakraIconProps, useStyleConfig} from "@chakra-ui/react";
 import {
   CgClose,
   FiArrowDown,
@@ -65,7 +65,8 @@ interface IconProps extends ChakraIconProps {
 }
 
 const Icon = ({ icon, ...rest }: IconProps) => {
-  return <ChakraIcon as={iconStringToComponentMap[icon]} {...rest} />;
+  const style = useStyleConfig("Icon")
+  return <ChakraIcon __css={style} as={iconStringToComponentMap[icon]} {...rest} />;
 };
 
 export default Icon;
