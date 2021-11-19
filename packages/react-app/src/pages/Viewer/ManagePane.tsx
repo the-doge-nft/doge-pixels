@@ -16,7 +16,7 @@ const ManagePane = observer(function ManagePane({store}: {store: ViewerStore}) {
         block
         size={"sm"}
         variant={TVariant.PresStart16}>
-        Your Pixels
+        Your Pixels ({AppStore.web3.tokenIdsOwned.length})
       </Typography>
       <Box overflow={"scroll"} h={"full"}>
         <Box mt={3} maxHeight={"350px"}>

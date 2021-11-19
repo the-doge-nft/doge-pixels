@@ -175,6 +175,7 @@ class Web3Store {
     async refreshDogBalance() {
         try {
             this.dogBalance = await this.getDogBalance()
+            showDebugToast(`refreshed dog balance: ${this.dogBalance}`)
         } catch (e) {
             const {message} = e as EthersContractError
             this.dogBalance = 0

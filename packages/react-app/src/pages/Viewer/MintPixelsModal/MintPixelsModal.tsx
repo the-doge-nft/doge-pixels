@@ -12,10 +12,12 @@ import model from "../../../DSL/Form/model";
 import AppStore from "../../../store/App.store";
 import Dev from "../../../common/Dev";
 import Submit from "../../../DSL/Form/Submit";
+import {makeObservable} from "mobx";
+import Loading from "../Loading";
 
 interface MintPixelsModalProps extends Pick<ModalProps, "isOpen" | "onClose"> {}
 
-const MintPixelsModal = observer(function MintPixelsModal({ isOpen, onClose }: MintPixelsModalProps) {
+const MintPixelsModal = observer(({ isOpen, onClose }: MintPixelsModalProps) => {
   const store = useMemo(() => new MintPixelsModalStore(), [isOpen]);
   useEffect(() => {
     if (isOpen) {
@@ -29,7 +31,7 @@ const MintPixelsModal = observer(function MintPixelsModal({ isOpen, onClose }: M
       onClose={() => {
         onClose();
       }}
-      renderHeader={() => <Typography variant={TVariant.ComicSans28}>Mint Pixels</Typography>}
+      renderHeader={() => <Typography variant={TVariant.ComicSans28}>{store.modalTitle}</Typography>}
     >
       {store.showGoBack && store.currentView === MintModalView.Approval && <Button
         p={0}
@@ -42,10 +44,10 @@ const MintPixelsModal = observer(function MintPixelsModal({ isOpen, onClose }: M
         &#8592;
       </Button>}
       {store.currentView}
-      {store.currentView === MintModalView.Mint && <MintForm store={store} />}
-      {store.currentView === MintModalView.Approval && <Approval store={store} />}
-      {store.currentView === MintModalView.Loading && <Loading />}
-      {store.currentView === MintModalView.Complete && <Complete />}
+      {store.currentView === MintModalView.Mint && <MintForm store={store}/>}
+      {store.currentView === MintModalView.Approval && <Approval store={store}/>}
+      {store.currentView === MintModalView.Loading && <LoadingPixels store={store}/>}
+      {store.currentView === MintModalView.Complete && <Complete store={store}/>}
     </Modal>
   );
 });
@@ -61,6 +63,7 @@ const MintForm = observer(({ store }: { store: MintPixelsModalStore }) => {
           esse cillum dolore eu fugiat nulla pariatur.
         </Typography>
       </Box>
+
       <Form onSubmit={(data) => store.handleMintSubmit(data.pixel_count)}>
         <Grid templateColumns={"repeat(2, 1fr)"} mt={5}>
           <GridItem colSpan={1} mr={3}>
@@ -91,8 +94,9 @@ const MintForm = observer(({ store }: { store: MintPixelsModalStore }) => {
             </Dev>
           </GridItem>
         </Grid>
-        <Submit label={"Mint"} w={"100%"} mt={10} />
+        <Submit label={"Mint"} w={"100%"} mt={10}/>
       </Form>
+
       <Dev>
         <Flex direction={"column"}>
           {store.pixel_count !== undefined && <Typography variant={TVariant.ComicSans16}>
@@ -107,19 +111,16 @@ const MintForm = observer(({ store }: { store: MintPixelsModalStore }) => {
   );
 });
 
-const Approval = observer(function Approval({store}: {store: MintPixelsModalStore}) {
+const Approval = observer(({store}: {store: MintPixelsModalStore}) => {
   return (
     <Box>
       <Typography variant={TVariant.ComicSans16}>Please approve $DOG</Typography>
-
       <Flex justifyContent={"center"} alignItems={"center"} w={"full"} h={"full"}>
         <Typography display={"block"} variant={TVariant.PresStart28} mt={8}>
           {store.allowanceToGrant / (10 ** AppStore.web3.D20_PRECISION)} $DOG
         </Typography>
       </Flex>
-        <Form onSubmit={async () => {
-          await store.handleApproveSubmit(store.allowanceToGrant)
-        }}>
+        <Form onSubmit={() => store.handleApproveSubmit()}>
           <Flex mt={14} justifyContent={"center"}>
             <Submit label={"Approve"}/>
           </Flex>
@@ -128,7 +129,11 @@ const Approval = observer(function Approval({store}: {store: MintPixelsModalStor
   );
 });
 
-const Loading = () => {
+
+const LoadingPixels = observer(({store}: {store: MintPixelsModalStore}) => {
+  useEffect(() => {
+    store.mintPixels(store.pixel_count!)
+  }, [])
   return (
     <Box>
       <Typography variant={TVariant.ComicSans12}>
@@ -136,12 +141,15 @@ const Loading = () => {
       </Typography>
     </Box>
   );
-};
+});
 
-const Complete = () => {
+const Complete = observer(({store}: {store: MintPixelsModalStore}) => {
   return <Box>
       <Typography variant={TVariant.ComicSans12}>✨ Mint complete ✨</Typography>
+    {store.newlyMintedPupperIds.map(item => <Box>
+      {item}
+    </Box>)}
   </Box>
-}
+})
 
 export default MintPixelsModal;

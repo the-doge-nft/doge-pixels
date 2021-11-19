@@ -5,7 +5,7 @@ import Button, {ButtonVariant} from "../DSL/Button/Button";
 import {useHistory, useLocation} from "react-router-dom";
 import routes from "../App.routes";
 import {web3Modal} from "../services/web3Modal";
-import {showDebugToast} from "../DSL/Toast/Toast";
+import {showDebugToast, showErrorToast} from "../DSL/Toast/Toast";
 import {observer} from "mobx-react-lite";
 import AppStore from "../store/App.store";
 import Dev from "../common/Dev";
@@ -118,9 +118,13 @@ const DevTools = observer(function DevTools() {
                   <Button
                       variant={ButtonVariant.Text}
                       onClick={async () => {
-                        const tx = await AppStore.web3.getDogToAccount()
-                        await tx.wait()
-                        AppStore.web3.refreshDogBalance()
+                        try {
+                          const tx = await AppStore.web3.getDogToAccount()
+                          await tx.wait()
+                          AppStore.web3.refreshDogBalance()
+                        } catch (e) {
+                          showErrorToast("Error getting free D20")
+                        }
                       }}
                   >
                       💰
