@@ -19,6 +19,8 @@ class Web3Store {
     D20_PRECISION = 5
     DOG_TO_PIXEL_SATOSHIS = 5523989899
     PIXEL_TO_ID_OFFSET = 1000000
+    WIDTH = 640
+    HEIGHT = 480
 
     @observable
     address?: string
@@ -210,6 +212,15 @@ class Web3Store {
         } else {
             return "-"
         }
+    }
+
+    pupperToPixelCoordsLocal(pupper: number) {
+        const index = pupper - this.PIXEL_TO_ID_OFFSET
+        return [index % 640, Math.floor(index / 640)]
+    }
+
+    coordinateToPupper(x: number, y: number) {
+        return ((this.WIDTH * y) + x) + this.PIXEL_TO_ID_OFFSET
     }
 }
 

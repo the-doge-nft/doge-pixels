@@ -32,13 +32,13 @@ const IndexPane = observer(function IndexPane({store}: {store: ViewerStore}) {
         We’ve said too much. Mint today and become a bleeding edge innovator in fractionalized NFT ownership. Mint today and choose hope over fear.
       </Typography>
     </Box>
-    {store.selectedPixel && <PixelPosition store={store} />}
-    <Flex direction={"column"} alignItems={"center"} my={5}>
+
+    <Flex direction={"column"} alignItems={"center"} mt={5} mb={3}>
       <Button width={"fit-content"} onClick={() => (store.isMintModalOpen = true)}>
         Mint Pixels
       </Button>
       {AppStore.web3.tokenIdsOwned.length > 0 && <Button
-          mt={2}
+          mt={4}
           width={"fit-content"}
           display={"block"}
           variant={ButtonVariant.Text}
@@ -49,24 +49,5 @@ const IndexPane = observer(function IndexPane({store}: {store: ViewerStore}) {
     </Flex>
   </>
 })
-
-const PixelPosition = observer(function PixelPosition({ store }: { store: ViewerStore }) {
-  return (
-    <Box>
-      <Flex alignItems={"center"}>
-        <Typography variant={TVariant.ComicSans16}>x: {store.pixelX}</Typography>
-        <Typography variant={TVariant.ComicSans12} ml={3} color={"purple.50"}>
-          ({store.selectedPixel!.x})
-        </Typography>
-      </Flex>
-      <Flex alignItems={"center"}>
-        <Typography variant={TVariant.ComicSans16}>y: {store.pixelY}</Typography>
-        <Typography variant={TVariant.ComicSans12} ml={3} color={"purple.50"}>
-          ({store.selectedPixel!.y})
-        </Typography>
-      </Flex>
-    </Box>
-  );
-});
 
 export default IndexPane;

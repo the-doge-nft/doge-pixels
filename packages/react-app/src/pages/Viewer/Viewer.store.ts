@@ -1,7 +1,10 @@
-import { action, makeObservable, observable } from "mobx";
-import { THREE } from "@uniswap/sdk/dist/constants";
+import {action, computed, makeObservable, observable} from "mobx";
 import {AbstractConstructor, EmptyClass} from "../../helpers/mixins";
 import {Navigable} from "../../services/mixins/navigable";
+import AppStore from "../../store/App.store";
+import * as THREE from "three";
+import { Eventable } from "../../services/mixins/eventable";
+
 
 export enum ViewerView {
   Index = "index",
@@ -9,7 +12,8 @@ export enum ViewerView {
   Selected = "selected"
 }
 
-class ViewerStore extends Navigable<AbstractConstructor, ViewerView>(EmptyClass){
+//@TODO passing generics to Navigable typing acknowledged of subclasses
+class ViewerStore extends Navigable(Eventable(EmptyClass)){
   @observable
   isMintModalOpen = false;
 
@@ -17,13 +21,10 @@ class ViewerStore extends Navigable<AbstractConstructor, ViewerView>(EmptyClass)
   isBurnModalOpen = false;
 
   @observable
-  selectedPixel: THREE.Vector3 | null = null;
+  selectedPupper: number | null = null;
 
   @observable
-  pixelX: number | null = null;
-
-  @observable
-  pixelY: number | null = null;
+  camera: any
 
   constructor() {
     super()
@@ -32,14 +33,32 @@ class ViewerStore extends Navigable<AbstractConstructor, ViewerView>(EmptyClass)
   }
 
   @action
-  clearPixelPosition() {
-    this.pixelX = null;
-    this.pixelY = null;
-    this.selectedPixel = null;
+  clearSelectedPupper() {
+    this.selectedPupper = null;
   }
 
   get stepperItems() {
     return []
+  }
+
+  @computed
+  get selectedPixelX() {
+    return AppStore.web3.pupperToPixelCoordsLocal(this.selectedPupper!)[0]
+  }
+
+  @computed
+  get selectedPixelY() {
+    return AppStore.web3.pupperToPixelCoordsLocal(this.selectedPupper!)[1]
+  }
+
+  @computed
+  get pupperNumber() {
+    return this.selectedPupper! - AppStore.web3.PIXEL_TO_ID_OFFSET
+  }
+
+  @computed
+  get selectePupperHex() {
+    return "f02kjf"
   }
 }
 
