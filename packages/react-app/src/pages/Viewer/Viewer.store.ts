@@ -60,6 +60,15 @@ class ViewerStore extends Navigable(Eventable(EmptyClass)){
   get selectePupperHex() {
     return "f02kjf"
   }
+
+  @computed
+  get isSelectedPupperOwned() {
+    if (this.selectedPupper === null) {
+      return false
+    } else {
+      return AppStore.web3.tokenIdsOwned.includes(this.selectedPupper)
+    }
+  }
 }
 
 export default ViewerStore;

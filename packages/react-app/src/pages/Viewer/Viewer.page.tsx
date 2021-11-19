@@ -21,12 +21,10 @@ const ViewerPage = observer(function ViewerPage() {
 
   const onPixelSelect: onPixelSelectType = useCallback((x: number, y: number) => {
     store.selectedPupper = AppStore.web3.coordinateToPupper(x, y);
-    showDebugToast(`x:${x}  -  y:${y}`)
     if (store.currentView !== ViewerView.Selected) {
       store.pushNavigation(ViewerView.Selected)
     }
   }, []);
-
   return (
     <>
       <Grid templateColumns={"2fr 1fr"} templateRows={{base: "1fr fr", lg: "1fr"}} flexGrow={1}>
@@ -62,8 +60,15 @@ const ViewerPage = observer(function ViewerPage() {
           </Pane>
         </GridItem>
       </Grid>
-      <MintPixelsModal isOpen={store.isMintModalOpen} onClose={() => store.isMintModalOpen = false}/>
-      <BurnPixelsModal isOpen={store.isBurnModalOpen} onClose={() => store.isBurnModalOpen = false}/>
+      <MintPixelsModal
+        isOpen={store.isMintModalOpen}
+        onClose={() => store.isMintModalOpen = false}
+      />
+      <BurnPixelsModal
+        defaultPixel={store.selectedPupper}
+        isOpen={store.isBurnModalOpen}
+        onClose={() => store.isBurnModalOpen = false}
+      />
     </>
   );
 });

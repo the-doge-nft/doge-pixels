@@ -12,10 +12,13 @@ class BurnPixelsModalStore extends Navigable<AbstractConstructor, BurnPixelsModa
   @observable
   selectedPixels: number[] = []
 
-  constructor() {
+  constructor(defaultPixel: number | null) {
     super();
     makeObservable(this)
     this.pushNavigation(BurnPixelsModalView.Select)
+    if (defaultPixel !== null) {
+      this.selectedPixels.push(defaultPixel)
+    }
   }
 
   get stepperItems() {
@@ -33,11 +36,18 @@ class BurnPixelsModalStore extends Navigable<AbstractConstructor, BurnPixelsModa
   }
 
   handleSubmit() {
-    this.selectedPixels.forEach(async (tokenId) => {
-      const tx = await AppStore.web3.burnPupper(tokenId)
-      await tx.wait()
-      AppStore.web3.refreshDogBalance()
-      AppStore.web3.refreshPupperBalance()
+    return new Promise((resolve, reject) => {
+      try {
+        this.selectedPixels.forEach(async (tokenId) => {
+          const tx = await AppStore.web3.burnPupper(tokenId)
+          await tx.wait()
+          AppStore.web3.refreshDogBalance()
+          AppStore.web3.refreshPupperBalance()
+        })
+        resolve(this.selectedPixels)
+      } catch (e) {
+        return reject()
+      }
     })
   }
 

@@ -117,6 +117,7 @@
     "ship": "yarn surge",
     "theme": "npx gulp less",
     "watch": "node ./scripts/watch.js",
-    "prettier": "npx prettier --write . '!(node_module|build)/**/*'"
+    "prettier": "npx prettier --write . '!(node_module|build)/**/*'",
+    "deploy:surge": "DOG_ENV=surge_staging react-app-rewired build && yarn surge"
   }
 }
