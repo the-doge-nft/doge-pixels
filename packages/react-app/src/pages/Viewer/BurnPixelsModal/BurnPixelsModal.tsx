@@ -8,14 +8,17 @@ import {showDebugToast} from "../../../DSL/Toast/Toast";
 import Typography, {TVariant} from "../../../DSL/Typography/Typography";
 import jsonify from "../../../helpers/jsonify";
 import Button from "../../../DSL/Button/Button";
+import Form from "../../../DSL/Form/Form";
+import Submit from "../../../DSL/Form/Submit";
 
 interface BurnPixelsModalProps {
   isOpen: boolean;
   onClose: () => void;
+  defaultPixel: number | null
 }
 
-const BurnPixelsModal = observer(({isOpen, onClose}: BurnPixelsModalProps) => {
-  const store = useMemo(() => new BurnPixelsModalStore(), [isOpen])
+const BurnPixelsModal = observer(({isOpen, onClose, defaultPixel}: BurnPixelsModalProps) => {
+  const store = useMemo(() => new BurnPixelsModalStore(defaultPixel), [isOpen])
   return <Modal
     size={"xl"}
     isOpen={isOpen}
@@ -31,7 +34,7 @@ const SelectPixels = observer(({store}: {store: BurnPixelsModalStore}) => {
     <Typography variant={TVariant.ComicSans14}>
       Say goodbye to your pixels forever. Be sure to be careful with which pixels you choose. You'll most likely never see them again.
     </Typography>
-    <Flex flexWrap={"wrap"}>
+    <Flex flexWrap={"wrap"} justifyContent={"center"} alignItems={"center"} mt={10}>
       {AppStore.web3.tokenIdsOwned.map(px => <Flex
         m={1}
         borderStyle={"solid"}
@@ -60,14 +63,22 @@ const SelectPixels = observer(({store}: {store: BurnPixelsModalStore}) => {
       </Flex>)}
     </Flex>
 
-    <Button
-      disabled={store.selectedPixels.length === 0}
-      onClick={() => store.handleSubmit()}
-    >
-      Burn
-    </Button>
+    <Flex justifyContent={"center"} mt={14}>
+      <Form onSubmit={async () => {
+        const burntPixels = await store.handleSubmit()
+        AppStore.web3.refreshDogBalance()
+        AppStore.web3.refreshPupperBalance()
 
-    {jsonify(store.selectedPixels)}
+        console.log("debug:: burnt pixels", burntPixels)
+      }}>
+        <Submit
+          // disabled={store.selectedPixels.length === 0}
+          // onClick={() => store.handleSubmit()}
+        >
+          Burn 🔥
+        </Submit>
+      </Form>
+    </Flex>
   </Box>
 })
 

@@ -112,6 +112,16 @@ class Web3Store {
                 this.tokenIdsOwned.push(tokenId)
             }
         })
+
+        const newFilter = this.pxContract!.filters.Transfer(this.address, null)
+        const newLogs = await this.pxContract!.queryFilter(newFilter)
+        newLogs.forEach(tx => {
+            const tokenId = tx.args.tokenId.toNumber()
+            if (this.tokenIdsOwned.includes(tokenId)) {
+                const index = this.tokenIdsOwned.indexOf(tokenId)
+                this.tokenIdsOwned.splice(index, 1)
+            }
+        })
     }
 
     async disconnect() {
