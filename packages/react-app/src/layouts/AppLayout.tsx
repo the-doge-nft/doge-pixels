@@ -1,5 +1,5 @@
 import React, {useEffect} from "react";
-import {Box, Flex, HStack, useColorMode, VStack} from "@chakra-ui/react";
+import {Box, Flex, HStack, Menu, MenuButton, MenuItem, MenuList, useColorMode, VStack} from "@chakra-ui/react";
 import Typography, {TVariant} from "../DSL/Typography/Typography";
 import Button, {ButtonVariant} from "../DSL/Button/Button";
 import {useHistory, useLocation} from "react-router-dom";
@@ -17,9 +17,6 @@ interface AppLayoutProps {
 }
 
 const AppLayout = observer(function AppLayout({children}: AppLayoutProps) {
-  const location = useLocation();
-  const history = useHistory();
-
   useEffect(() => {
     if (web3Modal.cachedProvider && !AppStore.web3.web3Provider?.connection) {
       AppStore.web3.connect()
@@ -76,75 +73,30 @@ const AppLayout = observer(function AppLayout({children}: AppLayoutProps) {
           <Title/>
         </Flex>
         <Flex alignItems={"center"}>
-          <HStack spacing={2}>
-            {routes.map((route, index) => {
-              const isActive = location.pathname === route.path;
-              return (
-                <Button
-                  key={`${route}-${index}`}
-                  variant={ButtonVariant.Text}
-                  textDecoration={isActive ? "underline" : "none"}
-                  onClick={() => history.push(route.path)}
-                >
-                  {route.title}
-                </Button>
-              );
-            })}
-          </HStack>
-
-          <Box ml={3}>
+          <Nav/>
+          <Box mx={5}>
             <ColorModeToggle/>
           </Box>
-
-          {AppStore.web3.web3Provider && <Button ml={5} onClick={() => {
-            AppStore.web3.disconnect()
-          }}>
-              Disconnect
-          </Button>}
-
           {!AppStore.web3.web3Provider && <Button ml={8} onClick={() => {
             AppStore.web3.connect()
           }}>
               Connect Wallet
           </Button>}
-          <VStack ml={12}>
-            {AppStore.web3.address &&
-            <Typography variant={TVariant.PresStart14}>{AppStore.web3.addressForDisplay}</Typography>}
-            <Dev>
-              <>
-                {AppStore.web3.web3Provider && <HStack>
-                    <VStack mr={1}>
-                        <Typography variant={TVariant.ComicSans14}>$DOG</Typography>
-                        <Typography variant={TVariant.PresStart14}>
-                          {AppStore.web3.dogBalance !== undefined ? AppStore.web3.dogBalance / (10 ** AppStore.web3.D20_PRECISION) : 0}
-                        </Typography>
-                        <Box>
-                            <Button
-                                variant={ButtonVariant.Text}
-                                onClick={async () => {
-                                  const tx = await AppStore.web3.getDogToAccount()
-                                  await tx.wait()
-                                  AppStore.web3.refreshDogBalance()
-                                }}
-                            >
-                                💰
-                            </Button>
-                            <Button variant={ButtonVariant.Text} onClick={async () => AppStore.web3.refreshDogBalance()}>
-                                🔄
-                            </Button>
-                        </Box>
-                    </VStack>
-                    <VStack ml={1}>
-                        <Typography variant={TVariant.ComicSans14}>$PX</Typography>
-                        <Typography variant={TVariant.PresStart14}>{AppStore.web3.pupperBalance}</Typography>
-                        <Box>
-                            <Button variant={ButtonVariant.Text}
-                                    onClick={async () => AppStore.web3.refreshPupperBalance()}>🔄</Button>
-                        </Box>
-                    </VStack>
-                </HStack>}
-              </>
-            </Dev>
+          <VStack>
+            {AppStore.web3.address && AppStore.web3.web3Provider &&
+                <Menu>
+                  <MenuButton>
+                      <Typography variant={TVariant.PresStart12}>{AppStore.web3.addressForDisplay}</Typography>
+                  </MenuButton>
+                  <MenuList mt={3}>
+                      <MenuItem onClick={() => AppStore.web3.disconnect()}>
+                          <Typography variant={TVariant.PresStart12}>Disconnect</Typography>
+                      </MenuItem>
+                      <MenuItem>
+                          <DevTools/>
+                      </MenuItem>
+                  </MenuList>
+                </Menu>}
           </VStack>
         </Flex>
       </Flex>
@@ -152,6 +104,65 @@ const AppLayout = observer(function AppLayout({children}: AppLayoutProps) {
     </Flex>
   );
 });
+
+const DevTools = observer(function DevTools() {
+  return <Dev>
+    <>
+      {AppStore.web3.web3Provider && <HStack>
+          <VStack mr={1}>
+              <Typography variant={TVariant.ComicSans14}>$DOG</Typography>
+              <Typography variant={TVariant.PresStart14}>
+                {AppStore.web3.dogBalance !== undefined ? AppStore.web3.dogBalance / (10 ** AppStore.web3.D20_PRECISION) : 0}
+              </Typography>
+              <Box>
+                  <Button
+                      variant={ButtonVariant.Text}
+                      onClick={async () => {
+                        const tx = await AppStore.web3.getDogToAccount()
+                        await tx.wait()
+                        AppStore.web3.refreshDogBalance()
+                      }}
+                  >
+                      💰
+                  </Button>
+                  <Button variant={ButtonVariant.Text} onClick={async () => AppStore.web3.refreshDogBalance()}>
+                      🔄
+                  </Button>
+              </Box>
+          </VStack>
+          <VStack ml={1}>
+              <Typography variant={TVariant.ComicSans14}>$PX</Typography>
+              <Typography variant={TVariant.PresStart14}>{AppStore.web3.pupperBalance}</Typography>
+              <Box>
+                  <Button variant={ButtonVariant.Text}
+                          onClick={async () => AppStore.web3.refreshPupperBalance()}>🔄</Button>
+              </Box>
+          </VStack>
+      </HStack>}
+    </>
+  </Dev>
+})
+
+const Nav = () => {
+  const location = useLocation();
+  const history = useHistory();
+
+  return <HStack spacing={2}>
+    {routes.map((route, index) => {
+      const isActive = location.pathname === route.path;
+      return (
+        <Button
+          key={`${route}-${index}`}
+          variant={ButtonVariant.Text}
+          textDecoration={isActive ? "underline" : "none"}
+          onClick={() => history.push(route.path)}
+        >
+          {route.title}
+        </Button>
+      );
+    })}
+  </HStack>
+}
 
 const Title = () => {
   const {colorMode} = useColorMode()

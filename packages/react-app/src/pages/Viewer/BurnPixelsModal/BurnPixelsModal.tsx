@@ -6,8 +6,6 @@ import BurnPixelsModalStore, {BurnPixelsModalView} from "./BurnPixelsModal.store
 import AppStore from "../../../store/App.store";
 import {showDebugToast} from "../../../DSL/Toast/Toast";
 import Typography, {TVariant} from "../../../DSL/Typography/Typography";
-import jsonify from "../../../helpers/jsonify";
-import Button from "../../../DSL/Button/Button";
 import Form from "../../../DSL/Form/Form";
 import Submit from "../../../DSL/Form/Submit";
 
@@ -66,9 +64,6 @@ const SelectPixels = observer(({store}: {store: BurnPixelsModalStore}) => {
     <Flex justifyContent={"center"} mt={14}>
       <Form onSubmit={async () => {
         const burntPixels = await store.handleSubmit()
-        AppStore.web3.refreshDogBalance()
-        AppStore.web3.refreshPupperBalance()
-
         console.log("debug:: burnt pixels", burntPixels)
       }}>
         <Submit
