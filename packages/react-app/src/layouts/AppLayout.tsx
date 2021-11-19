@@ -92,9 +92,9 @@ const AppLayout = observer(function AppLayout({children}: AppLayoutProps) {
                       <MenuItem onClick={() => AppStore.web3.disconnect()}>
                           <Typography variant={TVariant.PresStart12}>Disconnect</Typography>
                       </MenuItem>
-                      <MenuItem>
+                      {/*<MenuItem>*/}
                           <DevTools/>
-                      </MenuItem>
+                      {/*</MenuItem>*/}
                   </MenuList>
                 </Menu>}
           </VStack>
@@ -107,7 +107,7 @@ const AppLayout = observer(function AppLayout({children}: AppLayoutProps) {
 
 const DevTools = observer(function DevTools() {
   return <Dev>
-    <>
+    <Flex px={3} mt={5} justifyContent={"center"}>
       {AppStore.web3.web3Provider && <HStack>
           <VStack mr={1}>
               <Typography variant={TVariant.ComicSans14}>$DOG</Typography>
@@ -139,7 +139,7 @@ const DevTools = observer(function DevTools() {
               </Box>
           </VStack>
       </HStack>}
-    </>
+    </Flex>
   </Dev>
 })
 

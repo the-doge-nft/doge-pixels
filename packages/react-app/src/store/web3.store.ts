@@ -156,6 +156,18 @@ class Web3Store {
             signerOrProvider
         )
 
+        const nonContractCode = "0x"
+
+        const pxCode = await this.web3Provider!.getCode(this.pxContract!.address)
+        if (pxCode === nonContractCode) {
+            throw Error("PX address is not a contract, please make sure it is deployed & you are on the correct network.")
+        }
+
+        const dogCode = await this.web3Provider!.getCode(this.dogContract!.address)
+        if (dogCode === nonContractCode) {
+            throw Error("DOG20 address is not a contract, please make sure it is deployed & you are on the correct network.")
+        }
+
         this.refreshDogBalance()
         this.refreshPupperBalance()
     }
