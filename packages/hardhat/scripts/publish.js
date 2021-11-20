@@ -66,6 +66,9 @@ function publishContract(contractName, networkName) {
 async function main() {
   const directories = fs.readdirSync(deploymentsDir);
   directories.forEach(function (directory) {
+    if (!fs.lstatSync(`${deploymentsDir}/${directory}`).isDirectory()) {
+      return;
+    }
     const files = fs.readdirSync(`${deploymentsDir}/${directory}`);
     files.forEach(function (file) {
       if (file.indexOf(".json") >= 0) {
@@ -76,6 +79,7 @@ async function main() {
   });
   console.log("✅  Published contracts to the subgraph package.");
 }
+
 main()
   .then(() => process.exit(0))
   .catch((error) => {
