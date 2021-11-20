@@ -1,8 +1,8 @@
-import ViewerStore, {ViewerView} from "./Viewer.store";
+import ViewerStore, {ViewerView} from "../Viewer.store";
 import {Box, Flex} from "@chakra-ui/react";
-import Typography, {TVariant} from "../../DSL/Typography/Typography";
-import Button, {ButtonVariant} from "../../DSL/Button/Button";
-import AppStore from "../../store/App.store";
+import Typography, {TVariant} from "../../../DSL/Typography/Typography";
+import Button, {ButtonVariant} from "../../../DSL/Button/Button";
+import AppStore from "../../../store/App.store";
 import React from "react";
 import {observer} from "mobx-react-lite";
 

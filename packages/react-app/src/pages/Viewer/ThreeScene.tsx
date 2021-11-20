@@ -1,15 +1,15 @@
-import React, {useCallback, useEffect, useRef, useState} from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import * as THREE from "three";
 import { Object3D } from "three";
-import { Canvas, useLoader, Vector2 } from "@react-three/fiber";
-import KobosuImage from "../../images/kobosu.jpeg";
-import Kobosu from "../../images/THE_ACTUAL_NFT_IMAGE.png"
+import { Canvas, useLoader } from "@react-three/fiber";
+import Kobosu from "../../images/THE_ACTUAL_NFT_IMAGE.png";
 import { Box } from "@chakra-ui/react";
 import { getWorldPixelCoordinate } from "./helpers";
 import { onPixelSelectType } from "./Viewer.page";
 import ViewerStore from "./Viewer.store";
 import { SET_CAMERA } from "../../services/mixins/eventable";
 import { BigNumber } from "ethers";
+import Button, { ButtonVariant } from "../../DSL/Button/Button";
 
 interface ThreeSceneProps {
   onPixelSelect: onPixelSelectType;
@@ -70,15 +70,6 @@ const ThreeScene = React.memo(({ onPixelSelect, selectedPixel, store }: ThreeSce
   let startMouseX: number;
   let startMouseY: number;
 
-  const onDocumentMouseWheel = (event: Event) => {
-    event.preventDefault();
-    const { deltaY } = event as WheelEvent;
-    const newZ = camera.position.z + deltaY;
-    if (newZ >= minCameraZ && newZ <= maxCameraZ) {
-      camera.position.z = newZ;
-    }
-  };
-
   const downListener = (event: MouseEvent) => {
     isDown = true;
     startMouseX = event.clientX;
@@ -135,18 +126,10 @@ const ThreeScene = React.memo(({ onPixelSelect, selectedPixel, store }: ThreeSce
   };
 
   useEffect(() => {
-    if (store?.selectedPupper) {
-      console.log("blah")
-    } else {
-      if (selectedPixelOverlayRef.current) {
-        selectedPixelOverlayRef.current.visible = false;
-      }
+    if (!store?.selectedPupper && selectedPixelOverlayRef.current) {
+      selectedPixelOverlayRef.current.visible = false;
     }
   }, [store?.selectedPupper])
-
-  const setCam = useCallback((data) => {
-
-  }, [])
 
 
   useEffect(() => {
@@ -165,7 +148,7 @@ const ThreeScene = React.memo(({ onPixelSelect, selectedPixel, store }: ThreeSce
             xPos - (overlayLength/2),
             yPos - (overlayLength/2)
           ];
-          selectedPixelOverlayRef.current.position.z = 0.001;
+          // selectedPixelOverlayRef.current.position.z = 0.001;
         }
       }
     }
@@ -190,7 +173,7 @@ const ThreeScene = React.memo(({ onPixelSelect, selectedPixel, store }: ThreeSce
             }
           })
 
-          gl.domElement.addEventListener("wheel", e => onDocumentMouseWheel(e));
+          gl.domElement.addEventListener("wheel", e => e.preventDefault());
           gl.domElement.addEventListener("mousedown", e => downListener(e));
           gl.domElement.addEventListener("mousemove", e => moveListener(e, gl.domElement));
           gl.domElement.addEventListener("mouseup", e => upListener(e, gl.domElement));
@@ -204,22 +187,29 @@ const ThreeScene = React.memo(({ onPixelSelect, selectedPixel, store }: ThreeSce
             if (hoverPixelOverlayRef.current) {
               [hoverPixelOverlayRef.current.position.x, hoverPixelOverlayRef.current.position.y] =
                 getWorldPixelCoordinate(e.point, overlayLength);
-              hoverPixelOverlayRef.current.position.z = 0.0001;
             }
 
             if (newHoverOverlayRef.current) {
               [newHoverOverlayRef.current.position.x, newHoverOverlayRef.current.position.y] =
                 getWorldPixelCoordinate(e.point, overlayLength);
-              newHoverOverlayRef.current.position.z = 0.001;
             }
           }}
           onPointerUp={onPointUp}
+          onWheel={(event) => {
+            // @TODO: implement camera zoom towards mouse position here
+            const { deltaY } = event;
+            const newZ = camera.position.z + deltaY;
+            if (newZ >= minCameraZ && newZ <= maxCameraZ) {
+              camera.position.z = newZ;
+              camera.updateProjectionMatrix();
+            }
+          }}
         >
           <planeGeometry attach={"geometry"} args={[imageWorldUnitsWidth, imageWorldUnitsHeight]} />
           <meshBasicMaterial attach={"material"} map={texture} depthTest={false}/>
         </mesh>
 
-        <mesh ref={selectedPixelOverlayRef} position={[0, 0, 0.0001]}>
+        <mesh ref={selectedPixelOverlayRef} position={[0, 0, 0.0001]} visible={false}>
           <planeGeometry attach={"geometry"} args={[overlayLength, overlayLength]} />
           <meshBasicMaterial attach={"material"} color={0xff00ff} opacity={0.8} transparent={true} depthTest={false}/>
         </mesh>
@@ -243,6 +233,11 @@ const ThreeScene = React.memo(({ onPixelSelect, selectedPixel, store }: ThreeSce
           </mesh>
         </group>
       </Canvas>
+      <Box position={"absolute"} bottom={0} left={0}>
+        <Button size={"sm"} variant={ButtonVariant.Text} onClick={() => camera.position.z = maxCameraZ}>+</Button>
+        <Button size={"sm"} variant={ButtonVariant.Text} onClick={() => camera.position.z = (minCameraZ + maxCameraZ) / 2}>++</Button>
+        <Button size={"sm"} variant={ButtonVariant.Text} onClick={() => camera.position.z = minCameraZ}>+++</Button>
+      </Box>
     </Box>
   );
 });

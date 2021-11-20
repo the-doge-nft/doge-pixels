@@ -1,6 +1,6 @@
 import {Box, useColorMode} from "@chakra-ui/react";
 import React from "react";
-import { lightOrDark } from "../../DSL/Theme";
+import { lightOrDark } from "../../../DSL/Theme";
 import "./Loading.css";
 
 

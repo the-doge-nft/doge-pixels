@@ -46,9 +46,11 @@ const ColorModeToggleStyle = {
       maxWidth: "140%",
       width: "140%",
       height: "140%",
-      position: "absolute",
-      transform: lightOrDark(colorMode, "scaleX(-1)", "none"),
-      right: lightOrDark(colorMode, "2px", "")
+      position: "relative",
+      top: lightOrDark(colorMode, "3px", "2px"),
+      right: lightOrDark(colorMode, "18px", "-2px"),
+      // position: "absolute",
+      // right: lightOrDark(colorMode, "2px", ""),
     },
     leftIcon: {
       left: `${containerXPadding}px`,
