@@ -11,7 +11,10 @@ const ERROR_D20_TX_EXCEEDS_BALANCE = "ERC20: transfer amount exceeds balance"
 
 use(solidity);
 describe("[PX]", function () {
-  const MOCK_SUPPLY = 100;//512 * 384;
+  const MOCK_WIDTH = 680;//512 * 384;
+  const MOCK_HEIGHT = 10;//480
+  const MOCK_SUPPLY = MOCK_WIDTH * MOCK_HEIGHT;
+  const MOCK_URI = "ipfs://dog-repo/";
   const DOG_TO_PIXEL_SATOSHIS = 5;
 
   const INDEX_OFFSET = 1000000;
@@ -43,10 +46,10 @@ describe("[PX]", function () {
     factory = await ethers.getContractFactory("PXMock");
     PX = await upgrades.deployProxy(factory);
     await PX.deployed();
-    await PX.__PXMock_init("LONG LIVE D O G", "PX", DOG20.address);
+    await PX.__PXMock_init("LONG LIVE D O G", "PX", DOG20.address, MOCK_URI);
 
     await Promise.all([
-                        PX.setSupply(MOCK_SUPPLY),
+                        PX.setSupply(MOCK_WIDTH, MOCK_HEIGHT),
                         PX.setDOG_TO_PIXEL_SATOSHIS(DOG_TO_PIXEL_SATOSHIS)
                       ]);
   });
@@ -73,15 +76,24 @@ describe("[PX]", function () {
 
 
     let receipt = await tx.wait();
+    let tokenId;
     for (let i = 0; i < receipt.events.length; ++i) {
       const event = receipt.events[i];
       if (event.event === 'Transfer') {
-        const tokenId = event.args.tokenId;
+        tokenId = event.args.tokenId;
         console.log(`minted ${tokenId.toNumber()} for ${signer.address}`);
-        return tokenId;
+        break;
       }
     }
-    throw new Error("Transfer event was not fired");
+    if(tokenId) {
+      const index = tokenId.toNumber() - INDEX_OFFSET;
+      const x = index % MOCK_WIDTH;
+      const y = Math.floor(index / MOCK_WIDTH);
+      expect(await PX.tokenURI(tokenId)).to.equal(`${MOCK_URI}${x}_${y}`);
+      return tokenId;
+    }else {
+      throw new Error("Transfer event was not fired");
+    }
   }
 
   function getSignerFromAddress(addr) {
@@ -112,7 +124,6 @@ describe("[PX]", function () {
 
     expect(await PX.balanceOf(signer.address)).to.equal(addrPXBalanceBefore.toNumber() - 1)
     expect(await PX.puppersRemaining()).to.equal(supplyPXBalanceBefore.toNumber() + 1);
-
     //
     // let receipt = await tx.wait();
     // for (let i = 0; i < receipt.events.length; ++i) {

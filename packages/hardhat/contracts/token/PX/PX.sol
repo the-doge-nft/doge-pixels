@@ -9,6 +9,8 @@ import "../../access/OwnableUpgradeable.sol";
 import "hardhat/console.sol";
 import "./ERC721CustomUpgradeable.sol";
 
+import "../../utils/Strings.sol";
+
 contract PX is ERC721CustomUpgradeable, OwnableUpgradeable {
     //    using ERC721Custom for ERC721;
     // Fractional.art ERC20 contract holding $DOG tokens
@@ -39,20 +41,32 @@ contract PX is ERC721CustomUpgradeable, OwnableUpgradeable {
     // 0 value is flag for not initialized. There is no pupper with id = 0, and there is no index = 0
     uint256 public MAGIC_NULL;
 
-    function __PX_init(string memory name_, string memory symbol_, address DOG20Address) public initializer {
+    uint256 public SHIBA_WIDTH;
+    uint256 public SHIBA_HEIGHT;
+    string public BASE_URI;
+
+    function __PX_init(
+        string memory name_,
+        string memory symbol_,
+        address DOG20Address,
+        string memory ipfsUri_
+    ) public initializer {
         __ERC721Custom_init(name_, symbol_);
         require(DOG20Address != address(0));
         DOG20 = IERC20(DOG20Address);
-        uint256 _width = 640;
-        uint256 _height = 480;
-        totalSupply = _width * _height;
-        puppersRemaining = _width * _height;
 
         // Proxy initialization
         // https://docs.openzeppelin.com/upgrades-plugins/1.x/writing-upgradeable#avoid-initial-values-in-field-declarations
         DOG_TO_PIXEL_SATOSHIS = 5523989899;
         INDEX_OFFSET = 1000000;
         MAGIC_NULL = 0;
+        SHIBA_WIDTH = 640;
+        SHIBA_HEIGHT = 480;
+
+        totalSupply = SHIBA_WIDTH * SHIBA_HEIGHT;
+        puppersRemaining = SHIBA_WIDTH * SHIBA_HEIGHT;
+
+        BASE_URI = ipfsUri_;
     }
 
     /**
@@ -225,18 +239,18 @@ contract PX is ERC721CustomUpgradeable, OwnableUpgradeable {
         // transfer collateral to the burner
         DOG20.transfer(msg.sender, DOG_TO_PIXEL_SATOSHIS);
     }
-
-    //
-    // fuelPuppyDispenser
-    //
-    // Description:
-    // Enable owner to transfer $DOG to contract's pool, without receiving any pixels
-    //
-    function fuelPuppyDispenser(uint256 amount) onlyOwner public {
-        // todo: asserts
-        // transfer some DOGs free of charge to DOGPUPPER contract
-        DOG20.transferFrom(msg.sender, address(this), DOG_TO_PIXEL_SATOSHIS);
-    }
+//
+//    //
+//    // fuelPuppyDispenser
+//    //
+//    // Description:
+//    // Enable owner to transfer $DOG to contract's pool, without receiving any pixels
+//    //
+//    function fuelPuppyDispenser(uint256 amount) onlyOwner public {
+//        // todo: asserts
+//        // transfer some DOGs free of charge to DOGPUPPER contract
+//        DOG20.transferFrom(msg.sender, address(this), DOG_TO_PIXEL_SATOSHIS);
+//    }
 
     //
     // pupperToPixel
@@ -244,6 +258,7 @@ contract PX is ERC721CustomUpgradeable, OwnableUpgradeable {
     // Description:
     // Returns pixel index on .png from tokenId
     //
+    // todo: return modifier
     function pupperToPixel(uint256 pupper) view public returns (uint256){
         return pupper - INDEX_OFFSET;
     }
@@ -255,6 +270,29 @@ contract PX is ERC721CustomUpgradeable, OwnableUpgradeable {
     //
     function pupperToPixelCoords(uint256 pupper) view public returns (uint256[2] memory) {
         uint256 index = pupper - INDEX_OFFSET;
-            return [index % 640, index / 640];
+            return [index % SHIBA_WIDTH, index / SHIBA_WIDTH];
+    }
+
+    /**
+     * @dev Base URI for computing {tokenURI}. If set, the resulting URI for each
+     * token will be the concatenation of the `baseURI` and the `tokenId`. Empty
+     * by default, can be overriden in child contracts.
+     */
+    function _baseURI() internal view virtual override returns (string memory){
+        return BASE_URI;
+    }
+
+    //
+    // tokenURI
+    //
+    // Description:
+    // TokenUri as x_y
+    function tokenURI(uint256 tokenId) public view virtual override returns (string memory) {
+        require(_exists(tokenId), "ERC721Metadata: URI query for nonexistent token");
+
+        string memory baseURI = _baseURI();
+        // todo: modifier
+        uint256[2] memory coords = pupperToPixelCoords(tokenId);
+        return bytes(baseURI).length > 0 ? string(abi.encodePacked(baseURI, Strings.toString(coords[0]), "_", Strings.toString(coords[1]))) : "";
     }
 }

@@ -1,9 +1,30 @@
 // deploy/00_deploy_your_contract.js
 
 const {ethers} = require("hardhat");
+const prompts = require('prompts');
+module.exports = async (args) => {
+  const {getNamedAccounts, deployments, getChainId, ContractFactory} = args
 
-module.exports = async ({ getNamedAccounts, deployments }) => {
-  // const {getNamedAccounts, deployments, getChainId, ContractFactory} = args
+  // console.log(args.network);
+  if (args.network.name !== 'localhost' && args.network.name !== 'hardhat') {
+    const response = await prompts({
+                                     type: 'confirm',
+                                     name: 'value',
+                                     message: 'Are you sure?',
+                                     initial: false
+                                   });
+    if (!response.value) {
+      console.log("aborting");
+      process.exit(42069);
+    }
+  }
+  if(!process.env.DOG_IPFS_DEPLOY_BASE_URI){
+    console.error("[ERROR] Invalid usage, must set DOG_IPFS_DEPLOY_BASE_URI");
+    process.exit(42070);
+  }
+  console.log(`============= config =============`)
+  console.log(`DOG_IPFS_DEPLOY_BASE_URI=${process.env.DOG_IPFS_DEPLOY_BASE_URI}`)
+  console.log(`==================================`)
 
   const {deploy} = deployments;
   const {deployer} = await getNamedAccounts();
@@ -24,8 +45,13 @@ module.exports = async ({ getNamedAccounts, deployments }) => {
     log: true,
   });
   const PX = await ethers.getContractAt("PX", deployed.address);
-  await PX.__PX_init("LONG LIVE D O G", "PX", DOG20Address)
+  await PX.__PX_init(
+    "LONG LIVE D O G",
+    "PX",
+    DOG20Address,
+    process.env.DOG_IPFS_DEPLOY_BASE_URI
+  )
   // const initMock = await DOG20.initMock([])
   // console.log(initMock)
 };
-module.exports.tags = ["YourContract"];
+module.exports.tags = ["PX"];
