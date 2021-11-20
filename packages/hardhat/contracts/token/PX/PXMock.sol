@@ -10,12 +10,21 @@ import "./PX.sol";
  */
 contract PXMock is PX {
 //    constructor(string memory name_, string memory symbol_, address DOG20Address) PX(name_, symbol_, DOG20Address) {}
-    function __PXMock_init(string memory name_, string memory symbol_, address DOG20Address) public initializer{
-        __PX_init(name_, symbol_, DOG20Address);
+    function __PXMock_init(
+        string memory name_,
+        string memory symbol_,
+        address DOG20Address,
+        string memory ipfsUri_
+    ) public initializer{
+        __PX_init(name_, symbol_, DOG20Address, ipfsUri_);
     }
-    function setSupply(uint256 amount) public {
+
+    function setSupply(uint256 width, uint256 height) public {
+        uint256 amount = width * height;
         puppersRemaining = amount;
         totalSupply = amount;
+        SHIBA_WIDTH = width;
+        SHIBA_HEIGHT = height;
     }
 
     function setDOG_TO_PIXEL_SATOSHIS(uint256 amount) public {
