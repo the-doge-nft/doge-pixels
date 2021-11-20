@@ -23,11 +23,11 @@ const BurnPixelsModal = observer(({isOpen, onClose, defaultPixel}: BurnPixelsMod
     onClose={onClose}
     renderHeader={() => <Typography variant={TVariant.ComicSans28}>Burn Pixels</Typography>}
   >
-    {store.currentView === BurnPixelsModalView.Select && <SelectPixels store={store}/>}
+    {store.currentView === BurnPixelsModalView.Select && <SelectPixels store={store} onSuccess={() => onClose()}/>}
   </Modal>
 })
 
-const SelectPixels = observer(({store}: {store: BurnPixelsModalStore}) => {
+const SelectPixels = observer(({store, onSuccess}: {store: BurnPixelsModalStore, onSuccess: () => void}) => {
   return <Box>
     <Typography variant={TVariant.ComicSans14}>
       Say goodbye to your pixels forever. Be sure to be careful with which pixels you choose. You'll most likely never see them again.
@@ -61,18 +61,17 @@ const SelectPixels = observer(({store}: {store: BurnPixelsModalStore}) => {
       </Flex>)}
     </Flex>
 
-    <Flex justifyContent={"center"} mt={14}>
-      <Form onSubmit={async () => {
-        const burntPixels = await store.handleSubmit()
-        console.log("debug:: burnt pixels", burntPixels)
-      }}>
-        <Submit
-          // disabled={store.selectedPixels.length === 0}
-          // onClick={() => store.handleSubmit()}
-        >
-          Burn 🔥
-        </Submit>
-      </Form>
+    <Flex justifyContent={"center"} mt={14} w={"full"}>
+      <Box>
+        <Form onSubmit={async () => {
+          await store.handleSubmit()
+          onSuccess()
+        }}>
+          <Flex justifyContent={"center"} w={"100%"}>
+            <Submit label={"Burn 🔥"}/>
+          </Flex>
+        </Form>
+      </Box>
     </Flex>
   </Box>
 })

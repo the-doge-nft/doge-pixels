@@ -1,0 +1,25 @@
+{
+  "name": "@scaffold-eth/server",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "cors": "^2.8.5",
+    "cross-env": "^7.0.3",
+    "dotenv-safe": "^8.2.0",
+    "ethers": "^5.5.1",
+    "express": "^4.17.1",
+    "morgan": "^1.10.0",
+    "nodemon": "^2.0.15",
+    "pm2": "^5.1.2",
+    "redis": "^3.1.2",
+    "winston": "^3.3.3"
+  },
+  "scripts": {
+    "start": "cross-env NODE_ENV=production pm2 start ./src/index.js",
+    "dev": "nodemon ./src/index.js",
+    "docker:start": "cross-env NODE_ENV=production pm2-docker start ./src/index.js",
+    "docker:dev": "docker-compose -f docker-compose.yml -f docker-compose.dev.yml up"
+  }
+}
