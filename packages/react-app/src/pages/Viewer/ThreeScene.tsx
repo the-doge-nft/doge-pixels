@@ -149,8 +149,8 @@ const ThreeScene = React.memo(({ onPixelSelect, selectedPixel, store }: ThreeSce
         const xPos = x.toNumber()
         const yPos = -1*y.toNumber()
 
-        camera.position.x = xPos
-        camera.position.y = yPos
+        camera.position.x = xPos - 0.5
+        camera.position.y = yPos - 0.5
         camera.position.z = minCameraZ
 
         if (selectedPixelOverlayRef.current) {

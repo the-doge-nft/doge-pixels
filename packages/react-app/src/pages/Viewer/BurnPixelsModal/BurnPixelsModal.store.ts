@@ -2,6 +2,7 @@ import { Navigable } from "../../../services/mixins/navigable";
 import {AbstractConstructor, EmptyClass} from "../../../helpers/mixins";
 import { makeObservable, observable } from "mobx";
 import AppStore from "../../../store/App.store";
+import { showErrorToast } from "../../../DSL/Toast/Toast";
 
 export enum BurnPixelsModalView {
   Select = "select"
@@ -36,16 +37,18 @@ class BurnPixelsModalStore extends Navigable<AbstractConstructor, BurnPixelsModa
   }
 
   handleSubmit() {
-    return new Promise((resolve, reject) => {
+    return new Promise(async (resolve, reject) => {
       try {
-        this.selectedPixels.forEach(async (tokenId) => {
-          const tx = await AppStore.web3.burnPupper(tokenId)
+        for (let i = 0; i < this.selectedPixels.length; i++) {
+          const tx = await AppStore.web3.burnPupper(this.selectedPixels[i])
           await tx.wait()
           AppStore.web3.refreshDogBalance()
           AppStore.web3.refreshPupperBalance()
-        })
+        }
+        console.log("debug:: resolve")
         resolve(this.selectedPixels)
       } catch (e) {
+        showErrorToast("Error burning pixel")
         return reject()
       }
     })
