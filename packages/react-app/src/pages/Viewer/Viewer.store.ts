@@ -28,6 +28,9 @@ class ViewerStore extends Navigable(Eventable(Reactionable((EmptyClass)))) {
   selectedURI?: any
 
   @observable
+  tokenOwner: string | null = null
+
+  @observable
   camera: any
 
   constructor() {
@@ -47,6 +50,14 @@ class ViewerStore extends Navigable(Eventable(Reactionable((EmptyClass)))) {
         }
         console.log("debug:: res", res)
       }).catch(e => {
+        console.error("debug:: error", e)
+      })
+
+      AppStore.web3.pxContract!.ownerOf(this.selectedPupper!).then(res => {
+        this.tokenOwner = res
+        console.log("debug:: selected pixel belongs to", res)
+      }).catch(e => {
+        this.tokenOwner = null
         console.error("debug:: error", e)
       })
     }, {fireImmediately: false})

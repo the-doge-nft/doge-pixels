@@ -2,18 +2,22 @@ version: "3.8"
 services:
   redis:
     image: redis
-    container_name: cache
+    container_name: redis
     ports:
       - '6379:6379'
 
-  app:
+  express_app:
+    container_name: express_app
     build: .
+    image: express_app
+    network_mode: "host"
     depends_on:
       - redis
     volumes:
       - .:/app
-    ports:
-      - '8000:8000'
+#    ports:
+#      - '8001:8001'
+    command: yarn dev
 
 
 
