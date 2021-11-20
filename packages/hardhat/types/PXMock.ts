@@ -26,18 +26,20 @@ import type {
 
 export interface PXMockInterface extends ethers.utils.Interface {
   functions: {
+    "BASE_URI()": FunctionFragment;
     "DOG_TO_PIXEL_SATOSHIS()": FunctionFragment;
     "INDEX_OFFSET()": FunctionFragment;
     "MAGIC_NULL()": FunctionFragment;
-    "__PXMock_init(string,string,address)": FunctionFragment;
-    "__PX_init(string,string,address)": FunctionFragment;
+    "SHIBA_HEIGHT()": FunctionFragment;
+    "SHIBA_WIDTH()": FunctionFragment;
+    "__PXMock_init(string,string,address,string)": FunctionFragment;
+    "__PX_init(string,string,address,string)": FunctionFragment;
     "approve(address,uint256)": FunctionFragment;
     "balanceOf(address)": FunctionFragment;
     "baseURI()": FunctionFragment;
     "burn(uint256)": FunctionFragment;
     "burnPupper(uint256)": FunctionFragment;
     "exists(uint256)": FunctionFragment;
-    "fuelPuppyDispenser(uint256)": FunctionFragment;
     "getApproved(uint256)": FunctionFragment;
     "isApprovedForAll(address,address)": FunctionFragment;
     "mint(address,uint256)": FunctionFragment;
@@ -56,7 +58,7 @@ export interface PXMockInterface extends ethers.utils.Interface {
     "safeTransferFrom(address,address,uint256)": FunctionFragment;
     "setApprovalForAll(address,bool)": FunctionFragment;
     "setDOG_TO_PIXEL_SATOSHIS(uint256)": FunctionFragment;
-    "setSupply(uint256)": FunctionFragment;
+    "setSupply(uint256,uint256)": FunctionFragment;
     "supportsInterface(bytes4)": FunctionFragment;
     "symbol()": FunctionFragment;
     "tokenURI(uint256)": FunctionFragment;
@@ -65,6 +67,7 @@ export interface PXMockInterface extends ethers.utils.Interface {
     "transferOwnership(address)": FunctionFragment;
   };
 
+  encodeFunctionData(functionFragment: "BASE_URI", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "DOG_TO_PIXEL_SATOSHIS",
     values?: undefined
@@ -78,12 +81,20 @@ export interface PXMockInterface extends ethers.utils.Interface {
     values?: undefined
   ): string;
   encodeFunctionData(
+    functionFragment: "SHIBA_HEIGHT",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "SHIBA_WIDTH",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
     functionFragment: "__PXMock_init",
-    values: [string, string, string]
+    values: [string, string, string, string]
   ): string;
   encodeFunctionData(
     functionFragment: "__PX_init",
-    values: [string, string, string]
+    values: [string, string, string, string]
   ): string;
   encodeFunctionData(
     functionFragment: "approve",
@@ -98,10 +109,6 @@ export interface PXMockInterface extends ethers.utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "exists",
-    values: [BigNumberish]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "fuelPuppyDispenser",
     values: [BigNumberish]
   ): string;
   encodeFunctionData(
@@ -169,7 +176,7 @@ export interface PXMockInterface extends ethers.utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "setSupply",
-    values: [BigNumberish]
+    values: [BigNumberish, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: "supportsInterface",
@@ -193,6 +200,7 @@ export interface PXMockInterface extends ethers.utils.Interface {
     values: [string]
   ): string;
 
+  decodeFunctionResult(functionFragment: "BASE_URI", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "DOG_TO_PIXEL_SATOSHIS",
     data: BytesLike
@@ -202,6 +210,14 @@ export interface PXMockInterface extends ethers.utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "MAGIC_NULL", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "SHIBA_HEIGHT",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "SHIBA_WIDTH",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(
     functionFragment: "__PXMock_init",
     data: BytesLike
@@ -213,10 +229,6 @@ export interface PXMockInterface extends ethers.utils.Interface {
   decodeFunctionResult(functionFragment: "burn", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "burnPupper", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "exists", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "fuelPuppyDispenser",
-    data: BytesLike
-  ): Result;
   decodeFunctionResult(
     functionFragment: "getApproved",
     data: BytesLike
@@ -357,16 +369,23 @@ export interface PXMock extends BaseContract {
   removeListener: OnEvent<this>;
 
   functions: {
+    BASE_URI(overrides?: CallOverrides): Promise<[string]>;
+
     DOG_TO_PIXEL_SATOSHIS(overrides?: CallOverrides): Promise<[BigNumber]>;
 
     INDEX_OFFSET(overrides?: CallOverrides): Promise<[BigNumber]>;
 
     MAGIC_NULL(overrides?: CallOverrides): Promise<[BigNumber]>;
 
+    SHIBA_HEIGHT(overrides?: CallOverrides): Promise<[BigNumber]>;
+
+    SHIBA_WIDTH(overrides?: CallOverrides): Promise<[BigNumber]>;
+
     __PXMock_init(
       name_: string,
       symbol_: string,
       DOG20Address: string,
+      ipfsUri_: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
@@ -374,6 +393,7 @@ export interface PXMock extends BaseContract {
       name_: string,
       symbol_: string,
       DOG20Address: string,
+      ipfsUri_: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
@@ -401,11 +421,6 @@ export interface PXMock extends BaseContract {
       tokenId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<[boolean]>;
-
-    fuelPuppyDispenser(
-      amount: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
 
     getApproved(
       tokenId: BigNumberish,
@@ -507,7 +522,8 @@ export interface PXMock extends BaseContract {
     ): Promise<ContractTransaction>;
 
     setSupply(
-      amount: BigNumberish,
+      width: BigNumberish,
+      height: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
@@ -538,16 +554,23 @@ export interface PXMock extends BaseContract {
     ): Promise<ContractTransaction>;
   };
 
+  BASE_URI(overrides?: CallOverrides): Promise<string>;
+
   DOG_TO_PIXEL_SATOSHIS(overrides?: CallOverrides): Promise<BigNumber>;
 
   INDEX_OFFSET(overrides?: CallOverrides): Promise<BigNumber>;
 
   MAGIC_NULL(overrides?: CallOverrides): Promise<BigNumber>;
 
+  SHIBA_HEIGHT(overrides?: CallOverrides): Promise<BigNumber>;
+
+  SHIBA_WIDTH(overrides?: CallOverrides): Promise<BigNumber>;
+
   __PXMock_init(
     name_: string,
     symbol_: string,
     DOG20Address: string,
+    ipfsUri_: string,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
@@ -555,6 +578,7 @@ export interface PXMock extends BaseContract {
     name_: string,
     symbol_: string,
     DOG20Address: string,
+    ipfsUri_: string,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
@@ -579,11 +603,6 @@ export interface PXMock extends BaseContract {
   ): Promise<ContractTransaction>;
 
   exists(tokenId: BigNumberish, overrides?: CallOverrides): Promise<boolean>;
-
-  fuelPuppyDispenser(
-    amount: BigNumberish,
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
 
   getApproved(
     tokenId: BigNumberish,
@@ -680,7 +699,8 @@ export interface PXMock extends BaseContract {
   ): Promise<ContractTransaction>;
 
   setSupply(
-    amount: BigNumberish,
+    width: BigNumberish,
+    height: BigNumberish,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
@@ -708,16 +728,23 @@ export interface PXMock extends BaseContract {
   ): Promise<ContractTransaction>;
 
   callStatic: {
+    BASE_URI(overrides?: CallOverrides): Promise<string>;
+
     DOG_TO_PIXEL_SATOSHIS(overrides?: CallOverrides): Promise<BigNumber>;
 
     INDEX_OFFSET(overrides?: CallOverrides): Promise<BigNumber>;
 
     MAGIC_NULL(overrides?: CallOverrides): Promise<BigNumber>;
 
+    SHIBA_HEIGHT(overrides?: CallOverrides): Promise<BigNumber>;
+
+    SHIBA_WIDTH(overrides?: CallOverrides): Promise<BigNumber>;
+
     __PXMock_init(
       name_: string,
       symbol_: string,
       DOG20Address: string,
+      ipfsUri_: string,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -725,6 +752,7 @@ export interface PXMock extends BaseContract {
       name_: string,
       symbol_: string,
       DOG20Address: string,
+      ipfsUri_: string,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -743,11 +771,6 @@ export interface PXMock extends BaseContract {
     burnPupper(pupper: BigNumberish, overrides?: CallOverrides): Promise<void>;
 
     exists(tokenId: BigNumberish, overrides?: CallOverrides): Promise<boolean>;
-
-    fuelPuppyDispenser(
-      amount: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<void>;
 
     getApproved(
       tokenId: BigNumberish,
@@ -836,7 +859,11 @@ export interface PXMock extends BaseContract {
       overrides?: CallOverrides
     ): Promise<void>;
 
-    setSupply(amount: BigNumberish, overrides?: CallOverrides): Promise<void>;
+    setSupply(
+      width: BigNumberish,
+      height: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<void>;
 
     supportsInterface(
       interfaceId: BytesLike,
@@ -907,16 +934,23 @@ export interface PXMock extends BaseContract {
   };
 
   estimateGas: {
+    BASE_URI(overrides?: CallOverrides): Promise<BigNumber>;
+
     DOG_TO_PIXEL_SATOSHIS(overrides?: CallOverrides): Promise<BigNumber>;
 
     INDEX_OFFSET(overrides?: CallOverrides): Promise<BigNumber>;
 
     MAGIC_NULL(overrides?: CallOverrides): Promise<BigNumber>;
 
+    SHIBA_HEIGHT(overrides?: CallOverrides): Promise<BigNumber>;
+
+    SHIBA_WIDTH(overrides?: CallOverrides): Promise<BigNumber>;
+
     __PXMock_init(
       name_: string,
       symbol_: string,
       DOG20Address: string,
+      ipfsUri_: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
@@ -924,6 +958,7 @@ export interface PXMock extends BaseContract {
       name_: string,
       symbol_: string,
       DOG20Address: string,
+      ipfsUri_: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
@@ -950,11 +985,6 @@ export interface PXMock extends BaseContract {
     exists(
       tokenId: BigNumberish,
       overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    fuelPuppyDispenser(
-      amount: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
     getApproved(
@@ -1055,7 +1085,8 @@ export interface PXMock extends BaseContract {
     ): Promise<BigNumber>;
 
     setSupply(
-      amount: BigNumberish,
+      width: BigNumberish,
+      height: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
@@ -1087,6 +1118,8 @@ export interface PXMock extends BaseContract {
   };
 
   populateTransaction: {
+    BASE_URI(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
     DOG_TO_PIXEL_SATOSHIS(
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
@@ -1095,10 +1128,15 @@ export interface PXMock extends BaseContract {
 
     MAGIC_NULL(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
+    SHIBA_HEIGHT(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    SHIBA_WIDTH(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
     __PXMock_init(
       name_: string,
       symbol_: string,
       DOG20Address: string,
+      ipfsUri_: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
@@ -1106,6 +1144,7 @@ export interface PXMock extends BaseContract {
       name_: string,
       symbol_: string,
       DOG20Address: string,
+      ipfsUri_: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
@@ -1135,11 +1174,6 @@ export interface PXMock extends BaseContract {
     exists(
       tokenId: BigNumberish,
       overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    fuelPuppyDispenser(
-      amount: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
     getApproved(
@@ -1240,7 +1274,8 @@ export interface PXMock extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     setSupply(
-      amount: BigNumberish,
+      width: BigNumberish,
+      height: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 

@@ -26,14 +26,16 @@ import type {
 
 export interface PXInterface extends ethers.utils.Interface {
   functions: {
+    "BASE_URI()": FunctionFragment;
     "DOG_TO_PIXEL_SATOSHIS()": FunctionFragment;
     "INDEX_OFFSET()": FunctionFragment;
     "MAGIC_NULL()": FunctionFragment;
-    "__PX_init(string,string,address)": FunctionFragment;
+    "SHIBA_HEIGHT()": FunctionFragment;
+    "SHIBA_WIDTH()": FunctionFragment;
+    "__PX_init(string,string,address,string)": FunctionFragment;
     "approve(address,uint256)": FunctionFragment;
     "balanceOf(address)": FunctionFragment;
     "burnPupper(uint256)": FunctionFragment;
-    "fuelPuppyDispenser(uint256)": FunctionFragment;
     "getApproved(uint256)": FunctionFragment;
     "isApprovedForAll(address,address)": FunctionFragment;
     "mintPupper()": FunctionFragment;
@@ -57,6 +59,7 @@ export interface PXInterface extends ethers.utils.Interface {
     "transferOwnership(address)": FunctionFragment;
   };
 
+  encodeFunctionData(functionFragment: "BASE_URI", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "DOG_TO_PIXEL_SATOSHIS",
     values?: undefined
@@ -70,8 +73,16 @@ export interface PXInterface extends ethers.utils.Interface {
     values?: undefined
   ): string;
   encodeFunctionData(
+    functionFragment: "SHIBA_HEIGHT",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "SHIBA_WIDTH",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
     functionFragment: "__PX_init",
-    values: [string, string, string]
+    values: [string, string, string, string]
   ): string;
   encodeFunctionData(
     functionFragment: "approve",
@@ -80,10 +91,6 @@ export interface PXInterface extends ethers.utils.Interface {
   encodeFunctionData(functionFragment: "balanceOf", values: [string]): string;
   encodeFunctionData(
     functionFragment: "burnPupper",
-    values: [BigNumberish]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "fuelPuppyDispenser",
     values: [BigNumberish]
   ): string;
   encodeFunctionData(
@@ -159,6 +166,7 @@ export interface PXInterface extends ethers.utils.Interface {
     values: [string]
   ): string;
 
+  decodeFunctionResult(functionFragment: "BASE_URI", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "DOG_TO_PIXEL_SATOSHIS",
     data: BytesLike
@@ -168,14 +176,18 @@ export interface PXInterface extends ethers.utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "MAGIC_NULL", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "SHIBA_HEIGHT",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "SHIBA_WIDTH",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "__PX_init", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "approve", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "balanceOf", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "burnPupper", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "fuelPuppyDispenser",
-    data: BytesLike
-  ): Result;
   decodeFunctionResult(
     functionFragment: "getApproved",
     data: BytesLike
@@ -309,16 +321,23 @@ export interface PX extends BaseContract {
   removeListener: OnEvent<this>;
 
   functions: {
+    BASE_URI(overrides?: CallOverrides): Promise<[string]>;
+
     DOG_TO_PIXEL_SATOSHIS(overrides?: CallOverrides): Promise<[BigNumber]>;
 
     INDEX_OFFSET(overrides?: CallOverrides): Promise<[BigNumber]>;
 
     MAGIC_NULL(overrides?: CallOverrides): Promise<[BigNumber]>;
 
+    SHIBA_HEIGHT(overrides?: CallOverrides): Promise<[BigNumber]>;
+
+    SHIBA_WIDTH(overrides?: CallOverrides): Promise<[BigNumber]>;
+
     __PX_init(
       name_: string,
       symbol_: string,
       DOG20Address: string,
+      ipfsUri_: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
@@ -332,11 +351,6 @@ export interface PX extends BaseContract {
 
     burnPupper(
       pupper: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
-
-    fuelPuppyDispenser(
-      amount: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
@@ -442,16 +456,23 @@ export interface PX extends BaseContract {
     ): Promise<ContractTransaction>;
   };
 
+  BASE_URI(overrides?: CallOverrides): Promise<string>;
+
   DOG_TO_PIXEL_SATOSHIS(overrides?: CallOverrides): Promise<BigNumber>;
 
   INDEX_OFFSET(overrides?: CallOverrides): Promise<BigNumber>;
 
   MAGIC_NULL(overrides?: CallOverrides): Promise<BigNumber>;
 
+  SHIBA_HEIGHT(overrides?: CallOverrides): Promise<BigNumber>;
+
+  SHIBA_WIDTH(overrides?: CallOverrides): Promise<BigNumber>;
+
   __PX_init(
     name_: string,
     symbol_: string,
     DOG20Address: string,
+    ipfsUri_: string,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
@@ -465,11 +486,6 @@ export interface PX extends BaseContract {
 
   burnPupper(
     pupper: BigNumberish,
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
-
-  fuelPuppyDispenser(
-    amount: BigNumberish,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
@@ -567,16 +583,23 @@ export interface PX extends BaseContract {
   ): Promise<ContractTransaction>;
 
   callStatic: {
+    BASE_URI(overrides?: CallOverrides): Promise<string>;
+
     DOG_TO_PIXEL_SATOSHIS(overrides?: CallOverrides): Promise<BigNumber>;
 
     INDEX_OFFSET(overrides?: CallOverrides): Promise<BigNumber>;
 
     MAGIC_NULL(overrides?: CallOverrides): Promise<BigNumber>;
 
+    SHIBA_HEIGHT(overrides?: CallOverrides): Promise<BigNumber>;
+
+    SHIBA_WIDTH(overrides?: CallOverrides): Promise<BigNumber>;
+
     __PX_init(
       name_: string,
       symbol_: string,
       DOG20Address: string,
+      ipfsUri_: string,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -589,11 +612,6 @@ export interface PX extends BaseContract {
     balanceOf(owner: string, overrides?: CallOverrides): Promise<BigNumber>;
 
     burnPupper(pupper: BigNumberish, overrides?: CallOverrides): Promise<void>;
-
-    fuelPuppyDispenser(
-      amount: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<void>;
 
     getApproved(
       tokenId: BigNumberish,
@@ -727,16 +745,23 @@ export interface PX extends BaseContract {
   };
 
   estimateGas: {
+    BASE_URI(overrides?: CallOverrides): Promise<BigNumber>;
+
     DOG_TO_PIXEL_SATOSHIS(overrides?: CallOverrides): Promise<BigNumber>;
 
     INDEX_OFFSET(overrides?: CallOverrides): Promise<BigNumber>;
 
     MAGIC_NULL(overrides?: CallOverrides): Promise<BigNumber>;
 
+    SHIBA_HEIGHT(overrides?: CallOverrides): Promise<BigNumber>;
+
+    SHIBA_WIDTH(overrides?: CallOverrides): Promise<BigNumber>;
+
     __PX_init(
       name_: string,
       symbol_: string,
       DOG20Address: string,
+      ipfsUri_: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
@@ -750,11 +775,6 @@ export interface PX extends BaseContract {
 
     burnPupper(
       pupper: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
-
-    fuelPuppyDispenser(
-      amount: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
@@ -859,6 +879,8 @@ export interface PX extends BaseContract {
   };
 
   populateTransaction: {
+    BASE_URI(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
     DOG_TO_PIXEL_SATOSHIS(
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
@@ -867,10 +889,15 @@ export interface PX extends BaseContract {
 
     MAGIC_NULL(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
+    SHIBA_HEIGHT(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    SHIBA_WIDTH(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
     __PX_init(
       name_: string,
       symbol_: string,
       DOG20Address: string,
+      ipfsUri_: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
@@ -887,11 +914,6 @@ export interface PX extends BaseContract {
 
     burnPupper(
       pupper: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
-
-    fuelPuppyDispenser(
-      amount: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
