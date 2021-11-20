@@ -18,7 +18,16 @@ interface ThreeSceneProps {
 }
 
 const ThreeScene = React.memo(({ onPixelSelect, selectedPixel, store }: ThreeSceneProps) => {
-  const cam = new THREE.PerspectiveCamera(5, window.innerWidth / window.innerHeight, 0.0000001, 10000);
+  const maxCameraZ = 6000;
+  const minCameraZ = 80;
+  const _zClippingSafetyBuffer = 10
+
+  const cam = new THREE.PerspectiveCamera(
+    5,
+    window.innerWidth / window.innerHeight,
+    minCameraZ - _zClippingSafetyBuffer,
+    maxCameraZ + _zClippingSafetyBuffer
+  );
   const [camera] = useState<THREE.PerspectiveCamera>(cam);
 
   //@TODO: CC FIX
@@ -60,9 +69,6 @@ const ThreeScene = React.memo(({ onPixelSelect, selectedPixel, store }: ThreeSce
   let isDown = false;
   let startMouseX: number;
   let startMouseY: number;
-
-  const maxCameraZ = 6000;
-  const minCameraZ = 80;
 
   const onDocumentMouseWheel = (event: Event) => {
     event.preventDefault();
@@ -210,29 +216,30 @@ const ThreeScene = React.memo(({ onPixelSelect, selectedPixel, store }: ThreeSce
           onPointerUp={onPointUp}
         >
           <planeGeometry attach={"geometry"} args={[imageWorldUnitsWidth, imageWorldUnitsHeight]} />
-          <meshBasicMaterial attach={"material"} map={texture} />
+          <meshBasicMaterial attach={"material"} map={texture} depthTest={false}/>
         </mesh>
+
         <mesh ref={selectedPixelOverlayRef} position={[0, 0, 0.0001]}>
           <planeGeometry attach={"geometry"} args={[overlayLength, overlayLength]} />
-          <meshBasicMaterial attach={"material"} color={0xff00ff} opacity={0.8} transparent={true} />
+          <meshBasicMaterial attach={"material"} color={0xff00ff} opacity={0.8} transparent={true} depthTest={false}/>
         </mesh>
 
         <group ref={newHoverOverlayRef}>
           <mesh position={[-0.5, 0, 0.001]}>
             <planeGeometry attach={"geometry"} args={[0.05, 1.05]} />
-            <meshBasicMaterial attach={"material"} color={0xf1c232} opacity={1} transparent={true} />
+            <meshBasicMaterial attach={"material"} color={0xf1c232} opacity={1} transparent={true} depthTest={false}/>
           </mesh>
           <mesh position={[0.5, 0, 0.001]}>
             <planeGeometry attach={"geometry"} args={[0.05, 1.05]} />
-            <meshBasicMaterial attach={"material"} color={0xf1c232} opacity={1} transparent={true} />
+            <meshBasicMaterial attach={"material"} color={0xf1c232} opacity={1} transparent={true} depthTest={false}/>
           </mesh>
           <mesh position={[0, 0.5, 0.001]} rotation={new THREE.Euler(0, 0, Math.PI / 2)}>
             <planeGeometry attach={"geometry"} args={[0.05, 1]} />
-            <meshBasicMaterial attach={"material"} color={0xf1c232} opacity={1} transparent={true} />
+            <meshBasicMaterial attach={"material"} color={0xf1c232} opacity={1} transparent={true} depthTest={false}/>
           </mesh>
           <mesh position={[0, -0.5, 0.001]} rotation={new THREE.Euler(0, 0, -Math.PI / 2)}>
             <planeGeometry attach={"geometry"} args={[0.05, 1]} />
-            <meshBasicMaterial attach={"material"} color={0xf1c232} opacity={1} transparent={true} />
+            <meshBasicMaterial attach={"material"} color={0xf1c232} opacity={1} transparent={true} depthTest={false}/>
           </mesh>
         </group>
       </Canvas>
