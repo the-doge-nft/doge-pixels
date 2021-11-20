@@ -24,6 +24,9 @@ const SelectedPixelPane = observer(function SelectedPixelPane({store}: {store: V
         {store.selectedURI && <Typography block variant={TVariant.ComicSans22} ml={3}>
           {jsonify(store.selectedURI)}
         </Typography>}
+        {store.tokenOwner && <Typography block variant={TVariant.ComicSans14} ml={3}>
+          {store.tokenOwner}
+        </Typography>}
       </Box>
     </Box>
     {store.isSelectedPupperOwned &&

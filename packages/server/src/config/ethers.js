@@ -1,11 +1,9 @@
 const ethers = require('ethers')
 const ABI = require('../contracts/hardhat_contracts.json')
 
-// Started HTTP and WebSocket JSON-RPC server at http://127.0.0.1:8545/
-
 const PX = ABI["31337"]["localhost"]["contracts"]["PX"]
 
-const provider = new ethers.providers.JsonRpcProvider("http://127.0.0.1:8545/")
+const provider = new ethers.providers.JsonRpcProvider("http://host.docker.internal:8545/")
 const contract = new ethers.Contract(PX["address"], PX["abi"], provider)
 
 function main() {
