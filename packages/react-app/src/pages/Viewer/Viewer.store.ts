@@ -4,6 +4,7 @@ import {Navigable} from "../../services/mixins/navigable";
 import AppStore from "../../store/App.store";
 import * as THREE from "three";
 import { Eventable } from "../../services/mixins/eventable";
+import { Reactionable } from "../../services/mixins/reactionable";
 
 
 export enum ViewerView {
@@ -13,7 +14,7 @@ export enum ViewerView {
 }
 
 //@TODO passing generics to Navigable typing acknowledged of subclasses
-class ViewerStore extends Navigable(Eventable(EmptyClass)){
+class ViewerStore extends Navigable(Eventable(Reactionable((EmptyClass)))) {
   @observable
   isMintModalOpen = false;
 
@@ -24,12 +25,31 @@ class ViewerStore extends Navigable(Eventable(EmptyClass)){
   selectedPupper: number | null = null;
 
   @observable
+  selectedURI?: any
+
+  @observable
   camera: any
 
   constructor() {
     super()
     this.pushNavigation(ViewerView.Index)
     makeObservable(this);
+  }
+
+  init() {
+    this.react(() => this.selectedPupper, () => {
+      AppStore.web3.pxContract!.tokenURI(this.selectedPupper!).then(res => {
+        this.selectedURI = {
+          imgUrl: "",
+          description: {
+
+          }
+        }
+        console.log("debug:: res", res)
+      }).catch(e => {
+        console.error("debug:: error", e)
+      })
+    }, {fireImmediately: false})
   }
 
   @action
@@ -69,6 +89,11 @@ class ViewerStore extends Navigable(Eventable(EmptyClass)){
       return AppStore.web3.tokenIdsOwned.includes(this.selectedPupper)
     }
   }
+
+  destroy() {
+    this.disposeReactions()
+  }
 }
+
 
 export default ViewerStore;

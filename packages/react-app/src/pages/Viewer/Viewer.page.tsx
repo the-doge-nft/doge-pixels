@@ -1,4 +1,4 @@
-import React, {Suspense, useCallback, useMemo} from "react";
+import React, {Suspense, useCallback, useEffect, useMemo} from "react";
 import {Box, Button, Flex, Grid, GridItem} from "@chakra-ui/react";
 import ThreeScene from "./ThreeScene";
 import ViewerStore, {ViewerView} from "./Viewer.store";
@@ -18,6 +18,13 @@ export type onPixelSelectType = (x: number, y: number) => void;
 
 const ViewerPage = observer(function ViewerPage() {
   const store = useMemo(() => new ViewerStore(), []);
+
+  useEffect(() => {
+    store.init()
+    return () => {
+      store.destroy()
+    }
+  }, [])
 
   const onPixelSelect: onPixelSelectType = useCallback((x: number, y: number) => {
     store.selectedPupper = AppStore.web3.coordinateToPupper(x, y);
