@@ -4,14 +4,13 @@ import { FC } from "react";
 import AppLayout from "./layouts/AppLayout";
 import ViewerPage from "./pages/Viewer/Viewer.page";
 import PoolStatsPage from "./pages/PoolStats/PoolStats.page";
-import ScaffoldIndex from "./pages/ScaffoldEth/ScaffoldIndex";
-import Scaffold from "./pages/ScaffoldEth/Scaffold";
-import BlankLayout from "./layouts/BlankLayout";
 import DSLPage from "./pages/DSL.page";
+import ProfilePage from "./pages/Profile/Profile.page";
 
 export enum NamedRoutes {
   VIEWER = "viewer",
   POOLSTATS = "stats",
+  PROFILE = "profile",
   DEV = "dev",
   DSL = "dsl",
 }
@@ -47,13 +46,21 @@ const routes: AppRouteInterface[] = [
     component: ViewerPage,
     title: "viewer",
   },
+  // {
+  //   path: "/stats",
+  //   name: NamedRoutes.POOLSTATS,
+  //   exact: true,
+  //   layout: AppLayout,
+  //   component: PoolStatsPage,
+  //   title: "stats",
+  // },
   {
-    path: "/stats",
-    name: NamedRoutes.POOLSTATS,
+    path: "/profile",
+    name: NamedRoutes.PROFILE,
     exact: true,
     layout: AppLayout,
-    component: PoolStatsPage,
-    title: "stats",
+    component: ProfilePage,
+    title: "profile",
   },
   {
     path: "/dsl",
@@ -63,13 +70,5 @@ const routes: AppRouteInterface[] = [
     component: DSLPage,
     title: "dsl",
   },
-  // {
-  //   path: "/scaffold",
-  //   name: NamedRoutes.DEV,
-  //   exact: true,
-  //   layout: BlankLayout,
-  //   component: Scaffold,
-  //   title: "scaffold",
-  // },
 ];
 export default routes;

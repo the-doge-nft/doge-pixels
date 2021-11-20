@@ -1,12 +1,12 @@
-import ViewerStore, {ViewerView} from "./Viewer.store";
+import ViewerStore, {ViewerView} from "../Viewer.store";
 import {Box, Flex, useColorMode} from "@chakra-ui/react";
-import Typography, {TVariant} from "../../DSL/Typography/Typography";
+import Typography, {TVariant} from "../../../DSL/Typography/Typography";
 import React from "react";
 import {observer} from "mobx-react-lite";
-import AppStore from "../../store/App.store";
-import {showDebugToast} from "../../DSL/Toast/Toast";
-import {SET_CAMERA} from "../../services/mixins/eventable";
-import {lightOrDark} from "../../DSL/Theme";
+import AppStore from "../../../store/App.store";
+import {showDebugToast} from "../../../DSL/Toast/Toast";
+import {SET_CAMERA} from "../../../services/mixins/eventable";
+import {lightOrDark} from "../../../DSL/Theme";
 
 const ManagePane = observer(function ManagePane({store}: {store: ViewerStore}) {
   const {colorMode} = useColorMode()
@@ -39,11 +39,12 @@ const ManagePane = observer(function ManagePane({store}: {store: ViewerStore}) {
                 store.pushNavigation(ViewerView.Selected)
               }}
             >
-              <Box
+              <Flex
                 width={"50px"}
                 height={"50px"}
                 borderWidth={"1px"}
                 borderStyle={"solid"}
+                justifyContent={"space-between"}
                 borderColor={lightOrDark(colorMode, "black", "white")}
               />
               <Typography variant={TVariant.ComicSans18} ml={4}>

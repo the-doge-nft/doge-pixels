@@ -1,11 +1,11 @@
 import React, {useEffect} from "react";
 import {observer} from "mobx-react-lite";
 import {Box, Flex, VStack} from "@chakra-ui/react";
-import Typography, {TVariant} from "../../DSL/Typography/Typography";
-import ViewerStore from "./Viewer.store";
-import Button from "../../DSL/Button/Button";
-import AppStore from "../../store/App.store";
-import jsonify from "../../helpers/jsonify";
+import Typography, {TVariant} from "../../../DSL/Typography/Typography";
+import ViewerStore from "../Viewer.store";
+import Button from "../../../DSL/Button/Button";
+import AppStore from "../../../store/App.store";
+import jsonify from "../../../helpers/jsonify";
 
 const SelectedPixelPane = observer(function SelectedPixelPane({store}: {store: ViewerStore}) {
   return <Flex flexDirection={"column"} justifyContent={"space-between"} h={"full"}>

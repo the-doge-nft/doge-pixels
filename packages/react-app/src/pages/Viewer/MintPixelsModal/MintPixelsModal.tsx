@@ -13,7 +13,7 @@ import AppStore from "../../../store/App.store";
 import Dev from "../../../common/Dev";
 import Submit from "../../../DSL/Form/Submit";
 import {makeObservable} from "mobx";
-import Loading from "../Loading";
+import Loading from "../Loading/Loading";
 
 interface MintPixelsModalProps extends Pick<ModalProps, "isOpen" | "onClose"> {}
 
@@ -33,17 +33,6 @@ const MintPixelsModal = observer(({ isOpen, onClose }: MintPixelsModalProps) => 
       }}
       renderHeader={() => <Typography variant={TVariant.ComicSans28}>{store.modalTitle}</Typography>}
     >
-      {store.showGoBack && store.currentView === MintModalView.Approval && <Button
-        p={0}
-        mb={2}
-        display={"inline-flex"}
-        justifyContent={"flex-start"}
-        variant={ButtonVariant.Text}
-        onClick={() => store.popNavigation()}
-      >
-        &#8592;
-      </Button>}
-      {store.currentView}
       {store.currentView === MintModalView.Mint && <MintForm store={store}/>}
       {store.currentView === MintModalView.Approval && <Approval store={store}/>}
       {store.currentView === MintModalView.Loading && <LoadingPixels store={store}/>}
@@ -114,15 +103,24 @@ const MintForm = observer(({ store }: { store: MintPixelsModalStore }) => {
 const Approval = observer(({store}: {store: MintPixelsModalStore}) => {
   return (
     <Box>
-      <Typography variant={TVariant.ComicSans16}>Please approve $DOG</Typography>
+      <Typography variant={TVariant.ComicSans16}>
+        Please approve the following amount of $DOG to be swapped for pixels.
+      </Typography>
       <Flex justifyContent={"center"} alignItems={"center"} w={"full"} h={"full"}>
         <Typography display={"block"} variant={TVariant.PresStart28} mt={8}>
           {store.allowanceToGrant / (10 ** AppStore.web3.D20_PRECISION)} $DOG
         </Typography>
       </Flex>
         <Form onSubmit={() => store.handleApproveSubmit()}>
-          <Flex mt={14} justifyContent={"center"}>
-            <Submit label={"Approve"}/>
+          <Flex
+            flexDirection={"column"}
+            mt={14}
+            alignItems={"center"}
+          >
+            <Submit label={"Approve"} flexGrow={0}/>
+            {store.showGoBack && <Button onClick={() => store.popNavigation()} mt={5}>
+                Go Back
+            </Button>}
           </Flex>
         </Form>
     </Box>

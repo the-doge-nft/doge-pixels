@@ -5,13 +5,13 @@ import ViewerStore, {ViewerView} from "./Viewer.store";
 import {observer} from "mobx-react-lite";
 import Pane from "../../DSL/Pane/Pane";
 import BurnPixelsModal from "./BurnPixelsModal/BurnPixelsModal";
-import ManagePane from "./ManagePane";
-import IndexPane from "./IndexPane";
+import ManagePane from "./Panes/ManagePane";
+import IndexPane from "./Panes/IndexPane";
 import MintPixelsModal from "./MintPixelsModal/MintPixelsModal";
-import SelectedPixelPane from "./SelectedPixelPane";
+import SelectedPixelPane from "./Panes/SelectedPixelPane";
 import AppStore from "../../store/App.store";
 import {showDebugToast} from "../../DSL/Toast/Toast";
-import Loading from "./Loading";
+import Loading from "./Loading/Loading";
 import {ButtonVariant} from "../../DSL/Button/Button";
 
 export type onPixelSelectType = (x: number, y: number) => void;

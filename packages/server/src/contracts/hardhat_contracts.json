@@ -419,6 +419,19 @@
             },
             {
               "inputs": [],
+              "name": "BASE_URI",
+              "outputs": [
+                {
+                  "internalType": "string",
+                  "name": "",
+                  "type": "string"
+                }
+              ],
+              "stateMutability": "view",
+              "type": "function"
+            },
+            {
+              "inputs": [],
               "name": "DOG_TO_PIXEL_SATOSHIS",
               "outputs": [
                 {
@@ -457,6 +470,32 @@
               "type": "function"
             },
             {
+              "inputs": [],
+              "name": "SHIBA_HEIGHT",
+              "outputs": [
+                {
+                  "internalType": "uint256",
+                  "name": "",
+                  "type": "uint256"
+                }
+              ],
+              "stateMutability": "view",
+              "type": "function"
+            },
+            {
+              "inputs": [],
+              "name": "SHIBA_WIDTH",
+              "outputs": [
+                {
+                  "internalType": "uint256",
+                  "name": "",
+                  "type": "uint256"
+                }
+              ],
+              "stateMutability": "view",
+              "type": "function"
+            },
+            {
               "inputs": [
                 {
                   "internalType": "string",
@@ -472,6 +511,11 @@
                   "internalType": "address",
                   "name": "DOG20Address",
                   "type": "address"
+                },
+                {
+                  "internalType": "string",
+                  "name": "ipfsUri_",
+                  "type": "string"
                 }
               ],
               "name": "__PX_init",
@@ -525,19 +569,6 @@
                 }
               ],
               "name": "burnPupper",
-              "outputs": [],
-              "stateMutability": "nonpayable",
-              "type": "function"
-            },
-            {
-              "inputs": [
-                {
-                  "internalType": "uint256",
-                  "name": "amount",
-                  "type": "uint256"
-                }
-              ],
-              "name": "fuelPuppyDispenser",
               "outputs": [],
               "stateMutability": "nonpayable",
               "type": "function"
