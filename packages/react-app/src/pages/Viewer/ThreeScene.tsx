@@ -11,6 +11,15 @@ import { SET_CAMERA } from "../../services/mixins/eventable";
 import { BigNumber } from "ethers";
 import Button, { ButtonVariant } from "../../DSL/Button/Button";
 
+
+// var createPanZoom = require('three.map.control');
+
+import createPanZoom from "../../services/three-map-js";
+
+// const Controls = () => {
+//
+// }
+
 interface ThreeSceneProps {
   onPixelSelect: onPixelSelectType;
   selectedPixel: any;
@@ -21,6 +30,11 @@ const ThreeScene = React.memo(({ onPixelSelect, selectedPixel, store }: ThreeSce
   const maxCameraZ = 5500;
   const minCameraZ = 80;
   const _zClippingSafetyBuffer = 10
+  var panZoom: any
+
+  useEffect(() => {
+    panZoom?.dispose()
+  }, [])
 
   const cam = new THREE.PerspectiveCamera(
     5,
@@ -28,6 +42,8 @@ const ThreeScene = React.memo(({ onPixelSelect, selectedPixel, store }: ThreeSce
     minCameraZ - _zClippingSafetyBuffer,
     maxCameraZ + _zClippingSafetyBuffer
   );
+
+
   const [camera] = useState<THREE.PerspectiveCamera>(cam);
 
   const canvasContainerRef = useRef<HTMLDivElement | null>(null)
@@ -35,6 +51,8 @@ const ThreeScene = React.memo(({ onPixelSelect, selectedPixel, store }: ThreeSce
 
   const canvasContainerOnMount = useCallback((node: HTMLDivElement) => {
     if (node) {
+      var panZoom = createPanZoom(camera, node);
+
       const width = node.clientWidth;
       const height = node.clientHeight;
       camera.aspect = width / height;
@@ -45,6 +63,37 @@ const ThreeScene = React.memo(({ onPixelSelect, selectedPixel, store }: ThreeSce
       camera.position.z = maxCameraZ;
 
       canvasContainerRef.current = node
+      node.focus()
+
+      panZoom = createPanZoom(camera, node);
+      // the panZoom api fires events when something happens,
+      // so that you can react to user actions:
+      //@ts-ignore
+      panZoom.on('panstart', function() {
+        // fired when users begins panning (dragging) the surface
+        console.log('panstart fired');
+      });
+
+      //@ts-ignore
+      panZoom.on('panend', function() {
+        // fired when user stpos panning (dragging) the surface
+        console.log('panend fired');
+      });
+
+      //@ts-ignore
+      panZoom.on('beforepan', function(panPayload: any) {
+        // fired when camera position will be changed.
+        console.log('going to move camera.position.x by: ' + panPayload.dx);
+        console.log('going to move camera.position.y by: ' + panPayload.dy);
+      });
+
+      //@ts-ignore
+      panZoom.on('beforezoom', function(panPayload: any) {
+        // fired when befor zoom in/zoom out
+        console.log('going to move camera.position.x by: ' + panPayload.dx);
+        console.log('going to move camera.position.y by: ' + panPayload.dy);
+        console.log('going to move camera.position.z by: ' + panPayload.dz);
+      });
     }
   }, []);
 
@@ -66,108 +115,6 @@ const ThreeScene = React.memo(({ onPixelSelect, selectedPixel, store }: ThreeSce
 
   const newHoverOverlayRef = useRef<Object3D>(null)
 
-  let isDown = false;
-  let startMouseX: number;
-  let startMouseY: number;
-
-
-  const getVisibleRange = () => {
-    if (dogeMeshRef.current) {
-      var distance = camera.position.distanceTo( dogeMeshRef.current.position );
-      var vFOV = THREE.MathUtils.degToRad( camera.fov );
-      var height = 2 * Math.tan( vFOV / 2 ) * distance;
-      var width = height * camera.aspect;
-
-      const x1 = camera.position.x - (width/2)
-      const x2 = camera.position.x + (width/2)
-      const y1 = camera.position.y - (height/2)
-      const y2 = camera.position.y + (height/2)
-
-      return [x1, x2, y1, y2]
-    }
-    return [0,0,0,0]
-  }
-
-  const getVisibleBoundaries = () => {
-    const boundaryBuffer = 5
-    const x1Bound = 0
-    const x2Bound = 640
-    const y1Bound = -480
-    const y2Bound = 0
-    const [x1, x2, y1, y2] = getVisibleRange()
-
-    return {
-      leftBoundaryHit: (x1 < (x1Bound - boundaryBuffer)),
-      rightBoundaryHit: (x2 > (x2Bound + boundaryBuffer)),
-      topBoundaryHit: (y2 > (y2Bound + boundaryBuffer)),
-      bottomBoundaryHit: (y1 < (y1Bound - boundaryBuffer))
-    }
-  }
-
-  const isDogeInVisibleBounds = () => {
-    const boundariesHit = getVisibleBoundaries()
-    if (
-      boundariesHit.leftBoundaryHit
-      || boundariesHit.rightBoundaryHit
-      || boundariesHit.topBoundaryHit
-      || boundariesHit.bottomBoundaryHit
-    ) {
-      return false
-    }
-    return true
-  }
-
-  const downListener = (event: MouseEvent) => {
-    isDown = true;
-    startMouseX = event.clientX;
-    startMouseY = event.clientY;
-  };
-
-  const upListener = (event: MouseEvent, node: HTMLCanvasElement) => {
-    isDown = false;
-    setIsDragging(false);
-    node.style.cursor = "pointer";
-  };
-
-  const moveListener = (event: MouseEvent, node: HTMLCanvasElement) => {
-    const deltaToMoveX = 3;
-    const deltaToMoveY = 3;
-    const mouseXNow = event.clientX;
-    const mouseYNow = event.clientY;
-    const diffX = startMouseX - mouseXNow;
-    const diffY = startMouseY - mouseYNow;
-    const sensitivityFactor = camera.position.z / 13000;
-
-    const panningLeft = diffX < 0
-    const panningRight = diffX > 0
-    const panningUp = diffY < 0
-    const panningDown = diffY > 0
-
-    if (isDown) {
-      const isVisible = isDogeInVisibleBounds()
-      const boundaries = getVisibleBoundaries()
-
-      if (Math.abs(diffX) >= deltaToMoveX) {
-        if (isVisible || (boundaries.leftBoundaryHit && panningRight || boundaries.rightBoundaryHit && panningLeft)) {
-          setIsDragging(true);
-          camera.position.x += diffX * sensitivityFactor;
-          startMouseX = mouseXNow;
-        }
-      }
-
-      if (Math.abs(diffY) >= deltaToMoveY) {
-        if (isVisible || (boundaries.bottomBoundaryHit && panningUp || boundaries.topBoundaryHit && panningDown)) {
-          setIsDragging(true);
-          camera.position.y -= diffY * sensitivityFactor;
-          startMouseY = mouseYNow;
-        }
-      }
-      node.style.cursor = "grabbing";
-    }
-  };
-  const mouseEnterListener = (event: Event, node: HTMLCanvasElement) => {
-    node.style.cursor = "pointer";
-  };
 
   const onPointUp = (e: any) => {
     if (!isDragging) {
@@ -231,11 +178,11 @@ const ThreeScene = React.memo(({ onPixelSelect, selectedPixel, store }: ThreeSce
             }
           })
 
-          gl.domElement.addEventListener("wheel", e => e.preventDefault());
-          gl.domElement.addEventListener("mousedown", e => downListener(e));
-          gl.domElement.addEventListener("mousemove", e => moveListener(e, gl.domElement));
-          gl.domElement.addEventListener("mouseup", e => upListener(e, gl.domElement));
-          gl.domElement.addEventListener("mouseenter", e => mouseEnterListener(e, gl.domElement));
+          // gl.domElement.addEventListener("wheel", e => e.preventDefault());
+          // gl.domElement.addEventListener("mousedown", e => downListener(e));
+          // gl.domElement.addEventListener("mousemove", e => moveListener(e, gl.domElement));
+          // gl.domElement.addEventListener("mouseup", e => upListener(e, gl.domElement));
+          // gl.domElement.addEventListener("mouseenter", e => mouseEnterListener(e, gl.domElement));
           gl.toneMapping = THREE.NoToneMapping;
         }}
       >
@@ -256,13 +203,13 @@ const ThreeScene = React.memo(({ onPixelSelect, selectedPixel, store }: ThreeSce
           onPointerUp={onPointUp}
           onWheel={(event) => {
             // @TODO: implement camera zoom towards mouse position here
-            const { deltaY } = event;
-            const newZ = camera.position.z + deltaY;
-            if (newZ >= minCameraZ && newZ <= maxCameraZ) {
-              camera.position.z = newZ;
-              camera.updateProjectionMatrix();
-            }
-            getVisibleRange()
+            // const { deltaY } = event;
+            // const newZ = camera.position.z + deltaY;
+            // if (newZ >= minCameraZ && newZ <= maxCameraZ) {
+            //   camera.position.z = newZ;
+            //   camera.updateProjectionMatrix();
+            // }
+            // getVisibleRange()
           }}
         >
           <planeGeometry attach={"geometry"} args={[imageWorldUnitsWidth, imageWorldUnitsHeight]} />
