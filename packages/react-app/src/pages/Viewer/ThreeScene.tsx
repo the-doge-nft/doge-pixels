@@ -18,9 +18,9 @@ interface ThreeSceneProps {
 }
 
 const ThreeScene = React.memo(({ onPixelSelect, selectedPixel, store }: ThreeSceneProps) => {
-  const maxCameraZ = 6000;
+  const maxCameraZ = 5500;
   const minCameraZ = 80;
-  const _zClippingSafetyBuffer = 10
+  const _zClippingSafetyBuffer = 3
   
   var panZoom: any
   useEffect(() => {
@@ -162,7 +162,7 @@ const ThreeScene = React.memo(({ onPixelSelect, selectedPixel, store }: ThreeSce
           gl.toneMapping = THREE.NoToneMapping;
 
           if (dogeMeshRef.current) {
-            panZoom = createPanZoom(camera, gl.domElement.parentElement, dogeMeshRef.current);
+            panZoom = createPanZoom(camera, gl.domElement.parentElement, dogeMeshRef.current, minCameraZ, maxCameraZ);
             // the panZoom api fires events when something happens,
             // so that you can react to user actions:
             //@ts-ignore
