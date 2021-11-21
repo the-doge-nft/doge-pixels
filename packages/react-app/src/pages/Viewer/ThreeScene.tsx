@@ -71,28 +71,28 @@ const ThreeScene = React.memo(({ onPixelSelect, selectedPixel, store }: ThreeSce
       //@ts-ignore
       panZoom.on('panstart', function() {
         // fired when users begins panning (dragging) the surface
-        console.log('panstart fired');
+        // console.log('panstart fired');
       });
 
       //@ts-ignore
       panZoom.on('panend', function() {
         // fired when user stpos panning (dragging) the surface
-        console.log('panend fired');
+        // console.log('panend fired');
       });
 
       //@ts-ignore
       panZoom.on('beforepan', function(panPayload: any) {
         // fired when camera position will be changed.
-        console.log('going to move camera.position.x by: ' + panPayload.dx);
-        console.log('going to move camera.position.y by: ' + panPayload.dy);
+        // console.log('going to move camera.position.x by: ' + panPayload.dx);
+        // console.log('going to move camera.position.y by: ' + panPayload.dy);
       });
 
       //@ts-ignore
       panZoom.on('beforezoom', function(panPayload: any) {
         // fired when befor zoom in/zoom out
-        console.log('going to move camera.position.x by: ' + panPayload.dx);
-        console.log('going to move camera.position.y by: ' + panPayload.dy);
-        console.log('going to move camera.position.z by: ' + panPayload.dz);
+        // console.log('going to move camera.position.x by: ' + panPayload.dx);
+        // console.log('going to move camera.position.y by: ' + panPayload.dy);
+        // console.log('going to move camera.position.z by: ' + panPayload.dz);
       });
     }
   }, []);

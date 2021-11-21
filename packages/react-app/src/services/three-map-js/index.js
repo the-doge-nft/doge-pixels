@@ -53,7 +53,7 @@ function panzoom(camera, owner) {
 
   var api = eventify({
     dispose: dispose,
-    speed: 0.03,
+    speed: 0.007,
     min: 80,
     max: 5500
   })
@@ -252,6 +252,7 @@ function panzoom(camera, owner) {
   function handleMouseUp() {
     disposeWindowEvents()
     isDragging = false
+    owner.style.cursor = "pointer"
 
     triggerPanEnd()
   }
@@ -264,10 +265,16 @@ function panzoom(camera, owner) {
   function handleMouseMove(e) {
     if (!isDragging) return
 
+    owner.style.cursor = "grabbing"
+
     triggerPanStart()
 
     var dx = e.clientX - mousePos.x
     var dy = e.clientY - mousePos.y
+
+    // @CC custom
+    console.log("debug:: dx", dx)
+    console.log("debug:: dy", dy)
 
     panByOffset(dx, dy)
 
@@ -310,12 +317,13 @@ function panzoom(camera, owner) {
 
   function panByOffset(dx, dy) {
     var currentScale = getCurrentScale()
+    console.log("debug:: current scale", currentScale)
 
     //@CC custom
     const dampenFactor = 1
 
-    panPayload.dx = -dx/(currentScale*dampenFactor)
-    panPayload.dy = dy/(currentScale*dampenFactor)
+    panPayload.dx = -dx/(currentScale)
+    panPayload.dy = dy/(currentScale)
 
     // we fire first, so that clients can manipulate the payload
     api.fire('beforepan', panPayload)
@@ -327,8 +335,11 @@ function panzoom(camera, owner) {
   }
 
   function onMouseWheel(e) {
+    e.preventDefault()
+    console.log("debug:: deltaY", e.deltaY)
 
-    var scaleMultiplier = getScaleMultiplier(e.deltaY / 10)
+    var scaleMultiplier = getScaleMultiplier(e.deltaY)
+    console.log("debug:: scale multiplier", scaleMultiplier)
 
     smoothScroll.cancel()
     zoomTo(e.clientX, e.clientY, scaleMultiplier)
@@ -336,16 +347,22 @@ function panzoom(camera, owner) {
 
   function zoomTo(offsetX, offsetY, scaleMultiplier) {
     var currentScale = getCurrentScale()
+    console.log("debug:: currentScale", currentScale)
 
     var dx = (offsetX - owner.clientWidth / 2) / currentScale
     var dy = (offsetY - owner.clientHeight / 2) / currentScale
 
     var newZ = camera.position.z * scaleMultiplier
+    console.log("debug:: newZ", camera.position.z, scaleMultiplier, newZ)
+
     if (newZ < api.min || newZ > api.max) {
       return
     }
 
     zoomPayload.dz = newZ - camera.position.z
+    console.log("debug:: payload X", zoomPayload.dz)
+    console.log("   ")
+
     zoomPayload.dx = -(scaleMultiplier - 1) * dx
     zoomPayload.dy = (scaleMultiplier - 1) * dy
 
