@@ -17,11 +17,11 @@ interface AppLayoutProps {
 }
 
 const AppLayout = observer(function AppLayout({children}: AppLayoutProps) {
-  useEffect(() => {
-    if (web3Modal.cachedProvider && !AppStore.web3.web3Provider?.connection) {
-      AppStore.web3.connect()
-    }
-  }, [])
+  // useEffect(() => {
+  //   if (web3Modal.cachedProvider && !AppStore.web3.web3Provider?.connection) {
+  //     AppStore.web3.connect()
+  //   }
+  // }, [])
 
   useEffect(() => {
     //@ts-ignore

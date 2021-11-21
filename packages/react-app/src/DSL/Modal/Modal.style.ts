@@ -5,7 +5,8 @@ const ModalStyle = {
   parts: ["overlay", "dialogContainer", "dialog", "header", "closeButton", "body", "footer"],
   baseStyle: ({ colorMode }: { colorMode: "light" | "dark" }) => ({
     overlay: {
-      bg: "rgba(0,0,0,0.5)",
+      // bg: "rgba(0,0,0,0.5)",
+      bg: "transparent"
     },
     dialogContainer: {
       // border: "2px solid black"
