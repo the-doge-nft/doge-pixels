@@ -8,12 +8,12 @@ import {observer} from "mobx-react-lite";
 
 const IndexPane = observer(function IndexPane({store}: {store: ViewerStore}) {
   return  <>
-    <Flex flexDirection={"column"} flexGrow={0}>
+    <Flex flexDirection={"column"} flexGrow={0} h={"100%"}>
       <Typography variant={TVariant.ComicSans22} mb={1} block>
         Own the Doge
       </Typography>
 
-      <Box overflow={"scroll"} flexGrow={1} h={100}>
+      <Box overflow={"scroll"} flexGrow={1} h={"full"}>
         <Box maxHeight={"300px"}>
           <Typography variant={TVariant.ComicSans16} block>
             Look. Closer. Closer! Can you see it? A piece of the pupper picture for your pocket. A colored square with your name on it. A portal to the new paradigm of digital doge ownership.
