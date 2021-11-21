@@ -31,7 +31,7 @@ const MintPixelsModal = observer(({ isOpen, onClose }: MintPixelsModalProps) => 
       onClose={() => {
         onClose();
       }}
-      renderHeader={() => <Typography variant={TVariant.ComicSans28}>{store.modalTitle}</Typography>}
+      renderHeader={() => <Typography variant={TVariant.PresStart18}>{store.modalTitle}</Typography>}
     >
       {store.currentView === MintModalView.Mint && <MintForm store={store}/>}
       {store.currentView === MintModalView.Approval && <Approval store={store}/>}
@@ -59,15 +59,15 @@ const MintForm = observer(({ store }: { store: MintPixelsModalStore }) => {
             validate={[
               required,
               minValue(1, "Must mint at least 1 pixel"),
-              maxValue(10, "Max amount of 10 pixels per mint for now")
+              maxValue(store.maxPixelsToPurchase, "Need to buy more $DOG")
             ]}
           />
         </Box>
         <Box mt={8}>
-          <Typography variant={TVariant.ComicSans16} block>
+          <Typography variant={TVariant.PresStart18} block>
             $DOG
           </Typography>
-          <Typography variant={TVariant.PresStart16} block mt={2}>
+          <Typography variant={TVariant.PresStart18} block mt={2}>
             {store.dogCount}
           </Typography>
         </Box>
@@ -93,26 +93,24 @@ const MintForm = observer(({ store }: { store: MintPixelsModalStore }) => {
 const Approval = observer(({store}: {store: MintPixelsModalStore}) => {
   return (
     <Box>
-      <Typography variant={TVariant.ComicSans16}>
-        Please approve the following amount of $DOG to be swapped for pixels.
+      <Typography display={"block"} variant={TVariant.PresStart28}>
+        {store.allowanceToGrant / (10 ** AppStore.web3.D20_PRECISION)}
       </Typography>
-      <Flex justifyContent={"center"} alignItems={"center"} w={"full"} h={"full"}>
-        <Typography display={"block"} variant={TVariant.PresStart28} mt={8}>
-          {store.allowanceToGrant / (10 ** AppStore.web3.D20_PRECISION)} $DOG
-        </Typography>
-      </Flex>
-        <Form onSubmit={() => store.handleApproveSubmit()}>
-          <Flex
-            flexDirection={"column"}
-            mt={14}
-            alignItems={"center"}
-          >
-            <Submit label={"Approve"} flexGrow={0}/>
-            {store.showGoBack && <Button onClick={() => store.popNavigation()} mt={5}>
-                Go Back
-            </Button>}
-          </Flex>
-        </Form>
+      <Typography block variant={TVariant.ComicSans18} mt={4}>
+        Please approve $DOG to be spent for pixels.
+      </Typography>
+      <Form onSubmit={() => store.handleApproveSubmit()}>
+        <Flex
+          flexDirection={"column"}
+          mt={14}
+          alignItems={"center"}
+        >
+          <Submit label={"Approve"} flexGrow={0}/>
+          {store.showGoBack && <Button onClick={() => store.popNavigation()} mt={5}>
+              Cancel
+          </Button>}
+        </Flex>
+      </Form>
     </Box>
   );
 });

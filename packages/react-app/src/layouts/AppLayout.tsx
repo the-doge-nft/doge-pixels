@@ -1,5 +1,5 @@
 import React, {useEffect} from "react";
-import {Box, Flex, HStack, Menu, MenuButton, MenuItem, MenuList, useColorMode, VStack} from "@chakra-ui/react";
+import {Box, Flex, Grid, GridItem, HStack, Menu, MenuButton, MenuItem, MenuList, useColorMode, VStack} from "@chakra-ui/react";
 import Typography, {TVariant} from "../DSL/Typography/Typography";
 import Button, {ButtonVariant} from "../DSL/Button/Button";
 import {useHistory, useLocation} from "react-router-dom";
@@ -86,15 +86,18 @@ const AppLayout = observer(function AppLayout({children}: AppLayoutProps) {
             {AppStore.web3.address && AppStore.web3.web3Provider &&
                 <Menu>
                   <MenuButton>
-                      <Typography variant={TVariant.PresStart12}>{AppStore.web3.addressForDisplay}</Typography>
+                      <Typography variant={TVariant.PresStart12}>
+                        {AppStore.web3.addressForDisplay}
+                      </Typography>
                   </MenuButton>
-                  <MenuList mt={3}>
-                      <MenuItem onClick={() => AppStore.web3.disconnect()}>
-                          <Typography variant={TVariant.PresStart12}>Disconnect</Typography>
-                      </MenuItem>
-                      {/*<MenuItem>*/}
-                          <DevTools/>
-                      {/*</MenuItem>*/}
+                  <MenuList>
+                    <DevTools/>
+                    <MenuItem onClick={() => alert("my pixels")}>
+                          <Typography variant={TVariant.PresStart12}>My Pixels</Typography>
+                    </MenuItem>
+                    <MenuItem onClick={() => AppStore.web3.disconnect()}>
+                      <Typography variant={TVariant.PresStart12}>Disconnect</Typography>
+                    </MenuItem>
                   </MenuList>
                 </Menu>}
           </VStack>
@@ -105,46 +108,50 @@ const AppLayout = observer(function AppLayout({children}: AppLayoutProps) {
   );
 });
 
+
+
+
 const DevTools = observer(function DevTools() {
-  return <Dev>
-    <Flex px={3} mt={5} justifyContent={"center"}>
-      {AppStore.web3.web3Provider && <HStack>
-          <VStack mr={1}>
-              <Typography variant={TVariant.ComicSans14}>$DOG</Typography>
-              <Typography variant={TVariant.PresStart14}>
-                {AppStore.web3.dogBalance !== undefined ? AppStore.web3.dogBalance / (10 ** AppStore.web3.D20_PRECISION) : 0}
-              </Typography>
-              <Box>
-                  <Button
-                      variant={ButtonVariant.Text}
-                      onClick={async () => {
-                        try {
-                          const tx = await AppStore.web3.getDogToAccount()
-                          await tx.wait()
-                          AppStore.web3.refreshDogBalance()
-                        } catch (e) {
-                          showErrorToast("Error getting free D20")
-                        }
-                      }}
-                  >
-                      💰
-                  </Button>
-                  <Button variant={ButtonVariant.Text} onClick={async () => AppStore.web3.refreshDogBalance()}>
-                      🔄
-                  </Button>
-              </Box>
-          </VStack>
-          <VStack ml={1}>
-              <Typography variant={TVariant.ComicSans14}>$PX</Typography>
-              <Typography variant={TVariant.PresStart14}>{AppStore.web3.pupperBalance}</Typography>
-              <Box>
-                  <Button variant={ButtonVariant.Text}
-                          onClick={async () => AppStore.web3.refreshPupperBalance()}>🔄</Button>
-              </Box>
-          </VStack>
-      </HStack>}
-    </Flex>
-  </Dev>
+  return <Grid px={3} mt={2} templateColumns={"1fr 1fr"}>
+      {AppStore.web3.web3Provider && <>
+        <GridItem mr={2} display={"flex"} flexDirection={"column"}>
+          <Typography variant={TVariant.PresStart14}>$DOG</Typography>
+          <Typography variant={TVariant.ComicSans18} mt={1} block>
+            {AppStore.web3.dogBalance !== undefined ? AppStore.web3.dogBalance / (10 ** AppStore.web3.D20_PRECISION) : 0}
+          </Typography>
+          <Dev>
+            <Box>
+              <Button
+                variant={ButtonVariant.Text}
+                onClick={async () => {
+                  try {
+                    const tx = await AppStore.web3.getDogToAccount()
+                    await tx.wait()
+                    AppStore.web3.refreshDogBalance()
+                  } catch (e) {
+                    showErrorToast("Error getting free D20")
+                  }
+                }}
+              >
+                💰
+              </Button>
+              <Button variant={ButtonVariant.Text} onClick={async () => AppStore.web3.refreshDogBalance()}>
+                🔄
+              </Button>
+            </Box>
+          </Dev>
+
+        </GridItem>
+        <GridItem ml={2} display={"flex"} flexDirection={"column"}>
+          <Typography variant={TVariant.PresStart14}>$PX</Typography>
+          <Typography variant={TVariant.ComicSans18} mt={1} block>{AppStore.web3.pupperBalance}</Typography>
+          <Dev>
+            <Button variant={ButtonVariant.Text}
+                    onClick={async () => AppStore.web3.refreshPupperBalance()}>🔄</Button>
+          </Dev>
+        </GridItem>
+      </>}
+    </Grid>
 })
 
 const Nav = () => {

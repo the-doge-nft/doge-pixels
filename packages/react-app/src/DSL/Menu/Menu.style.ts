@@ -10,14 +10,16 @@ const MenuStyle = {
       borderStyle: "solid",
       borderColor: lightOrDark(colorMode, "black", "white"),
       p: 2,
-      borderRadius: "100px",
+      borderRadius: "30px",
       boxShadow: lightOrDark(colorMode, "10px 10px 0px black", "10px 10px 0px white"),
       _hover: {
         cursor: "pointer"
       },
       _active: {
         transform: "translate(4px, 4px)",
-        boxShadow: `4px 4px 0px ${lightOrDark(colorMode,"black", "white")}`
+        boxShadow: `4px 4px 0px ${lightOrDark(colorMode,"black", "white")}`,
+        borderBottomLeftRadius: "0px",
+        borderBottomRightRadius: "0px"
       },
       height: "50px"
     },
@@ -27,6 +29,7 @@ const MenuStyle = {
       fontWeight: "normal",
       fontSize: "14px",
       fontFamily: Type.PresStart,
+      mt: 2,
       _hover: {
         bg: lightOrDark(colorMode, "yellow.50", "purple.700"),
         textDecoration: "underline"
@@ -39,12 +42,15 @@ const MenuStyle = {
       },
     },
     list: {
+      mt: -2,
+      transform: "translate(6px, 6px)",
       borderRadius: "0px",
       borderWidth: "1px",
       borderStyle: "solid",
       borderColor: lightOrDark(colorMode, "black", "white"),
       bg: lightOrDark(colorMode, "yellow.50", "purple.700"),
-      zIndex: 2
+      zIndex: 2,
+      boxShadow: `4px 4px 0px ${lightOrDark(colorMode,"black", "white")}`,
     },
   }),
   variants: {},

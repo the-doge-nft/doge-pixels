@@ -38,10 +38,15 @@ const ModalStyle = {
       border: "2px solid",
       borderColor: colorMode === "light" ? "black" : "white",
       borderRadius: "0px",
-      boxShadow: `14px 14px 0px ${lightOrDark(colorMode, "black", "white")}`
+      boxShadow: `14px 14px 0px ${lightOrDark(colorMode, "black", "white")}`,
     },
     header: {
-
+      px: 12,
+      mt: 4
+    },
+    body: {
+      px: 12,
+      pb: 6
     }
   }),
 };

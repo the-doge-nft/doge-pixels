@@ -25,13 +25,13 @@ class ViewerStore extends Navigable(Eventable(Reactionable((EmptyClass)))) {
   selectedPupper: number | null = null;
 
   @observable
-  selectedURI?: any
+  selectedURI?: {imgUrl: string, description: {pupperLocation: string}}
 
   @observable
   tokenOwner: string | null = null
 
   @observable
-  camera: any
+  openSeaLink: string | null = null
 
   constructor() {
     super()
@@ -45,9 +45,10 @@ class ViewerStore extends Navigable(Eventable(Reactionable((EmptyClass)))) {
         this.selectedURI = {
           imgUrl: "",
           description: {
-
+            pupperLocation: "Pupper"
           }
         }
+        this.openSeaLink = "testlink"
         console.log("debug:: res", res)
       }).catch(e => {
         console.error("debug:: error", e)
