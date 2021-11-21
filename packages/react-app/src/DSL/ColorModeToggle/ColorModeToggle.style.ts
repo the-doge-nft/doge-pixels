@@ -2,7 +2,7 @@ import {colorModeType, lightOrDark} from "../Theme";
 
 const containerWidth = 130
 const containerXPadding = 10
-const handleSize = 40
+const handleSize = 35
 
 export const colorModeToggleSizes = {
 

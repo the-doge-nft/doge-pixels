@@ -34,6 +34,11 @@ const TypographyStyle = {
       fontWeight: "normal",
       fontSize: "28px",
     },
+    PresStart45: {
+      fontFamily: Type.PresStart,
+      fontWeight: "normal",
+      fontSize: "45px",
+    },
     ComicSans10: {
       fontFamily: Type.ComicSans,
       fontWeight: "normal",

@@ -19,6 +19,8 @@ import {
   GoEyeClosed,
   BsSunFill,
   BsMoonFill,
+  VscChevronDown,
+  VscChevronUp
 } from "react-icons/all";
 
 export type IconName =
@@ -38,7 +40,9 @@ export type IconName =
   | "eye-open"
   | "eye-closed"
   | "sun"
-  | "moon";
+  | "moon"
+  | "chevron-up"
+  | "chevron-down";
 
 const iconStringToComponentMap = {
   "arrow-right-down": FiArrowDownRight,
@@ -58,6 +62,8 @@ const iconStringToComponentMap = {
   "eye-closed": GoEyeClosed,
   sun: BsSunFill,
   moon: BsMoonFill,
+  "chevron-up": VscChevronUp,
+  "chevron-down": VscChevronDown,
 };
 
 interface IconProps extends ChakraIconProps {

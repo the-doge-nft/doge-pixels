@@ -1,152 +1,92 @@
-import React, { createContext, useContext } from "react";
-import { Box, Circle, Flex, Grid, GridItem, VStack } from "@chakra-ui/react";
-import NumberInput, { NumberInputProps } from "./NumberInput/NumberInput";
+import React, { createContext } from "react";
+import { Box, Flex, Grid, GridItem, useColorMode, VStack } from "@chakra-ui/react";
+import NumberInput from "./NumberInput/NumberInput";
 import model from "./model";
-import SelectInput, { SelectInputProps } from "./SelectInput";
 import { useObserver } from "mobx-react-lite";
 import Typography, { TVariant } from "../Typography/Typography";
-import Icon, { IconName } from "../Icon/Icon";
-import { IconType } from "react-icons";
+import Icon from "../Icon/Icon";
 import { useFormState } from "react-final-form";
-import { ObjectKeys } from "../../helpers/objects";
+import Button from "../Button/Button";
+import { BaseInputValidators } from "./interfaces";
+import { lightOrDark } from "../Theme";
 
 interface BigInputProps {
-  label: string;
-  renderNumberInput: () => JSX.Element;
-  renderSelectInput: () => JSX.Element;
-  renderNextToError?: () => JSX.Element;
-  renderDefaultEmblem?: () => JSX.Element;
-  renderValidEmblem?: () => JSX.Element;
-  showEmblem?: boolean;
-  isDisabled?: boolean;
+  label?: string;
+  store: any;
+  storeKey: any;
+  validate?: BaseInputValidators;
 }
 
 export const BigInputContext = createContext({ showEmblem: false, isDisabled: false });
 
 function BigInput<T extends object>({
   label,
-  renderNumberInput,
-  renderSelectInput,
-  renderNextToError,
-  renderDefaultEmblem,
-  renderValidEmblem,
-  showEmblem = true,
-  isDisabled = false,
+  store,
+  storeKey,
+  validate
 }: BigInputProps) {
-  const formState = useFormState();
-  return (
-    <BigInputContext.Provider value={{ showEmblem, isDisabled }}>
-      <Box bg={isDisabled ? "gray.100" : "gray.50"} pt={3} pb={4} px={5} borderRadius={9}>
-        <VStack spacing={3} align={"flex-start"}>
-          <Box>
-            <Typography variant={TVariant.ComicSans16} color={"gray.500"}>
-              {label}
-            </Typography>
-          </Box>
-          <Grid templateColumns={"2fr 1fr"} gap={1}>
-            <GridItem>{renderNumberInput()}</GridItem>
-            <GridItem>{renderSelectInput()}</GridItem>
-          </Grid>
-        </VStack>
-      </Box>
-      <Grid templateColumns={"1fr 1fr"}>
-        <GridItem>
-          {showEmblem &&
-            (() => {
-              const hasBeenModified = ObjectKeys(formState.modified).some(key => formState.modified?.[key]);
-              if (hasBeenModified) {
-                if (ObjectKeys(formState.errors).length > 0) {
-                  return (
-                    <BigInputEmblem icon={"close"} isError>
-                      {formState.errors?.[ObjectKeys(formState.errors)[0]]}
-                    </BigInputEmblem>
-                  );
-                } else {
-                  return renderValidEmblem ? renderValidEmblem() : <></>;
-                }
-              } else {
-                return renderDefaultEmblem ? renderDefaultEmblem() : <></>;
-              }
-            })()}
+  const formState = useFormState()
+  const { colorMode } = useColorMode()
+  const errors = formState.errors as object
+  return useObserver(() => <Box pt={3} pb={4} px={5} borderRadius={9}>
+    <VStack spacing={3} align={"flex-start"}>
+      <Grid templateColumns={"2fr 1fr 0.75fr 0.5fr"} alignItems={"end"} justifyContent={"center"}>
+        <GridItem colSpan={1}>
+          <NumberInput
+            px={5}
+            pl={3}
+            pr={2}
+            textAlign={"end"}
+            color={"yellow.700"}
+            textShadow={lightOrDark(colorMode, "6px 6px 0px black", "6px 6px 0px white")}
+            border={"none"}
+            fontSize={"95px"}
+            height={"auto"}
+            //@ts-ignore
+            sx={{"-webkit-text-stroke": lightOrDark(colorMode, "1px black", "1px white")}}
+            showValidation={false}
+            validate={validate}
+            {...model(store, storeKey)}
+          />
         </GridItem>
-        <GridItem w={"100%"} h={"100%"}>
-          {renderNextToError && renderNextToError()}
-        </GridItem>
-      </Grid>
-    </BigInputContext.Provider>
-  );
-}
-
-interface BigInputNumberProps<T> extends Omit<NumberInputProps, "name" | "isDisabled"> {
-  store: T;
-  storeKey: keyof T;
-}
-
-function BigInputNumber<T extends object>({ store, storeKey, ...rest }: BigInputNumberProps<T>) {
-  const { showEmblem, isDisabled } = useContext(BigInputContext);
-  return useObserver(() => {
-    return (
-      <NumberInput
-        {...rest}
-        {...model(store, storeKey)}
-        p={0}
-        fontSize={"38"}
-        height={"auto"}
-        showValidation={!showEmblem}
-        isDisabled={isDisabled}
-      />
-    );
-  });
-}
-
-interface BigInputSelectProps<T> extends Omit<SelectInputProps, "name" | "isDisabled"> {
-  store: T;
-  storeKey: keyof T;
-}
-
-function BigInputSelect<T extends object>({ store, storeKey, items, ...rest }: BigInputSelectProps<T>) {
-  const { showEmblem, isDisabled } = useContext(BigInputContext);
-  return useObserver(() => (
-    <SelectInput {...rest} {...model(store, storeKey)} variant={"outline"} items={items} isDisabled={isDisabled} />
-  ));
-}
-
-interface BigInputEmblem {
-  icon: IconName;
-  isError?: boolean;
-  children?: any;
-}
-
-function BigInputEmblem({ icon, isError = false, children }: BigInputEmblem) {
-  return (
-    <>
-      <Box width={"5px"} height={"65px"} bg={"gray.50"} ml={10} />
-      <Flex alignItems={"flex-start"} pl={5} overflow={"auto"}>
-        <Circle
-          bg={"gray.50"}
-          size={"45px"}
+        {label && <GridItem
+          pb={4}
+          colSpan={1}
           display={"flex"}
+          alignItems={"center"}
+          justifyContent={"center"}>
+          <Typography
+            variant={TVariant.PresStart45}
+            color={lightOrDark(colorMode, "yellow.50", "purple.700")}
+            textShadow={lightOrDark(colorMode, "6px 6px 0px black", "6px 6px 0px white")}
+            sx={{"-webkit-text-stroke": lightOrDark(colorMode, "1px black", "1px white")}}
+          >
+            {label}
+          </Typography>
+        </GridItem>}
+        <GridItem
+          pb={8}
+          display={"flex"}
+          flexDirection={"column"}
           justifyContent={"center"}
           alignItems={"center"}
-          color={isError ? "red.500" : "gray.500"}
+          colSpan={1}
         >
-          <Icon icon={icon} w={"25px"} h={"25px"} />
-        </Circle>
-        <Typography
-          alignSelf={"center"}
-          variant={TVariant.ComicSans14}
-          ml={3}
-          color={isError ? "red.500" : "gray.500"}
-          wordBreak={"break-word"}
-        >
-          {children}
-        </Typography>
-      </Flex>
-    </>
-  );
+          <Button onClick={() => store[storeKey] = Number(store[storeKey]) + 1} mb={2}>
+            <Icon icon={"chevron-up"}/>
+          </Button>
+          <Button onClick={() => store[storeKey] = Number(store[storeKey]) - 1} mt={2}>
+            <Icon icon={"chevron-down"}/>
+          </Button>
+        </GridItem>
+      </Grid>
+      {Object.entries(errors).map(error => <Typography
+        variant={TVariant.ComicSans16}
+        color={"red.500"}>
+        {error[1]}
+      </Typography>)}
+    </VStack>
+  </Box>)
 }
 
-BigInput.Number = BigInputNumber;
-BigInput.Select = BigInputSelect;
-BigInput.Emblem = BigInputEmblem;
 export default BigInput;

@@ -19,6 +19,7 @@ const MenuStyle = {
         transform: "translate(4px, 4px)",
         boxShadow: `4px 4px 0px ${lightOrDark(colorMode,"black", "white")}`
       },
+      height: "50px"
     },
     item: {
       color: lightOrDark(colorMode, "black", "white"),
