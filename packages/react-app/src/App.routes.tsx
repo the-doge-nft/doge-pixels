@@ -3,14 +3,13 @@ import { RouteMiddleware } from "./services/middleware";
 import { FC } from "react";
 import AppLayout from "./layouts/AppLayout";
 import ViewerPage from "./pages/Viewer/Viewer.page";
-import PoolStatsPage from "./pages/PoolStats/PoolStats.page";
 import DSLPage from "./pages/DSL.page";
-import ProfilePage from "./pages/Profile/Profile.page";
+import DogPark from "./pages/DogPark/DogPark";
 
 export enum NamedRoutes {
   VIEWER = "viewer",
   POOLSTATS = "stats",
-  PROFILE = "profile",
+  DOG_PARK = "profile",
   DEV = "dev",
   DSL = "dsl",
 }
@@ -55,12 +54,12 @@ const routes: AppRouteInterface[] = [
   //   title: "stats",
   // },
   {
-    path: "/profile",
-    name: NamedRoutes.PROFILE,
+    path: "/park",
+    name: NamedRoutes.DOG_PARK,
     exact: true,
     layout: AppLayout,
-    component: ProfilePage,
-    title: "profile",
+    component: DogPark,
+    title: "dog park",
   },
   {
     path: "/dsl",

@@ -13,6 +13,7 @@ import AppStore from "../../store/App.store";
 import {showDebugToast} from "../../DSL/Toast/Toast";
 import Loading from "./Loading/Loading";
 import {ButtonVariant} from "../../DSL/Button/Button";
+import Icon from "../../DSL/Icon/Icon";
 
 export type onPixelSelectType = (x: number, y: number) => void;
 
@@ -58,7 +59,8 @@ const ViewerPage = observer(function ViewerPage() {
                     }}
                     variant={ButtonVariant.Text}
                   >
-                  &#8592;
+                    <Icon icon={"arrow-left"} />
+                  {/*&#8592;*/}
                 </Button>
               </Box>}
             {store.currentView === ViewerView.Index && <IndexPane store={store}/>}

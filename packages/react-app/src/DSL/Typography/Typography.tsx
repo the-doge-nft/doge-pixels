@@ -6,6 +6,7 @@ export enum TVariant {
   PresStart12 = "PresStart12",
   PresStart14 = "PresStart14",
   PresStart16 = "PresStart16",
+  PresStart18 = "PresStart18",
   PresStart24 = "PresStart24",
   PresStart28 = "PresStart28",
   PresStart45 = "PresStart45",

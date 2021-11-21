@@ -9,6 +9,7 @@ import {Provider} from "@ethersproject/abstract-provider";
 import {isDevModeEnabled} from "../environment/helpers";
 import {Network} from "@ethersproject/networks";
 import {DOG20, PX} from "../../../hardhat/types";
+import { abbreviate } from "../helpers/strings";
 
 
 interface EthersContractError {
@@ -231,7 +232,7 @@ class Web3Store {
     @computed
     get addressForDisplay() {
         if (this.address) {
-            return `${this.address.substring(0,4)}...${this.address.substring(this.address.length-4, this.address.length)}`
+            return abbreviate(this.address)
         } else {
             return "-"
         }

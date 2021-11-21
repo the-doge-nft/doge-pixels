@@ -39,6 +39,7 @@ class MintPixelsModalStore extends Reactionable((Navigable(EmptyClass))) {
   async refreshAllowance() {
     try {
       this.allowance = await AppStore.web3.getPxDogSpendAllowance()
+      console.log("debug:: allowance", this.allowance)
     } catch (e) {
       showErrorToast("Could not get allowance")
     }

@@ -18,7 +18,7 @@ interface ThreeSceneProps {
 }
 
 const ThreeScene = React.memo(({ onPixelSelect, selectedPixel, store }: ThreeSceneProps) => {
-  const maxCameraZ = 6000;
+  const maxCameraZ = 5500;
   const minCameraZ = 80;
   const _zClippingSafetyBuffer = 10
 
@@ -30,9 +30,8 @@ const ThreeScene = React.memo(({ onPixelSelect, selectedPixel, store }: ThreeSce
   );
   const [camera] = useState<THREE.PerspectiveCamera>(cam);
 
-  //@TODO: CC FIX
   const canvasContainerRef = useRef<HTMLDivElement | null>(null)
-  const dogeRef = useRef<Object3D | null>(null)
+  const dogeMeshRef = useRef<Object3D | null>(null)
 
   const canvasContainerOnMount = useCallback((node: HTMLDivElement) => {
     if (node) {
@@ -43,7 +42,7 @@ const ThreeScene = React.memo(({ onPixelSelect, selectedPixel, store }: ThreeSce
 
       camera.position.x = imageWorldUnitsWidth / 2 - 0.65;
       camera.position.y = -1*imageWorldUnitsHeight / 2 + 0.26;
-      camera.position.z = 1000;
+      camera.position.z = maxCameraZ;
 
       canvasContainerRef.current = node
     }
@@ -73,8 +72,8 @@ const ThreeScene = React.memo(({ onPixelSelect, selectedPixel, store }: ThreeSce
 
 
   const getVisibleRange = () => {
-    if (dogeRef.current) {
-      var distance = camera.position.distanceTo( dogeRef.current.position );
+    if (dogeMeshRef.current) {
+      var distance = camera.position.distanceTo( dogeMeshRef.current.position );
       var vFOV = THREE.MathUtils.degToRad( camera.fov );
       var height = 2 * Math.tan( vFOV / 2 ) * distance;
       var width = height * camera.aspect;
@@ -241,7 +240,7 @@ const ThreeScene = React.memo(({ onPixelSelect, selectedPixel, store }: ThreeSce
         }}
       >
         <mesh
-          ref={dogeRef}
+          ref={dogeMeshRef}
           position={[(imageWorldUnitsWidth / 2) - 1, -1*imageWorldUnitsHeight / 2, 0]}
           onPointerMove={e => {
             if (hoverPixelOverlayRef.current) {

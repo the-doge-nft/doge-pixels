@@ -34,17 +34,21 @@ const IndexPane = observer(function IndexPane({store}: {store: ViewerStore}) {
     </Box>
 
     <Flex direction={"column"} alignItems={"center"} mt={5} mb={3}>
-      <Button width={"fit-content"} onClick={() => (store.isMintModalOpen = true)}>
-        Mint Pixels
-      </Button>
+      <Flex mb={6}>
+        <Button mr={3} width={"fit-content"} onClick={() => (store.isMintModalOpen = true)}>
+          Mint
+        </Button>
+        <Button ml={3} width={"fit-content"} onClick={() => (store.isBurnModalOpen = true)}>
+          Burn
+        </Button>
+      </Flex>
       {AppStore.web3.tokenIdsOwned.length > 0 && <Button
-          mt={4}
           width={"fit-content"}
           display={"block"}
           variant={ButtonVariant.Text}
           size={"sm"}
           onClick={() => store.pushNavigation(ViewerView.Manage)}>
-          Manage Pixels
+          My Pixels
       </Button>}
     </Flex>
   </>
