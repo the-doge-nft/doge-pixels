@@ -24,7 +24,7 @@ module.exports = panzoom
  * Consumers can listen to api's events via `api.on('change', function() {})`
  * interface. The change event will be fire every time when camera's position changed.
  */
-function panzoom(camera, owner, toKeepInBounds) {
+function panzoom(camera, owner, toKeepInBounds, minDepth, maxDepth) {
   var isDragging = false
   var panstartFired = false
   var touchInProgress = false
@@ -61,8 +61,8 @@ function panzoom(camera, owner, toKeepInBounds) {
   var api = eventify({
     dispose: dispose,
     speed: 0.007,
-    min: 80,
-    max: 6000,
+    min: minDepth,
+    max: maxDepth,
 
     // @TODO: these could be defined by bounding box of toKeepInBounds
     yUpperBound: 0,
@@ -248,7 +248,7 @@ function panzoom(camera, owner, toKeepInBounds) {
   }
 
   function onSmoothScroll(x, y) {
-    const [x1, x2, y1, y2] = getNewCoords(toKeepInBounds.position.z)
+    const [x1, x2, y1, y2] = getVisibleCoordinates(toKeepInBounds.position.z)
     if ((x1 < api.xLowerBound) || (x2 > api.xUpperBound)) {
       camera.position.x = camera.position.x
     } else if ((y1 < api.yLowerBound) || (y2 > api.yUpperBound)
@@ -340,16 +340,10 @@ function panzoom(camera, owner, toKeepInBounds) {
     panPayload.dx = -dx/(currentScale * dampenFactor)
     panPayload.dy = dy/(currentScale * dampenFactor)
 
-    const [x1, x2, y1, y2] = getNewCoords(toKeepInBounds.position.z)
-    if (
-      (x1 < api.xLowerBound && panPayload.dx < 0)
-      || (x2 > api.xUpperBound && panPayload.dx > 0)
-    ) {
+    const [x1, x2, y1, y2] = getVisibleCoordinates(toKeepInBounds.position.z)
+    if ((x1 < api.xLowerBound && panPayload.dx < 0) || (x2 > api.xUpperBound && panPayload.dx > 0)) {
       camera.position.x = camera.position.x
-    } else if (
-      (y1 < api.yLowerBound && panPayload.dy < 0)
-      || (y2 > api.yUpperBound && panPayload.dy > 0)
-    ) {
+    } else if ((y1 < api.yLowerBound && panPayload.dy < 0) || (y2 > api.yUpperBound && panPayload.dy > 0)) {
       camera.position.y = camera.position.y
     } else {
       // we fire first, so that clients can manipulate the payload
@@ -376,7 +370,6 @@ function panzoom(camera, owner, toKeepInBounds) {
     var dy = (offsetY - owner.clientHeight / 2) / currentScale
 
     var newZ = camera.position.z * scaleMultiplier
-
     if (newZ < api.min || newZ > api.max) {
       return
     }
@@ -394,39 +387,7 @@ function panzoom(camera, owner, toKeepInBounds) {
     api.fire('change')
   }
 
-  function getVisibleRange () {
-    if (toKeepInBounds) {
-      var distance = camera.position.distanceTo( toKeepInBounds.position );
-      var vFOV = THREE.MathUtils.degToRad( camera.fov );
-      var height = 2 * Math.tan( vFOV / 2 ) * distance;
-      var width = height * camera.aspect;
-
-      const x1 = camera.position.x - (width/2)
-      const x2 = camera.position.x + (width/2)
-      const y1 = camera.position.y - (height/2)
-      const y2 = camera.position.y + (height/2)
-      return [x1, x2, y1, y2]
-    }
-    return [0,0,0,0]
-  }
-
-  function getVisibleRangeByVector(cameraWouldBeVec) {
-    if (toKeepInBounds) {
-      var distance = cameraWouldBeVec.distanceTo( toKeepInBounds.position )
-      var vFOV = THREE.MathUtils.degToRad( camera.fov );
-      var height = 2 * Math.tan( vFOV / 2 ) * distance;
-      var width = height * camera.aspect;
-
-      const x1 = camera.position.x - (width/2)
-      const x2 = camera.position.x + (width/2)
-      const y1 = camera.position.y - (height/2)
-      const y2 = camera.position.y + (height/2)
-      return [x1, x2, y1, y2]
-    }
-    return [0,0,0,0]
-  }
-
-  function getNewCoords(depth) {
+  function getVisibleCoordinates(depth) {
     const height = visibleHeightAtZDepth(depth, camera)
     const width = visibleWidthAtZDepth(depth, camera)
 
