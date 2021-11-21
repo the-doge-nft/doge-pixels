@@ -18,7 +18,7 @@ interface ThreeSceneProps {
 }
 
 const ThreeScene = React.memo(({ onPixelSelect, selectedPixel, store }: ThreeSceneProps) => {
-  const maxCameraZ = 5500;
+  const maxCameraZ = 6000;
   const minCameraZ = 80;
   const _zClippingSafetyBuffer = 10
   
@@ -42,8 +42,6 @@ const ThreeScene = React.memo(({ onPixelSelect, selectedPixel, store }: ThreeSce
 
   const canvasContainerOnMount = useCallback((node: HTMLDivElement) => {
     if (node) {
-      var panZoom = createPanZoom(camera, node);
-
       const width = node.clientWidth;
       const height = node.clientHeight;
       camera.aspect = width / height;
@@ -55,36 +53,6 @@ const ThreeScene = React.memo(({ onPixelSelect, selectedPixel, store }: ThreeSce
 
       canvasContainerRef.current = node
       node.focus()
-
-      panZoom = createPanZoom(camera, node);
-      // the panZoom api fires events when something happens,
-      // so that you can react to user actions:
-      //@ts-ignore
-      panZoom.on('panstart', function() {
-        // fired when users begins panning (dragging) the surface
-        // console.log('panstart fired');
-      });
-
-      //@ts-ignore
-      panZoom.on('panend', function() {
-        // fired when user stpos panning (dragging) the surface
-        // console.log('panend fired');
-      });
-
-      //@ts-ignore
-      panZoom.on('beforepan', function(panPayload: any) {
-        // fired when camera position will be changed.
-        // console.log('going to move camera.position.x by: ' + panPayload.dx);
-        // console.log('going to move camera.position.y by: ' + panPayload.dy);
-      });
-
-      //@ts-ignore
-      panZoom.on('beforezoom', function(panPayload: any) {
-        // fired when befor zoom in/zoom out
-        // console.log('going to move camera.position.x by: ' + panPayload.dx);
-        // console.log('going to move camera.position.y by: ' + panPayload.dy);
-        // console.log('going to move camera.position.z by: ' + panPayload.dz);
-      });
     }
   }, []);
 
@@ -161,15 +129,69 @@ const ThreeScene = React.memo(({ onPixelSelect, selectedPixel, store }: ThreeSce
         camera={camera}
         onCreated={({ gl }) => {
           window.addEventListener("resize", () => {
-            if (canvasContainerRef.current) {
-              const width = canvasContainerRef.current.clientWidth;
-              const height = canvasContainerRef.current.clientHeight;
-              camera.aspect = width / height;
-              gl.setSize( width, height );
-              camera.updateProjectionMatrix();
-            }
+            console.log("debug:: parent listener")
+            const width = gl.domElement.parentElement!.clientWidth;
+            const height = gl.domElement.parentElement!.clientHeight;
+            camera.aspect = width / height;
+            gl.setSize( width, height );
+            camera.updateProjectionMatrix();
           })
+
+          // // @TODO: flashing caused on selecting pixel when right pane has caused scrollable page
+          // // maybe restrict this pane - ResizeObserver is somewhat new so probably not the best solution
+          // const resize_ob = new ResizeObserver(function(entries) {
+          //   // since we are observing only a single element, so we access the first element in entries array
+          //   let rect = entries[0].contentRect;
+          //
+          //   // current width & height
+          //   let width = rect.width;
+          //   let height = rect.height;
+          //
+          //   camera.aspect = width / height;
+          //   gl.setSize( width, height );
+          //   camera.updateProjectionMatrix();
+          //
+          //   console.log('debug:: Current Width : ' + width);
+          //   console.log('debug:: Current Height : ' + height);
+          // });
+          //
+          // // start observing for resize
+          // resize_ob.observe(gl.domElement.parentElement!);
+
+
           gl.toneMapping = THREE.NoToneMapping;
+
+          if (dogeMeshRef.current) {
+            panZoom = createPanZoom(camera, gl.domElement.parentElement, dogeMeshRef.current);
+            // the panZoom api fires events when something happens,
+            // so that you can react to user actions:
+            //@ts-ignore
+            panZoom.on('panstart', function() {
+              // fired when users begins panning (dragging) the surface
+              // console.log('panstart fired');
+            });
+
+            //@ts-ignore
+            panZoom.on('panend', function() {
+              // fired when user stpos panning (dragging) the surface
+              // console.log('panend fired');
+            });
+
+            //@ts-ignore
+            panZoom.on('beforepan', function(panPayload: any) {
+              // fired when camera position will be changed.
+              // console.log('going to move camera.position.x by: ' + panPayload.dx);
+              // console.log('going to move camera.position.y by: ' + panPayload.dy);
+            });
+
+            //@ts-ignore
+            panZoom.on('beforezoom', function(panPayload: any) {
+              // fired when befor zoom in/zoom out
+              // console.log('going to move camera.position.x by: ' + panPayload.dx);
+              // console.log('going to move camera.position.y by: ' + panPayload.dy);
+              // console.log('going to move camera.position.z by: ' + panPayload.dz);
+            });
+          }
         }}
       >
         <mesh
@@ -185,6 +207,7 @@ const ThreeScene = React.memo(({ onPixelSelect, selectedPixel, store }: ThreeSce
               [newHoverOverlayRef.current.position.x, newHoverOverlayRef.current.position.y] =
                 getWorldPixelCoordinate(e.point, overlayLength);
             }
+            // console.log("debug:: pointer move", e.point)
           }}
           onPointerUp={onPointUp}
           onWheel={(event) => {

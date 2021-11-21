@@ -2,6 +2,7 @@ var wheel = require('wheel')
 var eventify = require('ngraph.events')
 var kinetic = require('./lib/kinetic.js')
 var animate = require('amator');
+var THREE = require('three');
 
 module.exports = panzoom
 
@@ -11,6 +12,10 @@ module.exports = panzoom
  * @param {Object} camera - a three.js perspective camera object.
  * @param {DOMElement+} owner - owner that should listen to mouse/keyboard/tap
  * events. This is optional, and defaults to document.body.
+ * @param {Object3D} toKeepInBounds - a three.js Object3D to confine the bounds
+ * of the visible region. The camera FOV will max out at the height of the image
+ * so the container is completely full with the image at all times.
+ *
  *
  * @returns {Object} api for the input controller. It currently supports only one
  * method `dispose()` which should be invoked when you want to to release input
@@ -19,7 +24,7 @@ module.exports = panzoom
  * Consumers can listen to api's events via `api.on('change', function() {})`
  * interface. The change event will be fire every time when camera's position changed.
  */
-function panzoom(camera, owner) {
+function panzoom(camera, owner, toKeepInBounds) {
   var isDragging = false
   var panstartFired = false
   var touchInProgress = false
@@ -42,6 +47,8 @@ function panzoom(camera, owner) {
     y: 0
   }
 
+  var toKeepInBoundsBounding = new THREE.Box3().setFromObject(toKeepInBounds)
+
   owner = owner || document.body;
   owner.setAttribute('tabindex', 1); // TODO: not sure if this is really polite
 
@@ -55,7 +62,13 @@ function panzoom(camera, owner) {
     dispose: dispose,
     speed: 0.007,
     min: 80,
-    max: 5500
+    max: 6000,
+
+    // @TODO: these could be defined by bounding box of toKeepInBounds
+    yUpperBound: 0,
+    yLowerBound: -480,
+    xLowerBound: -1,
+    xUpperBound: 640 - 1
   })
 
   owner.addEventListener('mousedown', handleMouseDown)
@@ -235,10 +248,17 @@ function panzoom(camera, owner) {
   }
 
   function onSmoothScroll(x, y) {
-    camera.position.x = x
-    camera.position.y = y
-
-    api.fire('change')
+    const [x1, x2, y1, y2] = getNewCoords(toKeepInBounds.position.z)
+    if ((x1 < api.xLowerBound) || (x2 > api.xUpperBound)) {
+      camera.position.x = camera.position.x
+    } else if ((y1 < api.yLowerBound) || (y2 > api.yUpperBound)
+    ) {
+      camera.position.y = camera.position.y
+    } else {
+      api.fire('change')
+      camera.position.x = x;
+      camera.position.y = y;
+    }
   }
 
   function handleMouseDown(e) {
@@ -271,10 +291,6 @@ function panzoom(camera, owner) {
 
     var dx = e.clientX - mousePos.x
     var dy = e.clientY - mousePos.y
-
-    // @CC custom
-    console.log("debug:: dx", dx)
-    console.log("debug:: dy", dy)
 
     panByOffset(dx, dy)
 
@@ -317,52 +333,55 @@ function panzoom(camera, owner) {
 
   function panByOffset(dx, dy) {
     var currentScale = getCurrentScale()
-    console.log("debug:: current scale", currentScale)
 
-    //@CC custom
-    const dampenFactor = 2
+    //@TODO: CC custom
+    const dampenFactor = 1
 
     panPayload.dx = -dx/(currentScale * dampenFactor)
     panPayload.dy = dy/(currentScale * dampenFactor)
 
-    // we fire first, so that clients can manipulate the payload
-    api.fire('beforepan', panPayload)
-
-    camera.position.x += panPayload.dx
-    camera.position.y += panPayload.dy
+    const [x1, x2, y1, y2] = getNewCoords(toKeepInBounds.position.z)
+    if (
+      (x1 < api.xLowerBound && panPayload.dx < 0)
+      || (x2 > api.xUpperBound && panPayload.dx > 0)
+    ) {
+      camera.position.x = camera.position.x
+    } else if (
+      (y1 < api.yLowerBound && panPayload.dy < 0)
+      || (y2 > api.yUpperBound && panPayload.dy > 0)
+    ) {
+      camera.position.y = camera.position.y
+    } else {
+      // we fire first, so that clients can manipulate the payload
+      api.fire('beforepan', panPayload)
+      camera.position.x += panPayload.dx
+      camera.position.y += panPayload.dy
+    }
 
     api.fire('change')
   }
 
   function onMouseWheel(e) {
     e.preventDefault()
-    console.log("debug:: deltaY", e.deltaY)
 
     var scaleMultiplier = getScaleMultiplier(e.deltaY)
-    console.log("debug:: scale multiplier", scaleMultiplier)
-
     smoothScroll.cancel()
     zoomTo(e.clientX, e.clientY, scaleMultiplier)
   }
 
   function zoomTo(offsetX, offsetY, scaleMultiplier) {
     var currentScale = getCurrentScale()
-    console.log("debug:: currentScale", currentScale)
 
     var dx = (offsetX - owner.clientWidth / 2) / currentScale
     var dy = (offsetY - owner.clientHeight / 2) / currentScale
 
     var newZ = camera.position.z * scaleMultiplier
-    console.log("debug:: newZ", camera.position.z, scaleMultiplier, newZ)
 
     if (newZ < api.min || newZ > api.max) {
       return
     }
 
     zoomPayload.dz = newZ - camera.position.z
-    console.log("debug:: payload X", zoomPayload.dz)
-    console.log("   ")
-
     zoomPayload.dx = -(scaleMultiplier - 1) * dx
     zoomPayload.dy = (scaleMultiplier - 1) * dy
 
@@ -374,6 +393,67 @@ function panzoom(camera, owner) {
 
     api.fire('change')
   }
+
+  function getVisibleRange () {
+    if (toKeepInBounds) {
+      var distance = camera.position.distanceTo( toKeepInBounds.position );
+      var vFOV = THREE.MathUtils.degToRad( camera.fov );
+      var height = 2 * Math.tan( vFOV / 2 ) * distance;
+      var width = height * camera.aspect;
+
+      const x1 = camera.position.x - (width/2)
+      const x2 = camera.position.x + (width/2)
+      const y1 = camera.position.y - (height/2)
+      const y2 = camera.position.y + (height/2)
+      return [x1, x2, y1, y2]
+    }
+    return [0,0,0,0]
+  }
+
+  function getVisibleRangeByVector(cameraWouldBeVec) {
+    if (toKeepInBounds) {
+      var distance = cameraWouldBeVec.distanceTo( toKeepInBounds.position )
+      var vFOV = THREE.MathUtils.degToRad( camera.fov );
+      var height = 2 * Math.tan( vFOV / 2 ) * distance;
+      var width = height * camera.aspect;
+
+      const x1 = camera.position.x - (width/2)
+      const x2 = camera.position.x + (width/2)
+      const y1 = camera.position.y - (height/2)
+      const y2 = camera.position.y + (height/2)
+      return [x1, x2, y1, y2]
+    }
+    return [0,0,0,0]
+  }
+
+  function getNewCoords(depth) {
+    const height = visibleHeightAtZDepth(depth, camera)
+    const width = visibleWidthAtZDepth(depth, camera)
+
+    const x1 =  camera.position.x - (width/2)
+    const x2 =  camera.position.x + (width/2)
+    const y1 = camera.position.y - (height/2)
+    const y2 = camera.position.y + (height/2)
+    return [x1, x2, y1, y2]
+  }
+
+  function visibleHeightAtZDepth( depth, camera ) {
+    // compensate for cameras not positioned at z=0
+    const cameraOffset = camera.position.z;
+    if ( depth < cameraOffset ) depth -= cameraOffset;
+    else depth += cameraOffset;
+
+    // vertical fov in radians
+    const vFOV = camera.fov * Math.PI / 180;
+
+    // Math.abs to ensure the result is always positive
+    return 2 * Math.tan( vFOV / 2 ) * Math.abs( depth );
+  };
+
+  function visibleWidthAtZDepth( depth, camera ) {
+    const height = visibleHeightAtZDepth( depth, camera );
+    return height * camera.aspect;
+  };
 
   function getCurrentScale() {
     // TODO: This is the only code that depends on camera. Extract?
