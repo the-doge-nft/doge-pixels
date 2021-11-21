@@ -6515,7 +6515,7 @@ alphanum-sort@^1.0.0:
   resolved "https://registry.yarnpkg.com/alphanum-sort/-/alphanum-sort-1.0.2.tgz#97a1119649b211ad33691d9f9f486a8ec9fbe0a3"
   integrity sha1-l6ERlkmyEa0zaR2fn0hqjsn74KM=
 
-amator@^1.0.1:
+amator@^1.1.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/amator/-/amator-1.1.0.tgz#08c6b60bc93aec2b61bbfc0c4d677d30323cc0f1"
   integrity sha1-CMa2C8k67Cthu/wMTWd9MDI8wPE=
@@ -19387,10 +19387,10 @@ next-tick@~1.0.0:
   resolved "https://registry.yarnpkg.com/next-tick/-/next-tick-1.0.0.tgz#ca86d1fe8828169b0120208e3dc8424b9db8342c"
   integrity sha1-yobR/ogoFpsBICCOPchCS524NCw=
 
-ngraph.events@0.0.4:
-  version "0.0.4"
-  resolved "https://registry.yarnpkg.com/ngraph.events/-/ngraph.events-0.0.4.tgz#72cb364488dd0fd7f057458449f6a3b17a722d9a"
-  integrity sha1-css2RIjdD9fwV0WESfajsXpyLZo=
+ngraph.events@^1.2.1:
+  version "1.2.1"
+  resolved "https://registry.yarnpkg.com/ngraph.events/-/ngraph.events-1.2.1.tgz#6e40425ef9dec1e074bbef6da56c8d79b9188fd8"
+  integrity sha512-D4C+nXH/RFxioGXQdHu8ELDtC6EaCiNsZtih0IvyGN81OZSUby4jXoJ5+RNWasfsd0FnKxxpAROyUMzw64QNsw==
 
 nice-try@^1.0.4:
   version "1.0.5"
@@ -25539,15 +25539,6 @@ then-request@^6.0.0:
     promise "^8.0.0"
     qs "^6.4.0"
 
-three.map.control@^1.6.0:
-  version "1.6.0"
-  resolved "https://registry.yarnpkg.com/three.map.control/-/three.map.control-1.6.0.tgz#54313580e646384a9cc69bc1914fe3a22a359f7e"
-  integrity sha1-VDE1gOZGOEqcxpvBkU/joio1n34=
-  dependencies:
-    amator "^1.0.1"
-    ngraph.events "0.0.4"
-    wheel "0.0.4"
-
 three@^0.134.0:
   version "0.134.0"
   resolved "https://registry.yarnpkg.com/three/-/three-0.134.0.tgz#d7ad4d85d050da0861bf39749b06ddfb5f17157f"
@@ -28171,10 +28162,10 @@ whatwg-url@^8.0.0, whatwg-url@^8.5.0:
     tr46 "^2.1.0"
     webidl-conversions "^6.1.0"
 
-wheel@0.0.4:
-  version "0.0.4"
-  resolved "https://registry.yarnpkg.com/wheel/-/wheel-0.0.4.tgz#4f036725305318dcc37634d75487cce7e373eb50"
-  integrity sha1-TwNnJTBTGNzDdjTXVIfM5+Nz61A=
+wheel@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/wheel/-/wheel-1.0.0.tgz#6cf46e06a854181adb8649228077f8b0d5c574ce"
+  integrity sha512-XiCMHibOiqalCQ+BaNSwRoZ9FDTAvOsXxGHXChBugewDj7HC8VBIER71dEOiRH1fSdLbRCQzngKTSiZ06ZQzeA==
 
 when@^3.7.8:
   version "3.7.8"

@@ -32,6 +32,7 @@
     "@uniswap/sdk": "^3.0.3",
     "@uniswap/v2-periphery": "^1.1.0-beta.0",
     "@walletconnect/web3-provider": "^1.5.2",
+    "amator": "^1.1.0",
     "antd": "4.16.0",
     "apollo-boost": "^0.4.9",
     "apollo-client": "^2.6.10",
@@ -51,6 +52,7 @@
     "isomorphic-fetch": "^3.0.0",
     "mobx": "^6.3.2",
     "mobx-react-lite": "^3.2.0",
+    "ngraph.events": "^1.2.1",
     "node-watch": "^0.7.1",
     "postcss": "^8.2.6",
     "qrcode.react": "^1.0.0",
@@ -66,7 +68,8 @@
     "three": "^0.134.0",
     "typescript": "^4.4.4",
     "walletlink": "^2.1.5",
-    "web3modal": "^1.9.1"
+    "web3modal": "^1.9.1",
+    "wheel": "^1.0.0"
   },
   "devDependencies": {
     "@apollo/client": "^3.3.21",
