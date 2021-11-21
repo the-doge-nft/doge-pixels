@@ -171,27 +171,17 @@ const Nav = () => {
 const Title = () => {
   const {colorMode} = useColorMode()
   return <Flex alignItems={"center"}>
-    <Box position={"relative"} zIndex={0}>
       <Typography
         variant={TVariant.PresStart28}
         mr={1}
         color={"yellow.700"}
         zIndex={1}
+        textShadow={"4px 4px 0px black"}
         //@ts-ignore
         sx={{"-webkit-text-stroke": lightOrDark(colorMode, "1px black", "1px white")}}
       >
         PUPPER PIXEL PORTAL
       </Typography>
-      <Typography
-        position={"absolute"}
-        left={1}
-        top={1}
-        color={lightOrDark(colorMode, "black", "white")}
-        zIndex={-1}
-        variant={TVariant.PresStart28}>
-        PUPPER PIXEL PORTAL
-      </Typography>
-    </Box>
     <Typography variant={TVariant.PresStart28} ml={2} pb={"5px"}>🐕</Typography>
   </Flex>
 }

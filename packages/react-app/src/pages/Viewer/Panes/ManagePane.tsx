@@ -26,6 +26,7 @@ const ManagePane = observer(function ManagePane({store}: {store: ViewerStore}) {
               p={4}
               mt={index === 0 ? 0 : 3}
               alignItems={"center"}
+              justifyContent={"space-between"}
               _hover={{
                 bg: "yellow.100",
                 cursor: "pointer"
@@ -39,19 +40,20 @@ const ManagePane = observer(function ManagePane({store}: {store: ViewerStore}) {
                 store.pushNavigation(ViewerView.Selected)
               }}
             >
-              <Flex
-                width={"50px"}
-                height={"50px"}
-                borderWidth={"1px"}
-                borderStyle={"solid"}
-                justifyContent={"space-between"}
-                borderColor={lightOrDark(colorMode, "black", "white")}
-              />
-              <Typography variant={TVariant.ComicSans18} ml={4}>
-                ({x}, {y})
-              </Typography>
+              <Flex alignItems={"center"}>
+                <Flex
+                  width={"50px"}
+                  height={"50px"}
+                  borderWidth={"1px"}
+                  borderStyle={"solid"}
+                  borderColor={lightOrDark(colorMode, "black", "white")}
+                />
+                <Typography variant={TVariant.ComicSans18} ml={4}>
+                  ({x}, {y})
+                </Typography>
+              </Flex>
               <Typography variant={TVariant.ComicSans12} ml={4}>
-                Token ID: {px}
+                ID: {px}
               </Typography>
             </Flex>
           })}

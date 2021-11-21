@@ -45,18 +45,16 @@ class DemoFormStore {
 
 const DemoForm = () => {
   const store = useMemo(() => new DemoFormStore(), []);
-  return (
-    <>
-      <Demo title={"Form"}>
+  return <Demo title={"Form"}>
+      <Box px={{base: 5, md: "20%"}}>
         <DemoBasicForm />
         <DemoTextInputForm store={store} />
         <DemoNumberInputForm store={store} />
         <DemoBigInput store={store} />
-        <DemoSelectInput store={store} />
-        <ToggleDemo store={store} />
-      </Demo>
-    </>
-  );
+        {/*<DemoSelectInput store={store} />*/}
+        {/*<ToggleDemo store={store} />*/}
+      </Box>
+    </Demo>
 };
 
 const DemoBasicForm = () => {
@@ -143,11 +141,9 @@ const DemoBigInput = observer(({ store }: { store: DemoFormStore }) => {
     <SubDemo title={"Big Input"}>
       <Form onSubmit={async data => alert(JSON.stringify(data))}>
         <BigInput
-          label={"You Send"}
-          renderNumberInput={() => <BigInput.Number<DemoFormStore> store={store} storeKey={"bigNumberInput"} />}
-          renderSelectInput={() => (
-            <BigInput.Select<DemoFormStore> store={store} items={store.selectItems} storeKey={"product"} />
-          )}
+          label={"PX"}
+          store={store}
+          storeKey={"bigNumberInput"}
         />
         <Submit w={"100%"} mt={3} />
       </Form>
@@ -174,9 +170,9 @@ const ToggleDemo = observer(({ store }: { store: DemoFormStore }) => {
 
 export const SubDemo = ({ title, children }: { title: string; children: any }) => {
   return (
-    <Box w={"100%"}>
+    <Box w={"100%"} mt={20}>
       <Box>
-        <Typography variant={TVariant.ComicSans14} color={"gray.400"} block mb={3}>
+        <Typography variant={TVariant.PresStart24} color={"gray.400"} block mb={3}>
           {title}
         </Typography>
       </Box>

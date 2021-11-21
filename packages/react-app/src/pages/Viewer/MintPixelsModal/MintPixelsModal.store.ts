@@ -15,10 +15,7 @@ export enum MintModalView {
 
 class MintPixelsModalStore extends Reactionable((Navigable(EmptyClass))) {
   @observable
-  pixel_count?: number;
-
-  @observable
-  dog_count: number = 0;
+  pixel_count?: number = 1;
 
   @observable
   allowance?: number
@@ -32,9 +29,6 @@ class MintPixelsModalStore extends Reactionable((Navigable(EmptyClass))) {
   constructor() {
     super();
     makeObservable(this);
-    this.react(() => this.pixel_count, () => {
-      this.dog_count = (this.pixel_count! * AppStore.web3.DOG_TO_PIXEL_SATOSHIS) / 10 ** AppStore.web3.D20_PRECISION
-    })
   }
 
   async init() {
@@ -47,15 +41,6 @@ class MintPixelsModalStore extends Reactionable((Navigable(EmptyClass))) {
       this.allowance = await AppStore.web3.getPxDogSpendAllowance()
     } catch (e) {
       showErrorToast("Could not get allowance")
-    }
-  }
-
-  @computed
-  get dogCount() {
-    if (this.pixel_count) {
-      return Number(this.pixel_count * 55240).toString();
-    } else {
-      return Number(0).toString();
     }
   }
 
@@ -131,6 +116,15 @@ class MintPixelsModalStore extends Reactionable((Navigable(EmptyClass))) {
         return "complete"
       default:
         return ""
+    }
+  }
+
+  @computed
+  get dogCount() {
+    if (this.pixel_count) {
+      return (this.pixel_count! * AppStore.web3.DOG_TO_PIXEL_SATOSHIS) / 10 ** AppStore.web3.D20_PRECISION
+    } else {
+      return 0
     }
   }
 }

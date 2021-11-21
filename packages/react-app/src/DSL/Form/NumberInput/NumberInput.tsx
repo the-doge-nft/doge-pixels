@@ -13,6 +13,7 @@ import Control from "../Control";
 import { AllowedStyleProps, BaseInputProps } from "../interfaces";
 import { useControlledFormField, useFormField } from "../useFormField";
 import Typography, {TVariant} from "../../Typography/Typography";
+import {observer} from "mobx-react-lite";
 
 export interface NumberInputProps extends BaseInputProps, AllowedStyleProps {
   stepper?: boolean;
@@ -20,7 +21,7 @@ export interface NumberInputProps extends BaseInputProps, AllowedStyleProps {
   showValidation?: boolean;
 }
 
-const NumberInput = ({
+const NumberInput = observer(({
   stepper,
   validate,
   name,
@@ -73,6 +74,6 @@ const NumberInput = ({
       </FormErrorMessage>}
     </Control>
   );
-};
+});
 
 export default NumberInput;

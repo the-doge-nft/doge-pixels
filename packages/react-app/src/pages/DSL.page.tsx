@@ -6,6 +6,7 @@ import DemoModal from "../DSL/Modal/Modal.demo";
 import DemoColors from "../DSL/Colors/Colors.demo";
 import DemoToast from "../DSL/Toast/Toast.demo";
 import DemoColorModeToggle from "../DSL/ColorModeToggle/ColorModeToggle.demo";
+import DemoForm from "../DSL/Form/Form.demo";
 
 const DSLPage = () => {
   return (
@@ -19,6 +20,7 @@ const DSLPage = () => {
         <DemoColors />
         <DemoToast />
         <DemoColorModeToggle/>
+        <DemoForm />
       </Box>
     </Box>
   );

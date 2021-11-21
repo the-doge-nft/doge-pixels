@@ -8,6 +8,7 @@ export enum TVariant {
   PresStart16 = "PresStart16",
   PresStart24 = "PresStart24",
   PresStart28 = "PresStart28",
+  PresStart45 = "PresStart45",
   ComicSans10 = "ComicSans10",
   ComicSans12 = "ComicSans12",
   ComicSans14 = "ComicSans14",
