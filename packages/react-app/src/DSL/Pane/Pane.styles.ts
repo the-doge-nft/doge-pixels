@@ -9,6 +9,8 @@ const PaneStyle = {
     position: "relative",
     // zIndex: "1",
     _after: {
+      base: "none",
+      md :{
       zIndex: "-1",
       content: "''",
       position: "absolute",
@@ -19,7 +21,7 @@ const PaneStyle = {
       borderStyle: "solid",
       borderWidth: "1px",
       borderColor: lightOrDark(colorMode, "black", "white")
-    }
+    }}
   }),
   defaultProps: {},
 };

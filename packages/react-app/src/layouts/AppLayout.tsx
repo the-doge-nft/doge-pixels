@@ -33,7 +33,6 @@ const AppLayout = observer(function AppLayout({children}: AppLayoutProps) {
         AppStore.web3.refreshPupperBalance()
         AppStore.web3.tokenIdsOwned = []
         AppStore.web3.getPastPXReceives()
-
       }
 
       const handleChainChanged = (_hexChainId: string) => {
@@ -67,8 +66,8 @@ const AppLayout = observer(function AppLayout({children}: AppLayoutProps) {
   }, [AppStore.web3.provider])
 
   return (
-    <Flex w={"100vw"} h={"100vh"} p={8} direction={"column"}>
-      <Flex mb={5} justifyContent={"space-between"} alignItems={"center"}>
+    <Flex w={"100vw"} h={"100vh"} p={{base:0, md: 8}} flexDirection={"column"}>
+      <Flex mb={5} justifyContent={"space-between"} alignItems={"center"} display={{base: "none", md: "flex"}}>
         <Flex alignItems={"center"} mb={2}>
           <Title/>
         </Flex>
@@ -107,9 +106,6 @@ const AppLayout = observer(function AppLayout({children}: AppLayoutProps) {
     </Flex>
   );
 });
-
-
-
 
 const DevTools = observer(function DevTools() {
   return <Grid px={3} mt={2} templateColumns={"1fr 1fr"}>
