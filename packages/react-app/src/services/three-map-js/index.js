@@ -320,10 +320,10 @@ function panzoom(camera, owner) {
     console.log("debug:: current scale", currentScale)
 
     //@CC custom
-    const dampenFactor = 1
+    const dampenFactor = 2
 
-    panPayload.dx = -dx/(currentScale)
-    panPayload.dy = dy/(currentScale)
+    panPayload.dx = -dx/(currentScale * dampenFactor)
+    panPayload.dy = dy/(currentScale * dampenFactor)
 
     // we fire first, so that clients can manipulate the payload
     api.fire('beforepan', panPayload)

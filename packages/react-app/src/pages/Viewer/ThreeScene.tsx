@@ -10,16 +10,7 @@ import ViewerStore from "./Viewer.store";
 import { SET_CAMERA } from "../../services/mixins/eventable";
 import { BigNumber } from "ethers";
 import Button, { ButtonVariant } from "../../DSL/Button/Button";
-
-
-// var createPanZoom = require('three.map.control');
-
 import createPanZoom from "../../services/three-map-js";
-
-// const Controls = () => {
-//
-// }
-
 interface ThreeSceneProps {
   onPixelSelect: onPixelSelectType;
   selectedPixel: any;
@@ -30,8 +21,8 @@ const ThreeScene = React.memo(({ onPixelSelect, selectedPixel, store }: ThreeSce
   const maxCameraZ = 5500;
   const minCameraZ = 80;
   const _zClippingSafetyBuffer = 10
+  
   var panZoom: any
-
   useEffect(() => {
     panZoom?.dispose()
   }, [])
@@ -146,6 +137,7 @@ const ThreeScene = React.memo(({ onPixelSelect, selectedPixel, store }: ThreeSce
 
         camera.position.x = xPos - (overlayLength / 2)
         camera.position.y = yPos - (overlayLength / 2)
+        
         camera.position.z = minCameraZ
 
         if (selectedPixelOverlayRef.current) {
@@ -177,12 +169,6 @@ const ThreeScene = React.memo(({ onPixelSelect, selectedPixel, store }: ThreeSce
               camera.updateProjectionMatrix();
             }
           })
-
-          // gl.domElement.addEventListener("wheel", e => e.preventDefault());
-          // gl.domElement.addEventListener("mousedown", e => downListener(e));
-          // gl.domElement.addEventListener("mousemove", e => moveListener(e, gl.domElement));
-          // gl.domElement.addEventListener("mouseup", e => upListener(e, gl.domElement));
-          // gl.domElement.addEventListener("mouseenter", e => mouseEnterListener(e, gl.domElement));
           gl.toneMapping = THREE.NoToneMapping;
         }}
       >

@@ -36,7 +36,7 @@ const ViewerPage = observer(function ViewerPage() {
   return (
     <>
       <Grid templateColumns={"2fr 1fr"} templateRows={{base: "1fr fr", lg: "1fr"}} flexGrow={1}>
-        <GridItem mr={5} colSpan={{base: 2, lg: 1}}>
+        <GridItem mr={{base: 0, md: 5}} colSpan={{base: 3, md: 1}}>
           <Pane w={"100%"} h={"100%"}>
             <Suspense fallback={<Loading/>}>
               <ThreeScene
@@ -47,7 +47,7 @@ const ViewerPage = observer(function ViewerPage() {
             </Suspense>
           </Pane>
         </GridItem>
-        <GridItem ml={5} colSpan={{base: 2, lg: 1}}>
+        <GridItem ml={5} colSpan={{base: 0, md: 1}} display={{base: "none", md: "block"}}>
           <Pane py={10} px={10} position={"relative"} display={"flex"} flexDirection={"column"} justifyContent={"space-between"} h={"100%"}>
               {store.showGoBack && <Box position={"absolute"} left={"7px"} top={"7px"}>
                   <Button
