@@ -59,7 +59,7 @@ function panzoom(camera, owner, toKeepInBounds, minDepth, maxDepth) {
   var toKeepInBoundsBounding = new THREE.Box3().setFromObject(toKeepInBounds)
   var api = eventify({
     dispose: dispose,
-    speed: 0.007,
+    speed: 0.02,
     min: minDepth,
     max: maxDepth,
     yUpperBound: toKeepInBoundsBounding.max.y,
@@ -282,7 +282,7 @@ function panzoom(camera, owner, toKeepInBounds, minDepth, maxDepth) {
   function handleMouseMove(e) {
     if (!isDragging) return
 
-    const pixelsToStartPan = 2
+    const pixelsToStartPan = 1
     var dx = e.clientX - mousePos.x
     var dy = e.clientY - mousePos.y
 
