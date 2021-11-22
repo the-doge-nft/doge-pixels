@@ -1,6 +1,6 @@
 import { Navigable } from "../../../services/mixins/navigable";
 import {AbstractConstructor, EmptyClass} from "../../../helpers/mixins";
-import { makeObservable, observable } from "mobx";
+import {action, computed, makeObservable, observable } from "mobx";
 import AppStore from "../../../store/App.store";
 import { showErrorToast } from "../../../DSL/Toast/Toast";
 
@@ -27,7 +27,6 @@ class BurnPixelsModalStore extends Navigable<AbstractConstructor, BurnPixelsModa
   }
 
   handlePixelSelect(tokenId: number) {
-    console.log("debug:: handle pixel select")
     if (!this.selectedPixels.includes(tokenId)) {
       this.selectedPixels.push(tokenId)
     } else {
@@ -52,6 +51,16 @@ class BurnPixelsModalStore extends Navigable<AbstractConstructor, BurnPixelsModa
         return reject()
       }
     })
+  }
+
+  @action
+  selectAllPixels() {
+    this.selectedPixels = [...AppStore.web3.puppersOwned]
+  }
+
+  @computed
+  get selectedPixelsDogValue() {
+    return AppStore.web3.DOG_TO_PIXEL_SATOSHIS * this.selectedPixels.length
   }
 
 }

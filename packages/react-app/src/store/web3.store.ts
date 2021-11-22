@@ -51,7 +51,7 @@ class Web3Store {
     network?: Network
 
     @observable
-    tokenIdsOwned: number[] = []
+    puppersOwned: number[] = []
 
     constructor() {
         makeObservable(this)
@@ -64,7 +64,7 @@ class Web3Store {
             const signer = web3Provider.getSigner()
             const address = await signer.getAddress()
             const network = await web3Provider.getNetwork()
-            // showDebugToast(`connected: ${address} on : ${network.name} (chain ID: ${network.chainId})`)
+            showDebugToast(`connected: ${address} on : ${network.name} (chain ID: ${network.chainId})`)
 
             this.network = network
             this.address = address
@@ -80,25 +80,22 @@ class Web3Store {
             showErrorToast("error connecting")
         }
 
+
         if (isDevModeEnabled() && this.network?.name === "homestead") {
             throw Error("🚨 We don't test on prod here, switch to a testnet or local 🚨")
         }
     }
 
     initPxListeners() {
-        console.log("debug:: initPxListeners called")
         this.pxContract?.on("Transfer(address,address,uint256)", (fromAddress: string, toAddress: string, tokenId: BigNumber) => {
-            console.log("debug:: from address", fromAddress)
-            console.log("debug:: to address", toAddress)
             if (toAddress === this.address) {
-                console.log("debug:: hit on transfer event", fromAddress, toAddress, tokenId.toNumber())
-                if (!this.tokenIdsOwned.includes(tokenId.toNumber())) {
-                    this.tokenIdsOwned.push(tokenId.toNumber())
+                if (!this.puppersOwned.includes(tokenId.toNumber())) {
+                    this.puppersOwned.push(tokenId.toNumber())
                 }
             } else if (fromAddress === this.address) {
-                if (this.tokenIdsOwned.includes(tokenId.toNumber())) {
-                    const index = this.tokenIdsOwned.indexOf(tokenId.toNumber())
-                    this.tokenIdsOwned.splice(index, 1)
+                if (this.puppersOwned.includes(tokenId.toNumber())) {
+                    const index = this.puppersOwned.indexOf(tokenId.toNumber())
+                    this.puppersOwned.splice(index, 1)
                 }
             }
         })
@@ -109,8 +106,8 @@ class Web3Store {
         const logs = await this.pxContract!.queryFilter(filter)
         logs.forEach(tx => {
             const tokenId = tx.args.tokenId.toNumber()
-            if (!this.tokenIdsOwned.includes(tokenId)) {
-                this.tokenIdsOwned.push(tokenId)
+            if (!this.puppersOwned.includes(tokenId)) {
+                this.puppersOwned.push(tokenId)
             }
         })
 
@@ -118,9 +115,9 @@ class Web3Store {
         const newLogs = await this.pxContract!.queryFilter(newFilter)
         newLogs.forEach(tx => {
             const tokenId = tx.args.tokenId.toNumber()
-            if (this.tokenIdsOwned.includes(tokenId)) {
-                const index = this.tokenIdsOwned.indexOf(tokenId)
-                this.tokenIdsOwned.splice(index, 1)
+            if (this.puppersOwned.includes(tokenId)) {
+                const index = this.puppersOwned.indexOf(tokenId)
+                this.puppersOwned.splice(index, 1)
             }
         })
     }

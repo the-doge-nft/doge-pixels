@@ -47,8 +47,6 @@ function panzoom(camera, owner, toKeepInBounds, minDepth, maxDepth) {
     y: 0
   }
 
-  var toKeepInBoundsBounding = new THREE.Box3().setFromObject(toKeepInBounds)
-
   owner = owner || document.body;
   owner.setAttribute('tabindex', 1); // TODO: not sure if this is really polite
 
@@ -58,17 +56,16 @@ function panzoom(camera, owner, toKeepInBounds, minDepth, maxDepth) {
 
   wheel.addWheelListener(owner, onMouseWheel)
 
+  var toKeepInBoundsBounding = new THREE.Box3().setFromObject(toKeepInBounds)
   var api = eventify({
     dispose: dispose,
     speed: 0.007,
     min: minDepth,
     max: maxDepth,
-
-    // @TODO: these could be defined by bounding box of toKeepInBounds
-    yUpperBound: 0,
-    yLowerBound: -480,
-    xLowerBound: -1,
-    xUpperBound: 640 - 1
+    yUpperBound: toKeepInBoundsBounding.max.y,
+    yLowerBound: toKeepInBoundsBounding.min.y,
+    xLowerBound: toKeepInBoundsBounding.min.x,
+    xUpperBound: toKeepInBoundsBounding.max.x
   })
 
   owner.addEventListener('mousedown', handleMouseDown)
@@ -285,14 +282,15 @@ function panzoom(camera, owner, toKeepInBounds, minDepth, maxDepth) {
   function handleMouseMove(e) {
     if (!isDragging) return
 
-    owner.style.cursor = "grabbing"
-
-    triggerPanStart()
-
+    const pixelsToStartPan = 2
     var dx = e.clientX - mousePos.x
     var dy = e.clientY - mousePos.y
 
-    panByOffset(dx, dy)
+    if (Math.abs(dx) > pixelsToStartPan || Math.abs(dy) > pixelsToStartPan) {
+      owner.style.cursor = "grabbing"
+      triggerPanStart()
+      panByOffset(dx, dy)
+    }
 
     setMousePos(e)
   }

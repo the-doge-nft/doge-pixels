@@ -46,7 +46,7 @@ const IndexPane = observer(function IndexPane({store}: {store: ViewerStore}) {
           Burn
         </Button>
       </Flex>}
-      {AppStore.web3.tokenIdsOwned.length > 0 && <Button
+      {AppStore.web3.puppersOwned.length > 0 && <Button
           width={"fit-content"}
           display={"block"}
           variant={ButtonVariant.Text}

@@ -8,6 +8,8 @@ import {showDebugToast} from "../../../DSL/Toast/Toast";
 import Typography, {TVariant} from "../../../DSL/Typography/Typography";
 import Form from "../../../DSL/Form/Form";
 import Submit from "../../../DSL/Form/Submit";
+import PixelPane from "../../../DSL/PixelPane/PixelPane";
+import Button, { ButtonVariant } from "../../../DSL/Button/Button";
 
 interface BurnPixelsModalProps {
   isOpen: boolean;
@@ -21,59 +23,61 @@ const BurnPixelsModal = observer(({isOpen, onClose, defaultPixel}: BurnPixelsMod
     size={"xl"}
     isOpen={isOpen}
     onClose={onClose}
-    title={"Burn Pixels"}
+    title={"Burn your Pixels"}
   >
     {store.currentView === BurnPixelsModalView.Select && <SelectPixels store={store} onSuccess={() => onClose()}/>}
   </Modal>
 })
 
 const SelectPixels = observer(({store, onSuccess}: {store: BurnPixelsModalStore, onSuccess: () => void}) => {
-  return <Box>
-    <Typography variant={TVariant.ComicSans14}>
-      Say goodbye to your pixels forever. Be sure to be careful with which pixels you choose. You'll most likely never see them again.
+  return <Flex flexDirection={"column"}>
+    <Typography variant={TVariant.ComicSans18}>
+      Say goodbye to your pixels forever. Be sure to be careful with which pixels you select. You’ll most likely never see them again.
     </Typography>
-    <Flex flexWrap={"wrap"} justifyContent={"center"} alignItems={"center"} mt={10}>
-      {AppStore.web3.tokenIdsOwned.map(px => <Flex
-        m={1}
-        borderStyle={"solid"}
-        borderWidth={"1px"}
-        borderColor={store.selectedPixels.includes(px) ? "red.500" : "yellow.50"}
-        borderRadius={3}
-        justifyContent={"center"}
-        alignItems={"center"}
-        width={"40px"}
-        height={"40px"}
-        bg={"yellow.700"}
-        onClick={async () => {
-          const [x, y] = await AppStore.web3.pupperToPixelCoords(px)
-          showDebugToast(`${x.toNumber()}, ${y.toNumber()}`)
-          store.handlePixelSelect(px)
-          console.log("debug:: px click ", px, x.toNumber(), y.toNumber())
-        }}
-        _hover={{
-          bg: "yellow.50",
-          cursor: "pointer"
-        }}
-      >
-        <Typography variant={TVariant.ComicSans10}>
-          {px - AppStore.web3.PIXEL_TO_ID_OFFSET}
-        </Typography>
-      </Flex>)}
+    <Box overflow={"scroll"} flexGrow={1} h={"full"} mt={6}>
+      <Box mx={"auto"} maxHeight={"350px"} ml={3}>
+        {AppStore.web3.puppersOwned.map(px => {
+          const hex = AppStore.web3.pupperToHexLocal(px)
+          const index = AppStore.web3.pupperToPixelIndex(px)
+          const isPixelSelected = store.selectedPixels.includes(px)
+          return <Box display={"inline-block"}
+                      mt={2}
+                      mx={1}
+                      p={2}
+                      bg={isPixelSelected ? "yellow.700" : "inherit"}>
+            <PixelPane
+              size={"sm"}
+              pupper={px}
+              color={hex}
+              pupperIndex={index}
+              onClick={() => store.handlePixelSelect(px)}
+            />
+          </Box>
+        })}
+      </Box>
+    </Box>
+    <Flex justifyContent={"space-between"} alignItems={"center"} mt={12}>
+      <Flex flexDirection={"column"}>
+        <Typography variant={TVariant.PresStart14}>$DOG</Typography>
+        <Typography variant={TVariant.PresStart14}>{store.selectedPixelsDogValue / 10 ** AppStore.web3.D20_PRECISION}</Typography>
+      </Flex>
+      <Button variant={ButtonVariant.Text} onClick={() => store.selectAllPixels()}>Select All</Button>
     </Flex>
 
     <Flex justifyContent={"center"} mt={14} w={"full"}>
       <Box>
-        <Form onSubmit={async () => {
+        <Form
+          onSubmit={async () => {
           await store.handleSubmit()
           onSuccess()
         }}>
           <Flex justifyContent={"center"} w={"100%"}>
-            <Submit label={"Burn 🔥"}/>
+            <Submit label={"Burn"} isDisabled={store.selectedPixels.length === 0}/>
           </Flex>
         </Form>
       </Box>
     </Flex>
-  </Box>
+  </Flex>
 })
 
 export default BurnPixelsModal
