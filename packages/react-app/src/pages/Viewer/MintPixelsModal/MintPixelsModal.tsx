@@ -12,8 +12,9 @@ import model from "../../../DSL/Form/model";
 import AppStore from "../../../store/App.store";
 import Dev from "../../../common/Dev";
 import Submit from "../../../DSL/Form/Submit";
-import Loading from "../Loading/Loading";
 import BigInput from "../../../DSL/Form/BigInput";
+import Draggable from "react-draggable";
+import Loading from "../../../DSL/Loading/Loading";
 
 interface MintPixelsModalProps extends Pick<ModalProps, "isOpen" | "onClose"> {}
 
@@ -28,10 +29,10 @@ const MintPixelsModal = observer(({ isOpen, onClose }: MintPixelsModalProps) => 
     <Modal
       size={"xl"}
       isOpen={isOpen}
+      title={store.modalTitle}
       onClose={() => {
         onClose();
       }}
-      renderHeader={() => <Typography variant={TVariant.PresStart18}>{store.modalTitle}</Typography>}
     >
       {store.currentView === MintModalView.Mint && <MintForm store={store}/>}
       {store.currentView === MintModalView.Approval && <Approval store={store}/>}
@@ -44,11 +45,11 @@ const MintPixelsModal = observer(({ isOpen, onClose }: MintPixelsModalProps) => 
 const MintForm = observer(({ store }: { store: MintPixelsModalStore }) => {
   return (
     <>
-      <Box>
-        <Typography variant={TVariant.ComicSans14}>
-          Trade $DOG for pixels. Each pixel is worth 55,240 $DOG.
-        </Typography>
-      </Box>
+        <Box mb={8}>
+          <Typography variant={TVariant.ComicSans18}>
+            Trade $DOG for pixels. Each pixel is worth 55,240 $DOG.
+          </Typography>
+        </Box>
 
       <Form onSubmit={(data) => store.handleMintSubmit(data.pixel_count)}>
         <Box mt={5}>
@@ -59,7 +60,7 @@ const MintForm = observer(({ store }: { store: MintPixelsModalStore }) => {
             validate={[
               required,
               minValue(1, "Must mint at least 1 pixel"),
-              maxValue(store.maxPixelsToPurchase, "Need to buy more $DOG")
+              maxValue(store.maxPixelsToPurchase, `You only have ${AppStore.web3.dogBalance! / 10 ** AppStore.web3.D20_PRECISION} $DOG.`)
             ]}
           />
         </Box>
@@ -76,16 +77,16 @@ const MintForm = observer(({ store }: { store: MintPixelsModalStore }) => {
         </Flex>
       </Form>
 
-      <Dev>
-        <Flex direction={"column"}>
-          {store.pixel_count !== undefined && <Typography variant={TVariant.ComicSans16}>
-              to spend: {(store.pixel_count * AppStore.web3.DOG_TO_PIXEL_SATOSHIS) / 10 ** AppStore.web3.D20_PRECISION}
-          </Typography>}
-          {store.allowance !== undefined && <Typography variant={TVariant.ComicSans16}>
-              allowance: {store.allowance / 10 ** AppStore.web3.D20_PRECISION}
-          </Typography>}
-        </Flex>
-      </Dev>
+      {/*<Dev>*/}
+      {/*  <Flex direction={"column"}>*/}
+      {/*    {store.pixel_count !== undefined && <Typography variant={TVariant.ComicSans16}>*/}
+      {/*        to spend: {(store.pixel_count * AppStore.web3.DOG_TO_PIXEL_SATOSHIS) / 10 ** AppStore.web3.D20_PRECISION}*/}
+      {/*    </Typography>}*/}
+      {/*    {store.allowance !== undefined && <Typography variant={TVariant.ComicSans16}>*/}
+      {/*        allowance: {store.allowance / 10 ** AppStore.web3.D20_PRECISION}*/}
+      {/*    </Typography>}*/}
+      {/*  </Flex>*/}
+      {/*</Dev>*/}
     </>
   );
 });
@@ -93,7 +94,7 @@ const MintForm = observer(({ store }: { store: MintPixelsModalStore }) => {
 const Approval = observer(({store}: {store: MintPixelsModalStore}) => {
   return (
     <Box>
-      <Typography display={"block"} variant={TVariant.PresStart28}>
+      <Typography display={"block"} variant={TVariant.PresStart28} my={6}>
         {store.allowanceToGrant / (10 ** AppStore.web3.D20_PRECISION)}
       </Typography>
       <Typography block variant={TVariant.ComicSans18} mt={4}>
@@ -121,20 +122,23 @@ const LoadingPixels = observer(({store}: {store: MintPixelsModalStore}) => {
     store.mintPixels(store.pixel_count!)
   }, [])
   return (
-    <Box>
-      <Typography variant={TVariant.ComicSans12}>
-        <Loading/>
-      </Typography>
+    <Box mt={20} mb={10}>
+      <Loading/>
     </Box>
   );
 });
 
 const Complete = observer(({store}: {store: MintPixelsModalStore}) => {
-  return <Box>
-      <Typography variant={TVariant.ComicSans12}>✨ Mint complete ✨</Typography>
-    {store.newlyMintedPupperIds.map(item => <Box>
-      {item}
-    </Box>)}
+  return <Box pt={10} pb={4}>
+      <Typography variant={TVariant.PresStart28} textAlign={"center"} block>
+        Pixels Minted
+      </Typography>
+      <Typography variant={TVariant.PresStart28} textAlign={"center"} mt={4} block>
+        🌟🦄💫🐸🐕🚀
+      </Typography>
+      <Flex justifyContent={"center"} mt={12}>
+        <Button>Go to pixels</Button>
+      </Flex>
   </Box>
 })
 

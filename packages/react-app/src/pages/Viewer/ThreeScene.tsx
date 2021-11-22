@@ -99,9 +99,9 @@ const ThreeScene = React.memo(({ onPixelSelect, selectedPixel, store }: ThreeSce
 
   useEffect(() => {
     const CameraTools = {
-      setCamera: ([x, y]: [BigNumber, BigNumber]) => {
-        const xPos = x.toNumber()
-        const yPos = -1*y.toNumber()
+      setCamera: ([x, y]: [number, number]) => {
+        const xPos = x
+        const yPos = -1 * y
 
         camera.position.x = xPos - (overlayLength / 2)
         camera.position.y = yPos - (overlayLength / 2)
@@ -227,7 +227,7 @@ const ThreeScene = React.memo(({ onPixelSelect, selectedPixel, store }: ThreeSce
 
         <mesh ref={selectedPixelOverlayRef} position={[0, 0, 0.0001]} visible={false}>
           <planeGeometry attach={"geometry"} args={[overlayLength, overlayLength]} />
-          <meshBasicMaterial attach={"material"} color={0xff00ff} opacity={0.8} transparent={true} depthTest={false}/>
+          <meshBasicMaterial attach={"material"} color={0xff0000} opacity={0.8} transparent={true} depthTest={false}/>
         </mesh>
 
         <group ref={newHoverOverlayRef}>

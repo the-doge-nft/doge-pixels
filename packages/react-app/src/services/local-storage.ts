@@ -22,7 +22,8 @@ class LocalStorageClass {
 
   public getItem(key: string, parse: string, defaultValue: any): any {
     const item = this.ls.getItem(key);
-    if (!item) {
+    if (item === undefined || item === null) {
+
       return defaultValue;
     }
     try {

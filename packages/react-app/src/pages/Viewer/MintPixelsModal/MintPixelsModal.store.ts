@@ -111,10 +111,6 @@ class MintPixelsModalStore extends Reactionable((Navigable(EmptyClass))) {
         return "Mint Pixels"
       case MintModalView.Approval:
         return "Approve $DOG"
-      case MintModalView.Loading:
-        return "..."
-      case MintModalView.Complete:
-        return "complete"
       default:
         return ""
     }

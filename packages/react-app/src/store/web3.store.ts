@@ -10,7 +10,7 @@ import {isDevModeEnabled} from "../environment/helpers";
 import {Network} from "@ethersproject/networks";
 import {DOG20, PX} from "../../../hardhat/types";
 import { abbreviate } from "../helpers/strings";
-
+import KobosuJson from "../images/kobosu.json"
 
 interface EthersContractError {
     message: string
@@ -64,7 +64,7 @@ class Web3Store {
             const signer = web3Provider.getSigner()
             const address = await signer.getAddress()
             const network = await web3Provider.getNetwork()
-            showDebugToast(`connected: ${address} on : ${network.name} (chain ID: ${network.chainId})`)
+            // showDebugToast(`connected: ${address} on : ${network.name} (chain ID: ${network.chainId})`)
 
             this.network = network
             this.address = address
@@ -158,7 +158,7 @@ class Web3Store {
         )
 
         const nonContractCode = "0x"
-
+        
         const pxCode = await this.web3Provider!.getCode(this.pxContract!.address)
         if (pxCode === nonContractCode) {
             throw Error("PX address is not a contract, please make sure it is deployed & you are on the correct network.")
@@ -176,7 +176,6 @@ class Web3Store {
     async refreshDogBalance() {
         try {
             this.dogBalance = await this.getDogBalance()
-            showDebugToast(`refreshed dog balance: ${this.dogBalance}`)
         } catch (e) {
             const {message} = e as EthersContractError
             this.dogBalance = 0
@@ -238,12 +237,22 @@ class Web3Store {
         }
     }
 
+    pupperToPixelIndex(pupper: number) {
+        return pupper - this.PIXEL_TO_ID_OFFSET
+    }
+
     pupperToPixelCoordsLocal(pupper: number) {
-        const index = pupper - this.PIXEL_TO_ID_OFFSET
+        const index = this.pupperToPixelIndex(pupper)
         return [index % 640, Math.floor(index / 640)]
     }
 
-    coordinateToPupper(x: number, y: number) {
+    pupperToHexLocal(pupper: number) {
+        const [x, y] = this.pupperToPixelCoordsLocal(pupper)
+        //@ts-ignore
+        return KobosuJson[y][x]
+    }
+
+    coordinateToPupperLocal(x: number, y: number) {
         return ((this.WIDTH * y) + x) + this.PIXEL_TO_ID_OFFSET
     }
 }

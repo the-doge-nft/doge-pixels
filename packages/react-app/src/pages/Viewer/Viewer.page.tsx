@@ -1,5 +1,5 @@
 import React, {Suspense, useCallback, useEffect, useMemo} from "react";
-import {Box, Button, Flex, Grid, GridItem} from "@chakra-ui/react";
+import {Box, Button, Flex, Grid, GridItem, Image} from "@chakra-ui/react";
 import ThreeScene from "./ThreeScene";
 import ViewerStore, {ViewerView} from "./Viewer.store";
 import {observer} from "mobx-react-lite";
@@ -11,9 +11,12 @@ import MintPixelsModal from "./MintPixelsModal/MintPixelsModal";
 import SelectedPixelPane from "./Panes/SelectedPixelPane";
 import AppStore from "../../store/App.store";
 import {showDebugToast} from "../../DSL/Toast/Toast";
-import Loading from "./Loading/Loading";
 import {ButtonVariant} from "../../DSL/Button/Button";
 import Icon from "../../DSL/Icon/Icon";
+import Typography, { TVariant } from "../../DSL/Typography/Typography";
+import Modal from "../../DSL/Modal/Modal";
+import Loading from "../../DSL/Loading/Loading";
+import ScrollHelperModal from "./ScrollHelperModal/ScrollHelperModal";
 
 export type onPixelSelectType = (x: number, y: number) => void;
 
@@ -28,7 +31,7 @@ const ViewerPage = observer(function ViewerPage() {
   }, [])
 
   const onPixelSelect: onPixelSelectType = useCallback((x: number, y: number) => {
-    store.selectedPupper = AppStore.web3.coordinateToPupper(x, y);
+    store.selectedPupper = AppStore.web3.coordinateToPupperLocal(x, y);
     if (store.currentView !== ViewerView.Selected) {
       store.pushNavigation(ViewerView.Selected)
     }
@@ -77,6 +80,10 @@ const ViewerPage = observer(function ViewerPage() {
         defaultPixel={store.selectedPupper}
         isOpen={store.isBurnModalOpen}
         onClose={() => store.isBurnModalOpen = false}
+      />
+      <ScrollHelperModal
+        isOpen={store.isHelperModalOpen}
+        onClose={() => store.isHelperModalOpen = false}
       />
     </>
   );

@@ -7,6 +7,7 @@ import DemoColors from "../DSL/Colors/Colors.demo";
 import DemoToast from "../DSL/Toast/Toast.demo";
 import DemoColorModeToggle from "../DSL/ColorModeToggle/ColorModeToggle.demo";
 import DemoForm from "../DSL/Form/Form.demo";
+import DemoLoading from "../DSL/Loading/Loading.demo";
 
 const DSLPage = () => {
   return (
@@ -15,6 +16,7 @@ const DSLPage = () => {
         <Typography variant={TVariant.PresStart28} block mb={7}>
           ✨ DSL ✨
         </Typography>
+        <DemoLoading />
         <DemoButton />
         <DemoModal />
         <DemoColors />

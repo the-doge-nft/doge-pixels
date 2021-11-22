@@ -16,7 +16,6 @@ export function Eventable<T extends Constructor>(Base1: T) {
     private listeners: EventType = {}
 
     publish(eventName: string, data?: any) {
-      showDebugToast(`[pub] ${eventName}`)
       try {
         if(!this.listeners[eventName]){
           return
