@@ -54,7 +54,7 @@ class ViewerStore extends Navigable(Eventable(Reactionable((EmptyClass)))) {
             pupperLocation: "Pupper"
           }
         }
-        this.openSeaLink = "testlink"
+        // this.openSeaLink = "testlink"
       }).catch(e => {
         console.error("debug:: error", e)
       })

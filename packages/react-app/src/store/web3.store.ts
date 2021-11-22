@@ -4,9 +4,10 @@ import {BigNumber, Contract, providers} from "ethers";
 import {showDebugToast, showErrorToast} from "../DSL/Toast/Toast";
 import {ExternalProvider, JsonRpcFetchFunc, Web3Provider} from "@ethersproject/providers/src.ts/web3-provider";
 import deployedContracts from "../contracts/hardhat_contracts.json"
+import testRinkebyContracts from "../contracts/test_rinkeby_hardhat_contracts.json";
 import {Signer} from "@ethersproject/abstract-signer";
 import {Provider} from "@ethersproject/abstract-provider";
-import {isDevModeEnabled} from "../environment/helpers";
+import {isDevModeEnabled, isProduction, isStaging} from "../environment/helpers";
 import {Network} from "@ethersproject/networks";
 import {DOG20, PX} from "../../../hardhat/types";
 import { abbreviate } from "../helpers/strings";
@@ -56,6 +57,8 @@ class Web3Store {
 
     constructor() {
         makeObservable(this)
+        console.log("debug:: is dev mode", isDevModeEnabled())
+        console.log("debug:: process.env.REACT_APP_DOG_ENV", process.env.REACT_APP_DOG_ENV)
     }
 
     async connect() {
@@ -107,18 +110,36 @@ class Web3Store {
     }
 
     async connectToContracts(signerOrProvider?: Signer | Provider) {
-        //@ts-ignore
-        this.pxContract = new Contract(
-          deployedContracts["31337"]["localhost"]["contracts"]["PX"]["address"],
-          deployedContracts["31337"]["localhost"]["contracts"]["PX"].abi,
-          signerOrProvider
-        )
-        //@ts-ignore
-        this.dogContract = new Contract(
-          deployedContracts["31337"]["localhost"]["contracts"]["DOG20"]["address"],
-          deployedContracts["31337"]["localhost"]["contracts"]["DOG20"].abi,
-          signerOrProvider
-        )
+        if (isProduction()) {
+            throw Error("Should not be production yet")
+        } else if (isStaging() || this.network?.name === "rinkeby") {
+            //@ts-ignore
+            this.pxContract = new Contract(
+              testRinkebyContracts["4"]["rinkeby"]["contracts"]["PX"]["address"],
+              testRinkebyContracts["4"]["rinkeby"]["contracts"]["PX"].abi,
+              signerOrProvider
+            )
+            //@ts-ignore
+            this.dogContract = new Contract(
+              testRinkebyContracts["4"]["rinkeby"]["contracts"]["DOG20"]["address"],
+              testRinkebyContracts["4"]["rinkeby"]["contracts"]["DOG20"].abi,
+              signerOrProvider
+            )
+        } else {
+            //@ts-ignore
+            this.pxContract = new Contract(
+              deployedContracts["31337"]["localhost"]["contracts"]["PX"]["address"],
+              deployedContracts["31337"]["localhost"]["contracts"]["PX"].abi,
+              signerOrProvider
+            )
+            //@ts-ignore
+            this.dogContract = new Contract(
+              deployedContracts["31337"]["localhost"]["contracts"]["DOG20"]["address"],
+              deployedContracts["31337"]["localhost"]["contracts"]["DOG20"].abi,
+              signerOrProvider
+            )
+        }
+
 
         const nonContractCode = "0x"
 
