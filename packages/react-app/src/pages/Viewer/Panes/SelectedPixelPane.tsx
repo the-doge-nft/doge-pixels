@@ -5,18 +5,31 @@ import Typography, { TVariant } from "../../../DSL/Typography/Typography";
 import ViewerStore from "../Viewer.store";
 import Button, { ButtonVariant } from "../../../DSL/Button/Button";
 import { abbreviate } from "../../../helpers/strings";
+import KobosuJson from "../../../images/kobosu.json"
+import PixelPane from "../../../DSL/PixelPane/PixelPane";
 
 const SelectedPixelPane = observer(function SelectedPixelPane({store}: {store: ViewerStore}) {
   return <Flex flexDirection={"column"} justifyContent={"space-between"} h={"full"}>
     <Box>
-      <Typography block variant={TVariant.PresStart18}>
-        Pixel #{store.pupperNumber}
-      </Typography>
-      <Box w={"250px"} h={"250px"} bg={"yellow.100"} border={"1px solid black"} mt={8}/>
-
-      <Box mt={5}>
+      <Box mt={4}>
+        {store.selectedPupper && <PixelPane
+                size={"lg"}
+                pupper={store.selectedPupper}
+                color={store.selectedPupperHEX}
+                pupperIndex={store.selectedPupperIndex}
+              />}
+      </Box>
+      <Box mt={8}>
         <Box>
-          <Typography variant={TVariant.ComicSans18} fontWeight={"bold"} mr={2}>
+          <Typography variant={TVariant.ComicSans18} mr={2}>
+            HEX:
+          </Typography>
+          <Typography variant={TVariant.ComicSans18}>
+            {store.selectedPupperHEX}
+          </Typography>
+        </Box>
+        <Box>
+          <Typography variant={TVariant.ComicSans18} mr={2}>
             Coordinates:
           </Typography>
           <Typography variant={TVariant.ComicSans18}>
@@ -24,23 +37,15 @@ const SelectedPixelPane = observer(function SelectedPixelPane({store}: {store: V
           </Typography>
         </Box>
         <Box>
-          <Typography variant={TVariant.ComicSans18} fontWeight={"bold"} mr={2}>
-            HEX:
-          </Typography>
-          <Typography variant={TVariant.ComicSans18}>
-            {store.selectePupperHex}
-          </Typography>
-        </Box>
-        <Box>
-          <Typography variant={TVariant.ComicSans18} fontWeight={"bold"} mr={2}>
+          <Typography variant={TVariant.ComicSans18} mr={2}>
             Location:
           </Typography>
           <Typography variant={TVariant.ComicSans18}>
             {store.selectedURI?.description.pupperLocation}
           </Typography>
         </Box>
-        {store.tokenOwner && <Box mt={4}>
-          <Typography variant={TVariant.ComicSans18} fontWeight={"bold"} mr={2}>
+        {store.tokenOwner && <Box mt={12}>
+          <Typography variant={TVariant.ComicSans18} mr={2}>
             Owned by
           </Typography>
 
@@ -65,7 +70,6 @@ const SelectedPixelPane = observer(function SelectedPixelPane({store}: {store: V
     {store.isSelectedPupperOwned &&
     <VStack spacing={9}>
       <Button onClick={() => store.isBurnModalOpen = true}>Burn</Button>
-      <Button>Send</Button>
     </VStack>}
   </Flex>
 })

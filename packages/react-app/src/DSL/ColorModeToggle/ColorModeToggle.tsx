@@ -16,6 +16,7 @@ const ColorModeToggle = (props: ColorModeToggleProps) => {
 
   const [isDogeVisible, setIsDogeVisible] = useState(false)
 
+
   //@ts-ignore
   useEffect(async () => {
     if (colorMode === "light") {

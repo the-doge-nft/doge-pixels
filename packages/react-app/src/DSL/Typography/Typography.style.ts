@@ -9,6 +9,11 @@ const TypographyStyle = {
     textDecorationColor: colorMode === "light" ? "black" : "white",
   }),
   variants: {
+    PresStart10: {
+      fontFamily: Type.PresStart,
+      fontWeight: "normal",
+      fontSize: "10px",
+    },
     PresStart12: {
       fontFamily: Type.PresStart,
       fontWeight: "normal",

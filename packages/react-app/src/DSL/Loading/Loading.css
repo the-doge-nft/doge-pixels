@@ -1,11 +1,6 @@
-.loading {
-    font-size: 30px;
-    font-family: 'PressStart2P';
-}
-
 .loading:after {
     overflow: hidden;
-    display: inline-block;
+    display: absolute;
     vertical-align: bottom;
     -webkit-animation: ellipsis steps(4,end) 900ms infinite;
     animation: ellipsis steps(4,end) 900ms infinite;
@@ -24,3 +19,14 @@
         width: 1.25em;
     }
 }
+
+.loader {
+    animation: walk 7s steps(10, end) infinite;
+}
+
+@keyframes walk {
+    to {
+        transform: translateX(200px);
+    }
+}
+

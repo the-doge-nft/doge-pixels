@@ -13,6 +13,8 @@ import PaneStyle from "./Pane/Pane.styles";
 import ToastStyle from "./Toast/Toast.style";
 import ColorModeToggleStyle from "./ColorModeToggle/ColorModeToggle.style";
 import IconStyle from "./Icon/Icon.style";
+import NewModalStyle from "./Modal/NewModal.style";
+import LoadingStyle from "./Loading/Loading.style";
 
 export const darkModePrimary = "purple.700";
 
@@ -51,7 +53,9 @@ const theme = extendTheme({
     Pane: PaneStyle,
     Toast: ToastStyle,
     ColorModeToggle: ColorModeToggleStyle,
-    Icon: IconStyle
+    Icon: IconStyle,
+    NewModal: NewModalStyle,
+    Loading: LoadingStyle
   },
 });
 

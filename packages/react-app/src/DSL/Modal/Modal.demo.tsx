@@ -16,7 +16,7 @@ const DemoModal = () => {
       </Box>
       <Modal
         isOpen={isOpen}
-        renderHeader={() => <Typography variant={TVariant.ComicSans28}>Header</Typography>}
+        title={"Header"}
         renderFooter={() => <Typography variant={TVariant.ComicSans20}>Footer</Typography>}
         onClose={() => setIsOpen(false)}
       >

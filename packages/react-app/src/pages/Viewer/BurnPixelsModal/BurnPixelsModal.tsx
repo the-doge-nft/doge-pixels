@@ -21,7 +21,7 @@ const BurnPixelsModal = observer(({isOpen, onClose, defaultPixel}: BurnPixelsMod
     size={"xl"}
     isOpen={isOpen}
     onClose={onClose}
-    renderHeader={() => <Typography variant={TVariant.ComicSans28}>Burn Pixels</Typography>}
+    title={"Burn Pixels"}
   >
     {store.currentView === BurnPixelsModalView.Select && <SelectPixels store={store} onSuccess={() => onClose()}/>}
   </Modal>

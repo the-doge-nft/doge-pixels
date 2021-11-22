@@ -10,7 +10,9 @@ ReactDOM.render(
     <ColorModeScript initialColorMode={theme.config.initialColorMode} />
     <ChakraProvider theme={theme} resetCSS>
       <Fonts />
-      <App />
+      <div id={"react-modal-main"}>
+        <App />
+      </div>
     </ChakraProvider>
   </React.StrictMode>,
   document.getElementById("root"),

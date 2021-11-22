@@ -38,14 +38,14 @@ const IndexPane = observer(function IndexPane({store}: {store: ViewerStore}) {
     </Flex>
 
     <Flex direction={"column"} alignItems={"center"} mt={5} mb={3} flexGrow={0}>
-      <Flex mb={6}>
+      {AppStore.web3.web3Provider && <Flex mb={6}>
         <Button mr={3} width={"fit-content"} onClick={() => (store.isMintModalOpen = true)}>
           Mint
         </Button>
         <Button ml={3} width={"fit-content"} onClick={() => (store.isBurnModalOpen = true)}>
           Burn
         </Button>
-      </Flex>
+      </Flex>}
       {AppStore.web3.tokenIdsOwned.length > 0 && <Button
           width={"fit-content"}
           display={"block"}

@@ -32,13 +32,13 @@ const Form = ({ onSubmit, children }: FormProps) => {
               {children}
               {submitError && <FormError error={submitError} />}
             </form>
-            <Dev>
-              <Box w={"100%"} mt={2}>
-                <Typography color={"gray.400"} variant={TVariant.PresStart12}>
-                  {JSON.stringify(values)}
-                </Typography>
-              </Box>
-            </Dev>
+            {/*<Dev>*/}
+            {/*  <Box w={"100%"} mt={2}>*/}
+            {/*    <Typography color={"gray.400"} variant={TVariant.PresStart12}>*/}
+            {/*      {JSON.stringify(values)}*/}
+            {/*    </Typography>*/}
+            {/*  </Box>*/}
+            {/*</Dev>*/}
           </>
         );
       }}
