@@ -133,6 +133,7 @@ const Balances = observer(function DevTools() {
                       await tx.wait()
                       AppStore.web3.refreshDogBalance()
                     } catch (e) {
+                      console.error(e)
                       showErrorToast("Error getting free D20")
                     }
                   }}

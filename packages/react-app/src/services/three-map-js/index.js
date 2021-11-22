@@ -4,7 +4,6 @@ var kinetic = require('./lib/kinetic.js')
 var animate = require('amator');
 var THREE = require('three');
 
-module.exports = panzoom
 
 /**
  * Creates a new input controller.
@@ -24,7 +23,7 @@ module.exports = panzoom
  * Consumers can listen to api's events via `api.on('change', function() {})`
  * interface. The change event will be fire every time when camera's position changed.
  */
-function panzoom(camera, owner, toKeepInBounds, minDepth, maxDepth) {
+export default function panzoom(camera, owner, toKeepInBounds, minDepth, maxDepth) {
   var isDragging = false
   var panstartFired = false
   var touchInProgress = false
@@ -435,3 +434,4 @@ function panzoom(camera, owner, toKeepInBounds, minDepth, maxDepth) {
     return scaleMultiplier
   }
 }
+
