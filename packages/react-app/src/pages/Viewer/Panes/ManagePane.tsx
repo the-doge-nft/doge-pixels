@@ -1,5 +1,5 @@
 import ViewerStore, {ViewerView} from "../Viewer.store";
-import {Box, Flex, useColorMode} from "@chakra-ui/react";
+import {Box, Flex, HStack, useColorMode} from "@chakra-ui/react";
 import Typography, {TVariant} from "../../../DSL/Typography/Typography";
 import React from "react";
 import {observer} from "mobx-react-lite";
@@ -17,19 +17,21 @@ const ManagePane = observer(function ManagePane({store}: {store: ViewerStore}) {
         block
         size={"sm"}
         variant={TVariant.PresStart16}>
-        Your Pixels ({AppStore.web3.tokenIdsOwned.length})
+        Your Pixels ({AppStore.web3.puppersOwned.length})
       </Typography>
       <Box overflow={"scroll"} h={"full"}>
-        <Flex mt={5} maxHeight={"350px"} flexWrap={"wrap"} justifyContent={"space-between"}>
-          {AppStore.web3.tokenIdsOwned.map((px, index, arr) => {
+        <Flex mt={5} maxHeight={"350px"} flexWrap={"wrap"}>
+          {AppStore.web3.puppersOwned.map((px, index, arr) => {
             const [x,y] = AppStore.web3.pupperToPixelCoordsLocal(px)
             const hex = AppStore.web3.pupperToHexLocal(px)
-            return <PixelPane 
-              onClick={async () => await store.onManagePixelClick(px)}
-              pupper={px}
-              color={hex}
-              pupperIndex={AppStore.web3.pupperToPixelIndex(px)}
-            />})}
+            return <Box ml={3} mt={3}>
+              <PixelPane
+                onClick={async () => await store.onManagePixelClick(px)}
+                pupper={px}
+                color={hex}
+                pupperIndex={AppStore.web3.pupperToPixelIndex(px)}
+              />
+            </Box>})}
         </Flex>
       </Box>
     </Flex>

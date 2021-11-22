@@ -1,45 +1,42 @@
-import { Box, Flex } from "@chakra-ui/react";
+import { Box, Flex, useMultiStyleConfig } from "@chakra-ui/react";
 import React from "react";
 import Typography, { TVariant } from "../Typography/Typography";
 
 interface PixelPaneProps {
-    size?: "sm" | "lg"
+    size?: "sm" | "md" | "lg"
     pupper: number;
     color: string;
     pupperIndex: number;
     onClick?: () => void;
 }
 
-const PixelPane = ({size = "sm", pupper, color, onClick, pupperIndex}: PixelPaneProps) => {
-    return <Flex 
-        flexDirection={"column"}
-        w={size === "sm" ? "100px" : "180px"}
-        h={size === "sm" ? "140px" : "230px"}
+const sizeToTypeMap = {
+    sm: TVariant.PresStart10,
+    md: TVariant.PresStart10,
+    lg: TVariant.PresStart16
+}
+
+const PixelPane = ({size = "md", pupper, color, onClick, pupperIndex}: PixelPaneProps) => {
+    const styles = useMultiStyleConfig("PixelPane", {size})
+    return <Box
+        __css={styles.container}
         boxShadow={onClick ? "" : "10px 10px 0px black"}
+        _hover={onClick ? {
+            cursor: "pointer",
+            // borderColor: "yellow.700"
+        } : {}}
+        onClick={onClick}
     >
-        <Box 
-            w={"100%"}
-            h={"100%"}
+        <Box
+            __css={styles.swatch}
             bg={color}
-            border={"1px solid black"}
-            _hover={onClick ? {
-                cursor: "pointer",
-                borderColor: "yellow.700"
-            } : {}}
-            onClick={onClick}
         />
-        <Box 
-            py={size === "sm" ? 0 : 1}
-            px={size === "sm" ? 1 : 2}
-            borderLeft={"1px solid black"}
-            borderRight={"1px solid black"}
-            borderBottom={"1px solid black"}
-        >
-            <Typography variant={size === "sm" ? TVariant.PresStart10 : TVariant.PresStart16}>
+        <Box __css={styles.textContainer}>
+            <Typography variant={sizeToTypeMap[size]}>
                 # {pupperIndex}
             </Typography>
         </Box>
-    </Flex>
+    </Box>
 }
 
 export default PixelPane;

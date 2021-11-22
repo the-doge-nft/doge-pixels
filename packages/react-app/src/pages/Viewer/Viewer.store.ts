@@ -25,7 +25,7 @@ class ViewerStore extends Navigable(Eventable(Reactionable((EmptyClass)))) {
   isBurnModalOpen = false;
 
   @observable
-  isHelperModalOpen = false;
+  isHelperModalOpen = true;
 
   @observable
   selectedPupper: number | null = null;
@@ -100,7 +100,7 @@ class ViewerStore extends Navigable(Eventable(Reactionable((EmptyClass)))) {
     if (this.selectedPupper === null) {
       return false
     } else {
-      return AppStore.web3.tokenIdsOwned.includes(this.selectedPupper)
+      return AppStore.web3.puppersOwned.includes(this.selectedPupper)
     }
   }
 

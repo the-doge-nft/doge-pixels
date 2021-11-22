@@ -1,27 +1,28 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, {useCallback, useEffect, useRef, useState} from "react";
 import * as THREE from "three";
-import { Object3D } from "three";
-import { Canvas, useLoader } from "@react-three/fiber";
+import {Object3D} from "three";
+import {Canvas, useLoader} from "@react-three/fiber";
 import Kobosu from "../../images/THE_ACTUAL_NFT_IMAGE.png";
-import { Box } from "@chakra-ui/react";
-import { getWorldPixelCoordinate } from "./helpers";
-import { onPixelSelectType } from "./Viewer.page";
+import {Box} from "@chakra-ui/react";
+import {getWorldPixelCoordinate} from "./helpers";
+import {onPixelSelectType} from "./Viewer.page";
 import ViewerStore from "./Viewer.store";
-import { SET_CAMERA } from "../../services/mixins/eventable";
-import { BigNumber } from "ethers";
-import Button, { ButtonVariant } from "../../DSL/Button/Button";
+import {SET_CAMERA} from "../../services/mixins/eventable";
+import {BigNumber} from "ethers";
+import Button, {ButtonVariant} from "../../DSL/Button/Button";
 import createPanZoom from "../../services/three-map-js";
+
 interface ThreeSceneProps {
   onPixelSelect: onPixelSelectType;
   selectedPixel: any;
   store?: ViewerStore;
 }
 
-const ThreeScene = React.memo(({ onPixelSelect, selectedPixel, store }: ThreeSceneProps) => {
+const ThreeScene = React.memo(({onPixelSelect, selectedPixel, store}: ThreeSceneProps) => {
   const maxCameraZ = 5500;
   const minCameraZ = 80;
   const _zClippingSafetyBuffer = 3
-  
+
   var panZoom: any
   useEffect(() => {
     panZoom?.dispose()
@@ -34,9 +35,7 @@ const ThreeScene = React.memo(({ onPixelSelect, selectedPixel, store }: ThreeSce
     maxCameraZ + _zClippingSafetyBuffer
   );
 
-
   const [camera] = useState<THREE.PerspectiveCamera>(cam);
-
   const canvasContainerRef = useRef<HTMLDivElement | null>(null)
   const dogeMeshRef = useRef<Object3D | null>(null)
 
@@ -48,7 +47,7 @@ const ThreeScene = React.memo(({ onPixelSelect, selectedPixel, store }: ThreeSce
       camera.updateProjectionMatrix();
 
       camera.position.x = imageWorldUnitsWidth / 2 - 0.65;
-      camera.position.y = -1*imageWorldUnitsHeight / 2 + 0.26;
+      camera.position.y = -1 * imageWorldUnitsHeight / 2 + 0.26;
       camera.position.z = maxCameraZ;
 
       canvasContainerRef.current = node
@@ -71,7 +70,6 @@ const ThreeScene = React.memo(({ onPixelSelect, selectedPixel, store }: ThreeSce
   const selectedPixelOverlayRef = useRef<Object3D>(null);
   const hoverPixelOverlayRef = useRef<Object3D>(null);
   const [isDragging, setIsDragging] = useState(false);
-
   const newHoverOverlayRef = useRef<Object3D>(null)
 
 
@@ -80,7 +78,7 @@ const ThreeScene = React.memo(({ onPixelSelect, selectedPixel, store }: ThreeSce
       const [pixelX, pixelY] = getWorldPixelCoordinate(e.point, overlayLength);
       const indexX = Math.floor(pixelX + overlayLength);
       const indexY = Math.floor(pixelY + overlayLength);
-      onPixelSelect(indexX, -1*indexY);
+      onPixelSelect(indexX, -1 * indexY);
 
       if (selectedPixelOverlayRef.current) {
         selectedPixelOverlayRef.current.visible = true;
@@ -97,6 +95,7 @@ const ThreeScene = React.memo(({ onPixelSelect, selectedPixel, store }: ThreeSce
   }, [store?.selectedPupper])
 
 
+  // click select pixel & jump to location
   useEffect(() => {
     const CameraTools = {
       setCamera: ([x, y]: [number, number]) => {
@@ -105,14 +104,16 @@ const ThreeScene = React.memo(({ onPixelSelect, selectedPixel, store }: ThreeSce
 
         camera.position.x = xPos - (overlayLength / 2)
         camera.position.y = yPos - (overlayLength / 2)
-        
-        camera.position.z = minCameraZ
+
+        if (camera.position.z === maxCameraZ) {
+          camera.position.z = (maxCameraZ - minCameraZ) / 2
+        }
 
         if (selectedPixelOverlayRef.current) {
           selectedPixelOverlayRef.current.visible = true;
           [selectedPixelOverlayRef.current.position.x, selectedPixelOverlayRef.current.position.y] = [
-            xPos - (overlayLength/2),
-            yPos - (overlayLength/2)
+            xPos - (overlayLength / 2),
+            yPos - (overlayLength / 2)
           ];
         }
       }
@@ -127,76 +128,34 @@ const ThreeScene = React.memo(({ onPixelSelect, selectedPixel, store }: ThreeSce
     <Box ref={canvasContainerOnMount} position={"absolute"} w={"100%"} h={"100%"}>
       <Canvas
         camera={camera}
-        onCreated={({ gl }) => {
+        onCreated={({gl}) => {
           window.addEventListener("resize", () => {
-            console.log("debug:: parent listener")
             const width = gl.domElement.parentElement!.clientWidth;
             const height = gl.domElement.parentElement!.clientHeight;
             camera.aspect = width / height;
-            gl.setSize( width, height );
+            gl.setSize(width, height);
             camera.updateProjectionMatrix();
           })
-
-          // // @TODO: flashing caused on selecting pixel when right pane has caused scrollable page
-          // // maybe restrict this pane - ResizeObserver is somewhat new so probably not the best solution
-          // const resize_ob = new ResizeObserver(function(entries) {
-          //   // since we are observing only a single element, so we access the first element in entries array
-          //   let rect = entries[0].contentRect;
-          //
-          //   // current width & height
-          //   let width = rect.width;
-          //   let height = rect.height;
-          //
-          //   camera.aspect = width / height;
-          //   gl.setSize( width, height );
-          //   camera.updateProjectionMatrix();
-          //
-          //   console.log('debug:: Current Width : ' + width);
-          //   console.log('debug:: Current Height : ' + height);
-          // });
-          //
-          // // start observing for resize
-          // resize_ob.observe(gl.domElement.parentElement!);
-
-
           gl.toneMapping = THREE.NoToneMapping;
 
           if (dogeMeshRef.current) {
+            //@TODO: CC add type declaration
             panZoom = createPanZoom(camera, gl.domElement.parentElement, dogeMeshRef.current, minCameraZ, maxCameraZ);
-            // the panZoom api fires events when something happens,
-            // so that you can react to user actions:
             //@ts-ignore
-            panZoom.on('panstart', function() {
-              // fired when users begins panning (dragging) the surface
-              // console.log('panstart fired');
+            panZoom.on('panstart', function () {
+              setIsDragging(true)
             });
 
             //@ts-ignore
-            panZoom.on('panend', function() {
-              // fired when user stpos panning (dragging) the surface
-              // console.log('panend fired');
-            });
-
-            //@ts-ignore
-            panZoom.on('beforepan', function(panPayload: any) {
-              // fired when camera position will be changed.
-              // console.log('going to move camera.position.x by: ' + panPayload.dx);
-              // console.log('going to move camera.position.y by: ' + panPayload.dy);
-            });
-
-            //@ts-ignore
-            panZoom.on('beforezoom', function(panPayload: any) {
-              // fired when befor zoom in/zoom out
-              // console.log('going to move camera.position.x by: ' + panPayload.dx);
-              // console.log('going to move camera.position.y by: ' + panPayload.dy);
-              // console.log('going to move camera.position.z by: ' + panPayload.dz);
+            panZoom.on('panend', function () {
+              setIsDragging(false)
             });
           }
         }}
       >
         <mesh
           ref={dogeMeshRef}
-          position={[(imageWorldUnitsWidth / 2) - 1, -1*imageWorldUnitsHeight / 2, 0]}
+          position={[(imageWorldUnitsWidth / 2) - 1, -1 * imageWorldUnitsHeight / 2, 0]}
           onPointerMove={e => {
             if (hoverPixelOverlayRef.current) {
               [hoverPixelOverlayRef.current.position.x, hoverPixelOverlayRef.current.position.y] =
@@ -207,52 +166,43 @@ const ThreeScene = React.memo(({ onPixelSelect, selectedPixel, store }: ThreeSce
               [newHoverOverlayRef.current.position.x, newHoverOverlayRef.current.position.y] =
                 getWorldPixelCoordinate(e.point, overlayLength);
             }
-            // console.log("debug:: pointer move", e.point)
           }}
           onPointerUp={onPointUp}
-          onWheel={(event) => {
-            // @TODO: implement camera zoom towards mouse position here
-            // const { deltaY } = event;
-            // const newZ = camera.position.z + deltaY;
-            // if (newZ >= minCameraZ && newZ <= maxCameraZ) {
-            //   camera.position.z = newZ;
-            //   camera.updateProjectionMatrix();
-            // }
-            // getVisibleRange()
-          }}
         >
-          <planeGeometry attach={"geometry"} args={[imageWorldUnitsWidth, imageWorldUnitsHeight]} />
+          <planeGeometry attach={"geometry"} args={[imageWorldUnitsWidth, imageWorldUnitsHeight]}/>
           <meshBasicMaterial attach={"material"} map={texture} depthTest={false}/>
         </mesh>
 
         <mesh ref={selectedPixelOverlayRef} position={[0, 0, 0.0001]} visible={false}>
-          <planeGeometry attach={"geometry"} args={[overlayLength, overlayLength]} />
+          <planeGeometry attach={"geometry"} args={[overlayLength, overlayLength]}/>
           <meshBasicMaterial attach={"material"} color={0xff0000} opacity={0.8} transparent={true} depthTest={false}/>
         </mesh>
 
         <group ref={newHoverOverlayRef}>
           <mesh position={[-0.5, 0, 0.001]}>
-            <planeGeometry attach={"geometry"} args={[0.05, 1.05]} />
+            <planeGeometry attach={"geometry"} args={[0.05, 1.05]}/>
             <meshBasicMaterial attach={"material"} color={0xf1c232} opacity={1} transparent={true} depthTest={false}/>
           </mesh>
           <mesh position={[0.5, 0, 0.001]}>
-            <planeGeometry attach={"geometry"} args={[0.05, 1.05]} />
+            <planeGeometry attach={"geometry"} args={[0.05, 1.05]}/>
             <meshBasicMaterial attach={"material"} color={0xf1c232} opacity={1} transparent={true} depthTest={false}/>
           </mesh>
           <mesh position={[0, 0.5, 0.001]} rotation={new THREE.Euler(0, 0, Math.PI / 2)}>
-            <planeGeometry attach={"geometry"} args={[0.05, 1]} />
+            <planeGeometry attach={"geometry"} args={[0.05, 1]}/>
             <meshBasicMaterial attach={"material"} color={0xf1c232} opacity={1} transparent={true} depthTest={false}/>
           </mesh>
           <mesh position={[0, -0.5, 0.001]} rotation={new THREE.Euler(0, 0, -Math.PI / 2)}>
-            <planeGeometry attach={"geometry"} args={[0.05, 1]} />
+            <planeGeometry attach={"geometry"} args={[0.05, 1]}/>
             <meshBasicMaterial attach={"material"} color={0xf1c232} opacity={1} transparent={true} depthTest={false}/>
           </mesh>
         </group>
       </Canvas>
       <Box position={"absolute"} bottom={0} left={0}>
         <Button size={"sm"} variant={ButtonVariant.Text} onClick={() => camera.position.z = maxCameraZ}>+</Button>
-        <Button size={"sm"} variant={ButtonVariant.Text} onClick={() => camera.position.z = (minCameraZ + maxCameraZ) / 2}>++</Button>
-        <Button size={"sm"} variant={ButtonVariant.Text} onClick={() => camera.position.z = minCameraZ + 50}>+++</Button>
+        <Button size={"sm"} variant={ButtonVariant.Text}
+                onClick={() => camera.position.z = (minCameraZ + maxCameraZ) / 2}>++</Button>
+        <Button size={"sm"} variant={ButtonVariant.Text}
+                onClick={() => camera.position.z = minCameraZ + 50}>+++</Button>
       </Box>
     </Box>
   );

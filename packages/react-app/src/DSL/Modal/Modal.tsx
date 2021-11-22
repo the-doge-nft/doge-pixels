@@ -70,6 +70,12 @@ const Modal = ({
       <Draggable handle=".handle">
           <Box __css={styles.container}>
             <Flex
+              _hover={{
+                cursor: "pointer"
+              }}
+              _active={{
+                cursor: "grabbing"
+              }}
               className={"handle"}
               justifyContent={"flex-end"}
               borderBottom={"1px solid"}

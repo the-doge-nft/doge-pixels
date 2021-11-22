@@ -60,7 +60,7 @@ const MintForm = observer(({ store }: { store: MintPixelsModalStore }) => {
             validate={[
               required,
               minValue(1, "Must mint at least 1 pixel"),
-              maxValue(store.maxPixelsToPurchase, `You only have ${AppStore.web3.dogBalance! / 10 ** AppStore.web3.D20_PRECISION} $DOG.`)
+              maxValue(store.maxPixelsToPurchase, `You don't have enough $DOG 😕`)
             ]}
           />
         </Box>
@@ -76,17 +76,6 @@ const MintForm = observer(({ store }: { store: MintPixelsModalStore }) => {
           <Submit label={"Mint"} mt={10}/>
         </Flex>
       </Form>
-
-      {/*<Dev>*/}
-      {/*  <Flex direction={"column"}>*/}
-      {/*    {store.pixel_count !== undefined && <Typography variant={TVariant.ComicSans16}>*/}
-      {/*        to spend: {(store.pixel_count * AppStore.web3.DOG_TO_PIXEL_SATOSHIS) / 10 ** AppStore.web3.D20_PRECISION}*/}
-      {/*    </Typography>}*/}
-      {/*    {store.allowance !== undefined && <Typography variant={TVariant.ComicSans16}>*/}
-      {/*        allowance: {store.allowance / 10 ** AppStore.web3.D20_PRECISION}*/}
-      {/*    </Typography>}*/}
-      {/*  </Flex>*/}
-      {/*</Dev>*/}
     </>
   );
 });

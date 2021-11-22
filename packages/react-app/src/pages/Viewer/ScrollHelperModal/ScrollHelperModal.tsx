@@ -28,12 +28,12 @@ const ScrollHelperModal = ({isOpen, onClose}: ScrollHelperModalProps) => {
           <motion.div
             style={{
                 position: "relative",
-                bottom: "-200px"
+                bottom: "-10px"
             }}
             animate={{
                 bottom: "40px"
             }}
-            transition={{ ease: "linear", duration: 2, repeat: Infinity }}
+            transition={{ ease: "linear", duration: 0.8, repeat: Infinity }}
           >
             <Image src={PupperHandImage} width={"150px"} position={"relative"} bottom={"-90px"}/>
           </motion.div>

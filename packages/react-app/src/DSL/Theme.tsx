@@ -15,6 +15,7 @@ import ColorModeToggleStyle from "./ColorModeToggle/ColorModeToggle.style";
 import IconStyle from "./Icon/Icon.style";
 import NewModalStyle from "./Modal/NewModal.style";
 import LoadingStyle from "./Loading/Loading.style";
+import PixelPaneStyle from "./PixelPane/PixelPane.style";
 
 export const darkModePrimary = "purple.700";
 
@@ -23,7 +24,7 @@ export const lightOrDark = (colorMode: colorModeType, ifLight: string, ifDark: s
   return colorMode === "light" ? ifLight : ifDark;
 };
 
-// TODO: would be nice to limit the design system further - tracking here
+// TODO: would be nice to limit the design system further
 // https://github.com/chakra-ui/chakra-ui/issues/3931
 
 // https://chakra-ui.com/docs/theming/customize-theme
@@ -55,7 +56,8 @@ const theme = extendTheme({
     ColorModeToggle: ColorModeToggleStyle,
     Icon: IconStyle,
     NewModal: NewModalStyle,
-    Loading: LoadingStyle
+    Loading: LoadingStyle,
+    PixelPane: PixelPaneStyle
   },
 });
 

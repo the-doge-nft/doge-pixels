@@ -23,9 +23,15 @@ const buttonTypographyMap: { [key in ButtonSize]: TVariant } = {
   // lg: TVariant.Body20,
 };
 
-const Button = ({ submit, children, variant = ButtonVariant.Primary, size = "md", ...rest }: ButtonProps) => {
+const Button = ({ submit, children, variant = ButtonVariant.Primary, size = "md", isDisabled, ...rest }: ButtonProps) => {
   return (
-    <ChakraButton type={submit ? "submit" : "button"} variant={variant} size={size} {...rest}>
+    <ChakraButton
+      isDisabled={isDisabled}
+      type={submit ? "submit" : "button"}
+      variant={variant}
+      size={size}
+      {...rest}
+    >
       <Typography variant={buttonTypographyMap[size]} color={"inherit"}>
         {children}
       </Typography>
