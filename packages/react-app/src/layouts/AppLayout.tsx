@@ -39,12 +39,7 @@ const AppLayout = observer(function AppLayout({children}: AppLayoutProps) {
     //@ts-ignore
     if (AppStore.web3.provider?.on) {
       const handleAccountsChanged = (accounts: string[]) => {
-        showDebugToast("accounts changed")
-        AppStore.web3.address = accounts[0]
-        AppStore.web3.refreshDogBalance()
-        AppStore.web3.refreshPupperBalance()
-        AppStore.web3.puppersOwned = []
-        AppStore.web3.getPastPXReceives()
+        AppStore.web3.handleAccountsChanged(accounts)
       }
 
       const handleChainChanged = (_hexChainId: string) => {

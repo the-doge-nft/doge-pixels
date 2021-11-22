@@ -11,6 +11,7 @@ import {Network} from "@ethersproject/networks";
 import {DOG20, PX} from "../../../hardhat/types";
 import { abbreviate } from "../helpers/strings";
 import KobosuJson from "../images/kobosu.json"
+import AppStore from "./App.store";
 
 interface EthersContractError {
     message: string
@@ -86,6 +87,64 @@ class Web3Store {
         }
     }
 
+    async disconnect() {
+        try {
+            await web3Modal.clearCachedProvider()
+            // if (this.web3?.disconnect && typeof this.provider.disconnect() === "function") {
+            //     await this.provider.disconnect()
+            // }
+            showDebugToast(`disconnecting: ${this.address}`)
+
+            this.address = undefined
+            this.provider = undefined
+            this.web3Provider = undefined
+            this.chainId = undefined
+            this.dogBalance = undefined
+            this.puppersOwned = []
+        } catch (e) {
+            console.error(e)
+        }
+    }
+
+    async connectToContracts(signerOrProvider?: Signer | Provider) {
+        //@ts-ignore
+        this.pxContract = new Contract(
+          deployedContracts["31337"]["localhost"]["contracts"]["PX"]["address"],
+          deployedContracts["31337"]["localhost"]["contracts"]["PX"].abi,
+          signerOrProvider
+        )
+        //@ts-ignore
+        this.dogContract = new Contract(
+          deployedContracts["31337"]["localhost"]["contracts"]["DOG20"]["address"],
+          deployedContracts["31337"]["localhost"]["contracts"]["DOG20"].abi,
+          signerOrProvider
+        )
+
+        const nonContractCode = "0x"
+
+        const pxCode = await this.web3Provider!.getCode(this.pxContract!.address)
+        if (pxCode === nonContractCode) {
+            throw Error("PX address is not a contract, please make sure it is deployed & you are on the correct network.")
+        }
+
+        const dogCode = await this.web3Provider!.getCode(this.dogContract!.address)
+        if (dogCode === nonContractCode) {
+            throw Error("DOG20 address is not a contract, please make sure it is deployed & you are on the correct network.")
+        }
+
+        this.refreshDogBalance()
+        this.refreshPupperBalance()
+    }
+
+    handleAccountsChanged(accounts: string[]) {
+        showDebugToast("accounts changed")
+        this.address = accounts[0]
+        this.refreshDogBalance()
+        this.refreshPupperBalance()
+        this.puppersOwned = []
+        this.getPastPXReceives()
+    }
+
     initPxListeners() {
         this.pxContract?.on("Transfer(address,address,uint256)", (fromAddress: string, toAddress: string, tokenId: BigNumber) => {
             if (toAddress === this.address) {
@@ -120,54 +179,6 @@ class Web3Store {
                 this.puppersOwned.splice(index, 1)
             }
         })
-    }
-
-    async disconnect() {
-        try {
-            await web3Modal.clearCachedProvider()
-            // if (this.web3?.disconnect && typeof this.provider.disconnect() === "function") {
-            //     await this.provider.disconnect()
-            // }
-            showDebugToast(`disconnecting: ${this.address}`)
-
-            this.address = undefined
-            this.provider = undefined
-            this.web3Provider = undefined
-            this.chainId = undefined
-            this.dogBalance = undefined
-        } catch (e) {
-            console.error(e)
-        }
-    }
-
-    async connectToContracts(signerOrProvider?: Signer | Provider) {
-        //@ts-ignore
-        this.pxContract = new Contract(
-            deployedContracts["31337"]["localhost"]["contracts"]["PX"]["address"],
-            deployedContracts["31337"]["localhost"]["contracts"]["PX"].abi,
-            signerOrProvider
-        )
-        //@ts-ignore
-        this.dogContract = new Contract(
-            deployedContracts["31337"]["localhost"]["contracts"]["DOG20"]["address"],
-            deployedContracts["31337"]["localhost"]["contracts"]["DOG20"].abi,
-            signerOrProvider
-        )
-
-        const nonContractCode = "0x"
-        
-        const pxCode = await this.web3Provider!.getCode(this.pxContract!.address)
-        if (pxCode === nonContractCode) {
-            throw Error("PX address is not a contract, please make sure it is deployed & you are on the correct network.")
-        }
-
-        const dogCode = await this.web3Provider!.getCode(this.dogContract!.address)
-        if (dogCode === nonContractCode) {
-            throw Error("DOG20 address is not a contract, please make sure it is deployed & you are on the correct network.")
-        }
-
-        this.refreshDogBalance()
-        this.refreshPupperBalance()
     }
 
     async refreshDogBalance() {
