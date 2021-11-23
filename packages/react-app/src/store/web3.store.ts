@@ -80,13 +80,15 @@ class Web3Store {
             this.web3Provider = web3Provider
 
             this.connectToContracts(signer)
+            this.errorGuardContracts()
+            this.refreshDogBalance()
+            this.refreshPupperBalance()
             this.initPxListeners()
             this.getPupperOwnershipMap()
         } catch (e) {
             console.error("connection error: ", e)
             showErrorToast("error connecting")
         }
-
 
         if (isDevModeEnabled() && this.network?.name === "homestead") {
             throw Error("🚨 We don't test on prod here, switch to a testnet or local 🚨")
@@ -112,7 +114,7 @@ class Web3Store {
         }
     }
 
-    async connectToContracts(signerOrProvider?: Signer | Provider) {
+    connectToContracts(signerOrProvider?: Signer | Provider) {
         if (isProduction()) {
             throw Error("Should not be production yet")
         } else if (isStaging() || this.network?.name === "rinkeby") {
@@ -142,21 +144,18 @@ class Web3Store {
               signerOrProvider
             )
         }
+    }
 
+    async errorGuardContracts() {
         const nonContractCode = "0x"
-
         const pxCode = await this.web3Provider!.getCode(this.pxContract!.address)
         if (pxCode === nonContractCode) {
             throw Error("PX address is not a contract, please make sure it is deployed & you are on the correct network.")
         }
-
         const dogCode = await this.web3Provider!.getCode(this.dogContract!.address)
         if (dogCode === nonContractCode) {
             throw Error("DOG20 address is not a contract, please make sure it is deployed & you are on the correct network.")
         }
-
-        this.refreshDogBalance()
-        this.refreshPupperBalance()
     }
 
     handleAccountsChanged(accounts: string[]) {

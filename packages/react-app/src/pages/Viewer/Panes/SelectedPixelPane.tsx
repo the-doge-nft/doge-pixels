@@ -5,9 +5,9 @@ import Typography, { TVariant } from "../../../DSL/Typography/Typography";
 import ViewerStore from "../Viewer.store";
 import Button, { ButtonVariant } from "../../../DSL/Button/Button";
 import { abbreviate } from "../../../helpers/strings";
-import KobosuJson from "../../../images/kobosu.json"
 import PixelPane from "../../../DSL/PixelPane/PixelPane";
 import {SET_CAMERA} from "../../../services/mixins/eventable";
+import {openToEtherscanAddress} from "../../../helpers/links";
 
 const SelectedPixelPane = observer(function SelectedPixelPane({store}: {store: ViewerStore}) {
   return <Flex flexDirection={"column"} justifyContent={"space-between"} h={"full"}>
@@ -53,7 +53,7 @@ const SelectedPixelPane = observer(function SelectedPixelPane({store}: {store: V
           </Typography>
 
           <Box>
-            <Button variant={ButtonVariant.Text} onClick={() => window.open(`https://etherscan.io/address/${store.tokenOwner}`, "_blank")}>
+            <Button variant={ButtonVariant.Text} onClick={() => openToEtherscanAddress(store.tokenOwner as string)}>
               <Typography block variant={TVariant.PresStart18} mt={2}>
                 {abbreviate(store.tokenOwner)}
               </Typography>
