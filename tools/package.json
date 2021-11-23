@@ -9,6 +9,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "command-line-args": "^5.2.0",
     "jimp": "^0.16.1"
   }
 }
