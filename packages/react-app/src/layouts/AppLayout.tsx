@@ -23,6 +23,7 @@ import AppStore from "../store/App.store";
 import Dev from "../common/Dev";
 import ColorModeToggle from "../DSL/ColorModeToggle/ColorModeToggle";
 import {lightOrDark} from "../DSL/Theme";
+import Icon from "../DSL/Icon/Icon";
 
 interface AppLayoutProps {
   children?: any;
@@ -80,7 +81,7 @@ const AppLayout = observer(function AppLayout({children}: AppLayoutProps) {
         </Flex>
         <Flex alignItems={"center"}>
           <Nav/>
-          <Box mx={5}>
+          <Box mx={10}>
             <ColorModeToggle/>
           </Box>
           {!AppStore.web3.web3Provider && <Button ml={8} onClick={() => {
@@ -91,10 +92,17 @@ const AppLayout = observer(function AppLayout({children}: AppLayoutProps) {
           <VStack>
             {AppStore.web3.address && AppStore.web3.web3Provider &&
                 <Menu>
-                  <MenuButton>
-                      <Typography variant={TVariant.PresStart12}>
-                        {AppStore.web3.addressForDisplay}
-                      </Typography>
+                  <MenuButton overFlow={"hidden"}>
+                      <Flex alignItems={"center"} overflow={"hidden"}>
+                          <Typography variant={TVariant.PresStart12}>
+                            {AppStore.web3.addressForDisplay}
+                          </Typography>
+                          <Icon
+                              boxSize={6}
+                              ml={2}
+                              icon={'person'}
+                          />
+                      </Flex>
                   </MenuButton>
                   <MenuList>
                     <Balances/>
@@ -104,7 +112,7 @@ const AppLayout = observer(function AppLayout({children}: AppLayoutProps) {
                     {/*      <Typography variant={TVariant.PresStart12}>My Pixels</Typography>*/}
                     {/*</MenuItem>*/}
                     <MenuItem onClick={() => AppStore.web3.disconnect()}>
-                      <Typography variant={TVariant.PresStart12}>Disconnect</Typography>
+                      <Typography variant={TVariant.PresStart15}>Disconnect {'>'}</Typography>
                     </MenuItem>
                   </MenuList>
                 </Menu>}
@@ -119,8 +127,8 @@ const AppLayout = observer(function AppLayout({children}: AppLayoutProps) {
 const Balances = observer(function DevTools() {
   return <Grid px={3} mt={2} templateColumns={"1fr 1fr"}>
       {AppStore.web3.web3Provider && <>
-        <GridItem mr={2} display={"flex"} flexDirection={"column"}>
-          <Typography variant={TVariant.PresStart14}>$DOG</Typography>
+        <GridItem mr={4} display={"flex"} flexDirection={"column"}>
+          <Typography variant={TVariant.PresStart15}>$DOG</Typography>
           <Typography variant={TVariant.ComicSans18} mt={1} block>
             {AppStore.web3.dogBalance !== undefined ? AppStore.web3.dogBalance / (10 ** AppStore.web3.D20_PRECISION) : 0}
           </Typography>
@@ -152,8 +160,8 @@ const Balances = observer(function DevTools() {
           </Dev>
 
         </GridItem>
-        <GridItem ml={2} display={"flex"} flexDirection={"column"}>
-          <Typography variant={TVariant.PresStart14}>$PX</Typography>
+        <GridItem ml={4} display={"flex"} flexDirection={"column"}>
+          <Typography variant={TVariant.PresStart15}>$PX</Typography>
           <Typography variant={TVariant.ComicSans18} mt={1} block>{AppStore.web3.pupperBalance === 0 ? "None 😕" : AppStore.web3.pupperBalance}</Typography>
           <Dev>
               <Flex flexDirection={"column"} border={"1px solid black"} alignItems={"center"} my={6} pb={2}>

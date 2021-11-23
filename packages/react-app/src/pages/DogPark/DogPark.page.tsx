@@ -14,14 +14,14 @@ import PxPill from "./PxPill";
 import UserCard from "./UserCard";
 import {useHistory, useLocation} from "react-router-dom";
 import Button from "../../DSL/Button/Button";
+import Icon from "../../DSL/Icon/Icon";
 
 const DogParkPage = observer(function DogParkPage() {
-  const location = useLocation()
   const history = useHistory()
   const store = useMemo(() => new DogParkPageStore(), [])
   return <Grid templateColumns={"0.5fr 1fr"} mt={10} flexGrow={1}>
     <GridItem>
-      <Pane display={"flex"} flexDirection={"column"} p={6} h={"full"}>
+      <Pane display={"flex"} flexDirection={"column"} h={"full"}>
         <Typography variant={TVariant.PresStart24}>Top Dogs 🚀</Typography>
         <Box flexGrow={1} mt={4}>
           {store.topDogs.map((dog) => <UserCard store={store} dog={dog}/>)}
@@ -29,11 +29,11 @@ const DogParkPage = observer(function DogParkPage() {
       </Pane>
     </GridItem>
     <GridItem ml={16}>
-      <Box>
+      <Flex height={"100%"} flexDirection={"column"}>
         <Form onSubmit={async () => console.log("test")}>
           <TextInput {...model(store, "addressToSearch")} placeholder={"Search pixel owners by address"}/>
         </Form>
-        <Grid templateColumns={"1fr 1fr"} pt={4}>
+        <Grid templateColumns={"1fr 1fr"} pt={4} flexGrow={1}>
           {!store.selectedAddress && <GridItem>
             {!store.isSearchInputEmpty && store.filteredDogs.length > 1 && <Typography
                 mt={2}
@@ -50,33 +50,38 @@ const DogParkPage = observer(function DogParkPage() {
           </GridItem>}
 
           {store.selectedAddress && <>
-              <GridItem display={"flex"} flexDirection={"column"}>
-                <Box my={4}>
-                  <Typography variant={TVariant.PresStart18}>
-                    {abbreviate(store.selectedAddress)}
-                  </Typography>
-                    <Box ml={8} display={"inline-block"}>
-                      <PxPill count={store.selectedDogs.puppers.length}/>
+              <GridItem display={"flex"} flexDirection={"column"} mt={6}>
+                <Box>
+                    <Flex alignItems={"center"}>
+                      <Icon icon={'person'} boxSize={10}/>
+                      <Typography variant={TVariant.PresStart18} ml={3}>
+                        {abbreviate(store.selectedAddress)}
+                      </Typography>
+                    </Flex>
+                    <Box my={7}>
+                        <PxPill count={store.selectedDogs.puppers.length}/>
                     </Box>
                 </Box>
-                <Flex flexWrap={"wrap"}>
-                  {store.selectedDogs.puppers.map(px => {
-                    const hex = AppStore.web3.pupperToHexLocal(px)
-                    const index = AppStore.web3.pupperToIndexLocal(px)
-                    return <Box
-                      bg={store.selectedPupper === px ? "yellow.700" : "inherit"}
-                      p={2}
-                      _hover={{bg: "yellow.700"}}
-                    >
-                      <PixelPane
-                        pupper={px}
-                        color={hex}
-                        pupperIndex={index}
-                        onClick={(px) => store.selectedPupper = px}
-                      />
-                    </Box>
-                  })}
-                </Flex>
+                  <Box overflowY={"scroll"} flexGrow={1}>
+                      <Flex flexWrap={"wrap"} maxHeight={"300px"}>
+                        {store.selectedDogs.puppers.map(px => {
+                          const hex = AppStore.web3.pupperToHexLocal(px)
+                          const index = AppStore.web3.pupperToIndexLocal(px)
+                          return <Box
+                            bg={store.selectedPupper === px ? "yellow.700" : "inherit"}
+                            p={2}
+                            _hover={{bg: "yellow.700"}}
+                          >
+                            <PixelPane
+                              pupper={px}
+                              color={hex}
+                              pupperIndex={index}
+                              onClick={(px) => store.selectedPupper = px}
+                            />
+                          </Box>
+                        })}
+                      </Flex>
+                  </Box>
               </GridItem>
               <GridItem>
                 {store.selectedPupper && <Box mt={10}>
@@ -112,7 +117,7 @@ const DogParkPage = observer(function DogParkPage() {
               </GridItem>
           </>}
         </Grid>
-      </Box>
+      </Flex>
     </GridItem>
   </Grid>
 });

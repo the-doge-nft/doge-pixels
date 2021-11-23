@@ -1,5 +1,5 @@
 import React from "react";
-import {Icon as ChakraIcon, IconProps as ChakraIconProps, useStyleConfig} from "@chakra-ui/react";
+import {Icon as ChakraIcon, IconProps as ChakraIconProps, useStyleConfig, Image} from "@chakra-ui/react";
 import {
   CgClose,
   FiArrowDown,
@@ -22,8 +22,10 @@ import {
   VscChevronDown,
   VscChevronUp
 } from "react-icons/all";
+import LeftArrow from "./custom/LeftArrow.svg"
+import User from "./custom/User.svg"
 
-export type IconName =
+export type ReactIconName =
   | "arrow-right-down"
   | "arrow-left"
   | "close"
@@ -35,7 +37,6 @@ export type IconName =
   | "arrow-up-left"
   | "money"
   | "refresh"
-  | "person"
   | "warning"
   | "eye-open"
   | "eye-closed"
@@ -44,9 +45,14 @@ export type IconName =
   | "chevron-up"
   | "chevron-down";
 
+type CustomIconName =
+  "arrow-left"
+  | "person"
+
+const customIcons: CustomIconName[] = ['arrow-left', 'person']
+
 const iconStringToComponentMap = {
   "arrow-right-down": FiArrowDownRight,
-  "arrow-left": FiArrowLeft,
   close: CgClose,
   wallet: IoWallet,
   "arrow-down": FiArrowDown,
@@ -56,7 +62,7 @@ const iconStringToComponentMap = {
   "arrow-up-left": FiArrowUpLeft,
   money: FaMoneyBillWaveAlt,
   refresh: FiRefreshCcw,
-  person: IoMdPerson,
+  // person: User,
   warning: TiWarning,
   "eye-open": GoEye,
   "eye-closed": GoEyeClosed,
@@ -66,13 +72,24 @@ const iconStringToComponentMap = {
   "chevron-down": VscChevronDown,
 };
 
+const customIconStringToComponentMap = {
+  person: User,
+  "arrow-left": LeftArrow,
+}
+
 interface IconProps extends ChakraIconProps {
-  icon: IconName;
+  icon: ReactIconName | CustomIconName;
 }
 
 const Icon = ({ icon, ...rest }: IconProps) => {
   const style = useStyleConfig("Icon")
-  return <ChakraIcon __css={style} as={iconStringToComponentMap[icon]} {...rest} />;
+  if (customIcons.includes(icon as CustomIconName)) {
+    //@ts-ignore
+    return <Image __css={style} src={customIconStringToComponentMap[icon as CustomIconName]} {...rest}/>
+  } else {
+    //@ts-ignore
+    return <ChakraIcon __css={style} as={iconStringToComponentMap[icon as ReactIconName]} {...rest} />;
+  }
 };
 
 export default Icon;

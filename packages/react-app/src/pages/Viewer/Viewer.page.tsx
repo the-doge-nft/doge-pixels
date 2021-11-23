@@ -15,6 +15,7 @@ import Icon from "../../DSL/Icon/Icon";
 import Loading from "../../DSL/Loading/Loading";
 import ScrollHelperModal from "./ScrollHelperModal/ScrollHelperModal";
 import {useQuery} from "../../helpers/hooks";
+import Typography, { TVariant } from "../../DSL/Typography/Typography";
 
 export type onPixelSelectType = (x: number, y: number) => void;
 
@@ -40,9 +41,9 @@ const ViewerPage = observer(function ViewerPage() {
   }, []);
   return (
     <>
-      <Grid templateColumns={"2fr 1fr"} templateRows={{base: "1fr fr", lg: "1fr"}} flexGrow={1}>
+      <Grid templateColumns={"2fr 0.8fr"} templateRows={{base: "1fr fr", lg: "1fr"}} flexGrow={1}>
         <GridItem mr={{base: 0, md: 5}} colSpan={{base: 3, md: 1}}>
-          <Pane w={"100%"} h={"100%"}>
+          <Pane w={"100%"} h={"100%"} p={0}>
             <Suspense fallback={<Loading/>}>
               <ThreeScene
                 onPixelSelect={onPixelSelect}
@@ -52,8 +53,13 @@ const ViewerPage = observer(function ViewerPage() {
           </Pane>
         </GridItem>
         <GridItem ml={5} colSpan={{base: 0, md: 1}} display={{base: "none", md: "block"}}>
-          <Pane py={10} px={10} position={"relative"} display={"flex"} flexDirection={"column"} justifyContent={"space-between"} h={"100%"}>
-              {store.showGoBack && <Box position={"absolute"} left={"7px"} top={"7px"}>
+          <Pane
+            display={"flex"}
+            flexDirection={"column"}
+            justifyContent={"space-between"}
+            title={store.currentView === ViewerView.Index &&
+              <Typography variant={TVariant.PresStart18}>Own the doge</Typography>}>
+              {store.showGoBack && <Box position={"relative"} left={"-25px"} top={"-20px"}>
                   <Button
                     p={0}
                     size={"sm"}

@@ -202,7 +202,7 @@ const ThreeScene =({onPixelSelect, store}: ThreeSceneProps) => {
               //@ts-ignore
               const hex = KobosuJson[indexY][indexX]
               firstGrandchild.style.background = hex
-              firstGreatGrandChild.innerText = `${indexX},${indexY}`
+              firstGreatGrandChild.innerText = `(${indexX},${indexY})`
             }
           }}
           onPointerLeave={(e) => {
@@ -245,7 +245,7 @@ const ThreeScene =({onPixelSelect, store}: ThreeSceneProps) => {
           </mesh>
         </group>
       </Canvas>
-      <Box ref={tooltipRef} position={"absolute"} left={5} top={0} zIndex={10}>
+      <Box ref={tooltipRef} position={"absolute"} left={5} top={0} zIndex={10} display={"none"}>
         <PixelPane size={"sm"} pupper={hoveredPx} color={hoveredHex} pupperIndex={hoveredIndex}/>
       </Box>
       <Box position={"absolute"} bottom={0} left={0}>
