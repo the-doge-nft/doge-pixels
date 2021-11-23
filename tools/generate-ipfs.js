@@ -115,7 +115,7 @@ async function deploy() {
                     CROP_HEIGHT,
                     OUT_PATH,
                     options: options
-                }));
+                }, null, 2));
             let image = new Jimp(width, height, async function (err, image) {
                 if (err) throw err;
 
