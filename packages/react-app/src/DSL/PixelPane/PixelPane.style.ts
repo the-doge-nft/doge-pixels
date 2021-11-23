@@ -33,7 +33,7 @@ const PixelPaneStyle = {
   sizes: {
     sm: {
       container: {
-        w: "90px",
+        w: "100px",
         h: "110px"
       },
       textContainer: {

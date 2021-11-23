@@ -71,7 +71,7 @@ const SelectedPixelPane = observer(function SelectedPixelPane({store}: {store: V
       </Box>
     </Box>
     {store.isSelectedPupperOwned &&
-    <VStack spacing={9}>
+    <VStack spacing={9} mb={6}>
       <Button onClick={() => store.isBurnModalOpen = true}>Burn</Button>
     </VStack>}
   </Flex>

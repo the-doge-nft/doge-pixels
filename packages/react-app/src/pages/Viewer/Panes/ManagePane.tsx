@@ -4,19 +4,17 @@ import Typography, {TVariant} from "../../../DSL/Typography/Typography";
 import React from "react";
 import {observer} from "mobx-react-lite";
 import AppStore from "../../../store/App.store";
-import {showDebugToast} from "../../../DSL/Toast/Toast";
-import {SET_CAMERA} from "../../../services/mixins/eventable";
-import {lightOrDark} from "../../../DSL/Theme";
 import PixelPane from "../../../DSL/PixelPane/PixelPane";
+import MintBurnButtons from "../MintBurnButtons";
 
 const ManagePane = observer(function ManagePane({store}: {store: ViewerStore}) {
-  const {colorMode} = useColorMode()
   return <>
     <Flex flexDirection={"column"} flexGrow={1}>
       <Typography
         block
-        size={"sm"}
-        variant={TVariant.PresStart16}>
+        mt={1}
+        mb={5}
+        variant={TVariant.PresStart18}>
         Your Pixels ({AppStore.web3.puppersOwned.length})
       </Typography>
       <Box overflow={"scroll"} h={"full"} mt={3}>
@@ -33,6 +31,9 @@ const ManagePane = observer(function ManagePane({store}: {store: ViewerStore}) {
               />
             </Box>})}
         </Flex>
+      </Box>
+      <Box mt={10}>
+        <MintBurnButtons store={store}/>
       </Box>
     </Flex>
   </>
