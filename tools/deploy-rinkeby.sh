@@ -59,6 +59,25 @@ pushd "$SCRIPTPATH"
     export DOG_IMG_WIDTH=`cat "$DEPLOY_DIR/config.json" | jq -r '.width'`
     export DOG_IMG_HEIGHT=`cat "$DEPLOY_DIR/config.json" | jq -r '.height'`
     # todo: if isProduction, run extra validation on sizes
+    if isProduction; then
+      set -x
+      # crop cannot be used on production
+      if [ "$CROP" != "" ]; then
+        exit 42069
+      fi
+      if [ "$DOG_IMG_WIDTH" != "640" ]; then
+        exit 42069
+      fi
+      if [ "$DOG_IMG_HEIGHT" != "480" ]; then
+        exit 42069
+      fi
+      # todo: verify number of pixels generated
+      # todo: verify ipfs pubkey
+      # todo: check if uploaded ipfs files can be curl'd
+      set +x
+      # make last confirm before uploading contracts
+      confirm
+    fi
     npx hardhat deploy --network hardhat --export-all ./hardhat_contracts.json
   popd
 popd

@@ -1,5 +1,6 @@
 #!/bin/bash
-
+RETURN_TRUE=0
+RETURN_FALSE=255
 function get_ipns_dir(){
     maybeCreateIpfsKey > /dev/null 2> /dev/null
     echo "k51qzi5uqu5diavhn4gkcsei1vr4dz91sz2jgienum5ur3eq2wctiiuw22sdon"
@@ -16,6 +17,12 @@ function isIpfsRunning(){
 function isHardhatRunning(){
   pgrep -f 'yarn chain' > /dev/null
 }
+
+
+function isProduction(){
+  return $RETURN_FALSE
+}
+
 function confirm(){
   read -r -p "Are you sure? [y/N] " response
   case "$response" in
