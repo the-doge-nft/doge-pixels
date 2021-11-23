@@ -14,9 +14,18 @@ contract PXMock is PX {
         string memory name_,
         string memory symbol_,
         address DOG20Address,
-        string memory ipfsUri_
+        string memory ipfsUri_,
+        uint256 width_,
+        uint256 height_
     ) public initializer{
-        __PX_init(name_, symbol_, DOG20Address, ipfsUri_);
+        __PX_init(
+            name_,
+            symbol_,
+            DOG20Address,
+            ipfsUri_,
+            width_,
+            height_
+        );
     }
 
     function setSupply(uint256 width, uint256 height) public {

@@ -32,7 +32,7 @@ export interface PXInterface extends ethers.utils.Interface {
     "MAGIC_NULL()": FunctionFragment;
     "SHIBA_HEIGHT()": FunctionFragment;
     "SHIBA_WIDTH()": FunctionFragment;
-    "__PX_init(string,string,address,string)": FunctionFragment;
+    "__PX_init(string,string,address,string,uint256,uint256)": FunctionFragment;
     "approve(address,uint256)": FunctionFragment;
     "balanceOf(address)": FunctionFragment;
     "burnPupper(uint256)": FunctionFragment;
@@ -82,7 +82,7 @@ export interface PXInterface extends ethers.utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "__PX_init",
-    values: [string, string, string, string]
+    values: [string, string, string, string, BigNumberish, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: "approve",
@@ -338,6 +338,8 @@ export interface PX extends BaseContract {
       symbol_: string,
       DOG20Address: string,
       ipfsUri_: string,
+      width_: BigNumberish,
+      height_: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
@@ -473,6 +475,8 @@ export interface PX extends BaseContract {
     symbol_: string,
     DOG20Address: string,
     ipfsUri_: string,
+    width_: BigNumberish,
+    height_: BigNumberish,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
@@ -600,6 +604,8 @@ export interface PX extends BaseContract {
       symbol_: string,
       DOG20Address: string,
       ipfsUri_: string,
+      width_: BigNumberish,
+      height_: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -762,6 +768,8 @@ export interface PX extends BaseContract {
       symbol_: string,
       DOG20Address: string,
       ipfsUri_: string,
+      width_: BigNumberish,
+      height_: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
@@ -898,6 +906,8 @@ export interface PX extends BaseContract {
       symbol_: string,
       DOG20Address: string,
       ipfsUri_: string,
+      width_: BigNumberish,
+      height_: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 

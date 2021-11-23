@@ -22,8 +22,18 @@ module.exports = async (args) => {
     console.error("[ERROR] Invalid usage, must set DOG_IPFS_DEPLOY_BASE_URI");
     process.exit(42070);
   }
+  if(!process.env.DOG_IMG_WIDTH){
+    console.error("[ERROR] Invalid usage, must set DOG_IMG_WIDTH");
+    process.exit(42070);
+  }
+  if(!process.env.DOG_IMG_HEIGHT){
+    console.error("[ERROR] Invalid usage, must set DOG_IMG_HEIGHT");
+    process.exit(42070);
+  }
   console.log(`============= config =============`)
   console.log(`DOG_IPFS_DEPLOY_BASE_URI=${process.env.DOG_IPFS_DEPLOY_BASE_URI}`)
+  console.log(`DOG_IMG_WIDTH=${process.env.DOG_IMG_WIDTH}`)
+  console.log(`DOG_IMG_HEIGHT=${process.env.DOG_IMG_HEIGHT}`)
   console.log(`==================================`)
 
   const {deploy} = deployments;
@@ -49,7 +59,9 @@ module.exports = async (args) => {
     "LONG LIVE D O G",
     "PX",
     DOG20Address,
-    process.env.DOG_IPFS_DEPLOY_BASE_URI
+    process.env.DOG_IPFS_DEPLOY_BASE_URI,
+    process.env.DOG_IMG_WIDTH,
+    process.env.DOG_IMG_HEIGHT,
   )
   // const initMock = await DOG20.initMock([])
   // console.log(initMock)
