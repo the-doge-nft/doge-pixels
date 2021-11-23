@@ -1,4 +1,10 @@
 #!/bin/bash
+#
+# deploy-rinkeby.sh
+#
+# Description:
+# Deploy rinkeby(or hardhat). With IPFS handling.
+#
 set -eu
 export SCRIPTPATH="$( cd "$(dirname "$0")" >/dev/null 2>&1 ; pwd -P )"
 export ROOTPATH="$SCRIPTPATH/.."
