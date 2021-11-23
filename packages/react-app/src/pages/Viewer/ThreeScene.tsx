@@ -205,6 +205,16 @@ const ThreeScene =({onPixelSelect, store}: ThreeSceneProps) => {
               firstGreatGrandChild.innerText = `${indexX},${indexY}`
             }
           }}
+          onPointerLeave={(e) => {
+            if (tooltipRef.current) {
+              tooltipRef.current.style.display = "none"
+            }
+          }}
+          onPointerEnter={(e) => {
+            if (tooltipRef.current) {
+              tooltipRef.current.style.display = "block"
+            }
+          }}
           onPointerUp={onPointUp}
         >
           <planeGeometry attach={"geometry"} args={[imageWorldUnitsWidth, imageWorldUnitsHeight]}/>
