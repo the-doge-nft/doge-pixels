@@ -51,6 +51,8 @@ describe("[PX]", function () {
     await Promise.all([
                         PX.setDOG_TO_PIXEL_SATOSHIS(DOG_TO_PIXEL_SATOSHIS)
                       ]);
+    expect(await PX.SHIBA_WIDTH()).to.be.equal(MOCK_WIDTH)
+    expect(await PX.SHIBA_HEIGHT()).to.be.equal(MOCK_HEIGHT)
   });
 
   async function mintPupperWithValidation(signer, _shouldRevertWithMessage = undefined) {
