@@ -7,7 +7,7 @@
       "hash": "0xf6971ef73d88d1bb6f50a6ccca49fe5cdecce6352d7c0f224f71f3b6838981e4",
       "type": 2,
       "accessList": [],
-      "blockHash": "0xe6fc854c5926b0d2d0dd941bf71cc16921669921a2ee05be5d81ece7125b9f93",
+      "blockHash": "0x94cc495ef52f28509e5eae1f019d4856e9a27a84e09179ba81091244bb91b1bc",
       "blockNumber": 2,
       "transactionIndex": 0,
       "confirmations": 1,
@@ -50,7 +50,7 @@
     },
     {
       "address": "0x5FC8d32690cc91D4c39d9d3abcBD16989F875707",
-      "txHash": "0x6029de2aa2dc3b8e7f658f1d6240b38ff3024d8d3e44ca386c1c77d1791ff4d4",
+      "txHash": "0x854d73325782f5bef50680cad5c97b33d49457ad7e5de62e13d5671a2170f2bf",
       "kind": "transparent"
     }
   ],
@@ -143,9 +143,9 @@
         }
       }
     },
-    "7e081eb818298bc5afa912c5d47c867a9fb46c153a01c05facc4ca1ab788bd17": {
+    "3cf1479a50dd9821f31f2e6a1866f2d35cac39663e5be0fd5f80d92ca6f8b5c0": {
       "address": "0xDc64a140Aa3E981100a9becA4E685f962f0cF6C9",
-      "txHash": "0x3ca81c75a85ea36c1752e1454a3cbf11b99596ddec94c1b226eec638a3c0fab9",
+      "txHash": "0x9d7496000b23cdb5a0b4a684b68b003e02deae0b4f08d94880ff590a9eedf1a3",
       "layout": {
         "storage": [
           {
@@ -285,6 +285,12 @@
             "label": "SHIBA_HEIGHT",
             "type": "t_uint256",
             "src": "contracts/token/PX/PX.sol:45"
+          },
+          {
+            "contract": "PX",
+            "label": "BASE_URI",
+            "type": "t_string_storage",
+            "src": "contracts/token/PX/PX.sol:46"
           }
         ],
         "types": {
@@ -297,14 +303,14 @@
           "t_mapping(t_uint256,t_uint256)": {
             "label": "mapping(uint256 => uint256)"
           },
+          "t_string_storage": {
+            "label": "string"
+          },
           "t_address": {
             "label": "address"
           },
           "t_array(t_uint256)49_storage": {
             "label": "uint256[49]"
-          },
-          "t_string_storage": {
-            "label": "string"
           },
           "t_mapping(t_uint256,t_address)": {
             "label": "mapping(uint256 => address)"

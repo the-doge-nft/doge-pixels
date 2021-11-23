@@ -46,10 +46,9 @@ describe("[PX]", function () {
     factory = await ethers.getContractFactory("PXMock");
     PX = await upgrades.deployProxy(factory);
     await PX.deployed();
-    await PX.__PXMock_init("LONG LIVE D O G", "PX", DOG20.address, MOCK_URI);
+    await PX.__PXMock_init("LONG LIVE D O G", "PX", DOG20.address, MOCK_URI, MOCK_WIDTH, MOCK_HEIGHT);
 
     await Promise.all([
-                        PX.setSupply(MOCK_WIDTH, MOCK_HEIGHT),
                         PX.setDOG_TO_PIXEL_SATOSHIS(DOG_TO_PIXEL_SATOSHIS)
                       ]);
   });

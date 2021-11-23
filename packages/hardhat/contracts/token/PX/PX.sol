@@ -49,7 +49,9 @@ contract PX is ERC721CustomUpgradeable, OwnableUpgradeable {
         string memory name_,
         string memory symbol_,
         address DOG20Address,
-        string memory ipfsUri_
+        string memory ipfsUri_,
+        uint256 width_,
+        uint256 height_
     ) public initializer {
         __ERC721Custom_init(name_, symbol_);
         require(DOG20Address != address(0));
@@ -60,8 +62,8 @@ contract PX is ERC721CustomUpgradeable, OwnableUpgradeable {
         DOG_TO_PIXEL_SATOSHIS = 5523989899;
         INDEX_OFFSET = 1000000;
         MAGIC_NULL = 0;
-        SHIBA_WIDTH = 640;
-        SHIBA_HEIGHT = 480;
+        SHIBA_WIDTH = width_;
+        SHIBA_HEIGHT = height_;
 
         totalSupply = SHIBA_WIDTH * SHIBA_HEIGHT;
         puppersRemaining = SHIBA_WIDTH * SHIBA_HEIGHT;
