@@ -38,7 +38,7 @@ const SelectPixels = observer(({store, onSuccess}: {store: BurnPixelsModalStore,
       <Box mx={"auto"} maxHeight={"350px"} ml={3}>
         {AppStore.web3.puppersOwned.map(px => {
           const hex = AppStore.web3.pupperToHexLocal(px)
-          const index = AppStore.web3.pupperToPixelIndex(px)
+          const index = AppStore.web3.pupperToIndexLocal(px)
           const isPixelSelected = store.selectedPixels.includes(px)
           return <Box display={"inline-block"}
                       mt={2}

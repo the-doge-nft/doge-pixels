@@ -8,6 +8,7 @@ interface PixelPaneProps {
     color: string;
     pupperIndex: number;
     onClick?: () => void;
+    variant?: "solid" | "shadow"
 }
 
 const sizeToTypeMap = {
@@ -16,11 +17,10 @@ const sizeToTypeMap = {
     lg: TVariant.PresStart16
 }
 
-const PixelPane = ({size = "md", pupper, color, onClick, pupperIndex}: PixelPaneProps) => {
-    const styles = useMultiStyleConfig("PixelPane", {size})
+const PixelPane = ({size = "md", pupper, color, onClick, pupperIndex, variant = "solid"}: PixelPaneProps) => {
+    const styles = useMultiStyleConfig("PixelPane", {size, variant})
     return <Box
         __css={styles.container}
-        boxShadow={onClick ? "" : "10px 10px 0px black"}
         _hover={onClick ? {
             cursor: "pointer",
             // borderColor: "yellow.700"

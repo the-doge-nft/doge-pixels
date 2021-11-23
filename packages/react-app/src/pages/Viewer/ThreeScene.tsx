@@ -198,10 +198,14 @@ const ThreeScene = React.memo(({onPixelSelect, selectedPixel, store}: ThreeScene
         </group>
       </Canvas>
       <Box position={"absolute"} bottom={0} left={0}>
-        <Button size={"sm"} variant={ButtonVariant.Text} onClick={() => camera.position.z = maxCameraZ}>+</Button>
-        <Button size={"sm"} variant={ButtonVariant.Text}
-                onClick={() => camera.position.z = (minCameraZ + maxCameraZ) / 2}>++</Button>
-        <Button size={"sm"} variant={ButtonVariant.Text}
+        <Button size={"sm"}
+                variant={ButtonVariant.Text}
+                onClick={() => camera.position.z = (minCameraZ + maxCameraZ) / 2}>+</Button>
+        <Button size={"sm"}
+                variant={ButtonVariant.Text}
+                onClick={() => camera.position.z = (minCameraZ + maxCameraZ) / 5}>++</Button>
+        <Button size={"sm"}
+                variant={ButtonVariant.Text}
                 onClick={() => camera.position.z = minCameraZ + 50}>+++</Button>
       </Box>
     </Box>

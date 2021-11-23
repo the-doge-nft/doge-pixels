@@ -4,7 +4,8 @@ import { FC } from "react";
 import AppLayout from "./layouts/AppLayout";
 import ViewerPage from "./pages/Viewer/Viewer.page";
 import DSLPage from "./pages/DSL.page";
-import DogPark from "./pages/DogPark/DogPark";
+import DogParkPage from "./pages/DogPark/DogPark.page";
+import {isDevModeEnabled} from "./environment/helpers";
 
 export enum NamedRoutes {
   VIEWER = "viewer",
@@ -43,31 +44,27 @@ const routes: AppRouteInterface[] = [
     exact: true,
     layout: AppLayout,
     component: ViewerPage,
-    title: "viewer",
+    title: "portal",
   },
-  // {
-  //   path: "/stats",
-  //   name: NamedRoutes.POOLSTATS,
-  //   exact: true,
-  //   layout: AppLayout,
-  //   component: PoolStatsPage,
-  //   title: "stats",
-  // },
   {
     path: "/park",
     name: NamedRoutes.DOG_PARK,
     exact: true,
     layout: AppLayout,
-    component: DogPark,
+    component: DogParkPage,
     title: "dog park",
-  },
-  {
+  }
+];
+
+if (isDevModeEnabled()) {
+  routes.push({
     path: "/dsl",
     name: NamedRoutes.DSL,
     exact: true,
     layout: AppLayout,
     component: DSLPage,
     title: "dsl",
-  },
-];
+  })
+}
+
 export default routes;

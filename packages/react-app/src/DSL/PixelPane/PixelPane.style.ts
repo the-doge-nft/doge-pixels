@@ -5,7 +5,7 @@ const PixelPaneStyle = {
   baseStyle: ({colorMode}: {colorMode: colorModeType}) => ({
     container: {
       display: "flex",
-      flexDirection: "column"
+      flexDirection: "column",
     },
     swatch: {
       w: "100%",
@@ -23,6 +23,13 @@ const PixelPaneStyle = {
       borderBottomWidth: "1px"
     }
   }),
+  variants: {
+    shadow: ({colorMode}: {colorMode: colorModeType}) => ({
+      container: {
+        boxShadow: lightOrDark(colorMode, "10px 10px 0px black", "10px 10px 0px white")
+      }
+    })
+  },
   sizes: {
     sm: {
       container: {

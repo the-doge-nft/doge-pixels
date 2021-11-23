@@ -2,16 +2,10 @@ import React from "react";
 import {
   Box,
   Flex,
-  Modal as ChakraModal,
-  ModalBody,
-  ModalContent,
-  ModalFooter,
-  ModalHeader as ChakraModalHeader,
   ModalProps as ChakraModalProps,
   useColorMode,
   useMultiStyleConfig,
 } from "@chakra-ui/react";
-import {ModalFooterProps, ModalHeaderProps} from "@chakra-ui/modal/dist/types/modal";
 import Icon from "../Icon/Icon";
 import {lightOrDark} from "../Theme";
 import Draggable from "react-draggable";
@@ -56,7 +50,7 @@ const Modal = ({
         size = "md",
         title
 }: ModalProps) => {
-  const styles = useMultiStyleConfig("NewModal", {size: size})
+  const styles = useMultiStyleConfig("Modal", {size: size})
   const {colorMode} = useColorMode()
 
   // ReactModal.setAppElement('#react-modal-main');

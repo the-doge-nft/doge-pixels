@@ -6,14 +6,13 @@ import TypographyStyle from "./Typography/Typography.style";
 import InputStyle from "./Form/Input/Input.style";
 import TagStyle from "./Tag/Tag.styles";
 import NumberInputStyle from "./Form/NumberInput/NumberInput.style";
-import ModalStyle from "./Modal/Modal.style";
 import DemoStyle from "./Demo/Demo.style";
 import Colors from "./Colors/Colors";
 import PaneStyle from "./Pane/Pane.styles";
 import ToastStyle from "./Toast/Toast.style";
 import ColorModeToggleStyle from "./ColorModeToggle/ColorModeToggle.style";
 import IconStyle from "./Icon/Icon.style";
-import NewModalStyle from "./Modal/NewModal.style";
+import ModalStyle from "./Modal/Modal.style";
 import LoadingStyle from "./Loading/Loading.style";
 import PixelPaneStyle from "./PixelPane/PixelPane.style";
 
@@ -49,13 +48,12 @@ const theme = extendTheme({
     Input: InputStyle,
     NumberInput: NumberInputStyle,
     Tag: TagStyle,
-    Modal: ModalStyle,
     Demo: DemoStyle,
     Pane: PaneStyle,
     Toast: ToastStyle,
     ColorModeToggle: ColorModeToggleStyle,
     Icon: IconStyle,
-    NewModal: NewModalStyle,
+    Modal: ModalStyle,
     Loading: LoadingStyle,
     PixelPane: PixelPaneStyle
   },

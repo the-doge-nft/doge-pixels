@@ -19,8 +19,8 @@ const ManagePane = observer(function ManagePane({store}: {store: ViewerStore}) {
         variant={TVariant.PresStart16}>
         Your Pixels ({AppStore.web3.puppersOwned.length})
       </Typography>
-      <Box overflow={"scroll"} h={"full"}>
-        <Flex mt={5} maxHeight={"350px"} flexWrap={"wrap"}>
+      <Box overflow={"scroll"} h={"full"} mt={3}>
+        <Flex maxHeight={"350px"} flexWrap={"wrap"} mt={0}>
           {AppStore.web3.puppersOwned.map((px, index, arr) => {
             const [x,y] = AppStore.web3.pupperToPixelCoordsLocal(px)
             const hex = AppStore.web3.pupperToHexLocal(px)
@@ -29,7 +29,7 @@ const ManagePane = observer(function ManagePane({store}: {store: ViewerStore}) {
                 onClick={async () => await store.onManagePixelClick(px)}
                 pupper={px}
                 color={hex}
-                pupperIndex={AppStore.web3.pupperToPixelIndex(px)}
+                pupperIndex={AppStore.web3.pupperToIndexLocal(px)}
               />
             </Box>})}
         </Flex>

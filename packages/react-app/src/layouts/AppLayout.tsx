@@ -131,6 +131,7 @@ const Balances = observer(function DevTools() {
                     try {
                       const tx = await AppStore.web3.getDogToAccount()
                       await tx.wait()
+                      showErrorToast("Getting some $DOG")
                       AppStore.web3.refreshDogBalance()
                     } catch (e) {
                       console.error(e)
