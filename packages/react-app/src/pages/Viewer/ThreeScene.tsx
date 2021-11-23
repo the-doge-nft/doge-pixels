@@ -3,6 +3,7 @@ import * as THREE from "three";
 import {Object3D} from "three";
 import {Canvas, useLoader} from "@react-three/fiber";
 import Kobosu from "../../images/THE_ACTUAL_NFT_IMAGE.png";
+import KobosuJson from "../../images/kobosu.json"
 import {Box} from "@chakra-ui/react";
 import {getWorldPixelCoordinate} from "./helpers";
 import {onPixelSelectType} from "./Viewer.page";
@@ -11,6 +12,7 @@ import {SET_CAMERA} from "../../services/mixins/eventable";
 import Button, {ButtonVariant} from "../../DSL/Button/Button";
 import createPanZoom from "../../services/three-map-js";
 import { useQuery } from "../../helpers/hooks";
+import PixelPane from "../../DSL/PixelPane/PixelPane";
 
 interface ThreeSceneProps {
   onPixelSelect: onPixelSelectType;
@@ -23,11 +25,6 @@ const ThreeScene =({onPixelSelect, store}: ThreeSceneProps) => {
   const minCameraZ = 80;
   const _zClippingSafetyBuffer = 3
 
-  var panZoom: any
-  useEffect(() => {
-    panZoom?.dispose()
-  }, [])
-
   const cam = new THREE.PerspectiveCamera(
     5,
     window.innerWidth / window.innerHeight,
@@ -36,8 +33,20 @@ const ThreeScene =({onPixelSelect, store}: ThreeSceneProps) => {
   );
 
   const [camera] = useState<THREE.PerspectiveCamera>(cam);
+  const [isDragging, setIsDragging] = useState(false);
+
   const canvasContainerRef = useRef<HTMLDivElement | null>(null)
   const dogeMeshRef = useRef<Object3D | null>(null)
+  const selectedPixelOverlayRef = useRef<Object3D>(null);
+  const hoverPixelOverlayRef = useRef<Object3D>(null);
+  const newHoverOverlayRef = useRef<Object3D>(null);
+  const tooltipRef = useRef<HTMLDivElement | null>(null);
+
+  //@TODO: CC connect type
+  var panZoom: any
+  useEffect(() => {
+    panZoom?.dispose()
+  }, [])
 
   const canvasContainerOnMount = useCallback((node: HTMLDivElement) => {
     if (node) {
@@ -63,13 +72,7 @@ const ThreeScene =({onPixelSelect, store}: ThreeSceneProps) => {
   const imageWorldUnitsHeight = scale;
   const imageWorldUnitsArea = imageWorldUnitsWidth * imageWorldUnitsHeight;
   const worldUnitsPixelArea = imageWorldUnitsArea / (texture.image.width * texture.image.height);
-  const worldUnitPixelLength = Math.sqrt(worldUnitsPixelArea);
-
-  const [overlayLength] = useState<number>(worldUnitPixelLength);
-  const selectedPixelOverlayRef = useRef<Object3D>(null);
-  const hoverPixelOverlayRef = useRef<Object3D>(null);
-  const [isDragging, setIsDragging] = useState(false);
-  const newHoverOverlayRef = useRef<Object3D>(null)
+  const overlayLength = Math.sqrt(worldUnitsPixelArea);
 
   const onPointUp = (e: any) => {
     if (!isDragging) {
@@ -122,6 +125,10 @@ const ThreeScene =({onPixelSelect, store}: ThreeSceneProps) => {
     }
   }, [])
 
+  const hoveredPx = 0
+  const hoveredHex = "#fdi394"
+  const hoveredIndex = 1
+
   return (
     <Box ref={canvasContainerOnMount} position={"absolute"} w={"100%"} h={"100%"}>
       <Canvas
@@ -138,7 +145,13 @@ const ThreeScene =({onPixelSelect, store}: ThreeSceneProps) => {
 
           if (dogeMeshRef.current) {
             //@TODO: CC add type declaration
-            panZoom = createPanZoom(camera, gl.domElement.parentElement, dogeMeshRef.current, minCameraZ, maxCameraZ);
+            panZoom = createPanZoom(
+              camera,
+              gl.domElement.parentElement,
+              dogeMeshRef.current,
+              minCameraZ,
+              maxCameraZ,
+            );
             //@ts-ignore
             panZoom.on('panstart', function () {
               setIsDragging(true)
@@ -169,6 +182,27 @@ const ThreeScene =({onPixelSelect, store}: ThreeSceneProps) => {
             if (newHoverOverlayRef.current) {
               [newHoverOverlayRef.current.position.x, newHoverOverlayRef.current.position.y] =
                 getWorldPixelCoordinate(e.point, overlayLength);
+            }
+
+            if (tooltipRef.current) {
+              const {clientX, clientY} = e
+              const x = clientX - 15
+              const y = clientY - 70
+              tooltipRef.current.style.left = x+"px"
+              tooltipRef.current.style.top = y+"px"
+
+              // BEWARE: below dom manipulations are heavily dependent upon the structure of <PixelPane/>
+              const firstChild = tooltipRef.current?.children[0]
+              const firstGrandchild = firstChild?.children[0] as HTMLDivElement
+              const secondGrandchild = firstChild?.children[1] as HTMLDivElement
+              const firstGreatGrandChild = secondGrandchild?.children[0] as HTMLDivElement
+              const [pixelX, pixelY] = getWorldPixelCoordinate(e.point, overlayLength);
+              const indexX = Math.floor(pixelX + overlayLength);
+              const indexY = -1*Math.floor(pixelY + overlayLength);
+              //@ts-ignore
+              const hex = KobosuJson[indexY][indexX]
+              firstGrandchild.style.background = hex
+              firstGreatGrandChild.innerText = `${indexX},${indexY}`
             }
           }}
           onPointerUp={onPointUp}
@@ -201,6 +235,9 @@ const ThreeScene =({onPixelSelect, store}: ThreeSceneProps) => {
           </mesh>
         </group>
       </Canvas>
+      <Box ref={tooltipRef} position={"absolute"} left={5} top={0} zIndex={10}>
+        <PixelPane size={"sm"} pupper={hoveredPx} color={hoveredHex} pupperIndex={hoveredIndex}/>
+      </Box>
       <Box position={"absolute"} bottom={0} left={0}>
         <Button size={"sm"}
                 variant={ButtonVariant.Text}

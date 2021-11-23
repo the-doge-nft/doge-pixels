@@ -98,9 +98,11 @@ const AppLayout = observer(function AppLayout({children}: AppLayoutProps) {
                   </MenuButton>
                   <MenuList>
                     <Balances/>
-                    <MenuItem onClick={() => alert("my pixels")}>
-                          <Typography variant={TVariant.PresStart12}>My Pixels</Typography>
-                    </MenuItem>
+                    {/*<MenuItem onClick={() => {*/}
+                    {/*  */}
+                    {/*}}>*/}
+                    {/*      <Typography variant={TVariant.PresStart12}>My Pixels</Typography>*/}
+                    {/*</MenuItem>*/}
                     <MenuItem onClick={() => AppStore.web3.disconnect()}>
                       <Typography variant={TVariant.PresStart12}>Disconnect</Typography>
                     </MenuItem>
