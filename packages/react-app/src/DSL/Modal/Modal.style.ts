@@ -1,55 +1,56 @@
-import {darkModePrimary, lightOrDark} from "../Theme";
-import { GlobalFont } from "../Typography/Typography.style";
+import { colorModeType, lightOrDark } from "../Theme";
+
 
 const ModalStyle = {
-  parts: ["overlay", "dialogContainer", "dialog", "header", "closeButton", "body", "footer"],
-  baseStyle: ({ colorMode }: { colorMode: "light" | "dark" }) => ({
-    overlay: {
-      // bg: "rgba(0,0,0,0.5)",
-      bg: "transparent"
-    },
-    dialogContainer: {
-      // border: "2px solid black"
-    },
-    closeButton: {
-      color: colorMode === "light" ? "black" : "white",
-      _hover: {
-        bg: "none",
-        border: "none",
-        fontWeight: "bold",
-        boxShadow: "none",
-      },
-      _active: {
-        boxShadow: "none",
-        transform: "translate(2px, 2px)"
-      },
-      _focus: {
-        boxShadow: "none",
-      },
-      fontSize: "18px",
-      fontFamily: GlobalFont,
-      position: "static",
+  parts: ["container", "body", "title"],
+  baseStyle: ({colorMode}: {colorMode: colorModeType}) => ({
+    container: {
+      width: "100%",
       borderRadius: "0px",
-      borderLeft: "1px solid black"
-      // top: 0,
-      // right: 0
-    },
-    dialog: {
-      bg: colorMode === "light" ? "yellow.50" : darkModePrimary,
-      border: "2px solid",
-      borderColor: colorMode === "light" ? "black" : "white",
-      borderRadius: "0px",
-      boxShadow: `14px 14px 0px ${lightOrDark(colorMode, "black", "white")}`,
-    },
-    header: {
-      px: 12,
-      mt: 4
+      background: lightOrDark(colorMode, "yellow.50", "purple.700"),
+      borderWidth: "1px",
+      borderStyle: "solid",
+      borderColor: lightOrDark(colorMode, "black", "white"),
+      // padding: "10px",
+      /* 👇 because of the drag handle */
+      pt: "0px",
+      pointerEvents: "all",
+      boxShadow: lightOrDark(colorMode, "10px 10px 0px black", "10px 10px 0px white"),
+      overflow: "hidden",
+      position: "relative"
     },
     body: {
-      px: 12,
-      pb: 6
+      px: 8,
+      pb: 12
+    },
+    title: {
+      mt: 8,
+      mb: 2
     }
   }),
-};
+  sizes: {
+    sm: {
+      container: {
+        maxWidth: "24rem"
+      },
+    },
+    md: {
+      container: {
+        maxWidth: "28rem"
+      }
+    },
+    lg: {
+      container: {
+        maxWidth: "32rem"
+      }
+    },
+    xl: {
+      container: {
+        maxWidth: "36rem"
+      }
+    }
+  }
+}
 
-export default ModalStyle;
+export default ModalStyle
+

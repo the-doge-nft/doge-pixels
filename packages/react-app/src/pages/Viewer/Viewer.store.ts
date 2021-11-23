@@ -92,7 +92,7 @@ class ViewerStore extends Navigable(Eventable(Reactionable((EmptyClass)))) {
 
   @computed
   get selectedPupperIndex() {
-    return AppStore.web3.pupperToPixelIndex(this.selectedPupper!)
+    return AppStore.web3.pupperToIndexLocal(this.selectedPupper!)
   }
 
   @computed

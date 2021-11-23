@@ -7,6 +7,7 @@ import Button, { ButtonVariant } from "../../../DSL/Button/Button";
 import { abbreviate } from "../../../helpers/strings";
 import KobosuJson from "../../../images/kobosu.json"
 import PixelPane from "../../../DSL/PixelPane/PixelPane";
+import {SET_CAMERA} from "../../../services/mixins/eventable";
 
 const SelectedPixelPane = observer(function SelectedPixelPane({store}: {store: ViewerStore}) {
   return <Flex flexDirection={"column"} justifyContent={"space-between"} h={"full"}>
@@ -17,6 +18,8 @@ const SelectedPixelPane = observer(function SelectedPixelPane({store}: {store: V
                 pupper={store.selectedPupper}
                 color={store.selectedPupperHEX}
                 pupperIndex={store.selectedPupperIndex}
+                variant={"shadow"}
+                onClick={() => store.publish(SET_CAMERA, [store.selectedPixelX, store.selectedPixelY])}
               />}
       </Box>
       <Box mt={8}>

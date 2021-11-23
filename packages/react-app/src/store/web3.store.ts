@@ -13,6 +13,7 @@ import {DOG20, PX} from "../../../hardhat/types";
 import { abbreviate } from "../helpers/strings";
 import KobosuJson from "../images/kobosu.json"
 import AppStore from "./App.store";
+import jsonify from "../helpers/jsonify";
 
 interface EthersContractError {
     message: string
@@ -52,13 +53,15 @@ class Web3Store {
     @observable
     network?: Network
 
+    // @observable
+    // puppersOwned: number[] = []
+
     @observable
-    puppersOwned: number[] = []
+    addressToPuppers?: {[k: string]: number[]}
 
     constructor() {
         makeObservable(this)
-        console.log("debug:: is dev mode", isDevModeEnabled())
-        console.log("debug:: process.env.REACT_APP_DOG_ENV", process.env.REACT_APP_DOG_ENV)
+        this.addressToPuppers = {}
     }
 
     async connect() {
@@ -78,7 +81,7 @@ class Web3Store {
 
             this.connectToContracts(signer)
             this.initPxListeners()
-            this.getPastPXReceives()
+            this.getPupperOwnershipMap()
         } catch (e) {
             console.error("connection error: ", e)
             showErrorToast("error connecting")
@@ -103,7 +106,7 @@ class Web3Store {
             this.web3Provider = undefined
             this.chainId = undefined
             this.dogBalance = undefined
-            this.puppersOwned = []
+            // this.puppersOwned = []
         } catch (e) {
             console.error(e)
         }
@@ -140,7 +143,6 @@ class Web3Store {
             )
         }
 
-
         const nonContractCode = "0x"
 
         const pxCode = await this.web3Provider!.getCode(this.pxContract!.address)
@@ -159,47 +161,57 @@ class Web3Store {
 
     handleAccountsChanged(accounts: string[]) {
         showDebugToast("accounts changed")
-        this.address = accounts[0]
-        this.refreshDogBalance()
-        this.refreshPupperBalance()
-        this.puppersOwned = []
-        this.getPastPXReceives()
+        window.location.reload()
     }
 
+    // @TODO: could be replaced with server caching this data
     initPxListeners() {
-        this.pxContract?.on("Transfer(address,address,uint256)", (fromAddress: string, toAddress: string, tokenId: BigNumber) => {
-            if (toAddress === this.address) {
-                if (!this.puppersOwned.includes(tokenId.toNumber())) {
-                    this.puppersOwned.push(tokenId.toNumber())
-                }
-            } else if (fromAddress === this.address) {
-                if (this.puppersOwned.includes(tokenId.toNumber())) {
-                    const index = this.puppersOwned.indexOf(tokenId.toNumber())
-                    this.puppersOwned.splice(index, 1)
-                }
+        this.pxContract?.on("Transfer(address,address,uint256)", (from: string, to: string, tokenId: BigNumber) => {
+            if (to in this.addressToPuppers! && !this.addressToPuppers![to].includes(tokenId.toNumber())) {
+                this.addressToPuppers![to].push(tokenId.toNumber())
+            } else {
+                this.addressToPuppers![to] = [tokenId.toNumber()]
+            }
+
+            if (from in this.addressToPuppers! && this.addressToPuppers![from].includes(tokenId.toNumber())) {
+                const index = this.addressToPuppers![from].indexOf(tokenId.toNumber())
+                this.addressToPuppers![from].splice(index, 1)
+            } else {
+                this.addressToPuppers![from] = [tokenId.toNumber()]
             }
         })
     }
 
-    async getPastPXReceives() {
-        const filter = this.pxContract!.filters.Transfer(null, this.address)
+    async getPupperOwnershipMap() {
+        this.addressToPuppers = {}
+        const filter = this.pxContract!.filters.Transfer(null, null)
         const logs = await this.pxContract!.queryFilter(filter)
         logs.forEach(tx => {
+            const {from, to} = tx.args
             const tokenId = tx.args.tokenId.toNumber()
-            if (!this.puppersOwned.includes(tokenId)) {
-                this.puppersOwned.push(tokenId)
-            }
-        })
 
-        const newFilter = this.pxContract!.filters.Transfer(this.address, null)
-        const newLogs = await this.pxContract!.queryFilter(newFilter)
-        newLogs.forEach(tx => {
-            const tokenId = tx.args.tokenId.toNumber()
-            if (this.puppersOwned.includes(tokenId)) {
-                const index = this.puppersOwned.indexOf(tokenId)
-                this.puppersOwned.splice(index, 1)
+            if (to in this.addressToPuppers!) {
+                this.addressToPuppers![to].push(tokenId)
+            } else {
+                this.addressToPuppers![to] = [tokenId]
+            }
+
+            if (from in this.addressToPuppers!) {
+                const index = this.addressToPuppers![from].indexOf(tokenId)
+                this.addressToPuppers![from].splice(index, 1)
+            } else {
+                this.addressToPuppers![from] = [tokenId]
             }
         })
+    }
+
+    @computed
+    get puppersOwned() {
+        let myPuppers: number[] = []
+        if (this.address && this.address in this.addressToPuppers!) {
+            myPuppers = this.addressToPuppers![this.address]
+        }
+        return myPuppers
     }
 
     async refreshDogBalance() {
@@ -266,12 +278,12 @@ class Web3Store {
         }
     }
 
-    pupperToPixelIndex(pupper: number) {
+    pupperToIndexLocal(pupper: number) {
         return pupper - this.PIXEL_TO_ID_OFFSET
     }
 
     pupperToPixelCoordsLocal(pupper: number) {
-        const index = this.pupperToPixelIndex(pupper)
+        const index = this.pupperToIndexLocal(pupper)
         return [index % 640, Math.floor(index / 640)]
     }
 
