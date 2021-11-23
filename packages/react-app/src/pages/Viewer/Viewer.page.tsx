@@ -64,7 +64,6 @@ const ViewerPage = observer(function ViewerPage() {
                     variant={ButtonVariant.Text}
                   >
                     <Icon icon={"arrow-left"} />
-                  {/*&#8592;*/}
                 </Button>
               </Box>}
             {store.currentView === ViewerView.Index && <IndexPane store={store}/>}

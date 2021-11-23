@@ -17,7 +17,7 @@ interface ThreeSceneProps {
   store?: ViewerStore;
 }
 
-const ThreeScene = React.memo(({onPixelSelect, store}: ThreeSceneProps) => {
+const ThreeScene =({onPixelSelect, store}: ThreeSceneProps) => {
   const query = useQuery()
   const maxCameraZ = 5500;
   const minCameraZ = 80;
@@ -214,7 +214,7 @@ const ThreeScene = React.memo(({onPixelSelect, store}: ThreeSceneProps) => {
       </Box>
     </Box>
   );
-});
+};
 
 
 export default ThreeScene;
