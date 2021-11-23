@@ -45,7 +45,6 @@ class ViewerStore extends Navigable(Eventable(Reactionable((EmptyClass)))) {
     this.pushNavigation(ViewerView.Index)
 
     if (_x && _y) {
-      console.log("debug:: xy", _x, _y)
       this.selectedPupper = AppStore.web3.coordinateToPupperLocal(Number(_x), Number(_y))
       this.pushNavigation(ViewerView.Selected)
     }
@@ -71,7 +70,7 @@ class ViewerStore extends Navigable(Eventable(Reactionable((EmptyClass)))) {
         this.tokenOwner = null
         console.error("debug:: error", e)
       })
-    }, {fireImmediately: false})
+    }, {fireImmediately: true})
 
     this.isHelperModalOpen = LocalStorage.getItem(SHOW_HELPER_MODAL, LocalStorage.PARSE_JSON, true)
     LocalStorage.setItem(SHOW_HELPER_MODAL, false)
