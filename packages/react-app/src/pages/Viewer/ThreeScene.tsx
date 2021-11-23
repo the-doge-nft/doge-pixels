@@ -8,17 +8,17 @@ import {getWorldPixelCoordinate} from "./helpers";
 import {onPixelSelectType} from "./Viewer.page";
 import ViewerStore from "./Viewer.store";
 import {SET_CAMERA} from "../../services/mixins/eventable";
-import {BigNumber} from "ethers";
 import Button, {ButtonVariant} from "../../DSL/Button/Button";
 import createPanZoom from "../../services/three-map-js";
+import { useQuery } from "../../helpers/hooks";
 
 interface ThreeSceneProps {
   onPixelSelect: onPixelSelectType;
-  selectedPixel: any;
   store?: ViewerStore;
 }
 
-const ThreeScene = React.memo(({onPixelSelect, selectedPixel, store}: ThreeSceneProps) => {
+const ThreeScene = React.memo(({onPixelSelect, store}: ThreeSceneProps) => {
+  const query = useQuery()
   const maxCameraZ = 5500;
   const minCameraZ = 80;
   const _zClippingSafetyBuffer = 3
@@ -55,7 +55,6 @@ const ThreeScene = React.memo(({onPixelSelect, selectedPixel, store}: ThreeScene
     }
   }, []);
 
-
   const texture = useLoader(THREE.TextureLoader, Kobosu);
   texture.magFilter = THREE.NearestFilter;
   const scale = 480;
@@ -71,7 +70,6 @@ const ThreeScene = React.memo(({onPixelSelect, selectedPixel, store}: ThreeScene
   const hoverPixelOverlayRef = useRef<Object3D>(null);
   const [isDragging, setIsDragging] = useState(false);
   const newHoverOverlayRef = useRef<Object3D>(null)
-
 
   const onPointUp = (e: any) => {
     if (!isDragging) {
@@ -94,30 +92,30 @@ const ThreeScene = React.memo(({onPixelSelect, selectedPixel, store}: ThreeScene
     }
   }, [store?.selectedPupper])
 
+  const CameraTools = {
+    setCamera: ([x, y]: [number, number]) => {
+      const xPos = x
+      const yPos = -1 * y
+
+      camera.position.x = xPos - (overlayLength / 2)
+      camera.position.y = yPos - (overlayLength / 2)
+
+      if (camera.position.z === maxCameraZ) {
+        camera.position.z = (maxCameraZ - minCameraZ) / 2
+      }
+
+      if (selectedPixelOverlayRef.current) {
+        selectedPixelOverlayRef.current.visible = true;
+        [selectedPixelOverlayRef.current.position.x, selectedPixelOverlayRef.current.position.y] = [
+          xPos - (overlayLength / 2),
+          yPos - (overlayLength / 2)
+        ];
+      }
+    }
+  }
 
   // click select pixel & jump to location
   useEffect(() => {
-    const CameraTools = {
-      setCamera: ([x, y]: [number, number]) => {
-        const xPos = x
-        const yPos = -1 * y
-
-        camera.position.x = xPos - (overlayLength / 2)
-        camera.position.y = yPos - (overlayLength / 2)
-
-        if (camera.position.z === maxCameraZ) {
-          camera.position.z = (maxCameraZ - minCameraZ) / 2
-        }
-
-        if (selectedPixelOverlayRef.current) {
-          selectedPixelOverlayRef.current.visible = true;
-          [selectedPixelOverlayRef.current.position.x, selectedPixelOverlayRef.current.position.y] = [
-            xPos - (overlayLength / 2),
-            yPos - (overlayLength / 2)
-          ];
-        }
-      }
-    }
     store?.subscribe(SET_CAMERA, CameraTools, "setCamera")
     return () => {
       store?.unsubscribeAllFrom(CameraTools)
@@ -150,6 +148,12 @@ const ThreeScene = React.memo(({onPixelSelect, selectedPixel, store}: ThreeScene
             panZoom.on('panend', function () {
               setIsDragging(false)
             });
+          }
+
+          const x = query.get("x")
+          const y = query.get("y")
+          if (x !== null && y !== null) {
+            CameraTools.setCamera([Number(x), Number(y)])
           }
         }}
       >

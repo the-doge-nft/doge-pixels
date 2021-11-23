@@ -7,7 +7,7 @@ interface PixelPaneProps {
     pupper: number;
     color: string;
     pupperIndex: number;
-    onClick?: () => void;
+    onClick?: (pupper: number) => void;
     variant?: "solid" | "shadow"
 }
 
@@ -25,7 +25,7 @@ const PixelPane = ({size = "md", pupper, color, onClick, pupperIndex, variant = 
             cursor: "pointer",
             // borderColor: "yellow.700"
         } : {}}
-        onClick={onClick}
+        onClick={() => onClick && onClick(pupper)}
     >
         <Box
             __css={styles.swatch}
