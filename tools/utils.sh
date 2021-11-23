@@ -9,12 +9,12 @@ function maybeCreateIpfsKey(){
 }
 
 function isIpfsRunning(){
-  pgrep -f 'ipfs daemon'
+  pgrep -f 'ipfs daemon' > /dev/null
 }
 
 
 function isHardhatRunning(){
-  pgrep -f 'yarn chain'
+  pgrep -f 'yarn chain' > /dev/null
 }
 function confirm(){
   read -r -p "Are you sure? [y/N] " response
