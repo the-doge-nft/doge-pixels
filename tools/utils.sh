@@ -7,3 +7,24 @@ function get_ipns_dir(){
 function maybeCreateIpfsKey(){
   ipfs key gen $DOG_IPFS_KEY || true
 }
+
+function isIpfsRunning(){
+  pgrep -f 'ipfs daemon'
+}
+
+
+function isHardhatRunning(){
+  pgrep -f 'yarn chain'
+}
+function confirm(){
+  read -r -p "Are you sure? [y/N] " response
+  case "$response" in
+      [yY][eE][sS]|[yY])
+          echo "OK"
+          ;;
+      *)
+          echo "Aborting..."
+          exit 255
+          ;;
+  esac
+}
