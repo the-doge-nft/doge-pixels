@@ -1,4 +1,4 @@
-import {Box, Flex, Grid, GridItem, useColorMode} from "@chakra-ui/react";
+import {Box, Flex, Grid, GridItem} from "@chakra-ui/react";
 import {observer} from "mobx-react-lite";
 import React, {useMemo} from "react";
 import Pane from "../../DSL/Pane/Pane";
@@ -8,18 +8,23 @@ import TextInput from "../../DSL/Form/TextInput";
 import Form from "../../DSL/Form/Form";
 import model from "../../DSL/Form/model";
 import {abbreviate} from "../../helpers/strings";
-import {lightOrDark} from "../../DSL/Theme";
 import PixelPane from "../../DSL/PixelPane/PixelPane";
 import AppStore from "../../store/App.store";
+import PxPill from "./PxPill";
+import UserCard from "./UserCard";
+import {useHistory, useLocation} from "react-router-dom";
+import Button from "../../DSL/Button/Button";
 
 const DogParkPage = observer(function DogParkPage() {
+  const location = useLocation()
+  const history = useHistory()
   const store = useMemo(() => new DogParkPageStore(), [])
   return <Grid templateColumns={"0.5fr 1fr"} mt={10} flexGrow={1}>
     <GridItem>
       <Pane display={"flex"} flexDirection={"column"} p={6} h={"full"}>
         <Typography variant={TVariant.PresStart24}>Top Dogs 🚀</Typography>
         <Box flexGrow={1} mt={4}>
-          {store.topDogs.map((dog) => <DogCard store={store} dog={dog}/>)}
+          {store.topDogs.map((dog) => <UserCard store={store} dog={dog}/>)}
         </Box>
       </Pane>
     </GridItem>
@@ -37,7 +42,7 @@ const DogParkPage = observer(function DogParkPage() {
             >
                 Similar results
             </Typography>}
-            {!store.isSearchInputEmpty && store.filteredDogs.map(dog => <DogCard store={store} dog={dog}/>)}
+            {!store.isSearchInputEmpty && store.filteredDogs.map(dog => <UserCard store={store} dog={dog}/>)}
             {!store.isSearchInputEmpty && store.isFilteredResultEmpty && <Typography
                 variant={TVariant.PresStart14}>
                 No results found
@@ -58,16 +63,52 @@ const DogParkPage = observer(function DogParkPage() {
                   {store.selectedDogs.puppers.map(px => {
                     const hex = AppStore.web3.pupperToHexLocal(px)
                     const index = AppStore.web3.pupperToIndexLocal(px)
-                    return <Box p={2}>
-                      <PixelPane pupper={px} color={hex} pupperIndex={index}/>
+                    return <Box
+                      bg={store.selectedPupper === px ? "yellow.700" : "inherit"}
+                      p={2}
+                      _hover={{bg: "yellow.700"}}
+                    >
+                      <PixelPane
+                        pupper={px}
+                        color={hex}
+                        pupperIndex={index}
+                        onClick={(px) => store.selectedPupper = px}
+                      />
                     </Box>
                   })}
                 </Flex>
               </GridItem>
               <GridItem>
-                <Typography variant={TVariant.PresStart18}>
-                    test other stuff here
-                </Typography>
+                {store.selectedPupper && <Box mt={10}>
+                    <Flex flexDirection={"column"}>
+                        <PixelPane
+                            size={"lg"}
+                            variant={"shadow"}
+                            pupper={store.selectedPupper!}
+                            color={store.selectedPupperHex}
+                            pupperIndex={store.seletedPupperIndex}
+                        />
+                        <Box my={10}>
+                            <Box>
+                                <Typography variant={TVariant.ComicSans18}>HEX:</Typography>
+                                <Typography variant={TVariant.ComicSans18} ml={2}>{store.selectedPupperHex}</Typography>
+                            </Box>
+                            <Box mt={1}>
+                                <Typography variant={TVariant.ComicSans18}>Coordinates:</Typography>
+                                <Typography variant={TVariant.ComicSans18} ml={2}>({store.selectedPupperCoords[0]},{store.selectedPupperCoords[1]})</Typography>
+                            </Box>
+                            <Box mt={1}>
+                                <Typography variant={TVariant.ComicSans18}>Location:</Typography>
+                                <Typography variant={TVariant.ComicSans18} ml={2}>{store.selectedPupperLocation}</Typography>
+                            </Box>
+                        </Box>
+                    </Flex>
+                  <Button onClick={() => history.push(
+                    `/?x=${store.selectedPupperCoords[0]}&y=${store.selectedPupperCoords[1]}`
+                  )}>
+                      View in portal
+                  </Button>
+                </Box>}
               </GridItem>
           </>}
         </Grid>
@@ -75,54 +116,5 @@ const DogParkPage = observer(function DogParkPage() {
     </GridItem>
   </Grid>
 });
-
-const DogCard = ({store, dog}: {store: DogParkPageStore, dog: { address: string, puppers: number[]} }) => {
-  return <Flex
-    justifyContent={"space-between"}
-    alignItems={"center"}
-    key={`${dog.address}`}
-    px={2}
-    py={3}
-    my={3}
-    color={"black"}
-    _hover={{
-      cursor: "pointer",
-      bg: "yellow.700"
-    }}
-    onClick={() => {
-      store.selectedAddress = dog.address
-      store.addressToSearch = dog.address
-    }}
-  >
-    <Typography
-      variant={TVariant.PresStart14}
-      block
-    >
-      {abbreviate(dog.address, 4)}
-    </Typography>
-    <Box ml={4}>
-      <PxPill count={dog.puppers.length} />
-    </Box>
-  </Flex>
-}
-
-const PxPill = ({count}: { count: number }) => {
-  const {colorMode} = useColorMode()
-  return <Box
-    display={"inline-flex"}
-    borderRadius={16}
-    justifyContent={"space-between"}
-    alignItems={"center"}
-    borderWidth={"1px"}
-    borderStyle={"solid"}
-    borderColor={lightOrDark(colorMode, "black", "white")}
-    minWidth={"100px"}
-    px={"12px"}
-    py={"6px"}
-  >
-    <Typography variant={TVariant.PresStart14}>{count}</Typography>
-    <Typography variant={TVariant.PresStart14}>PX</Typography>
-  </Box>
-}
 
 export default DogParkPage;

@@ -14,6 +14,9 @@ class DogParkPageStore extends Reactionable(EmptyClass) {
   @observable
   selectedAddress?: string
 
+  @observable
+  selectedPupper?: number
+
   constructor() {
     super()
     makeObservable(this)
@@ -63,6 +66,29 @@ class DogParkPageStore extends Reactionable(EmptyClass) {
   @computed
   get isFilteredResultEmpty() {
     return this.filteredDogs.length === 0
+  }
+
+  @computed
+  get selectedPupperCoords() {
+    if (this.selectedPupper) {
+      return AppStore.web3.pupperToPixelCoordsLocal(this.selectedPupper)
+    }
+    return []
+  }
+
+  @computed
+  get selectedPupperHex() {
+    return AppStore.web3.pupperToHexLocal(this.selectedPupper!)
+  }
+
+  @computed
+  get seletedPupperIndex() {
+    return AppStore.web3.pupperToIndexLocal(this.selectedPupper!)
+  }
+
+  @computed
+  get selectedPupperLocation() {
+    return "Dog"
   }
 
 }

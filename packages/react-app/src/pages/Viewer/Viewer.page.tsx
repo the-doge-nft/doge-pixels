@@ -1,5 +1,5 @@
 import React, {Suspense, useCallback, useEffect, useMemo} from "react";
-import {Box, Button, Flex, Grid, GridItem, Image} from "@chakra-ui/react";
+import {Box, Button, Flex, Grid, GridItem} from "@chakra-ui/react";
 import ThreeScene from "./ThreeScene";
 import ViewerStore, {ViewerView} from "./Viewer.store";
 import {observer} from "mobx-react-lite";
@@ -10,18 +10,20 @@ import IndexPane from "./Panes/IndexPane";
 import MintPixelsModal from "./MintPixelsModal/MintPixelsModal";
 import SelectedPixelPane from "./Panes/SelectedPixelPane";
 import AppStore from "../../store/App.store";
-import {showDebugToast} from "../../DSL/Toast/Toast";
 import {ButtonVariant} from "../../DSL/Button/Button";
 import Icon from "../../DSL/Icon/Icon";
-import Typography, { TVariant } from "../../DSL/Typography/Typography";
-import Modal from "../../DSL/Modal/Modal";
 import Loading from "../../DSL/Loading/Loading";
 import ScrollHelperModal from "./ScrollHelperModal/ScrollHelperModal";
+import {useQuery} from "../../helpers/hooks";
 
 export type onPixelSelectType = (x: number, y: number) => void;
 
 const ViewerPage = observer(function ViewerPage() {
-  const store = useMemo(() => new ViewerStore(), []);
+  const query = useQuery()
+  const store = useMemo(() => new ViewerStore(
+    query.get("x"),
+    query.get("y")
+  ), []);
 
   useEffect(() => {
     store.init()
@@ -44,7 +46,6 @@ const ViewerPage = observer(function ViewerPage() {
             <Suspense fallback={<Loading/>}>
               <ThreeScene
                 onPixelSelect={onPixelSelect}
-                selectedPixel={store.selectedPupper}
                 store={store}
               />
             </Suspense>

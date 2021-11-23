@@ -39,10 +39,16 @@ class ViewerStore extends Navigable(Eventable(Reactionable((EmptyClass)))) {
   @observable
   openSeaLink: string | null = null
 
-  constructor() {
+  constructor(private _x: string | null, private _y?: string | null) {
     super()
-    this.pushNavigation(ViewerView.Index)
     makeObservable(this);
+    this.pushNavigation(ViewerView.Index)
+
+    if (_x && _y) {
+      console.log("debug:: xy", _x, _y)
+      this.selectedPupper = AppStore.web3.coordinateToPupperLocal(Number(_x), Number(_y))
+      this.pushNavigation(ViewerView.Selected)
+    }
   }
 
   init() {
