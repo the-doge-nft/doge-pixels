@@ -15,13 +15,22 @@ source "$SCRIPTPATH/utils.sh"
 #
 # DEPLOYMENT CONFIG
 #
-export DEPLOY_ID=$(date '+%Y-%m-%d_%H_%M_%S')
-#export DEPLOY_ID="2021-11-23_23_28_02"
-# DOG_IPFS_KEY generally should be fixed, for testing purposes its dynamic
-export DOG_IPFS_KEY="dog_deploy_$DEPLOY_ID"
-export IPNS_DIR=$(get_ipns_dir)
+CONTINUE=yes
+if [ "$CONTINUE" == "yes" ]; then
+  export DEPLOY_ID=2021-11-24_19_09_27
+  export DOG_IPFS_KEY="dog_deploy_$DEPLOY_ID"
+  export IPNS_DIR="k51qzi5uqu5djqiqaht7oyvstxe24g4zk4lgt4nf92q7b4t9x3xjoqzkvmha1w"
+else
+  export DEPLOY_ID=$(date '+%Y-%m-%d_%H_%M_%S')
+  #export DEPLOY_ID="2021-11-23_23_28_02"
+  # DOG_IPFS_KEY generally should be fixed, for testing purposes its dynamic
+  export DOG_IPFS_KEY="dog_deploy_$DEPLOY_ID"
+  # todo: cache determined keys
+  echo 'Determining IPNS key...'
+  export IPNS_DIR=$(get_ipns_dir)
+fi
+export CROP=0.05
 export DEPLOY_DIR="$SCRIPTPATH/deploy/$DEPLOY_ID"
-export CROP=0.2
 
 if [ "$TARGET" == "hardhat" ]; then
   if ! isHardhatRunning; then
@@ -53,14 +62,14 @@ pushd "$SCRIPTPATH"
   echo ""
   confirm
   # 1. generate tiles
-  node ./generate-ipfs.js --deploy_dir="$DEPLOY_DIR" --ipns_dir="$IPNS_DIR" --crop="$CROP"
+#  node ./generate-ipfs.js --deploy_dir="$DEPLOY_DIR" --ipns_dir="$IPNS_DIR" --crop="$CROP"
   # 2. deploy ipfs
-  ./upload-ipfs.sh "$DEPLOY_DIR"
+#  ./upload-ipfs.sh "$DEPLOY_DIR"
   # IPFS_DEPLOY_LOG_PATH="./deploy-logs/$DEPLOY_ID-ipfs.json"
   # 3. insert ipfs prefix to contract
   # 4. deploy conntract to rinkeby
   pushd "$ROOTPATH/packages/hardhat"
-    export DOG_IPFS_DEPLOY_BASE_URI="https://ipfs.io/ipns/$IPNS_DIR"
+    export DOG_IPFS_DEPLOY_BASE_URI="https://ipfs.io/ipns/$IPNS_DIR/"
     export DOG_IMG_WIDTH=`cat "$DEPLOY_DIR/config.json" | jq -r '.width'`
     export DOG_IMG_HEIGHT=`cat "$DEPLOY_DIR/config.json" | jq -r '.height'`
     # todo: if isProduction, run extra validation on sizes

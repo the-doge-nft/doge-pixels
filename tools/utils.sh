@@ -3,10 +3,13 @@ RETURN_TRUE=0
 RETURN_FALSE=255
 function get_ipns_dir(){
     maybeCreateIpfsKey > /dev/null 2> /dev/null
-    echo "k51qzi5uqu5diavhn4gkcsei1vr4dz91sz2jgienum5ur3eq2wctiiuw22sdon"
+    touch test.tmp
+    ipns_dir=$(ipfs name publish --quieter --key="$DOG_IPFS_KEY" $(ipfs add --quieter ./test.tmp))
+    echo $ipns_dir
+    rm test.tmp
 }
 function maybeCreateIpfsKey(){
-  ipfs key gen $DOG_IPFS_KEY || true
+  ipfs key gen "$DOG_IPFS_KEY" || true
 }
 
 function isIpfsRunning(){

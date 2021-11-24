@@ -2,9 +2,10 @@ const Jimp = require('jimp');
 const path = require('path');
 const fs = require('fs');
 const commandLineArgs = require('command-line-args');
+const cliProgress = require('cli-progress');
 const optionDefinitions = [
     // {name: 'deploy_id', type: String},
-    {name: 'tile_size', type: Number, defaultValue: 128},
+    {name: 'tile_size', type: Number, defaultValue: 1},
     {name: 'deploy_dir', type: String},
     {name: 'ipns_dir', type: String},
     {
@@ -19,6 +20,12 @@ const OUT_PATH = path.resolve(options.deploy_dir);//__dirname, 'deploy', options
 const PIXELS_PATH = path.join(OUT_PATH, 'pixels');
 const METADATA_PATH = path.join(OUT_PATH, 'metadata');
 const IPNS_DIR = options.ipns_dir;
+
+// create a new progress bar instance and use shades_classic theme
+const bar1 = new cliProgress.SingleBar(
+    {
+        format: 'progress [{bar}] {percentage}% | {duration_formatted} | {value}/{total} | ETA: {eta}s '
+    }, cliProgress.Presets.shades_classic);
 
 function toColor(num) {
     num >>>= 0;
@@ -38,7 +45,6 @@ function createTile(x, y, hex, RUN_CONFIG) {
     let SIZE = 'sm';
     let size, prefix;
     size = options.tile_size;
-    console.log(options);
     prefix = '';//`pixels_${size}x${size}`
     return new Promise((resolve) => {
         let image = new Jimp(size, size, function (err, image) {
@@ -52,13 +58,14 @@ function createTile(x, y, hex, RUN_CONFIG) {
 
             image.write(path.join(PIXELS_PATH, `${x}_${y}.png`), (err) => {
                 if (err) throw err;
-                console.log(`saved ${x}_${y}.png`);
+                // console.log(`saved ${x}_${y}.png`);
                 const index = y * RUN_CONFIG.width + x;
                 const metadata = {
                     name: `[${x}, ${y}]`,
                     description: `Pixel at ${x}x${y} with hex #${hex}; ${toColor(hex)}`,
                     external_url: `https://squeamish-side.surge.sh/${index}/${index}/${index}/${index}/${index}/${index}/${index}/${index}`,
                     image: pixelUrl(x, y),
+                    hex: `#${hex}`,
                     background_color: '#fff',//todo: select contrast
                     attributes: [
                         {
@@ -92,6 +99,8 @@ function createTile(x, y, hex, RUN_CONFIG) {
                     ]
                 };
                 fs.writeFileSync(path.join(METADATA_PATH, `metadata-${x}_${y}.json`), JSON.stringify(metadata, null, 2))
+
+                bar1.update(y * RUN_CONFIG.width + x);
                 resolve();
             });
         });
@@ -147,9 +156,20 @@ async function deploy() {
                 options: options
             };
             fs.writeFileSync(path.join(OUT_PATH, 'config.json'), JSON.stringify(config, null, 2));
-            let image = new Jimp(originalWidth, originalHeight, async function (err, image) {
+            bar1.start(config.width * config.height, 0);
+            let q = [];
+            const pushToQueue = async (x, y, promise) => {
+                if (q.length < 20) {
+                    q.push(promise);
+                } else {
+                    // console.log("flushing queue");
+                    await Promise.all(q);
+                    q = [];
+                }
+            }
+            new Jimp(config.width, config.height, async function (err, image) {
                 if (err) throw err;
-
+                // start the progress bar with a total value of 200 and start value of 0
                 for (let h = 0; h < originalHeight; ++h) {
                     for (let w = 0; w < originalWidth; ++w) {
                         if (options.crop) {
@@ -161,18 +181,23 @@ async function deploy() {
                         if ((w + h * originalWidth) % 1000 == 0) {
                             console.log(percentage.toFixed(2) + '%');
                         }
-                        if (percentage > 1) {
-                            // break;
-                        }
                         const hex = img.getPixelColor(w, h)
                         // image.setPixelColor(hex, w, h);
-                        await createTile(w, h, hex, config);
+                        await pushToQueue(w, h, createTile(w, h, hex, config))
+                        image.setPixelColor(hex, w, h);
+                        // bar1.update(h * config.width + w);
                         // console.log(toColor(hex))
                     }
                 }
-                // image.write('test.png', (err) => {
-                //     if (err) throw err;
-                // });
+                await Promise.all(q);
+                q = [];
+                bar1.stop();
+                console.log("Finished");
+                // process.exit(255)
+
+                image.write('test.png', (err) => {
+                    if (err) throw err;
+                });
             });
         })
         .catch(err => {

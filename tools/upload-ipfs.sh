@@ -19,14 +19,16 @@ pushd "$SCRIPTPATH"
   fi
 
   mkdir "./deploy-logs" || true
-  RUN_LOG_PATH="./deploy-logs/$DEPLOY_ID-run.log"
-  DEPLOY_LOG_PATH="./deploy-logs/$DEPLOY_ID-ipfs.json"
-  # first run without --quieter to see full logs
-  full_log=$(ipfs add -r $IN_PATH)
-  # --quieter: return only final hash
-  dir_cid=$(ipfs add -r --quieter $IN_PATH)
-  echo "$dir_cid" >> "$RUN_LOG_PATH"
-  ipfs name publish --key="$DOG_IPFS_KEY" "$dir_cid"
+  RUN_LOG_PATH="$SCRIPTPATH/deploy-logs/$DEPLOY_ID-run.log"
+  DEPLOY_LOG_PATH="$SCRIPTPATH/deploy-logs/$DEPLOY_ID-ipfs.json"
+  pushd "$IN_PATH"
+    # first run without --quieter to see full logs
+    full_log=$(ipfs add -r ./)
+    # --quieter: return only final hash
+    dir_cid=$(ipfs add -r --quieter ./)
+    echo "$dir_cid" >> "$RUN_LOG_PATH"
+    ipfs name publish --key="$DOG_IPFS_KEY" "$dir_cid"
+  popd
   ipns_dir=$(ipfs name publish --quieter --key="$DOG_IPFS_KEY" "$dir_cid")
   echo "Files uploaded to: https://gateway.ipfs.io/ipns/$ipns_dir" >> "$RUN_LOG_PATH"
   jq -n --arg cid "$dir_cid" --arg run_log "$RUN_LOG_PATH" --arg ipns_dir "$ipns_dir" --arg full_log "$full_log" '{cid: $cid, run_log: $run_log, ipns: $ipns_dir, full_log: $full_log}' > "$DEPLOY_LOG_PATH"
