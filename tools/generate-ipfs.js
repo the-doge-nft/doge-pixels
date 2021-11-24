@@ -4,6 +4,7 @@ const fs = require('fs');
 const commandLineArgs = require('command-line-args');
 const optionDefinitions = [
     // {name: 'deploy_id', type: String},
+    {name: 'tile_size', type: Number, defaultOption: 128},
     {name: 'deploy_dir', type: String},
     {name: 'ipns_dir', type: String},
     {
@@ -36,11 +37,7 @@ function pixelUrl(x, y) {
 function createTile(x, y, hex) {
     let SIZE = 'sm';
     let size, prefix;
-    if (SIZE === 'large') {
-        size = 256;
-    } else {
-        size = 1;
-    }
+    size = opions.tile_size;
     prefix = '';//`pixels_${size}x${size}`
     return new Promise((resolve) => {
         let image = new Jimp(size, size, function (err, image) {
