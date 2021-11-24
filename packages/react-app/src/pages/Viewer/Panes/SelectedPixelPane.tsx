@@ -7,9 +7,10 @@ import Button, { ButtonVariant } from "../../../DSL/Button/Button";
 import { abbreviate } from "../../../helpers/strings";
 import PixelPane from "../../../DSL/PixelPane/PixelPane";
 import {SET_CAMERA} from "../../../services/mixins/eventable";
-import {openToEtherscanAddress} from "../../../helpers/links";
+import {useHistory} from "react-router-dom";
 
 const SelectedPixelPane = observer(function SelectedPixelPane({store}: {store: ViewerStore}) {
+  const history = useHistory()
   return <Flex flexDirection={"column"} justifyContent={"space-between"} h={"full"}>
     <Box>
       <Box mt={4}>
@@ -53,7 +54,11 @@ const SelectedPixelPane = observer(function SelectedPixelPane({store}: {store: V
           </Typography>
 
           <Box>
-            <Button variant={ButtonVariant.Text} onClick={() => openToEtherscanAddress(store.tokenOwner as string)}>
+            <Button variant={ButtonVariant.Text} onClick={() => {
+              history.push({
+                pathname: `/park/${store.tokenOwner}/${store.selectedPupper}`,
+              })
+            }}>
               <Typography block variant={TVariant.PresStart18} mt={2}>
                 {abbreviate(store.tokenOwner)}
               </Typography>

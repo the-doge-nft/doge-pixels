@@ -87,7 +87,9 @@ const ViewerPage = observer(function ViewerPage() {
         goToPixels={() => {
           store.isMintModalOpen = false
           store.isMintMemeModalOpen = false
-          store.pushNavigation(ViewerView.Manage)
+          if (store.currentView !== ViewerView.Manage) {
+            store.pushNavigation(ViewerView.Manage)
+          }
         }}
       />
       <BurnPixelsModal

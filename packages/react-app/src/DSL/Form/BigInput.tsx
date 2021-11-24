@@ -57,7 +57,6 @@ function BigInput<T extends object>({
           display={"flex"}
           alignItems={"center"}
           justifyContent={"center"}
-          mr={3}
         >
           <Typography
             variant={TVariant.PresStart45}

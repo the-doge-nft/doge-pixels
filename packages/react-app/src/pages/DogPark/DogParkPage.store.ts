@@ -30,6 +30,10 @@ class DogParkPageStore extends Reactionable(EmptyClass) {
       // }
     }
 
+    if (selectedPupper) {
+      this.selectedPupper = selectedPupper
+    }
+
     this.react(() => this.addressToSearch, (value, prevValue) => {
       //@ts-ignore
       if ((this.selectedAddress && value.length === prevValue.length - 1) || value === "") {

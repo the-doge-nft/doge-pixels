@@ -5,6 +5,8 @@ import AppStore from "../../store/App.store";
 import { Eventable, SET_CAMERA } from "../../services/mixins/eventable";
 import { Reactionable } from "../../services/mixins/reactionable";
 import LocalStorage from "../../services/local-storage";
+import * as Https from "https";
+import {Http} from "../../services";
 
 
 export enum ViewerView {
@@ -57,21 +59,21 @@ class ViewerStore extends Navigable(Eventable(Reactionable((EmptyClass)))) {
 
   init() {
     this.react(() => this.selectedPupper, () => {
-      AppStore.web3.pxContract!.tokenURI(this.selectedPupper!).then(res => {
-        console.log("debug:: tokenURI", res)
-        this.selectedURI = {
-          imgUrl: "",
-          description: {
-            pupperLocation: "Pupper"
-          }
-        }
-        // this.openSeaLink = "testlink"
-      }).catch(e => {
-        console.error("debug:: tokenURI error", e)
-      })
-
       AppStore.web3.pxContract!.ownerOf(this.selectedPupper!).then(res => {
         this.tokenOwner = res
+
+        // only query tokenuri if pixel is owned since we will be lazily uploading metadata to IPFS
+        AppStore.web3.pxContract!.tokenURI(this.selectedPupper!).then(res => {
+          console.log("debug:: tokenURI", res)
+          this.selectedURI = {
+            imgUrl: "",
+            description: {
+              pupperLocation: "Pupper"
+            }
+          }
+        }).catch(e => {
+          console.error("debug:: tokenURI error", e)
+        })
       }).catch(e => {
         this.tokenOwner = null
         console.error("debug:: tokenURI error", e)
@@ -125,10 +127,10 @@ class ViewerStore extends Navigable(Eventable(Reactionable((EmptyClass)))) {
     const [x, y] = await AppStore.web3.pupperToPixelCoords(pupper)
     const [x1, y1] = AppStore.web3.pupperToPixelCoordsLocal(pupper)
     if (x.toNumber() !== x1 || y.toNumber() !== y1) {
-      throw Error("X,Y from contract and local do not agree")
+      throw Error(`X,Y from contract and local do not agree. Local: ${x1} ${y1}. Remote: ${x} ${y}`)
     }
     this.selectedPupper = pupper
-    this.publish(SET_CAMERA, [x.toNumber(), y.toNumber()])
+    this.publish(SET_CAMERA, [x1, y1])
     this.pushNavigation(ViewerView.Selected)
   }
 
