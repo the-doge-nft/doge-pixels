@@ -10,7 +10,7 @@ import MintBurnButtons from "../MintBurnButtons";
 const IndexPane = observer(function IndexPane({store}: {store: ViewerStore}) {
   return  <>
     <Flex flexDirection={"column"} flexGrow={0} h={"100%"}>
-      <Box overflow={"scroll"} flexGrow={1} h={"full"} mt={3}>
+      <Box overflow={"scroll"} flexGrow={1} h={"full"} mt={4}>
         <Box maxHeight={"300px"}>
           <Typography variant={TVariant.ComicSans18} block>
             Look. Closer. Closer! Can you see it? A piece of the pupper picture for your pocket. A colored square with your name on it. A portal to the new paradigm of digital doge ownership.

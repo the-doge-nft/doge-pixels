@@ -17,11 +17,20 @@ class DogParkPageStore extends Reactionable(EmptyClass) {
   @observable
   selectedPupper?: number
 
-  constructor() {
+  constructor(selectedAddress?: string, selectedPupper?: number) {
     super()
     makeObservable(this)
+
+    if (selectedAddress) {
+      this.addressToSearch = selectedAddress
+      const addresses = this.topDogs.map(dog => dog.address)
+      // if (addresses.includes(selectedAddress)) {
+      //   alert("set selected address")
+      this.selectedAddress = selectedAddress
+      // }
+    }
+
     this.react(() => this.addressToSearch, (value, prevValue) => {
-      console.log("debug::", value, this.addressToSearch, prevValue)
       //@ts-ignore
       if ((this.selectedAddress && value.length === prevValue.length - 1) || value === "") {
         this.selectedAddress = undefined
@@ -55,7 +64,7 @@ class DogParkPageStore extends Reactionable(EmptyClass) {
 
   @computed
   get selectedDogs() {
-    return this.topDogs.filter(dog => dog.address === this.selectedAddress)[0]
+    return this.topDogs.filter(dog => dog.address === this.selectedAddress)
   }
 
   @computed

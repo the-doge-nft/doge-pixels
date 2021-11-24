@@ -14,19 +14,23 @@ import ReactModal from "react-modal";
 import "./Modal.css"
 
 
-export interface ModalProps extends ChakraModalProps {
-  isOpen: boolean;
+export interface ModalProps extends ReactModal.Props {
+  onClose: () => void;
+  size?: "xs" | "sm" | "md" | "lg",
   renderFooter?: () => JSX.Element;
   title?: string;
+  name?: string;
+  defaultPosition?: any;
 }
 
-const styleOverrides = {
+let styleOverrides: {overlay: object, content: object} = {
   overlay: {
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
     background: "none",
-    width: "100vw"
+    width: "100vw",
+    "pointer-events": "none"
   },
   content: {
     bottom: "unset",
@@ -39,7 +43,7 @@ const styleOverrides = {
     pointerEvents: "none",
     display: "flex",
     justifyContent: "center",
-    width: "100%"
+    width: "100%",
   }
 };
 
@@ -48,11 +52,15 @@ const Modal = ({
         onClose,
         children,
         size = "md",
-        title
+        title,
+        name,
+         defaultPosition,
+        ...rest
 }: ModalProps) => {
-  const styles = useMultiStyleConfig("Modal", {size: size})
-  const {colorMode} = useColorMode()
+  const chakraStyles = useMultiStyleConfig("Modal", {size: size})
+  const { colorMode } = useColorMode()
 
+  //@TODO CC
   // ReactModal.setAppElement('#react-modal-main');
   return (
     <ReactModal
@@ -60,9 +68,10 @@ const Modal = ({
       isOpen={isOpen}
       //@ts-ignore
       style={styleOverrides}
+      {...rest}
     >
-      <Draggable handle=".handle">
-          <Box __css={styles.container}>
+      <Draggable handle={".handle"} defaultPosition={defaultPosition}>
+          <Box __css={chakraStyles.container}>
             <Flex
               _hover={{
                 cursor: "pointer"
@@ -89,9 +98,9 @@ const Modal = ({
                 </Box>
               </Box>
             </Flex>
-            <Box __css={styles.body}>
-              {title && <Box __css={styles.title}>
-                <Typography variant={TVariant.PresStart18}>
+            <Box __css={chakraStyles.body}>
+              {title && <Box __css={chakraStyles.title}>
+                <Typography variant={TVariant.PresStart20}>
                   {title}
                 </Typography>
               </Box>}
