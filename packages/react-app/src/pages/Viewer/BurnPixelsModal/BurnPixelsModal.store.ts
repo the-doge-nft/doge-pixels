@@ -39,14 +39,20 @@ class BurnPixelsModalStore extends Navigable<AbstractConstructor, BurnPixelsModa
 
   async burnSelectedPixels() {
       try {
-        for (let i = 0; i < this.selectedPixels.length; i++) {
-          const tx = await AppStore.web3.burnPupper(this.selectedPixels[i])
+        if (this.selectedPixels.length === 1) {
+          const tx = await AppStore.web3.burnPupper(this.selectedPixels[0])
           await tx.wait()
-          AppStore.web3.refreshDogBalance()
-          AppStore.web3.refreshPupperBalance()
+        } else if (this.selectedPixels.length > 1) {
+          const tx = await AppStore.web3.burnPuppers(this.selectedPixels)
+          await tx.wait()
+        } else {
+          throw Error("burnSelectedPixels called with incorrect selectedPixels length")
         }
+        AppStore.web3.refreshDogBalance()
+        AppStore.web3.refreshPupperBalance()
         this.pushNavigation(BurnPixelsModalView.Complete)
       } catch (e) {
+        console.error(e)
         showErrorToast("Error burning pixels")
         this.popNavigation()
       }
