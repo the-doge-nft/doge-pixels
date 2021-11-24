@@ -264,6 +264,12 @@ class Web3Store {
         return this.pxContract!.burnPupper(pupper)
     }
 
+    burnPuppers(puppers: number[]) {
+        //@TODO: fix typeing of contracts on deploy
+        //@ts-ignore
+        return this.pxContract!.burnPuppers(puppers)
+    }
+
     @computed
     get addressForDisplay() {
         if (this.address) {
