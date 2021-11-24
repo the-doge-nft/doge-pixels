@@ -96,6 +96,11 @@ contract PX is ERC721CustomUpgradeable, OwnableUpgradeable {
         puppersRemaining -= 1;
 
         emit Transfer(address(0), to, tokenId);
+
+        // !!!! WARNING !!!! !!!! WARNING !!!! !!!! WARNING !!!! !!!! WARNING !!!! !!!! WARNING !!!! !!!! WARNING !!!!
+        // !!!! WARNING !!!! _MINT DOES NOT HANDLE TRANSFERING $DOG, PARENT FUNCTION MUST SEND THE TRANSACTION
+        // !!!! WARNING !!!! !!!! WARNING !!!! !!!! WARNING !!!! !!!! WARNING !!!! !!!! WARNING !!!! !!!! WARNING !!!!
+
     }
 
     /**
@@ -108,23 +113,45 @@ contract PX is ERC721CustomUpgradeable, OwnableUpgradeable {
      *
      * Emits a {Transfer} event.
      */
-    function _burn(uint256 tokenId) internal virtual override {
-        address owner = ERC721CustomUpgradeable.ownerOf(tokenId);
+    function _burn(uint256 pupper) internal virtual override {
 
-        _beforeTokenTransfer(owner, address(0), tokenId);
+        // First part: custom PX _burn() logic
+
+        require(pupper != MAGIC_NULL, "Pupper is magic");
+        require(ERC721CustomUpgradeable.ownerOf(pupper) == msg.sender, "Pupper is not yours");
+
+        // swap burnt pupper with one at N+1 index
+        uint256 oldIndex = pupperToIndex[pupper];
+        uint256 LAST_INDEX = INDEX_OFFSET + puppersRemaining;
+        uint256 tmpPupper = indexToPupper[LAST_INDEX];
+        pupperToIndex[pupper] = LAST_INDEX;
+        pupperToIndex[tmpPupper] = oldIndex;
+        indexToPupper[oldIndex] = tmpPupper;
+        indexToPupper[LAST_INDEX] = pupper;
+
+        // Rest standard ERC721 part of _burn()
+
+        address owner = ERC721CustomUpgradeable.ownerOf(pupper);
+
+        _beforeTokenTransfer(owner, address(0), pupper);
 
         // Clear approvals
-        _approve(address(0), tokenId);
+        _approve(address(0), pupper);
 
         console.log("burning pupper");
-        console.log(tokenId);
+        console.log(pupper);
 
         _balances[owner] -= 1;
         puppersRemaining += 1;
 
-        delete _owners[tokenId];
+        delete _owners[pupper];
 
-        emit Transfer(owner, address(0), tokenId);
+        emit Transfer(owner, address(0), pupper);
+
+        // !!!! WARNING !!!! !!!! WARNING !!!! !!!! WARNING !!!! !!!! WARNING !!!! !!!! WARNING !!!! !!!! WARNING !!!!
+        // !!!! WARNING !!!! _BURN DOES NOT HANDLE TRANSFERING $DOG, PARENT FUNCTION MUST SEND THE TRANSACTION
+        // !!!! WARNING !!!! !!!! WARNING !!!! !!!! WARNING !!!! !!!! WARNING !!!! !!!! WARNING !!!! !!!! WARNING !!!!
+
     }
 
     //
@@ -143,8 +170,6 @@ contract PX is ERC721CustomUpgradeable, OwnableUpgradeable {
     // - https://stackoverflow.com/questions/58188832/solidity-generate-unpredictable-random-number-that-does-not-depend-on-input
     //
     function randYish() public view returns (uint256 ret) {
-        // todo: do we need any assertions here?
-
         uint256 seed = uint256(keccak256(abi.encodePacked(
                 block.timestamp + block.difficulty +
                 ((uint256(keccak256(abi.encodePacked(block.coinbase)))) / (block.timestamp)) +
@@ -163,8 +188,8 @@ contract PX is ERC721CustomUpgradeable, OwnableUpgradeable {
     // Description:
     // randYish in 0...maxRand range
     //
-    function randYishInRange(uint256 maxRand) public view returns (uint256 ret) {
-        // todo: do we need any assertions here?
+    function randYishInRange(uint256 maxRand) internal returns (uint256 ret) {
+        // require(maxRand > 0, "Range non positive");
         ret = randYish() % maxRand;
         //        console.log("randyishinrange");
         //        console.log(ret);
@@ -177,9 +202,33 @@ contract PX is ERC721CustomUpgradeable, OwnableUpgradeable {
     // `mintPupper` but for minting multiple puppers with one ETH transaction
     //
     function mintPuppers(uint256 qty) public {
+        require(qty > 0, "Non positive quantity");
+        require(qty <= puppersRemaining, "Not enough puppers left");
         for (uint256 i = 0; i < qty; ++i) {
-            mintPupper();
+            // todo: asserts
+            // todo: near 0-len(mappings) indices handling
+            require(puppersRemaining > 0, "No puppers remaining");
+            uint256 index = INDEX_OFFSET + randYishInRange(puppersRemaining);
+            // if indexToPupper[index] == null, initialize it with `index` pupper
+            // this on-the-go initialization is optimization so gas fees for `indexToPupper` array initialization is delegated to the minter
+            if (indexToPupper[index] == MAGIC_NULL) {
+                indexToPupper[index] = index;
+            }
+            uint256 LAST_INDEX = INDEX_OFFSET + puppersRemaining - 1;
+            if (indexToPupper[LAST_INDEX] == MAGIC_NULL) {
+                indexToPupper[LAST_INDEX] = LAST_INDEX;
+            }
+            // return pupper @ `index`
+            uint256 pupper = indexToPupper[index];
+            // move pupper from `LAST_INDEX` to just used pupper
+            indexToPupper[index] = indexToPupper[LAST_INDEX];
+            // move used pupper to `unavailable` pool
+            indexToPupper[LAST_INDEX] = pupper;
+            pupperToIndex[pupper] = LAST_INDEX;
+            _mint(msg.sender, pupper);
         }
+        // transfer collateral to contract's address
+        DOG20.transferFrom(msg.sender, address(this), qty * DOG_TO_PIXEL_SATOSHIS);
     }
 
     //
@@ -190,30 +239,8 @@ contract PX is ERC721CustomUpgradeable, OwnableUpgradeable {
     // Specify amount of pixels you wish to receive. Your ETH address must entrust our contract of handling your
     // $DOG balance beforehand. You can open your $DOG balance for us with calling `approve` on the $DOG token contract.
     //
-    function mintPupper() public returns (uint256 pupper){
-        // todo: asserts
-        // todo: near 0-len(mappings) indices handling
-        require(puppersRemaining > 0, "No puppers remaining");
-        uint256 index = INDEX_OFFSET + randYishInRange(puppersRemaining);
-        // if indexToPupper[index] == null, initialize it with `index` pupper
-        // this on-the-go initialization is optimization so gas fees for `indexToPupper` array initialization is delegated to the minter
-        if (indexToPupper[index] == MAGIC_NULL) {
-            indexToPupper[index] = index;
-        }
-        uint256 LAST_INDEX = INDEX_OFFSET + puppersRemaining - 1;
-        if (indexToPupper[LAST_INDEX] == MAGIC_NULL) {
-            indexToPupper[LAST_INDEX] = LAST_INDEX;
-        }
-        // return pupper @ `index`
-        pupper = indexToPupper[index];
-        // move pupper from `LAST_INDEX` to just used pupper
-        indexToPupper[index] = indexToPupper[LAST_INDEX];
-        // move used pupper to `unavailable` pool
-        indexToPupper[LAST_INDEX] = pupper;
-        pupperToIndex[pupper] = LAST_INDEX;
-        _mint(msg.sender, pupper);
-        // transfer collateral to contract's address
-        DOG20.transferFrom(msg.sender, address(this), DOG_TO_PIXEL_SATOSHIS);
+    function mintPupper() public {
+        mintPuppers(1);
     }
 
     //
@@ -224,35 +251,37 @@ contract PX is ERC721CustomUpgradeable, OwnableUpgradeable {
     // the pixel.
     //
     function burnPupper(uint256 pupper) public {
-        // todo: asserts
-        require(pupper != MAGIC_NULL, "Pupper is magic");
-        require(ERC721CustomUpgradeable.ownerOf(pupper) == msg.sender, "Pupper is not yours");
-
-        // swap burnt pupper with one at N+1 index
-        uint256 oldIndex = pupperToIndex[pupper];
-        uint256 LAST_INDEX = INDEX_OFFSET + puppersRemaining;
-        uint256 tmpPupper = indexToPupper[LAST_INDEX];
-        pupperToIndex[pupper] = LAST_INDEX;
-        pupperToIndex[tmpPupper] = oldIndex;
-        indexToPupper[oldIndex] = tmpPupper;
-        indexToPupper[LAST_INDEX] = pupper;
-
         _burn(pupper);
         // transfer collateral to the burner
-        DOG20.transfer(msg.sender, DOG_TO_PIXEL_SATOSHIS);
+        DOG20.transfer(msg.sender, 1 * DOG_TO_PIXEL_SATOSHIS);
     }
-//
-//    //
-//    // fuelPuppyDispenser
-//    //
-//    // Description:
-//    // Enable owner to transfer $DOG to contract's pool, without receiving any pixels
-//    //
-//    function fuelPuppyDispenser(uint256 amount) onlyOwner public {
-//        // todo: asserts
-//        // transfer some DOGs free of charge to DOGPUPPER contract
-//        DOG20.transferFrom(msg.sender, address(this), DOG_TO_PIXEL_SATOSHIS);
-//    }
+    //
+    // burnPuppers
+    //
+    // Description:
+    // Burn puppers
+    //
+    function burnPuppers(uint256[] memory puppers) public {
+        require(puppers.length > 0, "Empty puppers");
+        for (uint256 i = 0; i < puppers.length; ++i) {
+            _burn(puppers[i]);
+        }
+        // transfer collateral to the burner
+        DOG20.transfer(msg.sender, puppers.length * DOG_TO_PIXEL_SATOSHIS);
+    }
+
+    //
+    //    //
+    //    // fuelPuppyDispenser
+    //    //
+    //    // Description:
+    //    // Enable owner to transfer $DOG to contract's pool, without receiving any pixels
+    //    //
+    //    function fuelPuppyDispenser(uint256 amount) onlyOwner public {
+    //        // todo: asserts
+    //        // transfer some DOGs free of charge to DOGPUPPER contract
+    //        DOG20.transferFrom(msg.sender, address(this), DOG_TO_PIXEL_SATOSHIS);
+    //    }
 
     //
     // pupperToPixel
@@ -264,6 +293,9 @@ contract PX is ERC721CustomUpgradeable, OwnableUpgradeable {
     function pupperToPixel(uint256 pupper) view public returns (uint256){
         return pupper - INDEX_OFFSET;
     }
+
+
+
     //
     // pupperToPixelCoords
     //
@@ -272,7 +304,7 @@ contract PX is ERC721CustomUpgradeable, OwnableUpgradeable {
     //
     function pupperToPixelCoords(uint256 pupper) view public returns (uint256[2] memory) {
         uint256 index = pupper - INDEX_OFFSET;
-            return [index % SHIBA_WIDTH, index / SHIBA_WIDTH];
+        return [index % SHIBA_WIDTH, index / SHIBA_WIDTH];
     }
 
     /**
