@@ -4,14 +4,14 @@ const fs = require('fs');
 const commandLineArgs = require('command-line-args');
 const optionDefinitions = [
     // {name: 'deploy_id', type: String},
-    {name: 'tile_size', type: Number, defaultOption: 128},
+    {name: 'tile_size', type: Number, defaultValue: 128},
     {name: 'deploy_dir', type: String},
     {name: 'ipns_dir', type: String},
     {
         name: 'crop',
         type: Number,
         description: 'If passed, size of crop by percentage 0...1',
-        defaultOption: 0
+        defaultValue: 0
     },
 ];
 const options = commandLineArgs(optionDefinitions);
@@ -34,10 +34,11 @@ function pixelUrl(x, y) {
     return `https://gateway.ipfs.io/ipns/${IPNS_DIR}/pixels/${x}_${y}.png`;
 }
 
-function createTile(x, y, hex) {
+function createTile(x, y, hex, RUN_CONFIG) {
     let SIZE = 'sm';
     let size, prefix;
-    size = opions.tile_size;
+    size = options.tile_size;
+    console.log(options);
     prefix = '';//`pixels_${size}x${size}`
     return new Promise((resolve) => {
         let image = new Jimp(size, size, function (err, image) {
@@ -52,15 +53,45 @@ function createTile(x, y, hex) {
             image.write(path.join(PIXELS_PATH, `${x}_${y}.png`), (err) => {
                 if (err) throw err;
                 console.log(`saved ${x}_${y}.png`);
-                fs.writeFileSync(path.join(METADATA_PATH, `metadata-${x}_${y}.json`), JSON.stringify({
-                                                                                                         name: `[${x}, ${y}]`,
-                                                                                                         description: `Pixel at ${x}x${y} with hex #${hex}; ${toColor(
-                                                                                                             hex)}`,
-                                                                                                         url: pixelUrl(
-                                                                                                             x,
-                                                                                                             y
-                                                                                                         ),
-                                                                                                     }, null, 2))
+                const index = y * RUN_CONFIG.width + x;
+                const metadata = {
+                    name: `[${x}, ${y}]`,
+                    description: `Pixel at ${x}x${y} with hex #${hex}; ${toColor(hex)}`,
+                    external_url: `https://squeamish-side.surge.sh/${index}/${index}/${index}/${index}/${index}/${index}/${index}/${index}`,
+                    image: pixelUrl(x, y),
+                    background_color: '#fff',//todo: select contrast
+                    attributes: [
+                        {
+                            trait_type: "REGION",
+                            value: "n/a"
+                        },
+                        {
+                            trait_type: "XCOORD",
+                            value: x
+                        },
+                        {
+                            trait_type: "YCOORD",
+                            value: y
+                        },
+                        {
+                            trait_type: "INDEX",
+                            value: index
+                        },
+                        {
+                            trait_type: "HEX",
+                            value: `#${hex}`
+                        },
+                        {
+                            trait_type: "RGBA",
+                            value: toColor(hex)
+                        },
+                        {
+                            trait_type: "DENSITY",
+                            value: "DENSE"
+                        },
+                    ]
+                };
+                fs.writeFileSync(path.join(METADATA_PATH, `metadata-${x}_${y}.json`), JSON.stringify(metadata, null, 2))
                 resolve();
             });
         });
@@ -93,38 +124,41 @@ async function deploy() {
     mkdir(OUT_PATH);
     mkdir(PIXELS_PATH);
     mkdir(METADATA_PATH);
-    Jimp.read('shiba.png')
+    Jimp.read(path.join(__dirname, '..', 'THE_ACTUAL_NFT_IMAGE.png'))
         .then(img => {
-            const width = img.getWidth();
-            const height = img.getHeight();
+            const originalWidth = img.getWidth();
+            const originalHeight = img.getHeight();
             let CROP_WIDTH, CROP_HEIGHT;
             if (options.crop) {
-                CROP_WIDTH = Math.floor(width * options.crop);
-                CROP_HEIGHT = Math.floor(height * options.crop);
+                CROP_WIDTH = Math.floor(originalWidth * options.crop);
+                CROP_HEIGHT = Math.floor(originalHeight * options.crop);
             }
-            fs.writeFileSync(path.join(OUT_PATH, 'config.json'), JSON.stringify(
-                {
-                    width: options.crop ? CROP_WIDTH : width,
-                    height: options.crop ? CROP_HEIGHT : height,
-                    original_width: width,
-                    original_height: height,
-                    CROP_WIDTH,
-                    CROP_HEIGHT,
-                    OUT_PATH,
-                    options: options
-                }, null, 2));
-            let image = new Jimp(width, height, async function (err, image) {
+
+            const width = options.crop ? CROP_WIDTH : originalWidth;
+            const height = options.crop ? CROP_HEIGHT : originalHeight;
+            const config = {
+                width,
+                height,
+                original_width: originalWidth,
+                original_height: originalHeight,
+                CROP_WIDTH,
+                CROP_HEIGHT,
+                OUT_PATH,
+                options: options
+            };
+            fs.writeFileSync(path.join(OUT_PATH, 'config.json'), JSON.stringify(config, null, 2));
+            let image = new Jimp(originalWidth, originalHeight, async function (err, image) {
                 if (err) throw err;
 
-                for (let h = 0; h < height; ++h) {
-                    for (let w = 0; w < width; ++w) {
+                for (let h = 0; h < originalHeight; ++h) {
+                    for (let w = 0; w < originalWidth; ++w) {
                         if (options.crop) {
                             if (w > CROP_WIDTH || h > CROP_HEIGHT) {
                                 break;
                             }
                         }
-                        const percentage = (w + h * width) / (width * height) * 100;
-                        if ((w + h * width) % 1000 == 0) {
+                        const percentage = (w + h * originalWidth) / (originalWidth * originalHeight) * 100;
+                        if ((w + h * originalWidth) % 1000 == 0) {
                             console.log(percentage.toFixed(2) + '%');
                         }
                         if (percentage > 1) {
@@ -132,14 +166,13 @@ async function deploy() {
                         }
                         const hex = img.getPixelColor(w, h)
                         // image.setPixelColor(hex, w, h);
-                        await createTile(w, h, hex);
+                        await createTile(w, h, hex, config);
                         // console.log(toColor(hex))
                     }
                 }
-
-                image.write('test.png', (err) => {
-                    if (err) throw err;
-                });
+                // image.write('test.png', (err) => {
+                //     if (err) throw err;
+                // });
             });
         })
         .catch(err => {

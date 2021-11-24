@@ -36,6 +36,7 @@ export interface PXInterface extends ethers.utils.Interface {
     "approve(address,uint256)": FunctionFragment;
     "balanceOf(address)": FunctionFragment;
     "burnPupper(uint256)": FunctionFragment;
+    "burnPuppers(uint256[])": FunctionFragment;
     "getApproved(uint256)": FunctionFragment;
     "isApprovedForAll(address,address)": FunctionFragment;
     "mintPupper()": FunctionFragment;
@@ -47,7 +48,6 @@ export interface PXInterface extends ethers.utils.Interface {
     "pupperToPixelCoords(uint256)": FunctionFragment;
     "puppersRemaining()": FunctionFragment;
     "randYish()": FunctionFragment;
-    "randYishInRange(uint256)": FunctionFragment;
     "renounceOwnership()": FunctionFragment;
     "safeTransferFrom(address,address,uint256)": FunctionFragment;
     "setApprovalForAll(address,bool)": FunctionFragment;
@@ -94,6 +94,10 @@ export interface PXInterface extends ethers.utils.Interface {
     values: [BigNumberish]
   ): string;
   encodeFunctionData(
+    functionFragment: "burnPuppers",
+    values: [BigNumberish[]]
+  ): string;
+  encodeFunctionData(
     functionFragment: "getApproved",
     values: [BigNumberish]
   ): string;
@@ -128,10 +132,6 @@ export interface PXInterface extends ethers.utils.Interface {
     values?: undefined
   ): string;
   encodeFunctionData(functionFragment: "randYish", values?: undefined): string;
-  encodeFunctionData(
-    functionFragment: "randYishInRange",
-    values: [BigNumberish]
-  ): string;
   encodeFunctionData(
     functionFragment: "renounceOwnership",
     values?: undefined
@@ -189,6 +189,10 @@ export interface PXInterface extends ethers.utils.Interface {
   decodeFunctionResult(functionFragment: "balanceOf", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "burnPupper", data: BytesLike): Result;
   decodeFunctionResult(
+    functionFragment: "burnPuppers",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: "getApproved",
     data: BytesLike
   ): Result;
@@ -217,10 +221,6 @@ export interface PXInterface extends ethers.utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "randYish", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "randYishInRange",
-    data: BytesLike
-  ): Result;
   decodeFunctionResult(
     functionFragment: "renounceOwnership",
     data: BytesLike
@@ -356,6 +356,11 @@ export interface PX extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
+    burnPuppers(
+      puppers: BigNumberish[],
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
     getApproved(
       tokenId: BigNumberish,
       overrides?: CallOverrides
@@ -398,11 +403,6 @@ export interface PX extends BaseContract {
     puppersRemaining(overrides?: CallOverrides): Promise<[BigNumber]>;
 
     randYish(
-      overrides?: CallOverrides
-    ): Promise<[BigNumber] & { ret: BigNumber }>;
-
-    randYishInRange(
-      maxRand: BigNumberish,
       overrides?: CallOverrides
     ): Promise<[BigNumber] & { ret: BigNumber }>;
 
@@ -493,6 +493,11 @@ export interface PX extends BaseContract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
+  burnPuppers(
+    puppers: BigNumberish[],
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
   getApproved(
     tokenId: BigNumberish,
     overrides?: CallOverrides
@@ -532,11 +537,6 @@ export interface PX extends BaseContract {
   puppersRemaining(overrides?: CallOverrides): Promise<BigNumber>;
 
   randYish(overrides?: CallOverrides): Promise<BigNumber>;
-
-  randYishInRange(
-    maxRand: BigNumberish,
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
 
   renounceOwnership(
     overrides?: Overrides & { from?: string | Promise<string> }
@@ -619,6 +619,11 @@ export interface PX extends BaseContract {
 
     burnPupper(pupper: BigNumberish, overrides?: CallOverrides): Promise<void>;
 
+    burnPuppers(
+      puppers: BigNumberish[],
+      overrides?: CallOverrides
+    ): Promise<void>;
+
     getApproved(
       tokenId: BigNumberish,
       overrides?: CallOverrides
@@ -630,7 +635,7 @@ export interface PX extends BaseContract {
       overrides?: CallOverrides
     ): Promise<boolean>;
 
-    mintPupper(overrides?: CallOverrides): Promise<BigNumber>;
+    mintPupper(overrides?: CallOverrides): Promise<void>;
 
     mintPuppers(qty: BigNumberish, overrides?: CallOverrides): Promise<void>;
 
@@ -653,11 +658,6 @@ export interface PX extends BaseContract {
     puppersRemaining(overrides?: CallOverrides): Promise<BigNumber>;
 
     randYish(overrides?: CallOverrides): Promise<BigNumber>;
-
-    randYishInRange(
-      maxRand: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
 
     renounceOwnership(overrides?: CallOverrides): Promise<void>;
 
@@ -786,6 +786,11 @@ export interface PX extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
+    burnPuppers(
+      puppers: BigNumberish[],
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
     getApproved(
       tokenId: BigNumberish,
       overrides?: CallOverrides
@@ -828,11 +833,6 @@ export interface PX extends BaseContract {
     puppersRemaining(overrides?: CallOverrides): Promise<BigNumber>;
 
     randYish(overrides?: CallOverrides): Promise<BigNumber>;
-
-    randYishInRange(
-      maxRand: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
 
     renounceOwnership(
       overrides?: Overrides & { from?: string | Promise<string> }
@@ -927,6 +927,11 @@ export interface PX extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
+    burnPuppers(
+      puppers: BigNumberish[],
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
     getApproved(
       tokenId: BigNumberish,
       overrides?: CallOverrides
@@ -969,11 +974,6 @@ export interface PX extends BaseContract {
     puppersRemaining(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     randYish(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    randYishInRange(
-      maxRand: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
 
     renounceOwnership(
       overrides?: Overrides & { from?: string | Promise<string> }

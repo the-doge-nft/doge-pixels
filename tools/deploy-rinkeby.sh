@@ -6,6 +6,8 @@
 # Deploy rinkeby(or hardhat). With IPFS handling.
 #
 set -eu
+export TARGET="rinkeby"
+
 export SCRIPTPATH="$( cd "$(dirname "$0")" >/dev/null 2>&1 ; pwd -P )"
 export ROOTPATH="$SCRIPTPATH/.."
 source "$SCRIPTPATH/utils.sh"
@@ -19,11 +21,13 @@ export DEPLOY_ID=$(date '+%Y-%m-%d_%H_%M_%S')
 export DOG_IPFS_KEY="dog_deploy_$DEPLOY_ID"
 export IPNS_DIR=$(get_ipns_dir)
 export DEPLOY_DIR="$SCRIPTPATH/deploy/$DEPLOY_ID"
-export CROP=0.02
+export CROP=0.2
 
-if ! isHardhatRunning; then
-  echo "Hardhat must be running: yarn chain"
-  exit 1
+if [ "$TARGET" == "hardhat" ]; then
+  if ! isHardhatRunning; then
+    echo "Hardhat must be running: yarn chain"
+    exit 1
+  fi
 fi
 
 if ! isIpfsRunning; then
@@ -35,6 +39,7 @@ fi
 # DEPLOYMENT
 #
 pushd "$SCRIPTPATH"
+  rm -rf ../packages/hardhat/deployments/rinkeby
   echo "============================================"
   echo "=========                          ========="
   echo "=========       💫 DEPLOY 💫       ========="
@@ -76,9 +81,13 @@ pushd "$SCRIPTPATH"
       # todo: check if uploaded ipfs files can be curl'd
       set +x
       # make last confirm before uploading contracts
-      confirm
+#      confirm
     fi
-    npx hardhat deploy --network hardhat --export-all ./hardhat_contracts.json
+    if [ "$TARGET" == "hardhat" ]; then
+      npx hardhat deploy --network hardhat --export-all ./hardhat_contracts.json
+    else
+      npx hardhat deploy --network rinkeby --export-all ./hardhat_contracts.json
+    fi
   popd
 popd
 
