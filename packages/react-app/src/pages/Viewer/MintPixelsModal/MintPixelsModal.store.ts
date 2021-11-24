@@ -9,7 +9,8 @@ import AppStore from "../../../store/App.store";
 export enum MintModalView {
   Mint = "mint",
   Approval = "approval",
-  Loading = "loading",
+  LoadingApproval = "loadingApproval",
+  LoadingPixels = "loadingPixels",
   Complete = "complete"
 }
 
@@ -22,9 +23,6 @@ class MintPixelsModalStore extends Reactionable((Navigable(EmptyClass))) {
 
   @observable
   allowanceToGrant: number = 0
-
-  @observable
-  newlyMintedPupperIds: number[] = []
 
   constructor() {
     super();
@@ -64,7 +62,7 @@ class MintPixelsModalStore extends Reactionable((Navigable(EmptyClass))) {
         this.allowanceToGrant = dogToSpend
         resolve(this.pushNavigation(MintModalView.Approval))
       } else {
-        resolve(this.pushNavigation(MintModalView.Loading))
+        resolve(this.pushNavigation(MintModalView.LoadingPixels))
       }
     })
   }
@@ -73,15 +71,7 @@ class MintPixelsModalStore extends Reactionable((Navigable(EmptyClass))) {
     try {
       const tx = await AppStore.web3.mintPuppers(amount)
       showDebugToast(`minting ${this.pixel_count!} pixel`)
-      const receipt = await tx.wait()
-      receipt.events?.forEach(event => {
-        const tokenId = event.args?.tokenId.toNumber()
-        if (tokenId) {
-          if (!this.newlyMintedPupperIds.includes(tokenId)) {
-            this.newlyMintedPupperIds.push(tokenId)
-          }
-        }
-      })
+      await tx.wait()
       this.pushNavigation(MintModalView.Complete)
       AppStore.web3.refreshPupperBalance()
       AppStore.web3.refreshDogBalance()
@@ -92,14 +82,15 @@ class MintPixelsModalStore extends Reactionable((Navigable(EmptyClass))) {
   }
 
 
-  async handleApproveSubmit() {
+  async approveDogSpend() {
     try {
       const tx = await AppStore.web3.approvePxSpendDog(this.allowanceToGrant)
       showDebugToast(`approving DOG spend: ${this.allowanceToGrant}`)
       await tx.wait()
       this.refreshAllowance()
-      this.pushNavigation(MintModalView.Loading)
+      this.pushNavigation(MintModalView.LoadingPixels)
     } catch (e) {
+      this.popNavigation()
       showErrorToast("Error approving $DOG spend")
     }
   }

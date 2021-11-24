@@ -19,36 +19,55 @@ const ModalStyle = {
       overflow: "hidden",
       position: "relative"
     },
-    body: {
-      px: 8,
-      pb: 12
-    },
-    title: {
-      mt: 8,
-      mb: 2
-    }
   }),
   sizes: {
+    xs: {
+      container: {
+        maxWidth: "20rem"
+      },
+      body: {
+        p: 0
+      }
+    },
     sm: {
       container: {
         maxWidth: "24rem"
       },
+      body: {
+        px: 8,
+        pb: 12
+      },
+      title: {
+        mt: 8,
+        mb: 2
+      }
     },
     md: {
       container: {
         maxWidth: "28rem"
+      },
+      body: {
+        px: 8,
+        pb: 12
+      },
+      title: {
+        mt: 8,
+        mb: 2
       }
     },
     lg: {
       container: {
         maxWidth: "32rem"
+      },
+      body: {
+        px: 8,
+        pb: 12
+      },
+      title: {
+        mt: 8,
+        mb: 2
       }
     },
-    xl: {
-      container: {
-        maxWidth: "36rem"
-      }
-    }
   }
 }
 

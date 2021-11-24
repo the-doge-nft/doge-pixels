@@ -2,7 +2,6 @@ import {action, computed, makeObservable, observable} from "mobx";
 import {AbstractConstructor, EmptyClass} from "../../helpers/mixins";
 import {Navigable} from "../../services/mixins/navigable";
 import AppStore from "../../store/App.store";
-import * as THREE from "three";
 import { Eventable, SET_CAMERA } from "../../services/mixins/eventable";
 import { Reactionable } from "../../services/mixins/reactionable";
 import LocalStorage from "../../services/local-storage";
@@ -26,6 +25,12 @@ class ViewerStore extends Navigable(Eventable(Reactionable((EmptyClass)))) {
 
   @observable
   isHelperModalOpen = true;
+
+  @observable
+  isMintMemeModalOpen = false;
+
+  @observable
+  isBurnMemeModalOpen = false;
 
   @observable
   selectedPupper: number | null = null;
@@ -53,6 +58,7 @@ class ViewerStore extends Navigable(Eventable(Reactionable((EmptyClass)))) {
   init() {
     this.react(() => this.selectedPupper, () => {
       AppStore.web3.pxContract!.tokenURI(this.selectedPupper!).then(res => {
+        console.log("debug:: tokenURI", res)
         this.selectedURI = {
           imgUrl: "",
           description: {
@@ -61,14 +67,14 @@ class ViewerStore extends Navigable(Eventable(Reactionable((EmptyClass)))) {
         }
         // this.openSeaLink = "testlink"
       }).catch(e => {
-        console.error("debug:: error", e)
+        console.error("debug:: tokenURI error", e)
       })
 
       AppStore.web3.pxContract!.ownerOf(this.selectedPupper!).then(res => {
         this.tokenOwner = res
       }).catch(e => {
         this.tokenOwner = null
-        console.error("debug:: error", e)
+        console.error("debug:: tokenURI error", e)
       })
     }, {fireImmediately: true})
 

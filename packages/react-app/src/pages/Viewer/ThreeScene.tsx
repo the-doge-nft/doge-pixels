@@ -57,7 +57,7 @@ const ThreeScene =({onPixelSelect, store}: ThreeSceneProps) => {
 
       camera.position.x = imageWorldUnitsWidth / 2 - 0.65;
       camera.position.y = -1 * imageWorldUnitsHeight / 2 + 0.26;
-      camera.position.z = maxCameraZ;
+      camera.position.z = maxCameraZ - 1000;
 
       canvasContainerRef.current = node
       node.focus()

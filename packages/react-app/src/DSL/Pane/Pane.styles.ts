@@ -10,8 +10,7 @@ const PaneStyle = {
       background: lightOrDark(colorMode, "yellow.50", darkModePrimary),
       position: "relative",
       h: "full",
-      px: 9,
-      py: 9,
+      p: 9,
       _after: {
         base: "none",
         md :{

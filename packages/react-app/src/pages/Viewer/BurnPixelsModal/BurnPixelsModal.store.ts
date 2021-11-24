@@ -5,7 +5,9 @@ import AppStore from "../../../store/App.store";
 import { showErrorToast } from "../../../DSL/Toast/Toast";
 
 export enum BurnPixelsModalView {
-  Select = "select"
+  Select = "select",
+  LoadingBurning = "burning",
+  Complete = "complete"
 }
 
 class BurnPixelsModalStore extends Navigable<AbstractConstructor, BurnPixelsModalView>(EmptyClass){
@@ -35,8 +37,7 @@ class BurnPixelsModalStore extends Navigable<AbstractConstructor, BurnPixelsModa
     }
   }
 
-  handleSubmit() {
-    return new Promise(async (resolve, reject) => {
+  async burnSelectedPixels() {
       try {
         for (let i = 0; i < this.selectedPixels.length; i++) {
           const tx = await AppStore.web3.burnPupper(this.selectedPixels[i])
@@ -44,13 +45,11 @@ class BurnPixelsModalStore extends Navigable<AbstractConstructor, BurnPixelsModa
           AppStore.web3.refreshDogBalance()
           AppStore.web3.refreshPupperBalance()
         }
-        console.log("debug:: resolve")
-        resolve(this.selectedPixels)
+        this.pushNavigation(BurnPixelsModalView.Complete)
       } catch (e) {
-        showErrorToast("Error burning pixel")
-        return reject()
+        showErrorToast("Error burning pixels")
+        this.popNavigation()
       }
-    })
   }
 
   @action
@@ -58,9 +57,29 @@ class BurnPixelsModalStore extends Navigable<AbstractConstructor, BurnPixelsModa
     this.selectedPixels = [...AppStore.web3.puppersOwned]
   }
 
+  @action
+  deselectAllPixels() {
+    this.selectedPixels = []
+  }
+
   @computed
   get selectedPixelsDogValue() {
     return AppStore.web3.DOG_TO_PIXEL_SATOSHIS * this.selectedPixels.length
+  }
+
+  @computed
+  get isAllPixelsSelected() {
+    return this.selectedPixels.length === AppStore.web3.puppersOwned.length
+  }
+
+  @computed
+  get modalTitle() {
+    switch (this.currentView) {
+      case BurnPixelsModalView.Select:
+        return "Burn your Pixels"
+      default:
+        return ""
+    }
   }
 
 }

@@ -39,6 +39,11 @@ const TypographyStyle = {
       fontWeight: "normal",
       fontSize: "18px",
     },
+    PresStart20: {
+      fontFamily: Type.PresStart,
+      fontWeight: "normal",
+      fontSize: "20px",
+    },
     PresStart22: {
       fontFamily: Type.PresStart,
       fontWeight: "normal",
@@ -53,6 +58,11 @@ const TypographyStyle = {
       fontFamily: Type.PresStart,
       fontWeight: "normal",
       fontSize: "28px",
+    },
+    PresStart30: {
+      fontFamily: Type.PresStart,
+      fontWeight: "normal",
+      fontSize: "30px",
     },
     PresStart45: {
       fontFamily: Type.PresStart,
