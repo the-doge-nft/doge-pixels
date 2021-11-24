@@ -102,7 +102,7 @@ describe("[PX]", function () {
       const index = tokenId.toNumber() - INDEX_OFFSET;
       const x = index % MOCK_WIDTH;
       const y = Math.floor(index / MOCK_WIDTH);
-      expect(await PX.tokenURI(tokenId)).to.equal(`${MOCK_URI}${x}_${y}`);
+      expect(await PX.tokenURI(tokenId)).to.equal(`${MOCK_URI}metadata/metadata-${x}_${y}.json`);
       return tokenId;
     } else {
       throw new Error("Transfer event was not fired");
@@ -194,7 +194,7 @@ describe("[PX]", function () {
       if (balance !== 0) {
         await DOG20.connect(signer4).transfer(owner.address, balance)
       }
-      await mintPupperWithValidation(signer4,1, ERROR_D20_TX_EXCEEDS_BALANCE)
+      await mintPupperWithValidation(signer4, 1, ERROR_D20_TX_EXCEEDS_BALANCE)
     });
     it('burnPuppers empty array throws', function () {
 
@@ -250,40 +250,39 @@ describe("[PX]", function () {
 
     });
 
-    describe("single full cycle", function(){
-      it('mint all supply', async function () {
-        this.timeout(0);
-        let count = 0;
-        while (true) {
-          await mintPupperWithValidation(addr1);
-          ++count;
-          const remaining = await PX.puppersRemaining();
-          console.log(`remaining: ${remaining}`)
-          if (remaining.toNumber() === 0) {
-            break;
-          }
-          if (count % 250 == 0) {
-            const p = (count / MOCK_SUPPLY * 100).toFixed(2);
-            console.log(`progress ${p}%`);
-          }
+    it('mint all supply', async function () {
+      this.timeout(0);
+      let count = 0;
+      while (true) {
+        const remaining = await PX.puppersRemaining();
+        console.log(`remaining: ${remaining}`)
+        if (remaining.toNumber() === 0) {
+          break;
         }
-        console.log("=== END ===")
-        console.log(`minted ${count} tokens`)
-        await expectRevert(mintPupperWithValidation(addr1), ERROR_NO_PX_REMAINING);
-      });
-      it('burn all supply', async function () {
-        const arr = shuffle(range(MOCK_SUPPLY));
-        // burn in random order
-        for (let i = 0; i < arr.length; ++i) {
-          const tokenId = arr[i] + INDEX_OFFSET;
-          const o = await PX.ownerOf(tokenId);
-          const signer = getSignerFromAddress(o);
-          console.log(`owner of ${tokenId} is ${signer.address}`)
-          await burnPupperWithValidation(signer, tokenId);
-          await burnPupperWithValidation(signer, tokenId, 'ERC721: owner query for nonexistent token');
+        await mintPupperWithValidation(addr1);
+        ++count;
+        if (count % 250 == 0) {
+          const p = (count / MOCK_SUPPLY * 100).toFixed(2);
+          console.log(`progress ${p}%`);
         }
-      });
-    })
+      }
+      console.log("=== END ===")
+      console.log(`minted ${count} tokens`)
+      await mintPupperWithValidation(addr1, 1, ERROR_NO_PX_REMAINING);
+    });
+    it('burn all supply', async function () {
+      this.timeout(0);
+      const arr = shuffle(range(MOCK_SUPPLY));
+      // burn in random order
+      for (let i = 0; i < arr.length; ++i) {
+        const tokenId = arr[i] + INDEX_OFFSET;
+        const o = await PX.ownerOf(tokenId);
+        const signer = getSignerFromAddress(o);
+        console.log(`owner of ${tokenId} is ${signer.address}`)
+        await burnPupperWithValidation(signer, tokenId);
+        await burnPupperWithValidation(signer, tokenId, 'ERC721: owner query for nonexistent token');
+      }
+    });
     it('mint/burn cycle', async function () {
       const cyclesQty = MOCK_SUPPLY * 1;
       let divider = 2;
@@ -315,6 +314,10 @@ describe("[PX]", function () {
           } else {
             await burnPupperWithValidation(signer, tokenId, 'ERC721: owner query for nonexistent token');
           }
+        }
+        if (i % Math.floor(cyclesQty / 50) === 0) {
+          const p = (i / cyclesQty * 100).toFixed(2);
+          console.log(`progress ${p}%`);
         }
       }
     });

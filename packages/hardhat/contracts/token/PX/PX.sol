@@ -203,10 +203,8 @@ contract PX is ERC721CustomUpgradeable, OwnableUpgradeable {
     //
     function mintPuppers(uint256 qty) public {
         require(qty > 0, "Non positive quantity");
-        require(qty <= puppersRemaining, "Not enough puppers left");
+        require(qty <= puppersRemaining, "No puppers remaining");
         for (uint256 i = 0; i < qty; ++i) {
-            // todo: asserts
-            // todo: near 0-len(mappings) indices handling
             require(puppersRemaining > 0, "No puppers remaining");
             uint256 index = INDEX_OFFSET + randYishInRange(puppersRemaining);
             // if indexToPupper[index] == null, initialize it with `index` pupper
@@ -218,7 +216,7 @@ contract PX is ERC721CustomUpgradeable, OwnableUpgradeable {
             if (indexToPupper[LAST_INDEX] == MAGIC_NULL) {
                 indexToPupper[LAST_INDEX] = LAST_INDEX;
             }
-            // return pupper @ `index`
+            // select pupper @ `index`
             uint256 pupper = indexToPupper[index];
             // move pupper from `LAST_INDEX` to just used pupper
             indexToPupper[index] = indexToPupper[LAST_INDEX];
