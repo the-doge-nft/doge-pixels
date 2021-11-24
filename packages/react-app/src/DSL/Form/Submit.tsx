@@ -20,7 +20,7 @@ const Submit = observer(({ label, onClick, isLoading, isDisabled, ...rest }: Sub
       submit
       onClick={onClick}
       isLoading={submitting || isLoading}
-      isDisabled={isDisabled}
+      isDisabled={isDisabled || ObjectKeys(errors).length > 0 }
       {...rest}
     >
       {label ? label : t`Submit`}

@@ -4,30 +4,37 @@ import Modal, {ModalProps} from "../../../DSL/Modal/Modal";
 import Typography, {TVariant} from "../../../DSL/Typography/Typography";
 import MintPixelsModalStore, {MintModalView} from "./MintPixelsModal.store";
 import Button from "../../../DSL/Button/Button";
-import {Box, Flex, Grid, GridItem} from "@chakra-ui/react";
+import {Box, Flex} from "@chakra-ui/react";
 import Form from "../../../DSL/Form/Form";
-import NumberInput from "../../../DSL/Form/NumberInput/NumberInput";
 import {maxValue, minValue, required} from "../../../DSL/Form/validation";
-import model from "../../../DSL/Form/model";
 import AppStore from "../../../store/App.store";
-import Dev from "../../../common/Dev";
 import Submit from "../../../DSL/Form/Submit";
 import BigInput from "../../../DSL/Form/BigInput";
-import Draggable from "react-draggable";
 import Loading from "../../../DSL/Loading/Loading";
+import {formatWithThousandsSeparators} from "../../../helpers/numberFormatter";
 
-interface MintPixelsModalProps extends Pick<ModalProps, "isOpen" | "onClose"> {}
+interface MintPixelsModalProps extends Pick<ModalProps, "isOpen" | "onClose"> {
+  onSuccess?: () => void;
+  goToPixels: () => void;
+}
 
-const MintPixelsModal = observer(({ isOpen, onClose }: MintPixelsModalProps) => {
+const MintPixelsModal = observer(({ isOpen, onClose, onSuccess, goToPixels }: MintPixelsModalProps) => {
   const store = useMemo(() => new MintPixelsModalStore(), [isOpen]);
   useEffect(() => {
     if (isOpen) {
       store.init()
     }
   }, [isOpen])
+
+  useEffect(() => {
+    if (store.currentView === MintModalView.Complete) {
+      onSuccess && onSuccess()
+    }
+  }, [store.currentView])
+
   return (
     <Modal
-      size={"xl"}
+      size={"lg"}
       isOpen={isOpen}
       title={store.modalTitle}
       onClose={() => {
@@ -36,8 +43,9 @@ const MintPixelsModal = observer(({ isOpen, onClose }: MintPixelsModalProps) => 
     >
       {store.currentView === MintModalView.Mint && <MintForm store={store}/>}
       {store.currentView === MintModalView.Approval && <Approval store={store}/>}
-      {store.currentView === MintModalView.Loading && <LoadingPixels store={store}/>}
-      {store.currentView === MintModalView.Complete && <Complete store={store}/>}
+      {store.currentView === MintModalView.LoadingApproval && <LoadingApproval store={store}/>}
+      {store.currentView === MintModalView.LoadingPixels && <LoadingPixels store={store}/>}
+      {store.currentView === MintModalView.Complete && <Complete onSuccess={goToPixels}/>}
     </Modal>
   );
 });
@@ -45,7 +53,7 @@ const MintPixelsModal = observer(({ isOpen, onClose }: MintPixelsModalProps) => 
 const MintForm = observer(({ store }: { store: MintPixelsModalStore }) => {
   return (
     <>
-        <Box mb={8}>
+        <Box mb={8} mt={4}>
           <Typography variant={TVariant.ComicSans18}>
             Trade $DOG for pixels. Each pixel is worth 55,240 $DOG.
           </Typography>
@@ -60,17 +68,19 @@ const MintForm = observer(({ store }: { store: MintPixelsModalStore }) => {
             validate={[
               required,
               minValue(1, "Must mint at least 1 pixel"),
-              maxValue(store.maxPixelsToPurchase, `You don't have enough $DOG 😕`)
+              maxValue(store.maxPixelsToPurchase, `Not enough $DOG 😕`)
             ]}
+            renderLeftOfValidation={() => {
+              return <Box>
+                <Typography variant={TVariant.PresStart15} block>
+                  $DOG
+                </Typography>
+                <Typography variant={TVariant.ComicSans18} block>
+                  {formatWithThousandsSeparators(store.dogCount)}
+                </Typography>
+              </Box>
+            }}
           />
-        </Box>
-        <Box mt={8}>
-          <Typography variant={TVariant.PresStart18} block>
-            $DOG
-          </Typography>
-          <Typography variant={TVariant.PresStart18} block mt={2}>
-            {store.dogCount}
-          </Typography>
         </Box>
         <Flex justifyContent={"center"}>
           <Submit label={"Mint"} mt={10}/>
@@ -83,13 +93,13 @@ const MintForm = observer(({ store }: { store: MintPixelsModalStore }) => {
 const Approval = observer(({store}: {store: MintPixelsModalStore}) => {
   return (
     <Box>
-      <Typography display={"block"} variant={TVariant.PresStart28} my={6}>
+      <Typography display={"block"} variant={TVariant.PresStart30} my={6}>
         {store.allowanceToGrant / (10 ** AppStore.web3.D20_PRECISION)}
       </Typography>
       <Typography block variant={TVariant.ComicSans18} mt={4}>
         Please approve $DOG to be spent for pixels.
       </Typography>
-      <Form onSubmit={() => store.handleApproveSubmit()}>
+      <Form onSubmit={async () => store.pushNavigation(MintModalView.LoadingApproval)}>
         <Flex
           flexDirection={"column"}
           mt={14}
@@ -105,6 +115,16 @@ const Approval = observer(({store}: {store: MintPixelsModalStore}) => {
   );
 });
 
+const LoadingApproval = observer(({store}: {store: MintPixelsModalStore}) => {
+  useEffect(() => {
+    store.approveDogSpend()
+  }, [])
+  return (
+    <Box mt={20} mb={10}>
+      <Loading title={"Approving..."}/>
+    </Box>
+  )
+})
 
 const LoadingPixels = observer(({store}: {store: MintPixelsModalStore}) => {
   useEffect(() => {
@@ -112,12 +132,12 @@ const LoadingPixels = observer(({store}: {store: MintPixelsModalStore}) => {
   }, [])
   return (
     <Box mt={20} mb={10}>
-      <Loading/>
+      <Loading title={"Minting..."}/>
     </Box>
   );
 });
 
-const Complete = observer(({store}: {store: MintPixelsModalStore}) => {
+const Complete = observer(({onSuccess}: {onSuccess: () => void}) => {
   return <Box pt={10} pb={4}>
       <Typography variant={TVariant.PresStart28} textAlign={"center"} block>
         Pixels Minted
@@ -126,7 +146,7 @@ const Complete = observer(({store}: {store: MintPixelsModalStore}) => {
         🌟🦄💫🐸🐕🚀
       </Typography>
       <Flex justifyContent={"center"} mt={12}>
-        <Button>Go to pixels</Button>
+        <Button onClick={() => onSuccess()}>Go to pixels</Button>
       </Flex>
   </Box>
 })

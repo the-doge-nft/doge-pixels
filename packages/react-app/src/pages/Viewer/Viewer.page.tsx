@@ -16,6 +16,8 @@ import Loading from "../../DSL/Loading/Loading";
 import ScrollHelperModal from "./ScrollHelperModal/ScrollHelperModal";
 import {useQuery} from "../../helpers/hooks";
 import Typography, { TVariant } from "../../DSL/Typography/Typography";
+import Modal from "../../DSL/Modal/Modal";
+import MemeModal from "./MemeModal";
 
 export type onPixelSelectType = (x: number, y: number) => void;
 
@@ -58,7 +60,7 @@ const ViewerPage = observer(function ViewerPage() {
             flexDirection={"column"}
             justifyContent={"space-between"}
             title={store.currentView === ViewerView.Index &&
-              <Typography variant={TVariant.PresStart18}>Own the doge</Typography>}>
+              <Typography variant={TVariant.PresStart20}>Own the doge</Typography>}>
               {store.showGoBack && <Box position={"relative"} left={"-25px"} top={"-20px"}>
                   <Button
                     p={0}
@@ -81,15 +83,36 @@ const ViewerPage = observer(function ViewerPage() {
       <MintPixelsModal
         isOpen={store.isMintModalOpen}
         onClose={() => store.isMintModalOpen = false}
+        onSuccess={() => store.isMintMemeModalOpen = true}
+        goToPixels={() => {
+          store.isMintModalOpen = false
+          store.isMintMemeModalOpen = false
+          store.pushNavigation(ViewerView.Manage)
+        }}
       />
       <BurnPixelsModal
         defaultPixel={store.selectedPupper}
         isOpen={store.isBurnModalOpen}
         onClose={() => store.isBurnModalOpen = false}
+        onSuccess={() => store.isBurnMemeModalOpen = true}
+        onCompleteClose={() => {
+          store.isBurnModalOpen = false
+          store.isBurnMemeModalOpen = false
+        }}
       />
       <ScrollHelperModal
         isOpen={store.isHelperModalOpen}
         onClose={() => store.isHelperModalOpen = false}
+      />
+      <MemeModal
+        type={"mint"}
+        isOpen={store.isMintMemeModalOpen}
+        onClose={() => store.isMintMemeModalOpen = false}
+      />
+      <MemeModal
+        type={"burn"}
+        isOpen={store.isBurnMemeModalOpen}
+        onClose={() => store.isBurnMemeModalOpen = false}
       />
     </>
   );
