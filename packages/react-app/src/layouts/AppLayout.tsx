@@ -1,4 +1,4 @@
-import React, {useEffect} from "react";
+import React, {useEffect, useState} from "react";
 import {
   Box,
   Flex,
@@ -15,7 +15,7 @@ import {
 import Typography, {TVariant} from "../DSL/Typography/Typography";
 import Button, {ButtonVariant} from "../DSL/Button/Button";
 import {useHistory, useLocation} from "react-router-dom";
-import routes from "../App.routes";
+import routes, {NamedRoutes} from "../App.routes";
 import {web3Modal} from "../services/web3Modal";
 import {showDebugToast, showErrorToast} from "../DSL/Toast/Toast";
 import {observer} from "mobx-react-lite";
@@ -24,6 +24,8 @@ import Dev from "../common/Dev";
 import ColorModeToggle from "../DSL/ColorModeToggle/ColorModeToggle";
 import {lightOrDark} from "../DSL/Theme";
 import Icon from "../DSL/Icon/Icon";
+import {motion} from "framer-motion";
+import {formatWithThousandsSeparators} from "../helpers/numberFormatter";
 
 interface AppLayoutProps {
   children?: any;
@@ -36,11 +38,13 @@ const AppLayout = observer(function AppLayout({children}: AppLayoutProps) {
     }
   }, [])
 
+  //@TODO: there is some shit here to resolve, sometimes listeners do not connect
   useEffect(() => {
     //@ts-ignore
     if (AppStore.web3.provider?.on) {
       const handleAccountsChanged = (accounts: string[]) => {
-        AppStore.web3.handleAccountsChanged(accounts)
+        showDebugToast("accounts changed")
+        window.location.reload()
       }
 
       const handleChainChanged = (_hexChainId: string) => {
@@ -75,13 +79,13 @@ const AppLayout = observer(function AppLayout({children}: AppLayoutProps) {
 
   return (
     <Flex w={"100vw"} h={"100vh"} p={{base:0, md: 8}} flexDirection={"column"}>
-      <Flex mb={5} justifyContent={"space-between"} alignItems={"center"} display={{base: "none", md: "flex"}}>
+      <Flex mb={10} justifyContent={"space-between"} alignItems={"center"} display={{base: "none", md: "flex"}}>
         <Flex alignItems={"center"} mb={2}>
           <Title/>
         </Flex>
         <Flex alignItems={"center"}>
           <Nav/>
-          <Box mx={10}>
+          <Box ml={10} mr={6}>
             <ColorModeToggle/>
           </Box>
           {!AppStore.web3.web3Provider && <Button ml={8} onClick={() => {
@@ -94,7 +98,7 @@ const AppLayout = observer(function AppLayout({children}: AppLayoutProps) {
                 <Menu>
                   <MenuButton overFlow={"hidden"}>
                       <Flex alignItems={"center"} overflow={"hidden"}>
-                          <Typography variant={TVariant.PresStart12}>
+                          <Typography variant={TVariant.PresStart15}>
                             {AppStore.web3.addressForDisplay}
                           </Typography>
                           <Icon
@@ -104,7 +108,7 @@ const AppLayout = observer(function AppLayout({children}: AppLayoutProps) {
                           />
                       </Flex>
                   </MenuButton>
-                  <MenuList>
+                  <MenuList maxWidth={"fit-content"}>
                     <Balances/>
                     {/*<MenuItem onClick={() => {*/}
                     {/*  */}
@@ -130,28 +134,32 @@ const Balances = observer(function DevTools() {
         <GridItem mr={4} display={"flex"} flexDirection={"column"}>
           <Typography variant={TVariant.PresStart15}>$DOG</Typography>
           <Typography variant={TVariant.ComicSans18} mt={1} block>
-            {AppStore.web3.dogBalance !== undefined ? AppStore.web3.dogBalance / (10 ** AppStore.web3.D20_PRECISION) : 0}
+            {AppStore.web3.dogBalance !== null ? formatWithThousandsSeparators(AppStore.web3.dogBalance / (10 ** AppStore.web3.D20_PRECISION), 0) : 0}
           </Typography>
           <Dev>
             <Flex flexDirection={"column"} border={"1px solid black"} alignItems={"center"} my={6} pb={2}>
               <Box>
                 <Button
+                  size={"sm"}
                   variant={ButtonVariant.Text}
                   onClick={async () => {
                     try {
                       const tx = await AppStore.web3.getDogToAccount()
                       await tx.wait()
-                      showErrorToast("Getting some $DOG")
+                      showDebugToast("Free $DOG aquired")
                       AppStore.web3.refreshDogBalance()
                     } catch (e) {
                       console.error(e)
-                      showErrorToast("Error getting free D20")
+                      showErrorToast("Error getting free $DOG")
                     }
                   }}
                 >
                   💰
                 </Button>
-                <Button variant={ButtonVariant.Text} onClick={async () => AppStore.web3.refreshDogBalance()}>
+                <Button
+                    size={"sm"}
+                    variant={ButtonVariant.Text}
+                    onClick={async () => AppStore.web3.refreshDogBalance()}>
                   🔄
                 </Button>
               </Box>
@@ -179,17 +187,29 @@ const Nav = () => {
   const location = useLocation();
   const history = useHistory();
 
-  return <HStack spacing={2}>
+  return <HStack spacing={4}>
     {routes.map((route, index) => {
       const isActive = location.pathname === route.path;
+      let path = route.path
+      let isPark = false
+      if (route.name === NamedRoutes.DOG_PARK) {
+        isPark = true
+        if (AppStore.web3.address) {
+          path = `/park/${AppStore.web3.address}`
+        } else {
+          path = "/park"
+        }
+      }
       return (
         <Button
           key={`${route}-${index}`}
           variant={ButtonVariant.Text}
           textDecoration={isActive ? "underline" : "none"}
-          onClick={() => history.push(route.path)}
+          onClick={() => history.push(path)}
         >
-          {route.title}
+          <Box __css={{wordSpacing: isPark ? "-6px" : "0px"}}>
+            {route.title}
+          </Box>
         </Button>
       );
     })}
@@ -198,19 +218,31 @@ const Nav = () => {
 
 const Title = () => {
   const {colorMode} = useColorMode()
+  const [rotation, setRotation] = useState(0)
   return <Flex alignItems={"center"}>
-      <Typography
-        variant={TVariant.PresStart28}
-        mr={1}
-        color={"yellow.700"}
-        zIndex={1}
-        textShadow={"4px 4px 0px black"}
-        //@ts-ignore
-        sx={{"-webkit-text-stroke": lightOrDark(colorMode, "1px black", "1px white")}}
-      >
-        PUPPER PIXEL PORTAL
-      </Typography>
-    <Typography variant={TVariant.PresStart28} ml={2} pb={"5px"}>🐕</Typography>
+    <Typography
+      display={"inline-block"}
+      variant={TVariant.PresStart28}
+      mr={1}
+      color={"yellow.700"}
+      zIndex={1}
+      textShadow={"4px 4px 0px black"}
+      userSelect={"none"}
+      //@ts-ignore
+      sx={{"-webkit-text-stroke": lightOrDark(colorMode, "1px black", "1px white")}}
+      _hover={{
+        cursor: "pointer"
+      }}
+      _active={{
+        transform: "translate(4px, 4px)"
+      }}
+      onClick={() => setRotation(rotation + 360)}
+    >
+      PUPPER PIXEL PORTAL
+    </Typography>
+    <motion.div animate={{ rotate: rotation }}>
+      <Typography variant={TVariant.PresStart28} ml={2} pb={"5px"}>🐕</Typography>
+    </motion.div>
   </Flex>
 }
 

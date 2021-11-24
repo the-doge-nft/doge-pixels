@@ -12,14 +12,18 @@ import PixelPane from "../../DSL/PixelPane/PixelPane";
 import AppStore from "../../store/App.store";
 import PxPill from "./PxPill";
 import UserCard from "./UserCard";
-import {useHistory, useLocation} from "react-router-dom";
+import {useHistory, useLocation, useParams} from "react-router-dom";
 import Button from "../../DSL/Button/Button";
 import Icon from "../../DSL/Icon/Icon";
 
 const DogParkPage = observer(function DogParkPage() {
   const history = useHistory()
-  const store = useMemo(() => new DogParkPageStore(), [])
-  return <Grid templateColumns={"0.5fr 1fr"} mt={10} flexGrow={1}>
+  const { address, tokenID } = useParams<{address: string, tokenID: string}>()
+
+  console.log("debug:: address tokenID", address, tokenID)
+
+  const store = useMemo(() => new DogParkPageStore(address), [])
+  return <Grid templateColumns={"0.5fr 1fr"} flexGrow={1}>
     <GridItem>
       <Pane display={"flex"} flexDirection={"column"} h={"full"}>
         <Typography variant={TVariant.PresStart24}>Top Dogs 🚀</Typography>
@@ -42,7 +46,7 @@ const DogParkPage = observer(function DogParkPage() {
             >
                 Similar results
             </Typography>}
-            {!store.isSearchInputEmpty && store.filteredDogs.map(dog => <UserCard store={store} dog={dog}/>)}
+            {!store.isSearchInputEmpty && !store.selectedAddress && store.filteredDogs.map(dog => <UserCard store={store} dog={dog}/>)}
             {!store.isSearchInputEmpty && store.isFilteredResultEmpty && <Typography
                 variant={TVariant.PresStart14}>
                 No results found
@@ -59,12 +63,12 @@ const DogParkPage = observer(function DogParkPage() {
                       </Typography>
                     </Flex>
                     <Box my={7}>
-                        <PxPill count={store.selectedDogs.puppers.length}/>
+                        <PxPill count={store.selectedDogs[0]?.puppers.length}/>
                     </Box>
                 </Box>
                   <Box overflowY={"scroll"} flexGrow={1}>
                       <Flex flexWrap={"wrap"} maxHeight={"300px"}>
-                        {store.selectedDogs.puppers.map(px => {
+                        {store.selectedDogs[0]?.puppers.map(px => {
                           const hex = AppStore.web3.pupperToHexLocal(px)
                           const index = AppStore.web3.pupperToIndexLocal(px)
                           return <Box

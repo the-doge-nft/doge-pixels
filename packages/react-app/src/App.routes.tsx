@@ -44,27 +44,27 @@ const routes: AppRouteInterface[] = [
     exact: true,
     layout: AppLayout,
     component: ViewerPage,
-    title: "portal",
+    title: "Portal",
   },
   {
-    path: "/park",
+    path: "/park/:address?/:tokenID?",
     name: NamedRoutes.DOG_PARK,
     exact: true,
     layout: AppLayout,
     component: DogParkPage,
-    title: "dog park",
+    title: "Dog park",
   }
 ];
 
-// if (isDevModeEnabled()) {
-//   routes.push({
-//     path: "/dsl",
-//     name: NamedRoutes.DSL,
-//     exact: true,
-//     layout: AppLayout,
-//     component: DSLPage,
-//     title: "dsl",
-//   })
-// }
+if (isDevModeEnabled()) {
+  routes.push({
+    path: "/dsl",
+    name: NamedRoutes.DSL,
+    exact: true,
+    layout: AppLayout,
+    component: DSLPage,
+    title: "DSL",
+  })
+}
 
 export default routes;

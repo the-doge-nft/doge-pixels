@@ -1,55 +1,6 @@
-import { currencyMap, CurrencyTicker, isCrypto, isFiat } from "./currency";
 
 const _currencyFormatters: any = {};
 export const STILL_LOADING_SIGN = "-";
-/**
- *
- * getCurrencyFormatter
- *
- * generates currency string from number
- * USAGE: currencyFormatter(<currency eg USD>).format(<amount>)
- *
- * @param currency amount ie. 10000
- * @param maxDigits
- * @return currency string ie. $10,000
- **/
-export const getCurrencyFormatter = (currency: CurrencyTicker = "USD", maximumFractionDigits?: number) => {
-  const key = maximumFractionDigits !== undefined ? `${currency}-${maximumFractionDigits}` : currency;
-  if (!_currencyFormatters[key]) {
-    _currencyFormatters[key] = new Intl.NumberFormat("en-US", {
-      style: "currency",
-      minimumFractionDigits: 0,
-      currency,
-      maximumFractionDigits,
-    });
-  }
-  return _currencyFormatters[key];
-};
-
-/**
- *
- * formatUsd
- *
- * TODO: description
- * @param amount
- */
-export const formatUsd = (amount: string | number) => {
-  return getCurrencyFormatter("USD").format(amount);
-};
-
-/**
- *
- * formatUsdSafe
- *
- * TODO: description
- * @param amount
- */
-export const formatUsdSafe = (amount: string | number | undefined | null) => {
-  if (amount === undefined || amount === null) {
-    return STILL_LOADING_SIGN;
-  }
-  return formatUsd(amount);
-};
 
 /**
  *
@@ -72,38 +23,6 @@ export const formatWithThousandsSeparators = (val: number | string, maxDigits: n
   // line below is probably the cause for the exception on safari: https://stackoverflow.com/questions/51568821/works-in-chrome-but-breaks-in-safari-invalid-regular-expression-invalid-group
   // return val.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g,    ",");
   // return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-};
-
-/**
- *
- * formatToCurrency
- *
- * returns string with default currency formatting applied for fiat
- * and crypto currencies. Currency precision is controlled by currencyMap.
- * Optional parameter maxDigits can be used to override default currency precision.
- *
- * @param currency: CurrencyTicker ("USD", "BRL", "BTC")
- * @param value: (100, "234928.43234", 1.00948376
- * @param maxDigits (0, 2)
- * @return ("$100", "R$234,928.43", "1.00948376")
- **/
-export const formatToCurrency = (currency: CurrencyTicker, amount: string | number, maxDigits?: number): string => {
-  const currencyConfig = currencyMap[currency];
-  const digits = maxDigits !== undefined ? maxDigits : currencyConfig?.decimalPrecision;
-
-  let amountFormatted;
-  if (digits !== undefined) {
-    if (isFiat(currency)) {
-      amountFormatted = getCurrencyFormatter(currency, digits).format(amount);
-    } else if (isCrypto(currency)) {
-      amountFormatted = formatWithThousandsSeparators(amount, digits);
-    } else if (maxDigits !== undefined) {
-      amountFormatted = formatWithThousandsSeparators(amount, digits);
-    }
-  } else {
-    amountFormatted = formatWithThousandsSeparators(amount);
-  }
-  return amountFormatted;
 };
 
 /**

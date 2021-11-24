@@ -4,7 +4,6 @@ import {BigNumber, Contract, providers} from "ethers";
 import {showDebugToast, showErrorToast} from "../DSL/Toast/Toast";
 import {ExternalProvider, JsonRpcFetchFunc, Web3Provider} from "@ethersproject/providers/src.ts/web3-provider";
 import deployedContracts from "../contracts/hardhat_contracts.json"
-import testRinkebyContracts from "../contracts/test_rinkeby_hardhat_contracts.json";
 import {Signer} from "@ethersproject/abstract-signer";
 import {Provider} from "@ethersproject/abstract-provider";
 import {isDevModeEnabled, isProduction, isStaging} from "../environment/helpers";
@@ -13,7 +12,6 @@ import {DOG20, PX} from "../../../hardhat/types";
 import { abbreviate } from "../helpers/strings";
 import KobosuJson from "../images/kobosu.json"
 import AppStore from "./App.store";
-import jsonify from "../helpers/jsonify";
 
 interface EthersContractError {
     message: string
@@ -27,19 +25,19 @@ class Web3Store {
     HEIGHT = 480
 
     @observable
-    address?: string
+    address: string | null = null
 
     @observable
-    provider?: ExternalProvider | JsonRpcFetchFunc
+    provider: ExternalProvider | JsonRpcFetchFunc | null = null
 
     @observable
-    web3Provider?: Web3Provider
+    web3Provider: Web3Provider | null = null
 
     @observable
-    chainId?: string
+    chainId: string | null = null
 
     @observable
-    dogBalance?: number
+    dogBalance: number | null = null
 
     @observable
     pupperBalance?: number
@@ -52,9 +50,6 @@ class Web3Store {
 
     @observable
     network?: Network
-
-    // @observable
-    // puppersOwned: number[] = []
 
     @observable
     addressToPuppers?: {[k: string]: number[]}
@@ -86,6 +81,7 @@ class Web3Store {
             this.initPxListeners()
             this.getPupperOwnershipMap()
         } catch (e) {
+            this.disconnect()
             console.error("connection error: ", e)
             showErrorToast("error connecting")
         }
@@ -98,18 +94,20 @@ class Web3Store {
     async disconnect() {
         try {
             await web3Modal.clearCachedProvider()
-            // if (this.web3?.disconnect && typeof this.provider.disconnect() === "function") {
-            //     await this.provider.disconnect()
-            // }
+            //@ts-ignore
+            if (this.provider.disconnect && typeof this.provider.disconnect === "function") {
+                //@ts-ignore
+                await this.provider.disconnect()
+            }
             showDebugToast(`disconnecting: ${this.address}`)
 
-            this.address = undefined
-            this.provider = undefined
-            this.web3Provider = undefined
-            this.chainId = undefined
-            this.dogBalance = undefined
-            // this.puppersOwned = []
+            this.address = null
+            this.provider = null
+            this.web3Provider = null
+            this.chainId = null
+            this.dogBalance = null
         } catch (e) {
+            showErrorToast("Error disconnecting")
             console.error(e)
         }
     }
@@ -120,14 +118,14 @@ class Web3Store {
         } else if (isStaging() || this.network?.name === "rinkeby") {
             //@ts-ignore
             this.pxContract = new Contract(
-              testRinkebyContracts["4"]["rinkeby"]["contracts"]["PX"]["address"],
-              testRinkebyContracts["4"]["rinkeby"]["contracts"]["PX"].abi,
+              deployedContracts["4"]["rinkeby"]["contracts"]["PX"]["address"],
+              deployedContracts["4"]["rinkeby"]["contracts"]["PX"].abi,
               signerOrProvider
             )
             //@ts-ignore
             this.dogContract = new Contract(
-              testRinkebyContracts["4"]["rinkeby"]["contracts"]["DOG20"]["address"],
-              testRinkebyContracts["4"]["rinkeby"]["contracts"]["DOG20"].abi,
+              deployedContracts["4"]["rinkeby"]["contracts"]["DOG20"]["address"],
+              deployedContracts["4"]["rinkeby"]["contracts"]["DOG20"].abi,
               signerOrProvider
             )
         } else {
@@ -147,20 +145,18 @@ class Web3Store {
     }
 
     async errorGuardContracts() {
+        //@TODO: possible bug here where provider needs to be disconnected before following code will pass
         const nonContractCode = "0x"
         const pxCode = await this.web3Provider!.getCode(this.pxContract!.address)
         if (pxCode === nonContractCode) {
-            throw Error("PX address is not a contract, please make sure it is deployed & you are on the correct network.")
+            this.disconnect()
+            throw Error(`PX address is not a contract, please make sure it is deployed & you are on the correct network. Got ${pxCode} ${this.network?.name} ${this.pxContract?.address}`)
         }
         const dogCode = await this.web3Provider!.getCode(this.dogContract!.address)
         if (dogCode === nonContractCode) {
+            this.disconnect()
             throw Error("DOG20 address is not a contract, please make sure it is deployed & you are on the correct network.")
         }
-    }
-
-    handleAccountsChanged(accounts: string[]) {
-        showDebugToast("accounts changed")
-        window.location.reload()
     }
 
     // @TODO: could be replaced with server caching this data

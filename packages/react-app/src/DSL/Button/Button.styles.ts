@@ -53,7 +53,7 @@ const ButtonStyle = {
       height: "inherit"
     },
     md: {
-      p: "10px",
+      p: "14px",
       height: "inherit"
     }
   },
