@@ -59,7 +59,7 @@ contract PX is ERC721CustomUpgradeable, OwnableUpgradeable {
 
         // Proxy initialization
         // https://docs.openzeppelin.com/upgrades-plugins/1.x/writing-upgradeable#avoid-initial-values-in-field-declarations
-        DOG_TO_PIXEL_SATOSHIS = 5523989899;
+        DOG_TO_PIXEL_SATOSHIS = 5523989899 * 10 ** 13;
         INDEX_OFFSET = 1000000;
         MAGIC_NULL = 0;
         SHIBA_WIDTH = width_;
@@ -327,6 +327,6 @@ contract PX is ERC721CustomUpgradeable, OwnableUpgradeable {
         string memory baseURI = _baseURI();
         // todo: modifier
         uint256[2] memory coords = pupperToPixelCoords(tokenId);
-        return bytes(baseURI).length > 0 ? string(abi.encodePacked(baseURI, Strings.toString(coords[0]), "_", Strings.toString(coords[1]))) : "";
+        return bytes(baseURI).length > 0 ? string(abi.encodePacked(baseURI, "metadata", "/", "metadata-", Strings.toString(coords[0]), "_", Strings.toString(coords[1]), ".json")) : "";
     }
 }
