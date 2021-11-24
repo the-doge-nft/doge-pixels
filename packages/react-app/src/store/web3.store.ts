@@ -80,6 +80,7 @@ class Web3Store {
             this.refreshPupperBalance()
             this.initPxListeners()
             this.getPupperOwnershipMap()
+            this.getShibaDimensions()
         } catch (e) {
             this.disconnect()
             console.error("connection error: ", e)
@@ -128,20 +129,21 @@ class Web3Store {
               deployedContracts["4"]["rinkeby"]["contracts"]["DOG20"].abi,
               signerOrProvider
             )
-        } else {
-            //@ts-ignore
-            this.pxContract = new Contract(
-              deployedContracts["31337"]["localhost"]["contracts"]["PX"]["address"],
-              deployedContracts["31337"]["localhost"]["contracts"]["PX"].abi,
-              signerOrProvider
-            )
-            //@ts-ignore
-            this.dogContract = new Contract(
-              deployedContracts["31337"]["localhost"]["contracts"]["DOG20"]["address"],
-              deployedContracts["31337"]["localhost"]["contracts"]["DOG20"].abi,
-              signerOrProvider
-            )
         }
+        // else {
+        //     //@ts-ignore
+        //     this.pxContract = new Contract(
+        //       deployedContracts["31337"]["localhost"]["contracts"]["PX"]["address"],
+        //       deployedContracts["31337"]["localhost"]["contracts"]["PX"].abi,
+        //       signerOrProvider
+        //     )
+        //     //@ts-ignore
+        //     this.dogContract = new Contract(
+        //       deployedContracts["31337"]["localhost"]["contracts"]["DOG20"]["address"],
+        //       deployedContracts["31337"]["localhost"]["contracts"]["DOG20"].abi,
+        //       signerOrProvider
+        //     )
+        // }
     }
 
     async errorGuardContracts() {
@@ -200,6 +202,15 @@ class Web3Store {
         })
     }
 
+    async getShibaDimensions() {
+        const width = await this.pxContract!.SHIBA_WIDTH()
+        const height = await this.pxContract!.SHIBA_HEIGHT()
+        this.WIDTH = width.toNumber()
+        this.HEIGHT = height.toNumber()
+        console.log("debug:: width", this.WIDTH)
+        console.log("debug:: height", this.HEIGHT)
+    }
+
     @computed
     get puppersOwned() {
         let myPuppers: number[] = []
@@ -249,7 +260,8 @@ class Web3Store {
     }
 
     async getDogToAccount() {
-        return this.dogContract!.initMock([this.address!], this.DOG_TO_PIXEL_SATOSHIS * 10)
+        const freePixelsInDOG = 10
+        return this.dogContract!.initMock([this.address!], this.DOG_TO_PIXEL_SATOSHIS * freePixelsInDOG)
     }
 
     mintPuppers(pixel_amount: number) {
@@ -285,7 +297,7 @@ class Web3Store {
 
     pupperToPixelCoordsLocal(pupper: number) {
         const index = this.pupperToIndexLocal(pupper)
-        return [index % 640, Math.floor(index / 640)]
+        return [index % this.WIDTH, Math.floor(index / this.WIDTH)]
     }
 
     pupperToHexLocal(pupper: number) {

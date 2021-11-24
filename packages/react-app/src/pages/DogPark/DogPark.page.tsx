@@ -22,7 +22,7 @@ const DogParkPage = observer(function DogParkPage() {
 
   console.log("debug:: address tokenID", address, tokenID)
 
-  const store = useMemo(() => new DogParkPageStore(address), [])
+  const store = useMemo(() => new DogParkPageStore(address, Number(tokenID)), [])
   return <Grid templateColumns={"0.5fr 1fr"} flexGrow={1}>
     <GridItem>
       <Pane display={"flex"} flexDirection={"column"} h={"full"}>
