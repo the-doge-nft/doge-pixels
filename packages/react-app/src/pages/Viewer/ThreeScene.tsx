@@ -246,7 +246,7 @@ const ThreeScene =({onPixelSelect, store}: ThreeSceneProps) => {
         </group>
       </Canvas>
       <Box ref={tooltipRef} position={"absolute"} left={5} top={0} zIndex={10} display={"none"}>
-        <PixelPane size={"sm"} pupper={hoveredPx} color={hoveredHex} pupperIndex={hoveredIndex}/>
+        <PixelPane size={"md"} pupper={hoveredPx} color={hoveredHex} pupperIndex={hoveredIndex}/>
       </Box>
       <Box position={"absolute"} bottom={0} left={0}>
         <Button size={"sm"}

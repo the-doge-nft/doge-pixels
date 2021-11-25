@@ -12,6 +12,7 @@ import Submit from "../../../DSL/Form/Submit";
 import BigInput from "../../../DSL/Form/BigInput";
 import Loading from "../../../DSL/Loading/Loading";
 import {formatWithThousandsSeparators} from "../../../helpers/numberFormatter";
+import { ethers } from "ethers";
 
 interface MintPixelsModalProps extends Pick<ModalProps, "isOpen" | "onClose"> {
   onSuccess?: () => void;
@@ -59,7 +60,7 @@ const MintForm = observer(({ store }: { store: MintPixelsModalStore }) => {
           </Typography>
         </Box>
 
-      <Form onSubmit={(data) => store.handleMintSubmit(data.pixel_count)}>
+      <Form onSubmit={async (data) => store.handleMintSubmit(data.pixel_count)}>
         <Box mt={5}>
           <BigInput
             store={store}
@@ -94,7 +95,7 @@ const Approval = observer(({store}: {store: MintPixelsModalStore}) => {
   return (
     <Box>
       <Typography display={"block"} variant={TVariant.PresStart30} my={6}>
-        {store.allowanceToGrant / (10 ** AppStore.web3.D20_PRECISION)}
+        {formatWithThousandsSeparators(ethers.utils.formatEther(store.allowanceToGrant))}
       </Typography>
       <Typography block variant={TVariant.ComicSans18} mt={4}>
         Please approve $DOG to be spent for pixels.

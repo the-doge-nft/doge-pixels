@@ -45,8 +45,10 @@ const ViewerPage = observer(function ViewerPage() {
     <>
       <Grid templateColumns={"2fr 0.8fr"} templateRows={{base: "1fr fr", lg: "1fr"}} flexGrow={1}>
         <GridItem mr={{base: 0, md: 5}} colSpan={{base: 3, md: 1}}>
-          <Pane w={"100%"} h={"100%"} p={0}>
-            <Suspense fallback={<Loading/>}>
+          <Pane w={"100%"} h={"100%"} p={0} position={"relative"}>
+            <Suspense fallback={<Flex justifyContent={"center"} alignItems={"center"} position={"absolute"} w={"full"} h={"full"}>
+              <Loading/>
+            </Flex>}>
               <ThreeScene
                 onPixelSelect={onPixelSelect}
                 store={store}

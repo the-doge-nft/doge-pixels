@@ -61,7 +61,7 @@ const SelectPixels = observer(({store}: { store: BurnPixelsModalStore}) => {
                       p={2}
                       bg={isPixelSelected ? "yellow.700" : "inherit"}>
             <PixelPane
-              size={"sm"}
+              size={"md"}
               pupper={px}
               color={hex}
               pupperIndex={index}
@@ -76,7 +76,7 @@ const SelectPixels = observer(({store}: { store: BurnPixelsModalStore}) => {
         <Typography variant={TVariant.PresStart14}>$DOG</Typography>
         <Typography
           variant={TVariant.PresStart14}>
-          {formatWithThousandsSeparators(store.selectedPixelsDogValue / 10 ** AppStore.web3.D20_PRECISION)}
+          {formatWithThousandsSeparators(store.selectedPixelsDogValue)}
         </Typography>
       </Flex>
       {!store.isAllPixelsSelected &&
