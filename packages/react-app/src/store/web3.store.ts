@@ -86,8 +86,12 @@ class Web3Store {
             showErrorToast("error connecting")
         }
 
-        if (isDevModeEnabled() && this.network?.name === "homestead") {
-            throw Error("🚨 We don't test on prod here, switch to a testnet or local 🚨")
+        if (isDevModeEnabled()) {
+            if (this.network?.name === "homestead") {
+                throw Error("🚨 We don't test on prod here, switch to a testnet or local 🚨")
+            } else if (this.network?.name !== "rinkeby") {
+                alert("Disconnecting your wallet. Please connect to Rinkeby.")
+            }
         }
     }
 
