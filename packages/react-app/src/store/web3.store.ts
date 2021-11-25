@@ -163,15 +163,19 @@ class Web3Store {
     // @TODO: could be replaced with server caching this data
     initPxListeners() {
         this.pxContract?.on("Transfer(address,address,uint256)", (from: string, to: string, tokenId: BigNumber) => {
-            if (to in this.addressToPuppers! && !this.addressToPuppers![to].includes(tokenId.toNumber())) {
-                this.addressToPuppers![to].push(tokenId.toNumber())
+            if (to in this.addressToPuppers!) {
+                if (!this.addressToPuppers![to].includes(tokenId.toNumber())) {
+                    this.addressToPuppers![to].push(tokenId.toNumber())
+                }
             } else {
                 this.addressToPuppers![to] = [tokenId.toNumber()]
             }
 
-            if (from in this.addressToPuppers! && this.addressToPuppers![from].includes(tokenId.toNumber())) {
-                const index = this.addressToPuppers![from].indexOf(tokenId.toNumber())
-                this.addressToPuppers![from].splice(index, 1)
+            if (from in this.addressToPuppers!) {
+                if (this.addressToPuppers![from].includes(tokenId.toNumber())) {
+                    const index = this.addressToPuppers![from].indexOf(tokenId.toNumber())
+                    this.addressToPuppers![from].splice(index, 1)
+                }
             } else {
                 this.addressToPuppers![from] = [tokenId.toNumber()]
             }
@@ -187,14 +191,18 @@ class Web3Store {
             const tokenId = tx.args.tokenId.toNumber()
 
             if (to in this.addressToPuppers!) {
-                this.addressToPuppers![to].push(tokenId)
+                if (!this.addressToPuppers![to].includes(tokenId)) {
+                    this.addressToPuppers![to].push(tokenId)
+                }
             } else {
                 this.addressToPuppers![to] = [tokenId]
             }
 
             if (from in this.addressToPuppers!) {
-                const index = this.addressToPuppers![from].indexOf(tokenId)
-                this.addressToPuppers![from].splice(index, 1)
+                if (this.addressToPuppers![to].includes(tokenId)) {
+                    const index = this.addressToPuppers![from].indexOf(tokenId)
+                    this.addressToPuppers![from].splice(index, 1)
+                }
             } else {
                 this.addressToPuppers![from] = [tokenId]
             }
@@ -206,8 +214,6 @@ class Web3Store {
         const height = await this.pxContract!.SHIBA_HEIGHT()
         this.WIDTH = width.toNumber()
         this.HEIGHT = height.toNumber()
-        console.log("debug:: width", this.WIDTH)
-        console.log("debug:: height", this.HEIGHT)
     }
 
     @computed

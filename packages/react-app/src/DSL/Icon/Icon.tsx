@@ -22,8 +22,8 @@ import {
   VscChevronDown,
   VscChevronUp
 } from "react-icons/all";
-import LeftArrow from "./custom/LeftArrow.svg"
-import User from "./custom/User.svg"
+import LeftArrow from "../../images/LeftArrow.svg"
+import User from "../../images/User.svg"
 
 export type ReactIconName =
   | "arrow-right-down"

@@ -1,10 +1,10 @@
 import {Box, Image, useColorMode, useMultiStyleConfig} from "@chakra-ui/react";
 import { AnimatePresence, motion } from "framer-motion";
 import React, { useEffect, useState } from "react";
-import LightDog from "./lightDog.png";
-import DarkDog from "./darkDog.png"
-import PixelSun from "./sunPixel.svg";
-import PixelMoon from "./moonPixel.svg";
+import LightDog from "../../images/lightDog.png";
+import DarkDog from "../../images/darkDog.png"
+import PixelSun from "../../images/sunPixel.svg";
+import PixelMoon from "../../images/moonPixel.svg";
 import {web3Modal, web3ModalDarkTheme, web3ModalLightTheme} from "../../services/web3Modal";
 
 interface ColorModeToggleProps {
