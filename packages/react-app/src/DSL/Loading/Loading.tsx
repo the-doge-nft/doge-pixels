@@ -4,7 +4,7 @@ import Typography, {TVariant} from "../Typography/Typography";
 import "./Loading.css";
 
 
-const Loading = ({title}: { title?: string }) => {
+const Loading = ({title, showSigningHint = false}: { title?: string, showSigningHint?: boolean }) => {
   const styles = useMultiStyleConfig('Loading', {})
   return <Flex flexDirection={"column"} alignItems={"center"}>
     <Box>
@@ -23,6 +23,13 @@ const Loading = ({title}: { title?: string }) => {
         />)}
       </Box>
     </Box>
+    {showSigningHint && <Typography
+      variant={TVariant.PresStart10}
+      mt={6}
+      block
+    >
+      {"(sign the tx in your wallet to continue️)"}
+    </Typography>}
   </Flex>
 }
 

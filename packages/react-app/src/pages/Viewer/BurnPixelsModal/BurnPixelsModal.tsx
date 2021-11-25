@@ -98,16 +98,16 @@ const SelectPixels = observer(({store}: { store: BurnPixelsModalStore}) => {
   </Flex>
 })
 
-const LoadingBurning = ({store}: {store: BurnPixelsModalStore}) => {
+const LoadingBurning = observer(({store}: {store: BurnPixelsModalStore}) => {
   useEffect(() => {
     store.burnSelectedPixels()
   }, [])
   return (
     <Box mt={20} mb={10}>
-      <Loading title={"Burning..."}/>
+      <Loading title={"Burning..."} showSigningHint={!store.hasUserSignedTx}/>
     </Box>
   )
-}
+})
 
 const Complete = observer(({onSuccess}: {onSuccess: () => void}) => {
   return <Box pt={10} pb={4}>

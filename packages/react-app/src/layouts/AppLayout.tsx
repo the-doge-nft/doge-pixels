@@ -15,7 +15,7 @@ import {
 import Typography, {TVariant} from "../DSL/Typography/Typography";
 import Button, {ButtonVariant} from "../DSL/Button/Button";
 import {useHistory, useLocation} from "react-router-dom";
-import routes, {NamedRoutes} from "../App.routes";
+import routes, {NamedRoutes, route} from "../App.routes";
 import {web3Modal} from "../services/web3Modal";
 import {showDebugToast, showErrorToast} from "../DSL/Toast/Toast";
 import {observer} from "mobx-react-lite";
@@ -220,6 +220,7 @@ const Nav = () => {
 }
 
 const Title = () => {
+  const history = useHistory()
   const {colorMode} = useColorMode()
   const [rotation, setRotation] = useState(0)
   return <Flex alignItems={"center"}>
@@ -239,7 +240,10 @@ const Title = () => {
       _active={{
         transform: "translate(4px, 4px)"
       }}
-      onClick={() => setRotation(rotation + 360)}
+      onClick={() => {
+        setRotation(rotation + 360)
+        history.push(route(NamedRoutes.VIEWER))
+      }}
     >
       PUPPER PIXEL PORTAL
     </Typography>

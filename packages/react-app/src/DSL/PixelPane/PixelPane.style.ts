@@ -6,7 +6,8 @@ const PixelPaneStyle = {
     container: {
       display: "inline-flex",
       flexDirection: "column",
-      maxWidth: "fit-content"
+      maxWidth: "fit-content",
+      zIndex: 100
     },
     swatch: {
       borderStyle: "solid",
