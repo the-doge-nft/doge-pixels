@@ -4,6 +4,8 @@ import { EmptyClass } from "../../../helpers/mixins";
 import { Navigable } from "../../../services/mixins/navigable";
 import { Reactionable } from "../../../services/mixins/reactionable";
 import AppStore from "../../../store/App.store";
+import {BigNumber, ethers} from "ethers";
+import {formatWithThousandsSeparators} from "../../../helpers/numberFormatter";
 
 
 export enum MintModalView {
@@ -19,10 +21,10 @@ class MintPixelsModalStore extends Reactionable((Navigable(EmptyClass))) {
   pixel_count?: number = 1;
 
   @observable
-  allowance?: number
+  allowance?: BigNumber
 
   @observable
-  allowanceToGrant: number = 0
+  allowanceToGrant: BigNumber = BigNumber.from(0)
 
   constructor() {
     super();
@@ -51,20 +53,19 @@ class MintPixelsModalStore extends Reactionable((Navigable(EmptyClass))) {
   @computed
   get maxPixelsToPurchase() {
     if (AppStore.web3.dogBalance) {
-      return AppStore.web3.dogBalance / AppStore.web3.DOG_TO_PIXEL_SATOSHIS
+      // num & denom in ether
+      return AppStore.web3.dogBalance.div(AppStore.web3.DOG_TO_PIXEL_SATOSHIS).toNumber()
     } else return 0
   }
 
   handleMintSubmit(pixel_amount: number) {
-    return new Promise((resolve, reject) => {
-      const dogToSpend = pixel_amount * AppStore.web3.DOG_TO_PIXEL_SATOSHIS
-      if (this.allowance! < dogToSpend) {
-        this.allowanceToGrant = dogToSpend
-        resolve(this.pushNavigation(MintModalView.Approval))
-      } else {
-        resolve(this.pushNavigation(MintModalView.LoadingPixels))
-      }
-    })
+    const dogToSpend = AppStore.web3.DOG_TO_PIXEL_SATOSHIS.mul(pixel_amount)
+    if (this.allowance!.lt(dogToSpend)) {
+      this.allowanceToGrant = dogToSpend
+      this.pushNavigation(MintModalView.Approval)
+    } else {
+      this.pushNavigation(MintModalView.LoadingPixels)
+    }
   }
 
   async mintPixels(amount: number) {
@@ -76,6 +77,8 @@ class MintPixelsModalStore extends Reactionable((Navigable(EmptyClass))) {
       AppStore.web3.refreshPupperBalance()
       AppStore.web3.refreshDogBalance()
     } catch (e) {
+      showErrorToast("error minting")
+      console.error(e)
       this.destroyNavigation()
       this.pushNavigation(MintModalView.Mint)
     }
@@ -85,7 +88,7 @@ class MintPixelsModalStore extends Reactionable((Navigable(EmptyClass))) {
   async approveDogSpend() {
     try {
       const tx = await AppStore.web3.approvePxSpendDog(this.allowanceToGrant)
-      showDebugToast(`approving DOG spend: ${this.allowanceToGrant}`)
+      showDebugToast(`approving DOG spend: ${formatWithThousandsSeparators(ethers.utils.formatEther(this.allowanceToGrant))}`)
       await tx.wait()
       this.refreshAllowance()
       this.pushNavigation(MintModalView.LoadingPixels)
@@ -110,7 +113,7 @@ class MintPixelsModalStore extends Reactionable((Navigable(EmptyClass))) {
   @computed
   get dogCount() {
     if (this.pixel_count) {
-      return (this.pixel_count! * AppStore.web3.DOG_TO_PIXEL_SATOSHIS) / 10 ** AppStore.web3.D20_PRECISION
+      return ethers.utils.formatEther(AppStore.web3.DOG_TO_PIXEL_SATOSHIS.mul(this.pixel_count!))
     } else {
       return 0
     }

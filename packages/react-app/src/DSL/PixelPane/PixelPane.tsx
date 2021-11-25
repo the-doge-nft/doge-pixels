@@ -3,27 +3,25 @@ import React from "react";
 import Typography, { TVariant } from "../Typography/Typography";
 
 interface PixelPaneProps {
-    size?: "sm" | "md" | "lg"
     pupper: number;
     color: string;
     pupperIndex: number;
     onClick?: (pupper: number) => void;
-    variant?: "solid" | "shadow"
+    variant?: "solid" | "shadow";
+    size?:  "md" | "lg";
 }
 
 const sizeToTypeMap = {
-    sm: TVariant.PresStart10,
     md: TVariant.PresStart10,
     lg: TVariant.PresStart16
 }
 
-const PixelPane = ({size = "md", pupper, color, onClick, pupperIndex, variant = "solid"}: PixelPaneProps) => {
-    const styles = useMultiStyleConfig("PixelPane", {size, variant})
+const PixelPane = ({pupper, color, onClick, pupperIndex, variant = "solid", size = "md"}: PixelPaneProps) => {
+    const styles = useMultiStyleConfig("PixelPane", {size: size, variant: variant})
     return <Box
         __css={styles.container}
         _hover={onClick ? {
             cursor: "pointer",
-            // borderColor: "yellow.700"
         } : {}}
         onClick={() => onClick && onClick(pupper)}
     >

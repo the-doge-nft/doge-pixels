@@ -11,15 +11,14 @@ import {Network} from "@ethersproject/networks";
 import {DOG20, PX} from "../../../hardhat/types";
 import { abbreviate } from "../helpers/strings";
 import KobosuJson from "../images/kobosu.json"
-import AppStore from "./App.store";
 
 interface EthersContractError {
     message: string
 }
 
 class Web3Store {
-    D20_PRECISION = 5
-    DOG_TO_PIXEL_SATOSHIS = 5523989899
+    D20_PRECISION = BigNumber.from("1000000000000000000")
+    DOG_TO_PIXEL_SATOSHIS = BigNumber.from("55239898990000000000000")
     PIXEL_TO_ID_OFFSET = 1000000
     WIDTH = 640
     HEIGHT = 480
@@ -37,7 +36,7 @@ class Web3Store {
     chainId: string | null = null
 
     @observable
-    dogBalance: number | null = null
+    dogBalance: BigNumber | null = null
 
     @observable
     pupperBalance?: number
@@ -225,7 +224,7 @@ class Web3Store {
             this.dogBalance = await this.getDogBalance()
         } catch (e) {
             const {message} = e as EthersContractError
-            this.dogBalance = 0
+            this.dogBalance = BigNumber.from(0)
             showErrorToast(message)
         }
     }
@@ -242,7 +241,7 @@ class Web3Store {
 
     async getDogBalance() {
         const balance = await this.dogContract!.balanceOf(this.address!)
-        return balance.toNumber()
+        return balance
     }
 
     async getPupperBalance() {
@@ -250,18 +249,18 @@ class Web3Store {
         return pupperBalance.toNumber()
     }
 
-    async approvePxSpendDog(amount: number) {
+    async approvePxSpendDog(amount: BigNumber) {
         return this.dogContract!.approve(this.pxContract!.address, amount)
     }
 
     async getPxDogSpendAllowance() {
         const allowance = await this.dogContract!.allowance(this.address!, this.pxContract!.address)
-        return allowance.toNumber()
+        return allowance
     }
 
     async getDogToAccount() {
         const freePixelsInDOG = 10
-        return this.dogContract!.initMock([this.address!], this.DOG_TO_PIXEL_SATOSHIS * freePixelsInDOG)
+        return this.dogContract!.initMock([this.address!], this.DOG_TO_PIXEL_SATOSHIS.mul(freePixelsInDOG))
     }
 
     mintPuppers(pixel_amount: number) {

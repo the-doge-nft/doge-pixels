@@ -3,6 +3,7 @@ import {AbstractConstructor, EmptyClass} from "../../../helpers/mixins";
 import {action, computed, makeObservable, observable } from "mobx";
 import AppStore from "../../../store/App.store";
 import { showErrorToast } from "../../../DSL/Toast/Toast";
+import {ethers} from "ethers";
 
 export enum BurnPixelsModalView {
   Select = "select",
@@ -70,7 +71,7 @@ class BurnPixelsModalStore extends Navigable<AbstractConstructor, BurnPixelsModa
 
   @computed
   get selectedPixelsDogValue() {
-    return AppStore.web3.DOG_TO_PIXEL_SATOSHIS * this.selectedPixels.length
+    return ethers.utils.formatEther(AppStore.web3.DOG_TO_PIXEL_SATOSHIS.mul(this.selectedPixels.length))
   }
 
   @computed

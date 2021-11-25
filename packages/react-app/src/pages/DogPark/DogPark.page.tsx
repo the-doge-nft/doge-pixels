@@ -19,9 +19,6 @@ import Icon from "../../DSL/Icon/Icon";
 const DogParkPage = observer(function DogParkPage() {
   const history = useHistory()
   const { address, tokenID } = useParams<{address: string, tokenID: string}>()
-
-  console.log("debug:: address tokenID", address, tokenID)
-
   const store = useMemo(() => new DogParkPageStore(address, Number(tokenID)), [])
   return <Grid templateColumns={"0.5fr 1fr"} flexGrow={1}>
     <GridItem>
@@ -77,6 +74,7 @@ const DogParkPage = observer(function DogParkPage() {
                             _hover={{bg: "yellow.700"}}
                           >
                             <PixelPane
+                              size={"md"}
                               pupper={px}
                               color={hex}
                               pupperIndex={index}

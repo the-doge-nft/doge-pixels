@@ -4,12 +4,11 @@ const PixelPaneStyle = {
   parts: ["container", "swatch", "textContainer"],
   baseStyle: ({colorMode}: {colorMode: colorModeType}) => ({
     container: {
-      display: "flex",
+      display: "inline-flex",
       flexDirection: "column",
+      maxWidth: "fit-content"
     },
     swatch: {
-      w: "100%",
-      h: "100%",
       borderStyle: "solid",
       borderWidth: "1px",
       borderColor: lightOrDark(colorMode, "black", "white")
@@ -23,18 +22,11 @@ const PixelPaneStyle = {
       borderBottomWidth: "1px"
     }
   }),
-  variants: {
-    shadow: ({colorMode}: {colorMode: colorModeType}) => ({
-      container: {
-        boxShadow: lightOrDark(colorMode, "10px 10px 0px black", "10px 10px 0px white")
-      }
-    })
-  },
   sizes: {
     sm: {
-      container: {
+      swatch: {
         w: "100px",
-        h: "110px"
+        h: "100px"
       },
       textContainer: {
         py: 0,
@@ -42,9 +34,9 @@ const PixelPaneStyle = {
       }
     },
     md: {
-      container: {
+      swatch: {
         w: "100px",
-        h: "140px"
+        h: "100px"
       },
       textContainer: {
         py: 0,
@@ -52,8 +44,8 @@ const PixelPaneStyle = {
       }
     },
     lg: {
-      container: {
-        w: "180px",
+      swatch: {
+        w: "230px",
         h: "230px",
       },
       textContainer: {
@@ -61,7 +53,14 @@ const PixelPaneStyle = {
         px: 2
       }
     }
-  }
+  },
+  variants: {
+    shadow: ({colorMode}: {colorMode: colorModeType}) => ({
+      container: {
+        boxShadow: lightOrDark(colorMode, "10px 10px 0px black", "10px 10px 0px white")
+      }
+    })
+  },
 }
 
 export default PixelPaneStyle

@@ -26,6 +26,7 @@ import {lightOrDark} from "../DSL/Theme";
 import Icon from "../DSL/Icon/Icon";
 import {motion} from "framer-motion";
 import {formatWithThousandsSeparators} from "../helpers/numberFormatter";
+import { BigNumber, ethers } from "ethers";
 
 interface AppLayoutProps {
   children?: any;
@@ -134,7 +135,9 @@ const Balances = observer(function DevTools() {
         <GridItem mr={4} display={"flex"} flexDirection={"column"}>
           <Typography variant={TVariant.PresStart15}>$DOG</Typography>
           <Typography variant={TVariant.ComicSans18} mt={1} block>
-            {AppStore.web3.dogBalance !== null ? formatWithThousandsSeparators(AppStore.web3.dogBalance / (10 ** AppStore.web3.D20_PRECISION), 0) : 0}
+            {AppStore.web3.dogBalance !== null
+              ? formatWithThousandsSeparators(ethers.utils.formatEther(AppStore.web3.dogBalance), 0)
+              : 0}
           </Typography>
           <Dev>
             <Flex flexDirection={"column"} border={"1px solid black"} alignItems={"center"} my={6} pb={2}>
