@@ -197,11 +197,13 @@ const Nav = () => {
       let isPark = false
       if (route.name === NamedRoutes.DOG_PARK) {
         isPark = true
-        if (AppStore.web3.address) {
-          path = `/park/${AppStore.web3.address}`
-        } else {
-          path = "/park"
-        }
+        // @TODO: direct load to address with no pixels in the park is broken
+        // if (AppStore.web3.address) {
+        //   path = `/park/${AppStore.web3.address}`
+        // } else {
+        //   path = "/park"
+        // }
+        path = "/park"
       }
       return (
         <Button
