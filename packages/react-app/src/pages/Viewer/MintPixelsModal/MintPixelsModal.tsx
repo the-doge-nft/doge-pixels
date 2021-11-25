@@ -122,7 +122,10 @@ const LoadingApproval = observer(({store}: {store: MintPixelsModalStore}) => {
   }, [])
   return (
     <Box mt={20} mb={10}>
-      <Loading title={"Approving..."}/>
+      <Loading
+        title={"Approving..."}
+        showSigningHint={!store.hasUserSignedTx}
+      />
     </Box>
   )
 })
@@ -133,7 +136,10 @@ const LoadingPixels = observer(({store}: {store: MintPixelsModalStore}) => {
   }, [])
   return (
     <Box mt={20} mb={10}>
-      <Loading title={"Minting..."}/>
+      <Loading
+        title={"Minting..."}
+        showSigningHint={!store.hasUserSignedTx}
+      />
     </Box>
   );
 });

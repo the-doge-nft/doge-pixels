@@ -26,6 +26,9 @@ class MintPixelsModalStore extends Reactionable((Navigable(EmptyClass))) {
   @observable
   allowanceToGrant: BigNumber = BigNumber.from(0)
 
+  @observable
+  hasUserSignedTx: boolean = false
+
   constructor() {
     super();
     makeObservable(this);
@@ -69,14 +72,18 @@ class MintPixelsModalStore extends Reactionable((Navigable(EmptyClass))) {
   }
 
   async mintPixels(amount: number) {
+    this.hasUserSignedTx = false
     try {
       const tx = await AppStore.web3.mintPuppers(amount)
+      this.hasUserSignedTx = true
       showDebugToast(`minting ${this.pixel_count!} pixel`)
       await tx.wait()
       this.pushNavigation(MintModalView.Complete)
       AppStore.web3.refreshPupperBalance()
       AppStore.web3.refreshDogBalance()
+      AppStore.web3.getPupperOwnershipMap()
     } catch (e) {
+      this.hasUserSignedTx = false
       showErrorToast("error minting")
       console.error(e)
       this.destroyNavigation()
@@ -86,13 +93,16 @@ class MintPixelsModalStore extends Reactionable((Navigable(EmptyClass))) {
 
 
   async approveDogSpend() {
+    this.hasUserSignedTx = false
     try {
       const tx = await AppStore.web3.approvePxSpendDog(this.allowanceToGrant)
+      this.hasUserSignedTx = true
       showDebugToast(`approving DOG spend: ${formatWithThousandsSeparators(ethers.utils.formatEther(this.allowanceToGrant))}`)
       await tx.wait()
       this.refreshAllowance()
       this.pushNavigation(MintModalView.LoadingPixels)
     } catch (e) {
+      this.hasUserSignedTx = false
       this.popNavigation()
       showErrorToast("Error approving $DOG spend")
     }

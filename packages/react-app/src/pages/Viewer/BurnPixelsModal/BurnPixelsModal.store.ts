@@ -16,6 +16,9 @@ class BurnPixelsModalStore extends Navigable<AbstractConstructor, BurnPixelsModa
   @observable
   selectedPixels: number[] = []
 
+  @observable
+  hasUserSignedTx: boolean = false
+
   constructor(defaultPixel: number | null) {
     super();
     makeObservable(this)
@@ -39,22 +42,26 @@ class BurnPixelsModalStore extends Navigable<AbstractConstructor, BurnPixelsModa
   }
 
   async burnSelectedPixels() {
+    this.hasUserSignedTx = false
+    let tx
       try {
         if (this.selectedPixels.length === 1) {
-          const tx = await AppStore.web3.burnPupper(this.selectedPixels[0])
-          await tx.wait()
+          tx = await AppStore.web3.burnPupper(this.selectedPixels[0])
         } else if (this.selectedPixels.length > 1) {
-          const tx = await AppStore.web3.burnPuppers(this.selectedPixels)
-          await tx.wait()
+          tx = await AppStore.web3.burnPuppers(this.selectedPixels)
         } else {
           throw Error("burnSelectedPixels called with incorrect selectedPixels length")
         }
+        this.hasUserSignedTx = true
+        await tx.wait()
+        this.pushNavigation(BurnPixelsModalView.Complete)
         AppStore.web3.refreshDogBalance()
         AppStore.web3.refreshPupperBalance()
-        this.pushNavigation(BurnPixelsModalView.Complete)
+        AppStore.web3.getPupperOwnershipMap()
       } catch (e) {
         console.error(e)
         showErrorToast("Error burning pixels")
+        this.hasUserSignedTx = false
         this.popNavigation()
       }
   }
