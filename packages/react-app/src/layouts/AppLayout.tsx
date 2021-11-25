@@ -129,7 +129,7 @@ const AppLayout = observer(function AppLayout({children}: AppLayoutProps) {
   );
 });
 
-const Balances = observer(function DevTools() {
+const Balances = observer(function Balances() {
   return <Grid px={3} mt={2} templateColumns={"1fr 1fr"}>
       {AppStore.web3.web3Provider && <>
         <GridItem mr={4} display={"flex"} flexDirection={"column"}>
@@ -143,6 +143,7 @@ const Balances = observer(function DevTools() {
             <Flex flexDirection={"column"} border={"1px solid black"} alignItems={"center"} my={6} pb={2}>
               <Box>
                 <Button
+                  p={2}
                   size={"sm"}
                   variant={ButtonVariant.Text}
                   onClick={async () => {
@@ -160,6 +161,7 @@ const Balances = observer(function DevTools() {
                   💰
                 </Button>
                 <Button
+                    p={2}
                     size={"sm"}
                     variant={ButtonVariant.Text}
                     onClick={async () => AppStore.web3.refreshDogBalance()}>
@@ -176,7 +178,7 @@ const Balances = observer(function DevTools() {
           <Typography variant={TVariant.ComicSans18} mt={1} block>{AppStore.web3.pupperBalance === 0 ? "None 😕" : AppStore.web3.pupperBalance}</Typography>
           <Dev>
               <Flex flexDirection={"column"} border={"1px solid black"} alignItems={"center"} my={6} pb={2}>
-                <Button variant={ButtonVariant.Text}
+                <Button p={2} size={"sm"} variant={ButtonVariant.Text}
                       onClick={async () => AppStore.web3.refreshPupperBalance()}>🔄</Button>
                 <Typography variant={TVariant.ComicSans10}>Dev tools</Typography>
               </Flex>
