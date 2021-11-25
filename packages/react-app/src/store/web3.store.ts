@@ -91,6 +91,8 @@ class Web3Store {
                 throw Error("🚨 We don't test on prod here, switch to a testnet or local 🚨")
             } else if (this.network?.name !== "rinkeby") {
                 alert("Disconnecting your wallet. Please connect to Rinkeby.")
+                await this.disconnect()
+                window.location.reload()
             }
         }
     }
