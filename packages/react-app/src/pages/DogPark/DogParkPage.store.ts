@@ -15,7 +15,7 @@ class DogParkPageStore extends Reactionable(EmptyClass) {
   selectedAddress?: string
 
   @observable
-  selectedPupper?: number
+  selectedPupper: number | null = null
 
   constructor(selectedAddress?: string, selectedPupper?: number) {
     super()

@@ -1,22 +1,22 @@
 const ethers = require('ethers')
+const { env, infura_project_id, infura_secret_id } = require('./vars')
 const ABI = require('../contracts/hardhat_contracts.json')
 
-const PX = ABI["31337"]["localhost"]["contracts"]["PX"]
+let pxContractInfo
+let network
 
-const provider = new ethers.providers.JsonRpcProvider("http://host.docker.internal:8545/")
-const contract = new ethers.Contract(PX["address"], PX["abi"], provider)
-
-function main() {
-  console.log("main called")
-  contract.on('Transfer', (from, to, value) => {
-    console.log("transfer detected", from, to, value.toNumber())
-  })
-
-  contract.randYish().then(res => {
-    console.log(res)
-  }).catch(e => {
-    console.error(e)
-  })
+if (env === "development") {
+  network = "rinkeby"
+  pxContractInfo = ABI["4"][network]["contracts"]["PX"]
+} else {
+  throw Error("Not ready for production yet")
 }
 
-module.exports = main
+const provider = new ethers.providers.InfuraProvider(network=network, apiKey={
+  projectId: infura_project_id,
+  projectSecret: infura_secret_id
+})
+
+const PXContract = new ethers.Contract(pxContractInfo["address"], pxContractInfo["abi"], provider)
+
+module.exports = {provider, PXContract}
