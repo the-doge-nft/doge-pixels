@@ -17,7 +17,7 @@
     "winston": "^3.3.3"
   },
   "scripts": {
-    "start": "./scripts/start.sh",
+    "start": "pm2 start ./src/index.js --name dog_server --watch",
     "logs": "pm2 logs",
     "status": "pm2 status",
     "stop": "pm2 stop dog_server",
