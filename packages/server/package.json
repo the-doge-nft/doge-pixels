@@ -22,6 +22,6 @@
     "logs": "pm2 logs",
     "status": "pm2 status",
     "dev": "nodemon ./src/index.js",
-    "test": "curl localhost:8001/v1/status"
+    "test": "echo $(curl 167.172.252.56/v1/test)"
   }
 }
