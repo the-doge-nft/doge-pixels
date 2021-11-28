@@ -19,7 +19,7 @@ router.get(
 
 router.get(
   '/test',
-  async (req, res) => res.send('good')
+  async (req, res) => res.send('great')
 )
 
 module.exports = router;
