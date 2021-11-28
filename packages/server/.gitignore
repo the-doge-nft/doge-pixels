@@ -1,1 +1,4 @@
 ./src/contracts/
+combined.log
+dump.rdb
+error.log

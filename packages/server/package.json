@@ -12,15 +12,16 @@
     "express": "^4.17.1",
     "morgan": "^1.10.0",
     "nodemon": "^2.0.15",
-    "pm2": "^5.1.2",
-    "redis": "^3.1.2",
+    "redis": "^4.0.0",
     "winston": "^3.3.3"
   },
   "scripts": {
-    "start": "cross-env NODE_ENV=production pm2 start ./src/index.js",
+    "dev:start": "yarn prestart && pm2 start ecosystem.config.js --env development",
+    "prestart": "node ./scripts/create_contracts.js",
+    "stop": "pm2 stop ecosystem.config.js",
+    "logs": "pm2 logs",
+    "status": "pm2 status",
     "dev": "nodemon ./src/index.js",
-    "docker:start": "cross-env NODE_ENV=production pm2-docker start ./src/index.js",
-    "docker:dev": "docker-compose -f docker-compose.yml -f docker-compose.dev.yml up",
-    "prestart": "node ./scripts/create_contracts.js"
+    "test": "curl localhost:8001/v1/status"
   }
 }
