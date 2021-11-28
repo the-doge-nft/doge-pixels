@@ -21,6 +21,7 @@ const UserCard = ({store, dog}: {store: DogParkPageStore, dog: { address: string
     onClick={() => {
       store.selectedAddress = dog.address
       store.addressToSearch = dog.address
+      store.selectedPupper = null
     }}
   >
     <Typography

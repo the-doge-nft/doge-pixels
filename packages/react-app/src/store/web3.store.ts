@@ -11,6 +11,7 @@ import {Network} from "@ethersproject/networks";
 import {DOG20, PX} from "../../../hardhat/types";
 import { abbreviate } from "../helpers/strings";
 import KobosuJson from "../images/kobosu.json"
+import {Http} from "../services";
 
 interface EthersContractError {
     message: string
@@ -77,7 +78,6 @@ class Web3Store {
             this.errorGuardContracts()
             this.refreshDogBalance()
             this.refreshPupperBalance()
-            this.initPxListeners()
             this.getPupperOwnershipMap()
             this.getShibaDimensions()
         } catch (e) {
@@ -166,53 +166,8 @@ class Web3Store {
         }
     }
 
-    // @TODO: could be replaced with server caching this data
-    initPxListeners() {
-        this.pxContract?.on("Transfer(address,address,uint256)", (from: string, to: string, tokenId: BigNumber) => {
-            if (to in this.addressToPuppers!) {
-                if (!this.addressToPuppers![to].includes(tokenId.toNumber())) {
-                    this.addressToPuppers![to].push(tokenId.toNumber())
-                }
-            } else {
-                this.addressToPuppers![to] = [tokenId.toNumber()]
-            }
-
-            if (from in this.addressToPuppers!) {
-                if (this.addressToPuppers![from].includes(tokenId.toNumber())) {
-                    const index = this.addressToPuppers![from].indexOf(tokenId.toNumber())
-                    this.addressToPuppers![from].splice(index, 1)
-                }
-            } else {
-                this.addressToPuppers![from] = [tokenId.toNumber()]
-            }
-        })
-    }
-
-    async getPupperOwnershipMap() {
-        this.addressToPuppers = {}
-        const filter = this.pxContract!.filters.Transfer(null, null)
-        const logs = await this.pxContract!.queryFilter(filter)
-        logs.forEach(tx => {
-            const {from, to} = tx.args
-            const tokenId = tx.args.tokenId.toNumber()
-
-            if (to in this.addressToPuppers!) {
-                if (!this.addressToPuppers![to].includes(tokenId)) {
-                    this.addressToPuppers![to].push(tokenId)
-                }
-            } else {
-                this.addressToPuppers![to] = [tokenId]
-            }
-
-            if (from in this.addressToPuppers!) {
-                if (this.addressToPuppers![to].includes(tokenId)) {
-                    const index = this.addressToPuppers![from].indexOf(tokenId)
-                    this.addressToPuppers![from].splice(index, 1)
-                }
-            } else {
-                this.addressToPuppers![from] = [tokenId]
-            }
-        })
+    getPupperOwnershipMap() {
+        Http.get("/v1/config").then(({ data }) => this.addressToPuppers = data)
     }
 
     async getShibaDimensions() {

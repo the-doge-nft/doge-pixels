@@ -7,7 +7,7 @@ import { AxiosRequestConfig } from "axios";
 const Http = httpFactory(HttpConfig);
 
 // Add authorization
-Http.interceptors.request.use(AuthInterceptorFactory((requestConfig: AxiosRequestConfig) => !!AuthHandler.auth));
+// Http.interceptors.request.use(AuthInterceptorFactory((requestConfig: AxiosRequestConfig) => !!AuthHandler.auth));
 
 // Add API error detection
 Http.interceptors.response.use((res: any) => res, ApiErrorInterceptor);
