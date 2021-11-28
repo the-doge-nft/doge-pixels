@@ -16,12 +16,12 @@
     "winston": "^3.3.3"
   },
   "scripts": {
-    "start": "pm2 start ecosystem.config.js",
+    "dev:start": "pm2 start ecosystem.config.js --env development",
+    "prestart": "node ./scripts/create_contracts.js",
     "stop": "pm2 stop ecosystem.config.js",
     "logs": "pm2 logs",
     "status": "pm2 status",
     "dev": "nodemon ./src/index.js",
-    "test": "curl localhost:8001/v1/status",
-    "prestart": "node ./scripts/create_contracts.js"
+    "test": "curl localhost:8001/v1/status"
   }
 }
