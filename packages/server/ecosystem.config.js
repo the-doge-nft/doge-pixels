@@ -10,7 +10,8 @@ module.exports = {
       host: "167.172.252.56",
       path: "/home/nodejs/dog",
       repo: "git@github.com:calebcarithers/dog.git",
-      ref: "origin/feat/server"
+      ref: "origin/feat/server",
+      "post-deploy" : "cd /home/nodejs/dog/current/packages/server && pm2 startOrRestart ecosystem.json --env production",
     }
   }
 }
