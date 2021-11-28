@@ -16,6 +16,10 @@ packages/hardhat/cache*
 packages/**/data
 !packages/react-app/src/contracts/contracts.js
 packages/server/src/contracts/*
+packages/hardhat/.env
+packages/server/src/.env
+packages/server/combined.log
+packages/server/error.log
 
 # ts
 packages/hardhat-ts/cache
@@ -52,7 +56,6 @@ artifacts
 
 # misc
 .DS_Store
-.env*
 
 # debug
 npm-debug.log*
