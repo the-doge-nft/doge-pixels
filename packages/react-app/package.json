@@ -92,7 +92,7 @@
   "scripts": {
     "build": "react-app-rewired build",
     "eject": "react-scripts eject",
-    "start": "cross-env TSC_WATCHFILE=UseFsEventsWithFallbackDynamicPolling react-app-rewired start",
+    "start": "cross-env PORT=3001 TSC_WATCHFILE=UseFsEventsWithFallbackDynamicPolling react-app-rewired start",
     "_surge": "cp build/index.html build/200.html && surge ./build",
     "deploy:surge": "REACT_APP_DOG_ENV=surge_staging react-app-rewired build && yarn _surge",
     "prestart": "node ./scripts/create_contracts.js",

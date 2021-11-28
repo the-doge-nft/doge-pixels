@@ -171,10 +171,10 @@ class Web3Store {
     }
 
     async getShibaDimensions() {
-        const width = await this.pxContract!.SHIBA_WIDTH()
-        const height = await this.pxContract!.SHIBA_HEIGHT()
-        this.WIDTH = width.toNumber()
-        this.HEIGHT = height.toNumber()
+        Http.get("/v1/px/dimensions").then(({data}) => {
+            this.WIDTH = data.width;
+            this.HEIGHT = data.height;
+        })
     }
 
     @computed
@@ -212,8 +212,13 @@ class Web3Store {
     }
 
     async getPupperBalance() {
-        const pupperBalance = await this.pxContract!.balanceOf(this.address!)
-        return pupperBalance.toNumber()
+        const res = await Http.get(`/v1/px/balance/${this.address}`)
+        const balance = res.data.balance
+        console.log("debug:: balance from api", balance)
+        return balance
+
+        // const pupperBalance = await this.pxContract!.balanceOf(this.address!)
+        // return pupperBalance.toNumber()
     }
 
     async approvePxSpendDog(amount: BigNumber) {
