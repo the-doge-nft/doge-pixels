@@ -17,7 +17,7 @@ module.exports = {
       ref: "origin/feat/server",
       // "post-deploy": "echo $(pwd)"
       // "post-deploy": "pm2 --cwd /home/nodejs/dog/source/packages/server startOrRestart ecosystem.config.json --env development",
-      "post-deploy": "pm2 --cwd /home/nodejs/dog/source/packages/server start ecosystem.config.js --env development"
+      "post-deploy": "pm2 --cwd /home/nodejs/dog/current/packages/server start ecosystem.config.js --env development"
     }
   }
 }
