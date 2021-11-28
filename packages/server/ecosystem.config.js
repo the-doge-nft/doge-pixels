@@ -11,8 +11,8 @@ module.exports = {
       path: "/home/nodejs/dog",
       repo: "git@github.com:calebcarithers/dog.git",
       ref: "origin/feat/server",
-      "post-deploy": "echo $(pwd)"
-      // "post-deploy" : "cd /home/nodejs/dog/current/packages/server &&  && pm2 startOrRestart ecosystem.config.json --env production",
+      // "post-deploy": "echo $(pwd)"
+      "post-deploy" : "cd /home/nodejs/dog/current/packages/server && yarn install --production --frozen-lockfile && yarn pm2 startOrRestart ecosystem.config.json --env production",
     }
   }
 }
