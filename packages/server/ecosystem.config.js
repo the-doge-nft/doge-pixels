@@ -1,7 +1,6 @@
 module.exports = {
   apps : [{
     name   : "dog_server",
-    // cwd: "/home/nodejs/dog/source/packages/server",
     script : "./src/index.js",
     watch: ["src"],
     env_development: {

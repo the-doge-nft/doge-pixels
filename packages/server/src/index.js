@@ -1,8 +1,8 @@
 const { port, env } = require('./config/vars')
-const { main: pxMain } = require('./api/web3/px')
+const pxMain  = require('./api/web3/px')
 const app = require('./config/express');
 const logger = require("./config/config");
-const redisClient = require("./config/redis")
+const {redisClient} = require("./config/redis")
 
 redisClient.on('connect', () => {
   app.listen(port, () => logger.info(`server started on port ${port}`))

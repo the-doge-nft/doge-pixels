@@ -1,9 +1,8 @@
 const ethers = require("ethers")
 const { provider, PXContract } = require("../../config/ethers")
-const redisClient = require("../../config/redis")
+const {redisClient, keys} = require("../../config/redis")
 const logger = require("../../config/config");
 
-const ADDRESS_TOKENID_REDIS_KEY = "ADDRESS_TO_TOKEN_ID"
 
 async function main() {
   getAddressToOwnershipMap()
@@ -51,10 +50,10 @@ function listenToPXTransfers () {
 
   PXContract.on('Transfer', async (from, to, _tokenID) => {
     const tokenID = _tokenID.toNumber()
-    const data = await redisClient.get(ADDRESS_TOKENID_REDIS_KEY)
+    const data = await redisClient.get(keys.ADDRESS_TO_TOKENID)
     const source = JSON.parse(data)
     const dest = JSON.stringify(addRemoveAddresses(source, from, to, tokenID))
-    redisClient.set(ADDRESS_TOKENID_REDIS_KEY, dest)
+    redisClient.set(keys.ADDRESS_TO_TOKENID, dest)
   })
 }
 
@@ -72,7 +71,7 @@ async function getAddressToOwnershipMap() {
     const tokenID = tx.args.tokenId.toNumber()
     addressToPuppers = addRemoveAddresses(addressToPuppers, from, to, tokenID)
   })
-  redisClient.set(ADDRESS_TOKENID_REDIS_KEY, JSON.stringify(addressToPuppers))
+  redisClient.set(keys.ADDRESS_TO_TOKENID, JSON.stringify(addressToPuppers))
 }
 
-module.exports = {main, keys: {ADDRESS_TOKENID_REDIS_KEY}}
+module.exports = main
