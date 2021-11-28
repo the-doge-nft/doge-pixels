@@ -34,6 +34,7 @@
     "dotenv": "^8.2.0",
     "ethers": "^5.4.1",
     "final-form": "^4.20.4",
+    "fortmatic": "^2.2.1",
     "framer-motion": "^5.0.0",
     "mobx": "^6.3.2",
     "mobx-react-lite": "^3.2.0",
