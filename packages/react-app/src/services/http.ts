@@ -2,7 +2,7 @@ import axios, { AxiosRequestConfig } from "axios";
 import env from "../environment";
 
 const HttpConfig: AxiosRequestConfig = {};
-if (env.api.proxyURL !== null) {
+if (env.api.proxyURL !== null && env.api.proxyURL !== undefined) {
   HttpConfig.baseURL = env.api.proxyURL;
   HttpConfig.headers = {
     "x-api-proxy-dst-host": env.api.baseURL,
