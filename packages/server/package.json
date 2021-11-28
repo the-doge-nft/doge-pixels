@@ -17,10 +17,10 @@
     "winston": "^3.3.3"
   },
   "scripts": {
-    "start": "pm2 start ./src/index.js --name dog_server --watch",
+    "start": "pm2 start ecosystem.config.js",
+    "stop": "pm2 stop ecosystem.config.js",
     "logs": "pm2 logs",
     "status": "pm2 status",
-    "stop": "pm2 stop dog_server",
     "dev": "nodemon ./src/index.js",
     "test": "curl localhost:8001/v1/status",
     "docker:start": "pm2-docker start ./src/index.js",
