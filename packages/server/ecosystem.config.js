@@ -15,8 +15,6 @@ module.exports = {
       path: "/home/nodejs/dog",
       repo: "git@github.com:calebcarithers/dog.git",
       ref: "origin/dev",
-      // "post-deploy": "echo $(pwd)"
-      // "post-deploy": "pm2 --cwd /home/nodejs/dog/source/packages/server startOrRestart ecosystem.config.json --env development",
       "post-deploy": "cd /home/nodejs/dog/current/packages/server && yarn dev:start"
     }
   }
