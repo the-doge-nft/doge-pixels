@@ -15,7 +15,7 @@ packages/react-app/src/contracts/*
 packages/hardhat/cache*
 packages/**/data
 !packages/react-app/src/contracts/contracts.js
-packages/server/src/contracts/*
+packages/server/src/contracts/hardhat_contracts.json
 packages/hardhat/.env
 packages/server/src/.env
 packages/server/combined.log
