@@ -20,6 +20,7 @@ packages/hardhat/.env
 packages/server/src/.env
 packages/server/combined.log
 packages/server/error.log
+packages/server/dump.rdb
 
 # ts
 packages/hardhat-ts/cache
