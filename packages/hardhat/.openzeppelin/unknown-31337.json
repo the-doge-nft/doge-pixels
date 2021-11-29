@@ -7,7 +7,7 @@
       "hash": "0xf6971ef73d88d1bb6f50a6ccca49fe5cdecce6352d7c0f224f71f3b6838981e4",
       "type": 2,
       "accessList": [],
-      "blockHash": "0x913ae846f2202a13104e8b3fa724e5aa528639a69f28315ca9551cfc6d819fbd",
+      "blockHash": "0x9a56e91141d9b9af873cc440ddb90a8eb1f0ddc801d1f49eccb220c7281e9fd0",
       "blockNumber": 2,
       "transactionIndex": 0,
       "confirmations": 1,
@@ -50,7 +50,7 @@
     },
     {
       "address": "0x5FC8d32690cc91D4c39d9d3abcBD16989F875707",
-      "txHash": "0x97ebd1a41fa63d9d9ae1af1fadb0529b57937ad1f204e772803d49ca292d9d1d",
+      "txHash": "0x7ea8b363879ed597748e88e6c261adc843780ddbc7ec40966fc61af898024144",
       "kind": "transparent"
     }
   ],
@@ -143,9 +143,9 @@
         }
       }
     },
-    "1ce631ab3dc57275e3779d4bccbe76ecb73afee4e84448661bd5aac13b093240": {
+    "19f18914323bf6147905c5e823be1c0a3dd90eb7903a3b4d581d64f434267bf8": {
       "address": "0xDc64a140Aa3E981100a9becA4E685f962f0cF6C9",
-      "txHash": "0x29ef2357465f1f0b83b76c05dacf83843e2f59b80aefb23d2fd0ce9c1c2dd768",
+      "txHash": "0x1d3d2cfd61b6e97763de2ed12440602207e7847f497e2b7055c23349b6000267",
       "layout": {
         "storage": [
           {
@@ -291,6 +291,18 @@
             "label": "BASE_URI",
             "type": "t_string_storage",
             "src": "contracts/token/PX/PX.sol:46"
+          },
+          {
+            "contract": "PX",
+            "label": "DOG20_FEES_ADDRESS",
+            "type": "t_address",
+            "src": "contracts/token/PX/PX.sol:48"
+          },
+          {
+            "contract": "PX",
+            "label": "DOG20_FEES_PERCENT",
+            "type": "t_uint256",
+            "src": "contracts/token/PX/PX.sol:49"
           }
         ],
         "types": {

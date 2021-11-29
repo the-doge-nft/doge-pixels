@@ -32,8 +32,8 @@ export interface PXMockInterface extends ethers.utils.Interface {
     "MAGIC_NULL()": FunctionFragment;
     "SHIBA_HEIGHT()": FunctionFragment;
     "SHIBA_WIDTH()": FunctionFragment;
-    "__PXMock_init(string,string,address,string,uint256,uint256)": FunctionFragment;
-    "__PX_init(string,string,address,string,uint256,uint256)": FunctionFragment;
+    "__PXMock_init(string,string,address,string,uint256,uint256,address)": FunctionFragment;
+    "__PX_init(string,string,address,string,uint256,uint256,address)": FunctionFragment;
     "approve(address,uint256)": FunctionFragment;
     "balanceOf(address)": FunctionFragment;
     "baseURI()": FunctionFragment;
@@ -90,11 +90,11 @@ export interface PXMockInterface extends ethers.utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "__PXMock_init",
-    values: [string, string, string, string, BigNumberish, BigNumberish]
+    values: [string, string, string, string, BigNumberish, BigNumberish, string]
   ): string;
   encodeFunctionData(
     functionFragment: "__PX_init",
-    values: [string, string, string, string, BigNumberish, BigNumberish]
+    values: [string, string, string, string, BigNumberish, BigNumberish, string]
   ): string;
   encodeFunctionData(
     functionFragment: "approve",
@@ -388,6 +388,7 @@ export interface PXMock extends BaseContract {
       ipfsUri_: string,
       width_: BigNumberish,
       height_: BigNumberish,
+      DOG20_FEES_ADDRESS_: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
@@ -398,6 +399,7 @@ export interface PXMock extends BaseContract {
       ipfsUri_: string,
       width_: BigNumberish,
       height_: BigNumberish,
+      DOG20_FEES_ADDRESS_: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
@@ -577,6 +579,7 @@ export interface PXMock extends BaseContract {
     ipfsUri_: string,
     width_: BigNumberish,
     height_: BigNumberish,
+    DOG20_FEES_ADDRESS_: string,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
@@ -587,6 +590,7 @@ export interface PXMock extends BaseContract {
     ipfsUri_: string,
     width_: BigNumberish,
     height_: BigNumberish,
+    DOG20_FEES_ADDRESS_: string,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
@@ -755,6 +759,7 @@ export interface PXMock extends BaseContract {
       ipfsUri_: string,
       width_: BigNumberish,
       height_: BigNumberish,
+      DOG20_FEES_ADDRESS_: string,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -765,6 +770,7 @@ export interface PXMock extends BaseContract {
       ipfsUri_: string,
       width_: BigNumberish,
       height_: BigNumberish,
+      DOG20_FEES_ADDRESS_: string,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -965,6 +971,7 @@ export interface PXMock extends BaseContract {
       ipfsUri_: string,
       width_: BigNumberish,
       height_: BigNumberish,
+      DOG20_FEES_ADDRESS_: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
@@ -975,6 +982,7 @@ export interface PXMock extends BaseContract {
       ipfsUri_: string,
       width_: BigNumberish,
       height_: BigNumberish,
+      DOG20_FEES_ADDRESS_: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
@@ -1155,6 +1163,7 @@ export interface PXMock extends BaseContract {
       ipfsUri_: string,
       width_: BigNumberish,
       height_: BigNumberish,
+      DOG20_FEES_ADDRESS_: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
@@ -1165,6 +1174,7 @@ export interface PXMock extends BaseContract {
       ipfsUri_: string,
       width_: BigNumberish,
       height_: BigNumberish,
+      DOG20_FEES_ADDRESS_: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 

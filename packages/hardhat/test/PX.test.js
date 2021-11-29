@@ -16,7 +16,9 @@ describe("[PX]", function () {
   const MOCK_HEIGHT = Math.floor(480 * CROP);
   const MOCK_SUPPLY = MOCK_WIDTH * MOCK_HEIGHT;
   const MOCK_URI = "ipfs://dog-repo/";
-  const DOG_TO_PIXEL_SATOSHIS = 5;
+  const DOG_TO_PIXEL_SATOSHIS = 5 * 10 ** 9;
+  const BURN_FEES_PERCENT = 20;
+  let FEES_ACCOUNT;
 
   const INDEX_OFFSET = 1000000;
 
@@ -39,6 +41,8 @@ describe("[PX]", function () {
     signers = await ethers.getSigners();
     [owner, addr1, addr2, addr3] = signers
 
+    FEES_ACCOUNT = signers[4]
+
     let factory;
 
     factory = await ethers.getContractFactory("DOG20");
@@ -49,7 +53,15 @@ describe("[PX]", function () {
     factory = await ethers.getContractFactory("PXMock");
     PX = await upgrades.deployProxy(factory);
     await PX.deployed();
-    await PX.__PXMock_init("LONG LIVE D O G", "PX", DOG20.address, MOCK_URI, MOCK_WIDTH, MOCK_HEIGHT);
+    await PX.__PXMock_init(
+      "LONG LIVE D O G",
+      "PX",
+      DOG20.address,
+      MOCK_URI,
+      MOCK_WIDTH,
+      MOCK_HEIGHT,
+      FEES_ACCOUNT.address
+    );
 
     await Promise.all([
                         PX.setDOG_TO_PIXEL_SATOSHIS(DOG_TO_PIXEL_SATOSHIS)
@@ -121,6 +133,7 @@ describe("[PX]", function () {
     // console.log("minting for " + addr.address);
     const addrDog20BalanceBefore = await DOG20.balanceOf(signer.address);
     const pxDog20BalanceBefore = await DOG20.balanceOf(PX.address);
+    const feesDog20BalanceBefore = await DOG20.balanceOf(FEES_ACCOUNT.address);
     const addrPXBalanceBefore = await PX.balanceOf(signer.address);
     const supplyPXBalanceBefore = await PX.puppersRemaining();
     let tx;
@@ -133,7 +146,8 @@ describe("[PX]", function () {
     }
 
     expect(await DOG20.balanceOf(PX.address)).to.equal(pxDog20BalanceBefore.toNumber() - DOG_TO_PIXEL_SATOSHIS)
-    expect(await DOG20.balanceOf(signer.address)).to.equal(addrDog20BalanceBefore.toNumber() + DOG_TO_PIXEL_SATOSHIS)
+    expect(await DOG20.balanceOf(signer.address)).to.equal(addrDog20BalanceBefore.toNumber() + DOG_TO_PIXEL_SATOSHIS * (100 - BURN_FEES_PERCENT) / 100)
+    expect(await DOG20.balanceOf(FEES_ACCOUNT.address)).to.equal(feesDog20BalanceBefore.toNumber() + DOG_TO_PIXEL_SATOSHIS * BURN_FEES_PERCENT / 100)
 
     expect(await PX.balanceOf(signer.address)).to.equal(addrPXBalanceBefore.toNumber() - 1)
     expect(await PX.puppersRemaining()).to.equal(supplyPXBalanceBefore.toNumber() + 1);
