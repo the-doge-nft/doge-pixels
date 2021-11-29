@@ -165,8 +165,9 @@ describe("[PX]", function () {
   }
 
   context('supply', function () {
-    it('sender should be an owner of new pixel after calling mint()', function () {
-
+    it('sender should be an owner of new pixel after calling mint()', async function () {
+      const tokenId = await mintPupperWithValidation(addr1);
+      expect(await PX.ownerOf(tokenId)).to.equal(addr1.address);
     });
     it('mintPupper(): can mint a puppy', async function () {
       await mintPupperWithValidation(addr1);
@@ -210,8 +211,8 @@ describe("[PX]", function () {
       }
       await mintPupperWithValidation(signer4, 1, ERROR_D20_TX_EXCEEDS_BALANCE)
     });
-    it('burnPuppers empty array throws', function () {
-
+    it('burnPuppers empty array throws', async function () {
+      await expectRevert(PX.connect(addr1).burnPuppers([]), "Empty puppers");
     });
     it('burnPuppers burns puppies', async function () {
       const burnburnburn = [];
