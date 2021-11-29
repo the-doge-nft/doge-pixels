@@ -50,7 +50,7 @@ router.get(
 
 router.get(
   '/test',
-  async (req, res) => res.send('dev_update_2')
+  async (req, res) => res.send('dev_update_3')
 )
 
 module.exports = router;
