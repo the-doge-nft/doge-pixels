@@ -9,6 +9,9 @@ export DOG_IMG_WIDTH=$(( 640 * 2 / 100 ))
 export DOG_IMG_HEIGHT=$(( 480 * 2 / 100 ))
 cd $HARDHATDIR
 yarn hardhat node --network hardhat --no-deploy &
+echo "sleeping waiting for hardhat network to spin up 💤"
+sleep 5
+echo "deploying contracts 🚀"
 yarn hardhat deploy --network localhost --export-all "$EXPORT_PATH/contracts/hardhat_contracts.json"
 
 

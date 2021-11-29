@@ -22,7 +22,7 @@
     "stop": "pm2 stop ecosystem.config.js",
     "logs": "pm2 logs",
     "status": "pm2 status",
-    "test": "jest --detectOpenHandles"
+    "test": "NODE_ENV=test jest --detectOpenHandles"
   },
   "devDependencies": {
     "jest": "^27.3.1",
