@@ -14,7 +14,7 @@ module.exports = {
       path: "/home/nodejs/dog",
       repo: "git@github.com:calebcarithers/dog.git",
       ref: "origin/dev",
-      "post-deploy": "cd /home/nodejs/dog/current/packages/server && yarn dev:start",
+      "post-deploy": "yarn install --production --frozen-lockfile && cd /home/nodejs/dog/current/packages/server && yarn dev:start",
       // "post-deploy": "cd /home/nodejs/dog/source && cp -r"
     }
   }
