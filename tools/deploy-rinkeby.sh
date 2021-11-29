@@ -72,6 +72,8 @@ pushd "$SCRIPTPATH"
     export DOG_IPFS_DEPLOY_BASE_URI="https://ipfs.io/ipns/$IPNS_DIR/"
     export DOG_IMG_WIDTH=`cat "$DEPLOY_DIR/config.json" | jq -r '.width'`
     export DOG_IMG_HEIGHT=`cat "$DEPLOY_DIR/config.json" | jq -r '.height'`
+    # todo: change to actual fees address
+    export DOG_FEES_ADDRESS="0x23618e81E3f5cdF7f54C3d65f7FBc0aBf5B21E8f"
     # todo: if isProduction, run extra validation on sizes
     if isProduction; then
       set -x
