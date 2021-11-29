@@ -9,7 +9,9 @@ if (env === "development") {
   network = "rinkeby"
   pxContractInfo = ABI["4"][network]["contracts"]["PX"]
 } else {
-  throw Error("Not ready for production yet")
+  network = "rinkeby"
+  pxContractInfo = ABI["4"][network]["contracts"]["PX"]
+  // throw Error("Not ready for production yet")
 }
 
 const provider = new ethers.providers.InfuraProvider(network=network, apiKey={
