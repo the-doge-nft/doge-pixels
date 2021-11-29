@@ -30,6 +30,10 @@ module.exports = async (args) => {
     console.error("[ERROR] Invalid usage, must set DOG_IMG_HEIGHT");
     process.exit(42070);
   }
+  if(!process.env.DOG_FEES_ADDRESS){
+    console.error("[ERROR] Invalid usage, must set DOG_FEES_ADDRESS");
+    process.exit(42070);
+  }
   console.log(`============= config =============`)
   console.log(`DOG_IPFS_DEPLOY_BASE_URI=${process.env.DOG_IPFS_DEPLOY_BASE_URI}`)
   console.log(`DOG_IMG_WIDTH=${process.env.DOG_IMG_WIDTH}`)
@@ -62,8 +66,7 @@ module.exports = async (args) => {
     process.env.DOG_IPFS_DEPLOY_BASE_URI,
     process.env.DOG_IMG_WIDTH,
     process.env.DOG_IMG_HEIGHT,
+    process.env.DOG_FEES_ADDRESS,
   )
-  // const initMock = await DOG20.initMock([])
-  // console.log(initMock)
 };
 module.exports.tags = ["PX"];

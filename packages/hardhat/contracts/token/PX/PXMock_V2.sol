@@ -8,7 +8,7 @@ import "./PX.sol";
  * @title PXMock
  * This mock just provides a public safeMint, mint, and burn functions for testing purposes
  */
-contract PXMock is PX {
+contract PXMock_V2 is PX {
 
     function __PXMock_init(
         string memory name_,
@@ -40,5 +40,10 @@ contract PXMock is PX {
 
     function setDOG_TO_PIXEL_SATOSHIS(uint256 amount) public {
         DOG_TO_PIXEL_SATOSHIS = amount;
+    }
+
+    function v2Test() public returns (uint256 ret){
+//        ret = 42;
+        ret = puppersRemaining;
     }
 }
