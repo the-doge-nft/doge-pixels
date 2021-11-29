@@ -214,11 +214,7 @@ class Web3Store {
     async getPupperBalance() {
         const res = await Http.get(`/v1/px/balance/${this.address}`)
         const balance = res.data.balance
-        console.log("debug:: balance from api", balance)
         return balance
-
-        // const pupperBalance = await this.pxContract!.balanceOf(this.address!)
-        // return pupperBalance.toNumber()
     }
 
     async approvePxSpendDog(amount: BigNumber) {
