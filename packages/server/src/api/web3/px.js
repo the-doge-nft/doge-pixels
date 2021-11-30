@@ -64,7 +64,7 @@ function listenToPXTransfers () {
 
   // query all Transfers
   // const filter = PXContract.filters.Transfer(null, null)
-  PXContract.on('Transfer', async (from, to, _tokenID) => {
+  PXContract.on('Transfer(address,address,uint256)', (from, to, _tokenID) => {
     // @TODO if many mints or events hit here, redis is not always synchrnous
     // const tokenID = _tokenID.toNumber()
     // const data = await redisClient.get(keys.ADDRESS_TO_TOKENID)
@@ -72,7 +72,7 @@ function listenToPXTransfers () {
     // const dest = JSON.stringify(addRemoveAddresses(source, from, to, tokenID))
     // redisClient.set(keys.ADDRESS_TO_TOKENID, dest)
 
-    await getAddressToOwnershipMap()
+    getAddressToOwnershipMap()
   })
 }
 
