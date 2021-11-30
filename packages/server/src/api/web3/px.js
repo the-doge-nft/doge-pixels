@@ -52,10 +52,8 @@ function listenToPXTransfers () {
 
   // @TODO: this misses sometimes
   // https://github.com/ethers-io/ethers.js/discussions/2167
-  PXContract.on('Transfer(address,address,uint256)', (from, to, _tokenID) => {
+  PXContract.on('Transfer(address,address,uint256)', async (from, to, _tokenID) => {
     getAddressToOwnershipMap()
-
-
 
 
     // @TODO events hit here to update blob, redis is not always synchronous, need a queue for processing
@@ -67,6 +65,9 @@ function listenToPXTransfers () {
   })
 }
 
+// TODO: call after mint & burn to update config
+
+// TODO: debounce this so Transfer listener does not fire this fn repeatedly
 async function getAddressToOwnershipMap() {
   /*
     Builds address -> [tokenIDs..] object for all of PX contract's history

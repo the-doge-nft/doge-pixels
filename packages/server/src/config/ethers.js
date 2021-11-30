@@ -16,6 +16,7 @@ const provider = new ethers.providers.InfuraProvider(network=network, apiKey={
   projectId: infura_project_id,
   projectSecret: infura_secret_id
 })
+// const provider = new ethers.providers.InfuraProvider.getWebSocketProvider(network=network, apiKey=infura_secret_id)
 
 const PXContract = new ethers.Contract(pxContractInfo["address"], pxContractInfo["abi"], provider)
 
