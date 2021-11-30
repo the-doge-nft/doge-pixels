@@ -14,8 +14,8 @@ function addRemoveAddresses(source, from, to, tokenID) {
     throw Error("source must be an object")
   }
   const copy = JSON.parse(JSON.stringify(source))
-  const isBurn = to === ethers.constants.AddressZero && from !== ethers.constants.AddressZero
-  const isMint = to !== ethers.constants.AddressZero && from === ethers.constants.AddressZero
+  const isBurn = (to === ethers.constants.AddressZero)
+  const isMint = (from === ethers.constants.AddressZero)
 
   if (isMint) {
     if (to in copy) {
@@ -27,9 +27,7 @@ function addRemoveAddresses(source, from, to, tokenID) {
       logger.info(`first processing mint: init ${to} | to ${to} (from: ${from} - to: ${to} - token ${tokenID})`)
       copy[to] = [tokenID]
     }
-  }
-
-  if (isBurn) {
+  } else if (isBurn) {
     if (from in copy) {
       if (copy[from].includes(tokenID)) {
         logger.info(`processing burn: removing from map ${from} | from ${from} (from: ${from} - to: ${to} - token ${tokenID})`)
@@ -59,14 +57,20 @@ function listenToPXTransfers () {
    */
   logger.info(`Listening to PX contract: ${PXContract.address} on ${provider.network.name} 👂`)
 
-  PXContract.on('Transfer', async (from, to, _tokenID) => {
+  const filter = PXContract.filters.Transfer(null, ethers.constants.AddressZero)
+  const filter2 = PXContract.filters.Transfer(ethers.constants.AddressZero, null)
+
+  PXContract.on(filter, async (from, to, _tokenID) => {
     // const tokenID = _tokenID.toNumber()
     // const data = await redisClient.get(keys.ADDRESS_TO_TOKENID)
     // const source = JSON.parse(data)
     // const dest = JSON.stringify(addRemoveAddresses(source, from, to, tokenID))
     // redisClient.set(keys.ADDRESS_TO_TOKENID, dest)
 
-    getAddressToOwnershipMap()
+    await getAddressToOwnershipMap()
+  })
+  PXContract.on(filter2, async (from, to, _tokenID) => {
+    await getAddressToOwnershipMap()
   })
 }
 
@@ -84,7 +88,7 @@ async function getAddressToOwnershipMap() {
     const tokenID = tx.args.tokenId.toNumber()
     addressToPuppers = addRemoveAddresses(addressToPuppers, from, to, tokenID)
   })
-  redisClient.set(keys.ADDRESS_TO_TOKENID, JSON.stringify(addressToPuppers))
+  await redisClient.set(keys.ADDRESS_TO_TOKENID, JSON.stringify(addressToPuppers))
 }
 
 module.exports = main
