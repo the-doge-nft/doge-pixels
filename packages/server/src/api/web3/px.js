@@ -20,11 +20,11 @@ function addRemoveAddresses(source, from, to, tokenID) {
   if (isMint) {
     if (to in copy) {
       if (!copy[to].includes(tokenID)) {
-        logger.info(`processing mint: adding token ${tokenID} to ${to}`)
+        logger.info(`processing mint: adding token ${tokenID} | to ${to} (from: ${from} - to: ${to})`)
         copy[to].push(tokenID)
       }
     } else {
-      logger.info(`first processing mint: init token ${tokenID} to ${to}`)
+      logger.info(`first processing mint: init token ${tokenID} | to ${to} (from: ${from} - to: ${to})`)
       copy[to] = [tokenID]
     }
   }
@@ -32,13 +32,13 @@ function addRemoveAddresses(source, from, to, tokenID) {
   if (isBurn) {
     if (from in copy) {
       if (copy[from].includes(tokenID)) {
-        logger.info(`processing burn: removing token ${tokenID} from ${from}`)
+        logger.info(`processing burn: removing token ${tokenID} | from ${from} (from: ${from} - to: ${to})`)
         const index = copy[from].indexOf(tokenID)
         copy[from].splice(index, 1)
       }
     }
   } else {
-    logger.info(`processing burn: should not hit - ${from} - ${to}`)
+    logger.info(`processing burn: should not hit - ${from} - ${to} | (from: ${from} - to: ${to})`)
     copy[from] = []
   }
 
