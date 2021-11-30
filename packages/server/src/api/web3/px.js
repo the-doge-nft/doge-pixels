@@ -29,7 +29,7 @@ function addRemoveAddresses(source, from, to, tokenID) {
 
   if (isBurn) {
     if (from in copy) {
-      if (copy[to].includes(tokenID)) {
+      if (copy[from].includes(tokenID)) {
         const index = copy[from].indexOf(tokenID)
         copy[from].splice(index, 1)
       }
