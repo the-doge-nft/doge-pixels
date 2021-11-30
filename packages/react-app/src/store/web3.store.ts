@@ -21,8 +21,14 @@ class Web3Store {
     D20_PRECISION = BigNumber.from("1000000000000000000")
     DOG_TO_PIXEL_SATOSHIS = BigNumber.from("55239898990000000000000")
     PIXEL_TO_ID_OFFSET = 1000000
-    WIDTH = 640
-    HEIGHT = 480
+    // WIDTH = 640
+    // HEIGHT = 480
+
+    // @TODO: getting width & height may be determined to be critical
+    // data to be loaded before app mount. right now we sync here with the
+    // current rinkeby deployment so PixelPanes by default render the correct color
+    WIDTH = 32
+    HEIGHT = 24
 
     @observable
     address: string | null = null
@@ -88,6 +94,7 @@ class Web3Store {
 
         if (isDevModeEnabled()) {
             if (this.network?.name === "homestead") {
+                await this.disconnect()
                 throw Error("🚨 We don't test on prod here, switch to a testnet or local 🚨")
             } else if (this.network?.name !== "rinkeby") {
                 alert("Disconnecting your wallet. Please connect to Rinkeby.")
@@ -228,6 +235,8 @@ class Web3Store {
 
     async getDogToAccount() {
         const freePixelsInDOG = 10
+        // @TODO: partyka we need a way to get free D20
+        //@ts-ignore
         return this.dogContract!.initMock([this.address!], this.DOG_TO_PIXEL_SATOSHIS.mul(freePixelsInDOG))
     }
 
@@ -244,8 +253,6 @@ class Web3Store {
     }
 
     burnPuppers(puppers: number[]) {
-        //@TODO: fix typeing of contracts on deploy
-        //@ts-ignore
         return this.pxContract!.burnPuppers(puppers)
     }
 
