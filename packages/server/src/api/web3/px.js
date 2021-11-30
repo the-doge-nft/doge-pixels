@@ -14,29 +14,36 @@ function addRemoveAddresses(source, from, to, tokenID) {
     throw Error("source must be an object")
   }
   const copy = JSON.parse(JSON.stringify(source))
+  const isBurn = to === ethers.constants.AddressZero && from !== ethers.constants.AddressZero
+  const isMint = to !== ethers.constants.AddressZero && from === ethers.constants.AddressZero
 
-  if (to in copy) {
-    if (!copy[to].includes(tokenID)) {
-      copy[to].push(tokenID)
+  if (isMint) {
+    if (to in copy) {
+      if (!copy[to].includes(tokenID)) {
+        copy[to].push(tokenID)
+      }
+    } else {
+      copy[to] = [tokenID]
+    }
+  }
+
+  if (isBurn) {
+    if (from in copy) {
+      if (copy[to].includes(tokenID)) {
+        const index = copy[from].indexOf(tokenID)
+        copy[from].splice(index, 1)
+      }
     }
   } else {
-    copy[to] = [tokenID]
-  }
-
-  if (from in copy) {
-    if (copy[to].includes(tokenID)) {
-      const index = copy[from].indexOf(tokenID)
-      copy[from].splice(index, 1)
-    }
-  }
-  else {
     copy[from] = []
   }
 
-  if (to === ethers.constants.AddressZero) {
+  if (isBurn) {
     logger.info(`burn 🔥: ${from} [${tokenID}]`)
-  } else if (from === ethers.constants.AddressZero) {
+  } else if (isMint) {
     logger.info(`mint 🍵: ${to} [${tokenID}]`)
+  } else {
+    logger.info(`⚠️ unknown Transfer: from - ${from} - to ${to}`)
   }
 
   return copy
