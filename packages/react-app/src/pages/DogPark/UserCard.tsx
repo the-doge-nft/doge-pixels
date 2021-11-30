@@ -3,7 +3,9 @@ import DogParkPageStore from "./DogParkPage.store";
 import {Box, Flex} from "@chakra-ui/react";
 import Typography, {TVariant} from "../../DSL/Typography/Typography";
 import {abbreviate} from "../../helpers/strings";
+import AppStore from "../../store/App.store";
 import PxPill from "./PxPill";
+import Icon from "../../DSL/Icon/Icon";
 
 const UserCard = ({store, dog}: {store: DogParkPageStore, dog: { address: string, puppers: number[]} }) => {
   return <Flex
@@ -24,12 +26,16 @@ const UserCard = ({store, dog}: {store: DogParkPageStore, dog: { address: string
       store.selectedPupper = null
     }}
   >
-    <Typography
-      variant={TVariant.PresStart14}
-      block
-    >
-      {abbreviate(dog.address, 4)}
-    </Typography>
+    <Flex alignItems={"center"}>
+      <Icon icon={'person'} display={"inline-block"}/>
+      <Typography
+        variant={TVariant.PresStart14}
+        ml={4}
+        block
+      >
+        {abbreviate(dog.address, 4)}
+      </Typography>
+    </Flex>
     <Box ml={4}>
       <PxPill count={dog.puppers.length} />
     </Box>
