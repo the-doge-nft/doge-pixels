@@ -20,34 +20,38 @@ function addRemoveAddresses(source, from, to, tokenID) {
   if (isMint) {
     if (to in copy) {
       if (!copy[to].includes(tokenID)) {
-        logger.info(`processing mint: adding to map ${to} | to ${to} (from: ${from} - to: ${to} - token ${tokenID})`)
+        // logger.info(`processing mint: adding to map ${to} | to ${to} (from: ${from} - to: ${to} - token ${tokenID})`)
+        logger.info(`mint 🍵: ${to} [${tokenID}]`)
         copy[to].push(tokenID)
       }
     } else {
-      logger.info(`first processing mint: init ${to} | to ${to} (from: ${from} - to: ${to} - token ${tokenID})`)
+      // logger.info(`first processing mint: init ${to} ${tokenID})`)
+      logger.info(`mint 🍵: ${to} [${tokenID}]`)
       copy[to] = [tokenID]
     }
   } else if (isBurn) {
     if (from in copy) {
       if (copy[from].includes(tokenID)) {
-        logger.info(`processing burn: removing from map ${from} | from ${from} (from: ${from} - to: ${to} - token ${tokenID})`)
+        logger.info(`burn 🔥: ${from} [${tokenID}]`)
+        // logger.info(`processing burn: removing from map ${from} | from ${from} (from: ${from} - to: ${to} - token ${tokenID})`)
         const index = copy[from].indexOf(tokenID)
         copy[from].splice(index, 1)
       }
     }
     else {
-      logger.info(`processing burn: should not hit | (from: ${from} - to: ${to} - token ${tokenID})`)
+      logger.info(`burn 🔥: should not hit ${from} [${tokenID}]`)
+      // logger.info(`processing burn: should not hit | (from: ${from} - to: ${to} - token ${tokenID})`)
       copy[from] = []
     }
   }
 
-  if (isBurn) {
-    logger.info(`burn 🔥: ${from} [${tokenID}]`)
-  } else if (isMint) {
-    logger.info(`mint 🍵: ${to} [${tokenID}]`)
-  } else {
-    logger.info(`⚠️ unknown Transfer: from - ${from} - to ${to}`)
-  }
+  // if (isBurn) {
+  //   logger.info(`burn 🔥: ${from} [${tokenID}]`)
+  // } else if (isMint) {
+  //   logger.info(`mint 🍵: ${to} [${tokenID}]`)
+  // } else {
+  //   logger.info(`⚠️ unknown Transfer: from - ${from} - to ${to}`)
+  // }
 
   return copy
 }
