@@ -38,7 +38,7 @@ function addRemoveAddresses(source, from, to, tokenID) {
       }
     }
   } else {
-    logger.info(`processing burn: should not hit`)
+    logger.info(`processing burn: should not hit - ${from} - ${to}`)
     copy[from] = []
   }
 
