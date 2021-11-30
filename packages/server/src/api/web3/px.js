@@ -20,12 +20,10 @@ function addRemoveAddresses(source, from, to, tokenID) {
   if (isMint) {
     if (to in copy) {
       if (!copy[to].includes(tokenID)) {
-        // logger.info(`processing mint: adding to map ${to} | to ${to} (from: ${from} - to: ${to} - token ${tokenID})`)
         logger.info(`mint 🍵: ${to} [${tokenID}]`)
         copy[to].push(tokenID)
       }
     } else {
-      // logger.info(`first processing mint: init ${to} ${tokenID})`)
       logger.info(`mint 🍵: ${to} [${tokenID}]`)
       copy[to] = [tokenID]
     }
@@ -33,25 +31,15 @@ function addRemoveAddresses(source, from, to, tokenID) {
     if (from in copy) {
       if (copy[from].includes(tokenID)) {
         logger.info(`burn 🔥: ${from} [${tokenID}]`)
-        // logger.info(`processing burn: removing from map ${from} | from ${from} (from: ${from} - to: ${to} - token ${tokenID})`)
         const index = copy[from].indexOf(tokenID)
         copy[from].splice(index, 1)
       }
     }
     else {
       logger.info(`burn 🔥: should not hit ${from} [${tokenID}]`)
-      // logger.info(`processing burn: should not hit | (from: ${from} - to: ${to} - token ${tokenID})`)
       copy[from] = []
     }
   }
-
-  // if (isBurn) {
-  //   logger.info(`burn 🔥: ${from} [${tokenID}]`)
-  // } else if (isMint) {
-  //   logger.info(`mint 🍵: ${to} [${tokenID}]`)
-  // } else {
-  //   logger.info(`⚠️ unknown Transfer: from - ${from} - to ${to}`)
-  // }
 
   return copy
 }
@@ -62,17 +50,20 @@ function listenToPXTransfers () {
    */
   logger.info(`Listening to PX contract: ${PXContract.address} on ${provider.network.name} 👂`)
 
-  // query all Transfers
-  // const filter = PXContract.filters.Transfer(null, null)
+  // @TODO: this misses sometimes
+  // https://github.com/ethers-io/ethers.js/discussions/2167
   PXContract.on('Transfer(address,address,uint256)', (from, to, _tokenID) => {
-    // @TODO if many mints or events hit here, redis is not always synchrnous
+    getAddressToOwnershipMap()
+
+
+
+
+    // @TODO events hit here to update blob, redis is not always synchronous, need a queue for processing
     // const tokenID = _tokenID.toNumber()
     // const data = await redisClient.get(keys.ADDRESS_TO_TOKENID)
     // const source = JSON.parse(data)
     // const dest = JSON.stringify(addRemoveAddresses(source, from, to, tokenID))
     // redisClient.set(keys.ADDRESS_TO_TOKENID, dest)
-
-    getAddressToOwnershipMap()
   })
 }
 
