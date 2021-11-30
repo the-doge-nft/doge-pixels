@@ -20,9 +20,11 @@ function addRemoveAddresses(source, from, to, tokenID) {
   if (isMint) {
     if (to in copy) {
       if (!copy[to].includes(tokenID)) {
+        logger.info(`processing mint: adding token ${tokenID} to ${to}`)
         copy[to].push(tokenID)
       }
     } else {
+      logger.info(`first processing mint: init token ${tokenID} to ${to}`)
       copy[to] = [tokenID]
     }
   }
@@ -30,11 +32,13 @@ function addRemoveAddresses(source, from, to, tokenID) {
   if (isBurn) {
     if (from in copy) {
       if (copy[from].includes(tokenID)) {
+        logger.info(`processing burn: removing token ${tokenID} from ${from}`)
         const index = copy[from].indexOf(tokenID)
         copy[from].splice(index, 1)
       }
     }
   } else {
+    logger.info(`processing burn: should not hit`)
     copy[from] = []
   }
 
@@ -56,11 +60,13 @@ function listenToPXTransfers () {
   logger.info(`Listening to PX contract: ${PXContract.address} on ${provider.network.name} 👂`)
 
   PXContract.on('Transfer', async (from, to, _tokenID) => {
-    const tokenID = _tokenID.toNumber()
-    const data = await redisClient.get(keys.ADDRESS_TO_TOKENID)
-    const source = JSON.parse(data)
-    const dest = JSON.stringify(addRemoveAddresses(source, from, to, tokenID))
-    redisClient.set(keys.ADDRESS_TO_TOKENID, dest)
+    // const tokenID = _tokenID.toNumber()
+    // const data = await redisClient.get(keys.ADDRESS_TO_TOKENID)
+    // const source = JSON.parse(data)
+    // const dest = JSON.stringify(addRemoveAddresses(source, from, to, tokenID))
+    // redisClient.set(keys.ADDRESS_TO_TOKENID, dest)
+
+    getAddressToOwnershipMap()
   })
 }
 
