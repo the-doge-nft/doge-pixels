@@ -57,7 +57,7 @@ const ModalStyle = {
     },
     lg: {
       container: {
-        maxWidth: "32rem"
+        maxWidth: "36rem"
       },
       body: {
         px: 8,

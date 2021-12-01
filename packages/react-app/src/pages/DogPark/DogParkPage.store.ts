@@ -91,6 +91,8 @@ class DogParkPageStore extends Reactionable(EmptyClass) {
 
   @computed
   get selectedPupperHex() {
+    const hex = AppStore.web3.pupperToHexLocal(this.selectedPupper!)
+    console.log("debug:: hex on load", hex)
     return AppStore.web3.pupperToHexLocal(this.selectedPupper!)
   }
 
@@ -102,6 +104,11 @@ class DogParkPageStore extends Reactionable(EmptyClass) {
   @computed
   get selectedPupperLocation() {
     return "Dog"
+  }
+
+  @computed
+  get isSelectedAddressAuthedUser() {
+    return this.selectedAddress === AppStore.web3.address
   }
 
 }
