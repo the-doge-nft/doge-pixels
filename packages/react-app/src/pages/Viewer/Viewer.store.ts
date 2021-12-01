@@ -7,6 +7,7 @@ import { Reactionable } from "../../services/mixins/reactionable";
 import LocalStorage from "../../services/local-storage";
 import * as Https from "https";
 import {Http} from "../../services";
+import {CameraPositionZ} from "./ThreeScene";
 
 
 export enum ViewerView {
@@ -58,30 +59,32 @@ class ViewerStore extends Navigable(Eventable(Reactionable((EmptyClass)))) {
   }
 
   init() {
-    this.react(() => this.selectedPupper, () => {
-      AppStore.web3.pxContract!.ownerOf(this.selectedPupper!).then(res => {
-        this.tokenOwner = res
+    this.isHelperModalOpen = LocalStorage.getItem(SHOW_HELPER_MODAL, LocalStorage.PARSE_JSON, true)
+    LocalStorage.setItem(SHOW_HELPER_MODAL, false)
 
-        // only query tokenuri if pixel is owned since we will be lazily uploading metadata to IPFS
-        AppStore.web3.pxContract!.tokenURI(this.selectedPupper!).then(res => {
-          console.log("debug:: tokenURI", res)
+    this.react(() => this.selectedPupper, async () => {
+      try {
+        this.tokenOwner = await AppStore.web3.pxContract!.ownerOf(this.selectedPupper!)
+
+        try {
+          const tokenURI = await AppStore.web3.pxContract!.tokenURI(this.selectedPupper!)
+          // @TODO: partyka - current ipfs links do not work
+          // https://ipfs.io/ipns/k51qzi5uqu5djqiqaht7oyvstxe24g4zk4lgt4nf92q7b4t9x3xjoqzkvmha1w/metadata/metadata-22_2.json
           this.selectedURI = {
             imgUrl: "",
             description: {
               pupperLocation: "Pupper"
             }
           }
-        }).catch(e => {
-          console.error("debug:: tokenURI error", e)
-        })
-      }).catch(e => {
+        } catch (e) {
+          console.log("debug:: token URI not found for token that is owned - THIS IS BAAD")
+        }
+      } catch (e) {
+        // @TODO filter if owner is 0 address
+        console.log("debug:: token does not have an owner")
         this.tokenOwner = null
-        console.error("debug:: tokenURI error", e)
-      })
+      }
     }, {fireImmediately: true})
-
-    this.isHelperModalOpen = LocalStorage.getItem(SHOW_HELPER_MODAL, LocalStorage.PARSE_JSON, true)
-    LocalStorage.setItem(SHOW_HELPER_MODAL, false)
   }
 
   @action
@@ -123,6 +126,8 @@ class ViewerStore extends Navigable(Eventable(Reactionable((EmptyClass)))) {
     return AppStore.web3.pupperToHexLocal(this.selectedPupper!)
   }
 
+  // @TODO selecting PixelPane in ManagePane.tsx & SelectedPixelPane.tsx should call
+  // similar functions from this store
   async onManagePixelClick(pupper: number) {
     const [x, y] = await AppStore.web3.pupperToPixelCoords(pupper)
     const [x1, y1] = AppStore.web3.pupperToPixelCoordsLocal(pupper)
@@ -130,7 +135,7 @@ class ViewerStore extends Navigable(Eventable(Reactionable((EmptyClass)))) {
       throw Error(`X,Y from contract and local do not agree. Local: ${x1} ${y1}. Remote: ${x} ${y}`)
     }
     this.selectedPupper = pupper
-    this.publish(SET_CAMERA, [x1, y1])
+    this.publish(SET_CAMERA, [x1, y1, CameraPositionZ.medium])
     this.pushNavigation(ViewerView.Selected)
   }
 

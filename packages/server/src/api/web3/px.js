@@ -14,29 +14,31 @@ function addRemoveAddresses(source, from, to, tokenID) {
     throw Error("source must be an object")
   }
   const copy = JSON.parse(JSON.stringify(source))
+  const isBurn = (to === ethers.constants.AddressZero)
+  const isMint = (from === ethers.constants.AddressZero)
 
-  if (to in copy) {
-    if (!copy[to].includes(tokenID)) {
-      copy[to].push(tokenID)
+  if (isMint) {
+    if (to in copy) {
+      if (!copy[to].includes(tokenID)) {
+        logger.info(`mint 🍵: ${to} [${tokenID}]`)
+        copy[to].push(tokenID)
+      }
+    } else {
+      logger.info(`mint 🍵: ${to} [${tokenID}]`)
+      copy[to] = [tokenID]
     }
-  } else {
-    copy[to] = [tokenID]
-  }
-
-  if (from in copy) {
-    if (copy[to].includes(tokenID)) {
-      const index = copy[from].indexOf(tokenID)
-      copy[from].splice(index, 1)
+  } else if (isBurn) {
+    if (from in copy) {
+      if (copy[from].includes(tokenID)) {
+        logger.info(`burn 🔥: ${from} [${tokenID}]`)
+        const index = copy[from].indexOf(tokenID)
+        copy[from].splice(index, 1)
+      }
     }
-  }
-  else {
-    copy[from] = []
-  }
-
-  if (to === ethers.constants.AddressZero) {
-    logger.info(`burn 🔥: ${from} [${tokenID}]`)
-  } else if (from === ethers.constants.AddressZero) {
-    logger.info(`mint 🍵: ${to} [${tokenID}]`)
+    else {
+      logger.info(`burn 🔥: should not hit ${from} [${tokenID}]`)
+      copy[from] = []
+    }
   }
 
   return copy
@@ -48,12 +50,20 @@ function listenToPXTransfers () {
    */
   logger.info(`Listening to PX contract: ${PXContract.address} on ${provider.network.name} 👂`)
 
-  PXContract.on('Transfer', async (from, to, _tokenID) => {
-    const tokenID = _tokenID.toNumber()
-    const data = await redisClient.get(keys.ADDRESS_TO_TOKENID)
-    const source = JSON.parse(data)
-    const dest = JSON.stringify(addRemoveAddresses(source, from, to, tokenID))
-    redisClient.set(keys.ADDRESS_TO_TOKENID, dest)
+  // @TODO: this misses sometimes
+  // https://github.com/ethers-io/ethers.js/discussions/2167
+  PXContract.on('Transfer(address,address,uint256)', (from, to, _tokenID) => {
+    getAddressToOwnershipMap()
+
+
+
+
+    // @TODO events hit here to update blob, redis is not always synchronous, need a queue for processing
+    // const tokenID = _tokenID.toNumber()
+    // const data = await redisClient.get(keys.ADDRESS_TO_TOKENID)
+    // const source = JSON.parse(data)
+    // const dest = JSON.stringify(addRemoveAddresses(source, from, to, tokenID))
+    // redisClient.set(keys.ADDRESS_TO_TOKENID, dest)
   })
 }
 
@@ -71,7 +81,7 @@ async function getAddressToOwnershipMap() {
     const tokenID = tx.args.tokenId.toNumber()
     addressToPuppers = addRemoveAddresses(addressToPuppers, from, to, tokenID)
   })
-  redisClient.set(keys.ADDRESS_TO_TOKENID, JSON.stringify(addressToPuppers))
+  await redisClient.set(keys.ADDRESS_TO_TOKENID, JSON.stringify(addressToPuppers))
 }
 
 module.exports = main
