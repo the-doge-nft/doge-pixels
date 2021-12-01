@@ -27,23 +27,40 @@ const bar1 = new cliProgress.SingleBar(
         format: 'progress [{bar}] {percentage}% | {duration_formatted} | {value}/{total} | ETA: {eta}s '
     }, cliProgress.Presets.shades_classic);
 
-function toColor(num) {
+function hexIntToRgba(num) {
     num >>>= 0;
-    var b = num & 0xFF,
-        g = (num & 0xFF00) >>> 8,
-        r = (num & 0xFF0000) >>> 16,
-        a = ((num & 0xFF000000) >>> 24) / 255;
+    var a = num & 0xFF / 255,
+        b = (num & 0xFF00) >>> 8,
+        g = (num & 0xFF0000) >>> 16,
+        r = ((num & 0xFF000000) >>> 24);
     return "rgba(" + [r, g, b, a].join(", ") + ")";
 }
+
+function rgbToHex(r, g, b) {
+    return "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
+}
+
+function hexIntToStr(hex) {
+    const rgba = Jimp.intToRGBA(hex);
+    const r = rgba.r.toString(16).padStart(2, 0);
+    const g = rgba.g.toString(16).padStart(2, 0);
+    const b = rgba.b.toString(16).padStart(2, 0);
+    if (rgba.a !== 255) {
+        throw "A not 255";
+    }
+    return `#${r}${g}${b}`
+}
+
 
 function pixelUrl(x, y) {
     // return `ipfs://ipns/${IPNS_DIR}/pixels/${x}_${y}.png`;
     return `https://gateway.ipfs.io/ipns/${IPNS_DIR}/pixels/${x}_${y}.png`;
 }
 
-function createTile(x, y, hex, RUN_CONFIG) {
+function createTile(x, y, hexInt, RUN_CONFIG) {
     let SIZE = 'sm';
     let size, prefix;
+    const hex = hexIntToStr(hexInt);
     size = options.tile_size;
     prefix = '';//`pixels_${size}x${size}`
     return new Promise((resolve) => {
@@ -52,7 +69,7 @@ function createTile(x, y, hex, RUN_CONFIG) {
 
             for (let w = 0; w < size; ++w) {
                 for (let h = 0; h < size; ++h) {
-                    image.setPixelColor(hex, w, h);
+                    image.setPixelColor(hexInt, w, h);
                 }
             }
 
@@ -61,17 +78,17 @@ function createTile(x, y, hex, RUN_CONFIG) {
                 // console.log(`saved ${x}_${y}.png`);
                 const index = y * RUN_CONFIG.width + x;
                 const metadata = {
-                    name: `[${x}, ${y}]`,
-                    description: `Pixel at ${x}x${y} with hex #${hex}; ${toColor(hex)}`,
-                    external_url: `https://squeamish-side.surge.sh/${index}/${index}/${index}/${index}/${index}/${index}/${index}/${index}`,
+                    name: `$DOG[${x}][${y}]`,
+                    description: `Hi I'm $DOG[${x}][${y}]`,
+                    // external_url: `https://squeamish-side.surge.sh/${index}/${index}/${index}/${index}/${index}/${index}/${index}/${index}`,
                     image: pixelUrl(x, y),
-                    hex: `#${hex}`,
-                    background_color: '#fff',//todo: select contrast
+                    hex: `${hex}`,
+                    // background_color: '#fff',//todo: select contrast
                     attributes: [
-                        {
-                            trait_type: "REGION",
-                            value: "n/a"
-                        },
+                        // {
+                        //     trait_type: "REGION",
+                        //     value: "n/a"
+                        // },
                         {
                             trait_type: "XCOORD",
                             value: x
@@ -86,18 +103,19 @@ function createTile(x, y, hex, RUN_CONFIG) {
                         },
                         {
                             trait_type: "HEX",
-                            value: `#${hex}`
+                            value: `${hex}`
                         },
-                        {
-                            trait_type: "RGBA",
-                            value: toColor(hex)
-                        },
+                        // {
+                        //     trait_type: "RGBA",
+                        //     value: toColor(hex)
+                        // },
                         {
                             trait_type: "DENSITY",
                             value: "DENSE"
                         },
                     ]
                 };
+                // console.log(`[${x}][${y}]: ${hex}; ${hexIntToRgba(hexInt)}`)
                 fs.writeFileSync(path.join(METADATA_PATH, `metadata-${x}_${y}.json`), JSON.stringify(metadata, null, 2))
 
                 bar1.update(y * RUN_CONFIG.width + x);
@@ -177,32 +195,21 @@ async function deploy() {
                                 break;
                             }
                         }
-                        const percentage = (w + h * originalWidth) / (originalWidth * originalHeight) * 100;
-                        if ((w + h * originalWidth) % 1000 == 0) {
-                            console.log(percentage.toFixed(2) + '%');
-                        }
-                        const hex = img.getPixelColor(w, h)
-                        // image.setPixelColor(hex, w, h);
-                        await pushToQueue(w, h, createTile(w, h, hex, config))
-                        image.setPixelColor(hex, w, h);
-                        // bar1.update(h * config.width + w);
-                        // console.log(toColor(hex))
+                        const hexInt = img.getPixelColor(w, h);
+                        await pushToQueue(w, h, createTile(w, h, hexInt, config))
+                        image.setPixelColor(hexInt, w, h);
                     }
                 }
                 await Promise.all(q);
                 q = [];
                 bar1.stop();
                 console.log("Finished");
-                // process.exit(255)
 
                 image.write('test.png', (err) => {
                     if (err) throw err;
                 });
             });
         })
-        .catch(err => {
-            console.error(err);
-        });
 }
 
 deploy();
