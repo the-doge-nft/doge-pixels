@@ -46,9 +46,10 @@ function listenToPXTransfers () {
   /*
     Listening to transfer events on the PX contract updating the address -> [tokenIDs...] stored in redis
    */
-  logger.info(`Listening to PX contract: ${PXContract.address} on ${provider.network.name} 👂`)
+  logger.info(`Listening to PX contract: ${PXContract.address} 👂`)
 
   PXContract.on('Transfer', async (from, to, _tokenID) => {
+    logger.info("Transfer event hit")
     const tokenID = _tokenID.toNumber()
     const data = await redisClient.get(keys.ADDRESS_TO_TOKENID)
     const source = JSON.parse(data)
