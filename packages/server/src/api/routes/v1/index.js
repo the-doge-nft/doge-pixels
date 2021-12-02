@@ -22,12 +22,9 @@ router.get(
   '/px/dimensions',
   async (req, res) => {
     const cache = await redisClient.get(keys.SHIBA_DIMENSIONS)
-    logger.info(redisClient)
     if (cache) {
-      logger.info("px call cache hit")
       res.send(JSON.parse(cache))
     } else {
-      logger.info("px call no cache")
       const width = await PXContract.SHIBA_WIDTH()
       const height = await PXContract.SHIBA_HEIGHT()
       const data = {width: width.toNumber(), height: height.toNumber()}
