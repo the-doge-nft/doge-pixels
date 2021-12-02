@@ -4,12 +4,20 @@ const {redisClient} = require("../src/config/redis");
 const {ethers, upgrades} = require("hardhat");
 const testABI = require("./contracts/hardhat_contracts.json")
 const {BigNumber} = require("ethers");
+const pxMain = require("../src/api/web3/px");
+const {PXContract} = require("../src/config/ethers");
 
 const request = supertest(app)
-jest.setTimeout(3 * 1000)
+jest.setTimeout(10 * 1000)
+
+beforeAll(() => {
+  // listen for events on the px contract
+  pxMain()
+})
 
 afterAll(() => {
   redisClient.disconnect()
+  PXContract.removeAllListeners()
 })
 
 it('Testing to see if jest works', async () => {
@@ -47,5 +55,19 @@ it('Testing getting signers', async () => {
   const DOG_TO_PIXEL_SATOSHIS = BigNumber.from("55239898990000000000000")
   await DOGContract.initMock([address], DOG_TO_PIXEL_SATOSHIS.mul(10));
 
-  expect(1).toEqual(1)
+  await DOGContract.approve(pxContractInfo["address"], DOG_TO_PIXEL_SATOSHIS.mul(10))
+  await PXContract.mintPuppers(5)
+  const pupperBalance = await PXContract.balanceOf(address)
+  expect(pupperBalance.toNumber()).toEqual(5)
+
+  await sleep(2000)
+
+  const res = await request.get("/v1/config")
+  console.log("res: ", res.body)
 })
+
+const sleep = async (ms) => {
+  await new Promise(r => setTimeout(r, ms));
+}
+
+
