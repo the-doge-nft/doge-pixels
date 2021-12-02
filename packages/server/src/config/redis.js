@@ -1,4 +1,5 @@
 const redis = require('redis')
+const {env} = require("./vars");
 
 const redisClient = redis.createClient()
 redisClient.on('error', err => console.log('Redis client error', err))
