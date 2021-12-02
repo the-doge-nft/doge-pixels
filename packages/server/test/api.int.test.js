@@ -4,26 +4,19 @@ const {redisClient} = require("../src/config/redis");
 const {ethers, upgrades} = require("hardhat");
 const testABI = require("./contracts/hardhat_contracts.json")
 const {BigNumber} = require("ethers");
-const pxMain = require("../src/api/web3/px");
+const {main: pxMain} = require("../src/api/web3/px");
 const {PXContract} = require("../src/config/ethers");
 
 const request = supertest(app)
 jest.setTimeout(10 * 1000)
 
-beforeAll(() => {
-  // listen for events on the px contract
-  pxMain()
-})
+// beforeAll(() => {
+//   // listen for events on the px contract
+//   pxMain()
+// })
 
 afterAll(() => {
   redisClient.disconnect()
-  PXContract.removeAllListeners()
-})
-
-it('Testing to see if jest works', async () => {
-  const res = await request.get("/v1/test")
-  console.log(res.text)
-  return
 })
 
 it('Returns the kobosu width and height', async () => {
@@ -42,7 +35,7 @@ it('Returns the kobosu width and height', async () => {
 
 })
 
-it('Testing getting signers', async () => {
+it('Testing getting signers', (done) => {
   const provider = new ethers.providers.JsonRpcProvider("http://127.0.0.1:8545")
   const signer = provider.getSigner(0)
   const pxContractInfo = testABI["31337"]["localhost"]["contracts"]["PX"]
@@ -51,23 +44,27 @@ it('Testing getting signers', async () => {
   const PXContract = new ethers.Contract(pxContractInfo["address"], pxContractInfo["abi"], signer)
   const DOGContract = new ethers.Contract(dogContractInfo["address"], dogContractInfo["abi"], signer)
 
-  const address = await signer.getAddress()
-  const DOG_TO_PIXEL_SATOSHIS = BigNumber.from("55239898990000000000000")
-  await DOGContract.initMock([address], DOG_TO_PIXEL_SATOSHIS.mul(10));
-
-  await DOGContract.approve(pxContractInfo["address"], DOG_TO_PIXEL_SATOSHIS.mul(10))
-  await PXContract.mintPuppers(5)
-  const pupperBalance = await PXContract.balanceOf(address)
-  expect(pupperBalance.toNumber()).toEqual(5)
-
-  await sleep(2000)
-
-  const res = await request.get("/v1/config")
-  console.log("res: ", res.body)
+  signer.getAddress().then(signerAddress => {
+    const DOG_TO_PIXEL_SATOSHIS = BigNumber.from("55239898990000000000000")
+    DOGContract.initMock([signerAddress], DOG_TO_PIXEL_SATOSHIS.mul(10)).then(_ => {
+      DOGContract.approve(pxContractInfo["address"], DOG_TO_PIXEL_SATOSHIS.mul(10)).then(() => {
+        PXContract.mintPuppers(5).then(() => {
+          PXContract.balanceOf(signerAddress).then(pupperBalance => {
+            expect(pupperBalance.toNumber()).toEqual(5)
+            request.get("/v1/config/refresh").then(res => {
+              console.log("res: ", res.body)
+              expect(res.body[signerAddress].length).toEqual(5)
+              done()
+            })
+          })
+        })
+      })
+    })
+  })
 })
 
-const sleep = async (ms) => {
-  await new Promise(r => setTimeout(r, ms));
-}
+// const sleep = async (ms) => {
+//   await new Promise(r => setTimeout(r, ms));
+// }
 
 
