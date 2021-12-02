@@ -28,7 +28,7 @@ docker-compose -f "$SCRIPTPATH/../docker-compose.yml" up -d
 
 echoWithPadding "4️⃣  running tests"
 cd $SCRIPTPATH
-NODE_ENV=test jest --detectOpenHandles
+NODE_ENV=test jest --runInBand --detectOpenHandles --forceExit
 TEST_STATUS=$?
 
 echoWithPadding "5️⃣  cleaning up"

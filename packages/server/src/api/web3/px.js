@@ -6,7 +6,7 @@ const logger = require("../../config/config");
 
 async function main() {
   getAddressToOwnershipMap()
-  listenToPXTransfers()
+  // listenToPXTransfers()
 }
 
 function addRemoveAddresses(source, from, to, tokenID) {
@@ -86,4 +86,4 @@ async function getAddressToOwnershipMap() {
   await redisClient.set(keys.ADDRESS_TO_TOKENID, JSON.stringify(addressToPuppers))
 }
 
-module.exports = main
+module.exports = {main, getAddressToOwnershipMap}
