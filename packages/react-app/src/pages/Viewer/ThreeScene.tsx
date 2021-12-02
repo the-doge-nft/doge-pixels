@@ -19,17 +19,21 @@ interface ThreeSceneProps {
   store?: ViewerStore;
 }
 
+export enum CameraPositionZ {
+  far = 5500,
+  medium = 300,
+  close = 80
+}
+
 const ThreeScene =({onPixelSelect, store}: ThreeSceneProps) => {
   const query = useQuery()
-  const maxCameraZ = 5500;
-  const minCameraZ = 80;
-  const _zClippingSafetyBuffer = 3
+  const zClippingSafetyBuffer = 3
 
   const cam = new THREE.PerspectiveCamera(
     5,
     window.innerWidth / window.innerHeight,
-    minCameraZ - _zClippingSafetyBuffer,
-    maxCameraZ + _zClippingSafetyBuffer
+    CameraPositionZ.close - zClippingSafetyBuffer,
+    CameraPositionZ.far + zClippingSafetyBuffer
   );
 
   const [camera] = useState<THREE.PerspectiveCamera>(cam);
@@ -57,7 +61,7 @@ const ThreeScene =({onPixelSelect, store}: ThreeSceneProps) => {
 
       camera.position.x = imageWorldUnitsWidth / 2 - 0.65;
       camera.position.y = -1 * imageWorldUnitsHeight / 2 + 0.26;
-      camera.position.z = maxCameraZ - 1000;
+      camera.position.z = CameraPositionZ.far - 1000;
 
       canvasContainerRef.current = node
       node.focus()
@@ -96,15 +100,19 @@ const ThreeScene =({onPixelSelect, store}: ThreeSceneProps) => {
   }, [store?.selectedPupper])
 
   const CameraTools = {
-    setCamera: ([x, y]: [number, number]) => {
+    setCamera: ([x, y, z]: [number, number, number?]) => {
       const xPos = x
       const yPos = -1 * y
 
       camera.position.x = xPos - (overlayLength / 2)
       camera.position.y = yPos - (overlayLength / 2)
 
-      if (camera.position.z === maxCameraZ) {
-        camera.position.z = (maxCameraZ - minCameraZ) / 2
+      if (z !== undefined) {
+        camera.position.z = z
+      } else {
+        if (camera.position.z === CameraPositionZ.far) {
+          camera.position.z = (CameraPositionZ.far - CameraPositionZ.close) / 2
+        }
       }
 
       if (selectedPixelOverlayRef.current) {
@@ -117,17 +125,12 @@ const ThreeScene =({onPixelSelect, store}: ThreeSceneProps) => {
     }
   }
 
-  // click select pixel & jump to location
   useEffect(() => {
     store?.subscribe(SET_CAMERA, CameraTools, "setCamera")
     return () => {
       store?.unsubscribeAllFrom(CameraTools)
     }
   }, [])
-
-  const hoveredPx = 0
-  const hoveredHex = "#fdi394"
-  const hoveredIndex = 1
 
   return (
     <Box ref={canvasContainerOnMount} position={"absolute"} w={"100%"} h={"100%"}>
@@ -149,8 +152,8 @@ const ThreeScene =({onPixelSelect, store}: ThreeSceneProps) => {
               camera,
               gl.domElement.parentElement,
               dogeMeshRef.current,
-              minCameraZ,
-              maxCameraZ,
+              CameraPositionZ.close,
+              CameraPositionZ.far,
             );
             //@ts-ignore
             panZoom.on('panstart', function () {
@@ -166,7 +169,7 @@ const ThreeScene =({onPixelSelect, store}: ThreeSceneProps) => {
           const x = query.get("x")
           const y = query.get("y")
           if (x !== null && y !== null) {
-            CameraTools.setCamera([Number(x), Number(y)])
+            CameraTools.setCamera([Number(x), Number(y), CameraPositionZ.medium])
           }
         }}
       >
@@ -246,18 +249,18 @@ const ThreeScene =({onPixelSelect, store}: ThreeSceneProps) => {
         </group>
       </Canvas>
       <Box ref={tooltipRef} position={"absolute"} left={5} top={0} zIndex={10} display={"none"}>
-        <PixelPane size={"md"} pupper={hoveredPx} color={hoveredHex} pupperIndex={hoveredIndex}/>
+        <PixelPane size={"md"} pupper={0} color={"fff"} pupperIndex={0}/>
       </Box>
       <Box position={"absolute"} bottom={0} left={0}>
         <Button size={"sm"}
                 variant={ButtonVariant.Text}
-                onClick={() => camera.position.z = (minCameraZ + maxCameraZ) / 2}>+</Button>
+                onClick={() => camera.position.z = (CameraPositionZ.close + CameraPositionZ.far) / 2}>+</Button>
         <Button size={"sm"}
                 variant={ButtonVariant.Text}
-                onClick={() => camera.position.z = (minCameraZ + maxCameraZ) / 5}>++</Button>
+                onClick={() => camera.position.z = (CameraPositionZ.close + CameraPositionZ.far) / 5}>++</Button>
         <Button size={"sm"}
                 variant={ButtonVariant.Text}
-                onClick={() => camera.position.z = minCameraZ + 50}>+++</Button>
+                onClick={() => camera.position.z = CameraPositionZ.close + 50}>+++</Button>
       </Box>
     </Box>
   );

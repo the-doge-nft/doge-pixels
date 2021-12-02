@@ -96,6 +96,11 @@ class BurnPixelsModalStore extends Navigable<AbstractConstructor, BurnPixelsModa
     }
   }
 
+  @computed
+  get isUserPixelOwner() {
+    return AppStore.web3.puppersOwned.length > 0
+  }
+
 }
 
 export default BurnPixelsModalStore

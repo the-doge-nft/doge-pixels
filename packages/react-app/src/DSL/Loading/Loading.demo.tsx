@@ -5,7 +5,10 @@ import Loading from "./Loading";
 
 const DemoLoading = () => {
     return <Demo title="Loading">
-        <Loading />
+        <Box mb={14}>
+            <Loading />
+        </Box>
+        <Loading title={"Waiting 4 👆..."} showSigningHint/>
     </Demo>
 }
 

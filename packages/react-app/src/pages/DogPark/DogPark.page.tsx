@@ -1,6 +1,6 @@
 import {Box, Flex, Grid, GridItem} from "@chakra-ui/react";
 import {observer} from "mobx-react-lite";
-import React, {useMemo} from "react";
+import React, {useEffect, useMemo} from "react";
 import Pane from "../../DSL/Pane/Pane";
 import Typography, {TVariant} from "../../DSL/Typography/Typography";
 import DogParkPageStore from "./DogParkPage.store";
@@ -8,18 +8,23 @@ import TextInput from "../../DSL/Form/TextInput";
 import Form from "../../DSL/Form/Form";
 import model from "../../DSL/Form/model";
 import {abbreviate} from "../../helpers/strings";
-import PixelPane from "../../DSL/PixelPane/PixelPane";
 import AppStore from "../../store/App.store";
-import PxPill from "./PxPill";
 import UserCard from "./UserCard";
-import {useHistory, useLocation, useParams} from "react-router-dom";
-import Button from "../../DSL/Button/Button";
+import {useHistory, useParams} from "react-router-dom";
 import Icon from "../../DSL/Icon/Icon";
+import PxPill from "./PxPill";
+import PixelPane from "../../DSL/PixelPane/PixelPane";
+import Button from "../../DSL/Button/Button";
 
 const DogParkPage = observer(function DogParkPage() {
   const history = useHistory()
   const { address, tokenID } = useParams<{address: string, tokenID: string}>()
   const store = useMemo(() => new DogParkPageStore(address, Number(tokenID)), [])
+  useEffect(() => {
+    AppStore.web3.getPupperOwnershipMap()
+    AppStore.web3.refreshDogBalance()
+    AppStore.web3.refreshPupperBalance()
+  }, [])
   return <Grid templateColumns={"0.5fr 1fr"} flexGrow={1}>
     <GridItem>
       <Pane display={"flex"} flexDirection={"column"} h={"full"}>
@@ -58,6 +63,9 @@ const DogParkPage = observer(function DogParkPage() {
                       <Typography variant={TVariant.PresStart18} ml={3}>
                         {abbreviate(store.selectedAddress)}
                       </Typography>
+                      {store.isSelectedAddressAuthedUser && <Typography variant={TVariant.PresStart14} ml={3}>
+                          (you)
+                      </Typography>}
                     </Flex>
                     <Box my={7}>
                         <PxPill count={store.selectedDogs[0]?.puppers.length}/>
@@ -71,9 +79,11 @@ const DogParkPage = observer(function DogParkPage() {
                           return <Box
                             bg={store.selectedPupper === px ? "yellow.700" : "inherit"}
                             p={2}
+                            m={1}
                             _hover={{bg: "yellow.700"}}
                           >
                             <PixelPane
+                              key={`top_dog_${px}`}
                               size={"md"}
                               pupper={px}
                               color={hex}
