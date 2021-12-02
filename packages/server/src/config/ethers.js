@@ -27,6 +27,7 @@ if (env === "test") {
     projectSecret: infura_secret_id
   })
 }
+// const provider = new ethers.providers.InfuraProvider.getWebSocketProvider(network=network, apiKey=infura_secret_id)
 
 const PXContract = new ethers.Contract(pxContractInfo["address"], pxContractInfo["abi"], provider)
 

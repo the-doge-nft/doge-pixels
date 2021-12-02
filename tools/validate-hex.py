@@ -3,19 +3,20 @@ import json
 img = Image.open('../THE_ACTUAL_NFT_IMAGE.png')
 pixels = img.load()
 width, height = img.size
-DEPLOY_ID='2021-11-24_18_19_14'
-for y in range(height):      # this row
-    for x in range(width):   # and this row was exchanged
-#         r, g, b = pixels[x, y]
 
-        print(pixels[x,y])
-        # in case your image has an alpha channel
-        r, g, b, a = pixels[x, y]
-        hex=f"#{r:02x}{g:02x}{b:02x}{a:02x}"
-        print(x, y, hex)
-        with open(f'./deploy/{DEPLOY_ID}/metadata/{x}_{y}.json') as f:
+DEPLOY_ID='2021-12-01_16_55_09'
+
+for x in range(width):
+    for y in range(height):
+        vals = pixels[x, y]
+        if len(vals) > 3:
+            if vals[3] != 255:
+                raise Exception("Alpha should always be 255")
+        r, g, b = vals
+        hex=f"#{r:02x}{g:02x}{b:02x}"
+        with open(f'./deploy/{DEPLOY_ID}/metadata/metadata-{x}_{y}.json') as f:
             d = json.load(f)
-            for attr in d["attributes"]:
-                if attr["trait_type"] == "hex":
-                    if attr["value"] != hex:
-                        raise Exception(f"Invalid {x} {y}")
+            if d["hex"] != hex:
+                raise Exception(f"{x}, {y} -> FAIL {d['hex']} != {hex}")
+            else:
+                print(f"{x},{y} -> OK")

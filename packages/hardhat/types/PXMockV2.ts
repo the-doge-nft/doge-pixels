@@ -24,7 +24,7 @@ import type {
   OnEvent,
 } from "./common";
 
-export interface PXInterface extends ethers.utils.Interface {
+export interface PXMockV2Interface extends ethers.utils.Interface {
   functions: {
     "BASE_URI()": FunctionFragment;
     "DOG_TO_PIXEL_SATOSHIS()": FunctionFragment;
@@ -32,6 +32,7 @@ export interface PXInterface extends ethers.utils.Interface {
     "MAGIC_NULL()": FunctionFragment;
     "SHIBA_HEIGHT()": FunctionFragment;
     "SHIBA_WIDTH()": FunctionFragment;
+    "__PXMock_init(string,string,address,string,uint256,uint256,address)": FunctionFragment;
     "__PX_init(string,string,address,string,uint256,uint256,address)": FunctionFragment;
     "approve(address,uint256)": FunctionFragment;
     "balanceOf(address)": FunctionFragment;
@@ -51,12 +52,15 @@ export interface PXInterface extends ethers.utils.Interface {
     "renounceOwnership()": FunctionFragment;
     "safeTransferFrom(address,address,uint256)": FunctionFragment;
     "setApprovalForAll(address,bool)": FunctionFragment;
+    "setDOG_TO_PIXEL_SATOSHIS(uint256)": FunctionFragment;
+    "setSupply(uint256,uint256)": FunctionFragment;
     "supportsInterface(bytes4)": FunctionFragment;
     "symbol()": FunctionFragment;
     "tokenURI(uint256)": FunctionFragment;
     "totalSupply()": FunctionFragment;
     "transferFrom(address,address,uint256)": FunctionFragment;
     "transferOwnership(address)": FunctionFragment;
+    "v2Test()": FunctionFragment;
   };
 
   encodeFunctionData(functionFragment: "BASE_URI", values?: undefined): string;
@@ -79,6 +83,10 @@ export interface PXInterface extends ethers.utils.Interface {
   encodeFunctionData(
     functionFragment: "SHIBA_WIDTH",
     values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "__PXMock_init",
+    values: [string, string, string, string, BigNumberish, BigNumberish, string]
   ): string;
   encodeFunctionData(
     functionFragment: "__PX_init",
@@ -145,6 +153,14 @@ export interface PXInterface extends ethers.utils.Interface {
     values: [string, boolean]
   ): string;
   encodeFunctionData(
+    functionFragment: "setDOG_TO_PIXEL_SATOSHIS",
+    values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "setSupply",
+    values: [BigNumberish, BigNumberish]
+  ): string;
+  encodeFunctionData(
     functionFragment: "supportsInterface",
     values: [BytesLike]
   ): string;
@@ -165,6 +181,7 @@ export interface PXInterface extends ethers.utils.Interface {
     functionFragment: "transferOwnership",
     values: [string]
   ): string;
+  encodeFunctionData(functionFragment: "v2Test", values?: undefined): string;
 
   decodeFunctionResult(functionFragment: "BASE_URI", data: BytesLike): Result;
   decodeFunctionResult(
@@ -182,6 +199,10 @@ export interface PXInterface extends ethers.utils.Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "SHIBA_WIDTH",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "__PXMock_init",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "__PX_init", data: BytesLike): Result;
@@ -234,6 +255,11 @@ export interface PXInterface extends ethers.utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
+    functionFragment: "setDOG_TO_PIXEL_SATOSHIS",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(functionFragment: "setSupply", data: BytesLike): Result;
+  decodeFunctionResult(
     functionFragment: "supportsInterface",
     data: BytesLike
   ): Result;
@@ -251,6 +277,7 @@ export interface PXInterface extends ethers.utils.Interface {
     functionFragment: "transferOwnership",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: "v2Test", data: BytesLike): Result;
 
   events: {
     "Approval(address,address,uint256)": EventFragment;
@@ -294,12 +321,12 @@ export type TransferEvent = TypedEvent<
 
 export type TransferEventFilter = TypedEventFilter<TransferEvent>;
 
-export interface PX extends BaseContract {
+export interface PXMockV2 extends BaseContract {
   connect(signerOrProvider: Signer | Provider | string): this;
   attach(addressOrName: string): this;
   deployed(): Promise<this>;
 
-  interface: PXInterface;
+  interface: PXMockV2Interface;
 
   queryFilter<TEvent extends TypedEvent>(
     event: TypedEventFilter<TEvent>,
@@ -332,6 +359,17 @@ export interface PX extends BaseContract {
     SHIBA_HEIGHT(overrides?: CallOverrides): Promise<[BigNumber]>;
 
     SHIBA_WIDTH(overrides?: CallOverrides): Promise<[BigNumber]>;
+
+    __PXMock_init(
+      name_: string,
+      symbol_: string,
+      DOG20Address: string,
+      ipfsUri_: string,
+      width_: BigNumberish,
+      height_: BigNumberish,
+      DOG20_FEES_ADDRESS_: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
 
     __PX_init(
       name_: string,
@@ -432,6 +470,17 @@ export interface PX extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
+    setDOG_TO_PIXEL_SATOSHIS(
+      amount: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
+    setSupply(
+      width: BigNumberish,
+      height: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
     supportsInterface(
       interfaceId: BytesLike,
       overrides?: CallOverrides
@@ -457,6 +506,10 @@ export interface PX extends BaseContract {
       newOwner: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
+
+    v2Test(
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
   };
 
   BASE_URI(overrides?: CallOverrides): Promise<string>;
@@ -470,6 +523,17 @@ export interface PX extends BaseContract {
   SHIBA_HEIGHT(overrides?: CallOverrides): Promise<BigNumber>;
 
   SHIBA_WIDTH(overrides?: CallOverrides): Promise<BigNumber>;
+
+  __PXMock_init(
+    name_: string,
+    symbol_: string,
+    DOG20Address: string,
+    ipfsUri_: string,
+    width_: BigNumberish,
+    height_: BigNumberish,
+    DOG20_FEES_ADDRESS_: string,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
 
   __PX_init(
     name_: string,
@@ -565,6 +629,17 @@ export interface PX extends BaseContract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
+  setDOG_TO_PIXEL_SATOSHIS(
+    amount: BigNumberish,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
+  setSupply(
+    width: BigNumberish,
+    height: BigNumberish,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
   supportsInterface(
     interfaceId: BytesLike,
     overrides?: CallOverrides
@@ -588,6 +663,10 @@ export interface PX extends BaseContract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
+  v2Test(
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
   callStatic: {
     BASE_URI(overrides?: CallOverrides): Promise<string>;
 
@@ -600,6 +679,17 @@ export interface PX extends BaseContract {
     SHIBA_HEIGHT(overrides?: CallOverrides): Promise<BigNumber>;
 
     SHIBA_WIDTH(overrides?: CallOverrides): Promise<BigNumber>;
+
+    __PXMock_init(
+      name_: string,
+      symbol_: string,
+      DOG20Address: string,
+      ipfsUri_: string,
+      width_: BigNumberish,
+      height_: BigNumberish,
+      DOG20_FEES_ADDRESS_: string,
+      overrides?: CallOverrides
+    ): Promise<void>;
 
     __PX_init(
       name_: string,
@@ -685,6 +775,17 @@ export interface PX extends BaseContract {
       overrides?: CallOverrides
     ): Promise<void>;
 
+    setDOG_TO_PIXEL_SATOSHIS(
+      amount: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    setSupply(
+      width: BigNumberish,
+      height: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
     supportsInterface(
       interfaceId: BytesLike,
       overrides?: CallOverrides
@@ -707,6 +808,8 @@ export interface PX extends BaseContract {
       newOwner: string,
       overrides?: CallOverrides
     ): Promise<void>;
+
+    v2Test(overrides?: CallOverrides): Promise<BigNumber>;
   };
 
   filters: {
@@ -765,6 +868,17 @@ export interface PX extends BaseContract {
     SHIBA_HEIGHT(overrides?: CallOverrides): Promise<BigNumber>;
 
     SHIBA_WIDTH(overrides?: CallOverrides): Promise<BigNumber>;
+
+    __PXMock_init(
+      name_: string,
+      symbol_: string,
+      DOG20Address: string,
+      ipfsUri_: string,
+      width_: BigNumberish,
+      height_: BigNumberish,
+      DOG20_FEES_ADDRESS_: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
 
     __PX_init(
       name_: string,
@@ -863,6 +977,17 @@ export interface PX extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
+    setDOG_TO_PIXEL_SATOSHIS(
+      amount: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    setSupply(
+      width: BigNumberish,
+      height: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
     supportsInterface(
       interfaceId: BytesLike,
       overrides?: CallOverrides
@@ -888,6 +1013,10 @@ export interface PX extends BaseContract {
       newOwner: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
+
+    v2Test(
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
   };
 
   populateTransaction: {
@@ -904,6 +1033,17 @@ export interface PX extends BaseContract {
     SHIBA_HEIGHT(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     SHIBA_WIDTH(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    __PXMock_init(
+      name_: string,
+      symbol_: string,
+      DOG20Address: string,
+      ipfsUri_: string,
+      width_: BigNumberish,
+      height_: BigNumberish,
+      DOG20_FEES_ADDRESS_: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
 
     __PX_init(
       name_: string,
@@ -1005,6 +1145,17 @@ export interface PX extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
+    setDOG_TO_PIXEL_SATOSHIS(
+      amount: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    setSupply(
+      width: BigNumberish,
+      height: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
     supportsInterface(
       interfaceId: BytesLike,
       overrides?: CallOverrides
@@ -1028,6 +1179,10 @@ export interface PX extends BaseContract {
 
     transferOwnership(
       newOwner: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    v2Test(
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
   };

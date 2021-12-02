@@ -45,13 +45,17 @@ contract PX is ERC721CustomUpgradeable, OwnableUpgradeable {
     uint256 public SHIBA_HEIGHT;
     string public BASE_URI;
 
+    address DOG20_FEES_ADDRESS;
+    uint256 DOG20_FEES_PERCENT;
+
     function __PX_init(
         string memory name_,
         string memory symbol_,
         address DOG20Address,
         string memory ipfsUri_,
         uint256 width_,
-        uint256 height_
+        uint256 height_,
+        address DOG20_FEES_ADDRESS_
     ) public initializer {
         __ERC721Custom_init(name_, symbol_);
         require(DOG20Address != address(0));
@@ -69,6 +73,9 @@ contract PX is ERC721CustomUpgradeable, OwnableUpgradeable {
         puppersRemaining = SHIBA_WIDTH * SHIBA_HEIGHT;
 
         BASE_URI = ipfsUri_;
+
+        DOG20_FEES_ADDRESS = DOG20_FEES_ADDRESS_;
+        DOG20_FEES_PERCENT = 20;
     }
 
     /**
@@ -189,10 +196,7 @@ contract PX is ERC721CustomUpgradeable, OwnableUpgradeable {
     // randYish in 0...maxRand range
     //
     function randYishInRange(uint256 maxRand) internal returns (uint256 ret) {
-        // require(maxRand > 0, "Range non positive");
         ret = randYish() % maxRand;
-        //        console.log("randyishinrange");
-        //        console.log(ret);
     }
 
     //
@@ -251,7 +255,7 @@ contract PX is ERC721CustomUpgradeable, OwnableUpgradeable {
     function burnPupper(uint256 pupper) public {
         _burn(pupper);
         // transfer collateral to the burner
-        DOG20.transfer(msg.sender, 1 * DOG_TO_PIXEL_SATOSHIS);
+        processCollateralAfterBurn(1 * DOG_TO_PIXEL_SATOSHIS);
     }
     //
     // burnPuppers
@@ -265,21 +269,16 @@ contract PX is ERC721CustomUpgradeable, OwnableUpgradeable {
             _burn(puppers[i]);
         }
         // transfer collateral to the burner
-        DOG20.transfer(msg.sender, puppers.length * DOG_TO_PIXEL_SATOSHIS);
+        processCollateralAfterBurn(puppers.length * DOG_TO_PIXEL_SATOSHIS);
     }
 
-    //
-    //    //
-    //    // fuelPuppyDispenser
-    //    //
-    //    // Description:
-    //    // Enable owner to transfer $DOG to contract's pool, without receiving any pixels
-    //    //
-    //    function fuelPuppyDispenser(uint256 amount) onlyOwner public {
-    //        // todo: asserts
-    //        // transfer some DOGs free of charge to DOGPUPPER contract
-    //        DOG20.transferFrom(msg.sender, address(this), DOG_TO_PIXEL_SATOSHIS);
-    //    }
+    function processCollateralAfterBurn(uint256 totalAmount) internal {
+        // transfer collateral to the burner
+        uint256 feesAmount = totalAmount * DOG20_FEES_PERCENT / 100;
+        uint256 burnerAmount = totalAmount - feesAmount;
+        DOG20.transfer(DOG20_FEES_ADDRESS, feesAmount);
+        DOG20.transfer(msg.sender, burnerAmount);
+    }
 
     //
     // pupperToPixel

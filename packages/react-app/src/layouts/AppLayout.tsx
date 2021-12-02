@@ -174,7 +174,7 @@ const Balances = observer(function Balances() {
 
         </GridItem>
         <GridItem ml={4} display={"flex"} flexDirection={"column"}>
-          <Typography variant={TVariant.PresStart15}>$PX</Typography>
+          <Typography variant={TVariant.PresStart15}>Pixels</Typography>
           <Typography variant={TVariant.ComicSans18} mt={1} block>{AppStore.web3.pupperBalance === 0 ? "None 😕" : AppStore.web3.pupperBalance}</Typography>
           <Dev>
               <Flex flexDirection={"column"} border={"1px solid black"} alignItems={"center"} my={6} pb={2}>
@@ -200,12 +200,11 @@ const Nav = () => {
       if (route.name === NamedRoutes.DOG_PARK) {
         isPark = true
         // @TODO: direct load to address with no pixels in the park is broken
-        // if (AppStore.web3.address) {
-        //   path = `/park/${AppStore.web3.address}`
-        // } else {
-        //   path = "/park"
-        // }
-        path = "/park"
+        if (AppStore.web3.address) {
+          path = `/park/${AppStore.web3.address}`
+        } else {
+          path = "/park"
+        }
       }
       return (
         <Button
