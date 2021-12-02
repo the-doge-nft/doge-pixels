@@ -48,11 +48,12 @@ function listenToPXTransfers () {
   /*
     Listening to transfer events on the PX contract updating the address -> [tokenIDs...] stored in redis
    */
-  logger.info(`Listening to PX contract: ${PXContract.address} on ${provider.network.name} 👂`)
+  logger.info(`Listening to PX contract: ${PXContract.address} 👂`)
 
   // @TODO: this misses sometimes
   // https://github.com/ethers-io/ethers.js/discussions/2167
   PXContract.on('Transfer(address,address,uint256)', async (from, to, _tokenID) => {
+    logger.info("HIT TRANSFER")
     getAddressToOwnershipMap()
 
 
