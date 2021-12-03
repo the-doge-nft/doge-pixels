@@ -9,8 +9,13 @@ jobs:
   test:
     timeout-minutes: 10
     runs-on: ubuntu-20.04
+    env:
+      NODE_ENV: test
     steps:
       - uses: actions/checkout@v2
-      - name: "run tests"
-        run: yarn install --frozen-lockfile && yarn server:test
+      - name: "Install Deps"
+        run: yarn install --frozen-lockfile
+
+      - name: "Test"
+        run: yarn server:test
 
