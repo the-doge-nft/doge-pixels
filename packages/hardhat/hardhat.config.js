@@ -109,12 +109,12 @@ module.exports = {
     //   accounts: [`${process.env.XDAI_DEPLOYER_PRIV_KEY}`],
     // },
 
-    rinkeby: {
-      url: `https://eth-rinkeby.alchemyapi.io/v2/${process.env.ALCHEMY_API_KEY}`,
-      accounts: [
-        process.env.RINKEBY_PRV_KEY
-      ]
-    },
+    // rinkeby: {
+    //   url: `https://eth-rinkeby.alchemyapi.io/v2/${process.env.ALCHEMY_API_KEY}`,
+    //   accounts: [
+    //     process.env.RINKEBY_PRV_KEY
+    //   ]
+    // },
     kovan: {
       url: "https://kovan.infura.io/v3/460f40a260564ac4a4f4b3fffb032dad", // <---- YOUR INFURA ID! (or it won't work)
 

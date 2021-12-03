@@ -1,7 +1,9 @@
 const redis = require('redis')
+const {env} = require("./vars");
 
 const redisClient = redis.createClient()
 redisClient.on('error', err => console.log('Redis client error', err))
+
 redisClient.connect()
 
 const ADDRESS_TO_TOKENID = "ADDRESS_TO_TOKEN_ID"

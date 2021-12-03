@@ -1,0 +1,43 @@
+
+name: 'dev - test & deploy'
+
+on:
+  push:
+    branches: feat/test_server
+
+jobs:
+  test:
+    timeout-minutes: 10
+    runs-on: ubuntu-20.04
+    env:
+      NODE_ENV: test
+    steps:
+      - uses: actions/checkout@v2
+
+      - uses: actions/cache@v2
+        with:
+          path: '**/node_modules'
+          key: ${{ runner.os }}-modules-${{ hashFiles('**/yarn.lock') }}
+
+      - name: "Install Deps"
+        if: steps.yarn-cache.outputs.cache-hit != 'true'
+        run: yarn install --frozen-lockfile
+
+      - name: "Test"
+        run: yarn workspace @scaffold-eth/server prestart && yarn server:test
+
+      - name: Set up SSH
+        run: |
+          pwd
+          mkdir -p ~/.ssh/
+          echo "$SSH_PRIVATE_KEY" > ./deploy.key
+          sudo chmod 600 ./deploy.key
+          echo "$SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts
+        shell: bash
+        env:
+          SSH_PRIVATE_KEY: ${{secrets.SSH_PRIVATE_KEY}}
+          SSH_KNOWN_HOSTS: ${{secrets.SSH_KNOWN_HOSTS}}
+
+      - nama: "Deploy"
+        run: yarn workspace @scaffold-eth/server dev:deploy
+

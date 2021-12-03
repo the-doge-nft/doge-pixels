@@ -1,17 +1,28 @@
 const express = require('express')
 const {redisClient, keys} = require('../../../config/redis')
 const {PXContract} = require("../../../config/ethers");
+const logger = require("../../../config/config");
+const {getAddressToOwnershipMap} = require("../../web3/px");
 
 const router = express.Router()
 
 router.get(
   '/status',
-  (req, res) => res.send('OK')
+  (req, res) => res.send('GREAT')
 )
 
 router.get(
   '/config',
   async (req, res) => {
+    const data = await redisClient.get(keys.ADDRESS_TO_TOKENID)
+    res.send(JSON.parse(data))
+  }
+)
+
+router.get(
+  '/config/refresh',
+  async (req, res) => {
+    await getAddressToOwnershipMap()
     const data = await redisClient.get(keys.ADDRESS_TO_TOKENID)
     res.send(JSON.parse(data))
   }

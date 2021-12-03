@@ -21,6 +21,7 @@ packages/server/src/.env
 packages/server/combined.log
 packages/server/error.log
 packages/server/dump.rdb
+packages/server/deploy.key
 
 # ts
 packages/hardhat-ts/cache
