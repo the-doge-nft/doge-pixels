@@ -1,0 +1,16 @@
+
+name: 'dev - test & deploy'
+
+on:
+  push:
+    branches: feat/test_server
+
+jobs:
+  test:
+    timeout-minutes: 10
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v2
+      - name: "run tests"
+        run: yarn server:test
+
