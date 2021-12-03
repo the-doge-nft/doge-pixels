@@ -3,7 +3,7 @@ name: 'dev - test & deploy'
 
 on:
   push:
-    branches: feat/test_server
+    branches: dev
 
 jobs:
   test:
@@ -26,18 +26,20 @@ jobs:
       - name: "Test"
         run: yarn workspace @scaffold-eth/server prestart && yarn server:test
 
-      - name: Set up SSH
+      - name: "Set Up SSH"
+        if: success()
         run: |
           pwd
           mkdir -p ~/.ssh/
-          echo "$SSH_PRIVATE_KEY" > ./deploy.key
-          sudo chmod 600 ./deploy.key
+          echo "$SSH_PRIVATE_KEY" > ./packages/server/deploy.key
+          sudo chmod 600 ./packages/server/deploy.key
           echo "$SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts
         shell: bash
         env:
           SSH_PRIVATE_KEY: ${{secrets.SSH_PRIVATE_KEY}}
           SSH_KNOWN_HOSTS: ${{secrets.SSH_KNOWN_HOSTS}}
 
-      - nama: "Deploy"
+      - name: "Deploy"
+        if: success()
         run: yarn workspace @scaffold-eth/server dev:deploy
 
