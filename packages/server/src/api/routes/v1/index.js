@@ -8,7 +8,7 @@ const router = express.Router()
 
 router.get(
   '/status',
-  (req, res) => res.send('GREAT')
+  (req, res) => res.send('u did it')
 )
 
 router.get(
