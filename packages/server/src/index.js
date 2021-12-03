@@ -1,5 +1,5 @@
 const { port, env } = require('./config/vars')
-const pxMain  = require('./api/web3/px')
+const {main: pxMain}  = require('./api/web3/px')
 const app = require('./config/express');
 const logger = require("./config/config");
 const {redisClient} = require("./config/redis")

@@ -4,18 +4,18 @@ module.exports = {
     script : "./src/index.js",
     watch: ["src"],
     env_development: {
-      NODE_ENV: 'development'
+      NODE_ENV: 'production'
     }
   }],
   deploy: {
     development: {
+      key: "deploy.key",
       user: "nodejs",
       host: "167.172.252.56",
       path: "/home/nodejs/dog",
       repo: "git@github.com:calebcarithers/dog.git",
       ref: "origin/dev",
       "post-deploy": "cd /home/nodejs/dog/current/packages/server && yarn dev:start",
-      // "post-deploy": "cd /home/nodejs/dog/source && cp -r"
     }
   }
 }

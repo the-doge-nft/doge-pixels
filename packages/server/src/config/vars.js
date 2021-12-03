@@ -1,7 +1,7 @@
 const path = require('path');
 
 require('dotenv-safe').config({
-  path: path.join(__dirname, '../.env'),
+  path: process.env.NODE_ENV === "test" ? path.join(__dirname, '../.env.test') : path.join(__dirname, '../.env'),
   example: path.join(__dirname, '../.env.example')
 });
 

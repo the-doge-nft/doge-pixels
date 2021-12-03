@@ -23,6 +23,14 @@
     "stop": "pm2 stop ecosystem.config.js",
     "logs": "pm2 logs",
     "status": "pm2 status",
-    "test": "echo $(curl 167.172.252.56/v1/test)"
+    "test": "./test/test.sh"
+  },
+  "devDependencies": {
+    "@nomiclabs/hardhat-ethers": "^2.0.2",
+    "@nomiclabs/hardhat-waffle": "^2.0.1",
+    "hardhat": "^2.7.0",
+    "jest": "^27.3.1",
+    "redis-mock": "^0.56.3",
+    "supertest": "^6.1.6"
   }
 }
