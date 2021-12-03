@@ -13,9 +13,16 @@ jobs:
       NODE_ENV: test
     steps:
       - uses: actions/checkout@v2
+
+      - uses: actions/cache@v2
+          with:
+            path: '**/node_modules'
+            key: ${{ runner.os }}-modules-${{ hashFiles('**/yarn.lock') }}
+
       - name: "Install Deps"
+        if: steps.yarn-cache.outputs.cache-hit != 'true'
         run: yarn install --frozen-lockfile
 
       - name: "Test"
-        run: yarn server:test
+        run: yarn workspace @scaffold-eth/server prestart && yarn server:test
 
