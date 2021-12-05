@@ -1,12 +1,45 @@
 const redis = require('redis')
 const {env} = require("./vars");
+const logger = require("./config");
 
-const redisClient = redis.createClient()
-redisClient.on('error', err => console.log('Redis client error', err))
+class RedisKeys {
+  constructor() {
+    this.ADDRESS_TO_TOKENID = "ADDRESS_TO_TOKEN_ID"
+    this.SHIBA_DIMENSIONS = "SHIBA_DIMENSIONS"
+    this.ENS_LOOKUP = "ENS:LOOKUP"
+  }
+}
 
-redisClient.connect()
+class RedisClient {
 
-const ADDRESS_TO_TOKENID = "ADDRESS_TO_TOKEN_ID"
-const SHIBA_DIMENSIONS = "SHIBA_DIMENSIONS"
+  constructor() {
+    this.client = redis.createClient()
+    this.client.on('error', err => logger.error(err))
+    this.client.connect()
+    this.keys = new RedisKeys()
+  }
 
-module.exports = {redisClient, keys: {ADDRESS_TO_TOKENID, SHIBA_DIMENSIONS}}
+  get(key) {
+    return this.client.get(key)
+  }
+
+  set(key, value) {
+    return this.client.set(key, value)
+  }
+
+  hGet(key, index) {
+    return this.client.hGet(key, index)
+  }
+
+  hSet(key, index, value) {
+    return this.client.hSet(key, index, value)
+  }
+
+  del(key) {
+    return this.client.del(key)
+  }
+}
+
+redisClient = new RedisClient()
+
+module.exports = {redisClient}
