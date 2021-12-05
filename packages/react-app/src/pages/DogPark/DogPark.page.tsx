@@ -21,9 +21,13 @@ const DogParkPage = observer(function DogParkPage() {
   const { address, tokenID } = useParams<{address: string, tokenID: string}>()
   const store = useMemo(() => new DogParkPageStore(address, Number(tokenID)), [])
   useEffect(() => {
+
     AppStore.web3.getPupperOwnershipMap()
-    AppStore.web3.refreshDogBalance()
-    AppStore.web3.refreshPupperBalance()
+
+    if (AppStore.web3.web3Provider) {
+      AppStore.web3.refreshDogBalance()
+      AppStore.web3.refreshPupperBalance()
+    }
   }, [])
   return <Grid templateColumns={"0.5fr 1fr"} flexGrow={1}>
     <GridItem>
