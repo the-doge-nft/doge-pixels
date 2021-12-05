@@ -41,14 +41,6 @@ const SelectedPixelPane = observer(function SelectedPixelPane({store}: {store: V
             ({store.selectedPixelX}, {store.selectedPixelY})
           </Typography>
         </Box>
-        {/*<Box>*/}
-        {/*  <Typography variant={TVariant.ComicSans18} mr={2}>*/}
-        {/*    Location:*/}
-        {/*  </Typography>*/}
-        {/*  <Typography variant={TVariant.ComicSans18}>*/}
-        {/*    {store.selectedURI?.description.pupperLocation}*/}
-        {/*  </Typography>*/}
-        {/*</Box>*/}
         {store.tokenOwner && <Box mt={12}>
           <Typography variant={TVariant.ComicSans18} mr={2}>
             Owned by
@@ -61,7 +53,7 @@ const SelectedPixelPane = observer(function SelectedPixelPane({store}: {store: V
               })
             }}>
               <Typography block variant={TVariant.PresStart18} mt={2}>
-                {abbreviate(store.tokenOwner)}
+                {store.selectedTokenOwnerDisplayName}
               </Typography>
             </Button>
           </Box>

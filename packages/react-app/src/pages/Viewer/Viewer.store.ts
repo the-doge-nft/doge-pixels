@@ -8,6 +8,7 @@ import LocalStorage from "../../services/local-storage";
 import * as Https from "https";
 import {Http} from "../../services";
 import {CameraPositionZ} from "./ThreeScene";
+import {abbreviate} from "../../helpers/strings";
 
 
 export enum ViewerView {
@@ -45,6 +46,9 @@ class ViewerStore extends Navigable(Eventable(Reactionable((EmptyClass)))) {
   tokenOwner: string | null = null
 
   @observable
+  tokenOwnerENS: string | null = null
+
+  @observable
   openSeaLink: string | null = null
 
   constructor(private _x: string | null, private _y?: string | null) {
@@ -65,6 +69,14 @@ class ViewerStore extends Navigable(Eventable(Reactionable((EmptyClass)))) {
     this.react(() => this.selectedPupper, async () => {
       try {
         this.tokenOwner = await AppStore.web3.pxContract!.ownerOf(this.selectedPupper!)
+
+        if (this.tokenOwner === AppStore.web3.address) {
+          this.tokenOwnerENS = AppStore.web3.ens
+        } else {
+          AppStore.web3.getENSname(this.tokenOwner).then(({data}) => {
+            this.tokenOwnerENS = data.ens
+          })
+        }
 
         try {
           const tokenURI = await AppStore.web3.pxContract!.tokenURI(this.selectedPupper!)
@@ -137,6 +149,17 @@ class ViewerStore extends Navigable(Eventable(Reactionable((EmptyClass)))) {
     this.selectedPupper = pupper
     this.publish(SET_CAMERA, [x1, y1, CameraPositionZ.medium])
     this.pushNavigation(ViewerView.Selected)
+  }
+
+  @computed
+  get selectedTokenOwnerDisplayName() {
+    if (this.tokenOwnerENS) {
+      return this.tokenOwnerENS
+    } else if (this.tokenOwner) {
+      return abbreviate(this.tokenOwner)
+    } else {
+      return "-"
+    }
   }
 
   destroy() {

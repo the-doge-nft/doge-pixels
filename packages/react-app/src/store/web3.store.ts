@@ -17,6 +17,13 @@ interface EthersContractError {
     message: string
 }
 
+interface AddressToPuppers {
+    [k: string]: {
+        tokenIDs: number[],
+        ens?: string
+    }
+}
+
 class Web3Store {
     D20_PRECISION = BigNumber.from("1000000000000000000")
     DOG_TO_PIXEL_SATOSHIS = BigNumber.from("55239898990000000000000")
@@ -32,6 +39,9 @@ class Web3Store {
 
     @observable
     address: string | null = null
+
+    @observable
+    ens: string | null = null
 
     @observable
     provider: ExternalProvider | JsonRpcFetchFunc | null = null
@@ -58,7 +68,7 @@ class Web3Store {
     network?: Network
 
     @observable
-    addressToPuppers?: {[k: string]: number[]}
+    addressToPuppers?: AddressToPuppers
 
     constructor() {
         makeObservable(this)
@@ -82,10 +92,7 @@ class Web3Store {
 
             this.connectToContracts(signer)
             this.errorGuardContracts()
-            this.refreshDogBalance()
-            this.refreshPupperBalance()
-            this.getPupperOwnershipMap()
-            this.getShibaDimensions()
+            this.afterConnectInit()
         } catch (e) {
             this.disconnect()
             console.error("connection error: ", e)
@@ -125,6 +132,14 @@ class Web3Store {
         }
     }
 
+    afterConnectInit() {
+        this.refreshDogBalance()
+        this.refreshPupperBalance()
+        this.getPupperOwnershipMap()
+        this.getShibaDimensions()
+        this.getENSname(this.address!).then(({data}) => this.ens = data.ens)
+    }
+
     connectToContracts(signerOrProvider?: Signer | Provider) {
         if (isProduction()) {
             throw Error("Should not be production yet")
@@ -159,7 +174,6 @@ class Web3Store {
     }
 
     async errorGuardContracts() {
-        //@TODO: possible bug here where provider needs to be disconnected before following code will pass
         const nonContractCode = "0x"
         const pxCode = await this.web3Provider!.getCode(this.pxContract!.address)
         if (pxCode === nonContractCode) {
@@ -171,6 +185,10 @@ class Web3Store {
             this.disconnect()
             throw Error("DOG20 address is not a contract, please make sure it is deployed & you are on the correct network.")
         }
+    }
+
+    async getENSname(address: string) {
+        return Http.get(`/v1/ens/${address}`)
     }
 
     getPupperOwnershipMap() {
@@ -192,7 +210,7 @@ class Web3Store {
     get puppersOwned() {
         let myPuppers: number[] = []
         if (this.address && this.address in this.addressToPuppers!) {
-            myPuppers = this.addressToPuppers![this.address]
+            myPuppers = this.addressToPuppers![this.address].tokenIDs
         }
         return myPuppers
     }
@@ -239,7 +257,6 @@ class Web3Store {
 
     async getDogToAccount() {
         const freePixelsInDOG = 10
-        // @TODO: partyka we need a way to get free D20
         //@ts-ignore
         return this.dogContract!.initMock([this.address!], this.DOG_TO_PIXEL_SATOSHIS.mul(freePixelsInDOG))
     }
@@ -263,7 +280,11 @@ class Web3Store {
     @computed
     get addressForDisplay() {
         if (this.address) {
-            return abbreviate(this.address)
+            if (this.ens) {
+                return abbreviate(this.ens, 4)
+            } else {
+                return abbreviate(this.address)
+            }
         } else {
             return "-"
         }

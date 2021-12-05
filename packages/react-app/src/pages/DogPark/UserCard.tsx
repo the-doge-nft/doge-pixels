@@ -7,7 +7,7 @@ import AppStore from "../../store/App.store";
 import PxPill from "./PxPill";
 import Icon from "../../DSL/Icon/Icon";
 
-const UserCard = ({store, dog}: {store: DogParkPageStore, dog: { address: string, puppers: number[]} }) => {
+const UserCard = ({store, dog}: {store: DogParkPageStore, dog: { address: string, puppers: number[], ens?: string} }) => {
   return <Flex
     justifyContent={"space-between"}
     alignItems={"center"}
@@ -33,7 +33,7 @@ const UserCard = ({store, dog}: {store: DogParkPageStore, dog: { address: string
         ml={4}
         block
       >
-        {abbreviate(dog.address, 4)}
+        {dog.ens ? dog.ens : abbreviate(dog.address, 4)}
       </Typography>
     </Flex>
     <Box ml={4}>
