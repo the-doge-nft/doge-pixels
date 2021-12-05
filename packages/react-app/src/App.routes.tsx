@@ -25,6 +25,7 @@ export interface AppRouteInterface {
   title: string;
 }
 
+
 export const route = (name: NamedRoutes, params: any = {}) => {
   const route = routes.find(item => item.name === name);
   if (!route) {
