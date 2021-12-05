@@ -28,6 +28,7 @@ it('Returns the kobosu width and height', async () => {
     expect(body.width).toEqual(640)
     expect(body.height).toEqual(480)
   }
+  
 
   // one call to get data from the contract
   await testDimensions()
