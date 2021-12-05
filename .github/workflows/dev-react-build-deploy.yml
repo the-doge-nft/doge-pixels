@@ -31,7 +31,7 @@ jobs:
       - uses: actions/upload-artifact@v2
         with:
           name: aws_develop_build
-          path: ./build
+          path: ./packages/react-app/build
           retention-days: 5
 
   aws_dev_deploy:
