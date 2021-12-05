@@ -6,6 +6,7 @@ on:
     branches: dev
     paths:
       - 'packages/server/src/**'
+      - 'packages/server/test/**'
 
 jobs:
   test:
