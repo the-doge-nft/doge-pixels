@@ -1,9 +1,11 @@
 
-name: 'dev - test & deploy'
+name: 'server: dev - test & deploy'
 
 on:
   push:
     branches: dev
+    paths:
+      - 'packages/server/src/**'
 
 jobs:
   test:
