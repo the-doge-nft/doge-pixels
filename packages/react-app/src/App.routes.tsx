@@ -6,12 +6,14 @@ import ViewerPage from "./pages/Viewer/Viewer.page";
 import DSLPage from "./pages/DSL.page";
 import DogParkPage from "./pages/DogPark/DogPark.page";
 import {isDevModeEnabled} from "./environment/helpers";
+import PoolPage from "./pages/Pool/Pool.page";
 
 export enum NamedRoutes {
   VIEWER = "viewer",
   POOLSTATS = "stats",
   DOG_PARK = "profile",
   DEV = "dev",
+  POOL = "pool",
   DSL = "dsl",
 }
 
@@ -55,6 +57,14 @@ const routes: AppRouteInterface[] = [
     layout: AppLayout,
     component: DogParkPage,
     title: "Dog park",
+  },
+  {
+    path: "/pool",
+    name: NamedRoutes.POOL,
+    exact: true,
+    layout: AppLayout,
+    component: PoolPage,
+    title: "Pool"
   }
 ];
 
