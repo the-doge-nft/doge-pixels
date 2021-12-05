@@ -36,7 +36,7 @@ jobs:
           retention-days: 5
 
   aws_dev_deploy:
-    needs: [aws_develop_build]
+    needs: [aws_dev_build]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/download-artifact@v1
