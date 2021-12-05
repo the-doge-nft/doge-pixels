@@ -248,7 +248,7 @@ const Title = () => {
         history.push(route(NamedRoutes.VIEWER))
       }}
     >
-      PUPPER PIXEL PORTAL
+      PUPPER PIXEL PORTAL +
     </Typography>
     <motion.div animate={{ rotate: rotation }}>
       <Typography variant={TVariant.PresStart28} ml={2} pb={"5px"}>🐕</Typography>
