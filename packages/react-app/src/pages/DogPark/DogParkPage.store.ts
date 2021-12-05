@@ -23,11 +23,7 @@ class DogParkPageStore extends Reactionable(EmptyClass) {
 
     if (selectedAddress) {
       this.addressToSearch = selectedAddress
-      const addresses = this.topDogs.map(dog => dog.address)
-      // if (addresses.includes(selectedAddress)) {
-      //   alert("set selected address")
       this.selectedAddress = selectedAddress
-      // }
     }
 
     if (selectedPupper) {
@@ -44,10 +40,11 @@ class DogParkPageStore extends Reactionable(EmptyClass) {
   }
 
   @computed
-  get topDogs(): {address: string, puppers: number[]}[] {
+  get topDogs(): {address: string, puppers: number[], ens?: string}[] {
     const tds = ObjectKeys(AppStore.web3.addressToPuppers).map((key, index, arr) => (
-      {address: key, puppers: AppStore.web3.addressToPuppers![key]}
+      {address: key, puppers: AppStore.web3.addressToPuppers![key].tokenIDs, ens: AppStore.web3.addressToPuppers![key].ens}
     ))
+    console.log("debug:: tds", tds)
     return tds
       .filter(dog => dog.address !== ethers.constants.AddressZero)
       .sort((a, b) => {
@@ -91,8 +88,6 @@ class DogParkPageStore extends Reactionable(EmptyClass) {
 
   @computed
   get selectedPupperHex() {
-    const hex = AppStore.web3.pupperToHexLocal(this.selectedPupper!)
-    console.log("debug:: hex on load", hex)
     return AppStore.web3.pupperToHexLocal(this.selectedPupper!)
   }
 
