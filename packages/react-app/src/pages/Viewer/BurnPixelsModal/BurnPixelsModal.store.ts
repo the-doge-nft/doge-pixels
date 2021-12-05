@@ -57,7 +57,7 @@ class BurnPixelsModalStore extends Navigable<AbstractConstructor, BurnPixelsModa
         this.pushNavigation(BurnPixelsModalView.Complete)
         AppStore.web3.refreshDogBalance()
         AppStore.web3.refreshPupperBalance()
-        AppStore.web3.getPupperOwnershipMap()
+        AppStore.web3.refreshPupperOwnershipMap()
       } catch (e) {
         console.error(e)
         showErrorToast("Error burning pixels")
