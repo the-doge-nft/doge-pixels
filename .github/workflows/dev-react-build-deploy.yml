@@ -1,0 +1,57 @@
+name: 'react: dev - deploy'
+
+on:
+  push:
+    branches: dev
+    paths:
+      - 'packages/react-app/src/**'
+
+jobs:
+  aws_dev_build:
+    timeout-minutes: 10
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - uses: actions/cache@v2
+        with:
+          path: '**/node_modules'
+          key: ${{ runner.os }}-modules-${{ hashFiles('**/yarn.lock') }}
+
+      - uses: actions/setup-node@v1
+      - name: 'Install Deps'
+        if: steps.yarn-cache.outputs.cache-hit != 'true'
+        run: yarn install --frozen-lockfile
+
+      - name: 'Build'
+        run: yarn workspace scaffold-eth/react-app _staging_build
+
+      - run: gzip -kr .
+        working-directory: build
+
+      - uses: actions/upload-artifacts@v2
+        with:
+          name: aws_develop_build
+          path: ./build
+          retention-days: 5
+
+  aws_dev_deploy:
+    needs: [aws_develop_build]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v1
+        with:
+          name: aws_develop_build
+          path: build-deploy
+      - name: AWS Config
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_DEFAULT_REGION }}
+      - name: Deploy to S3
+          run: |
+            expire_time=60
+            aws s3 sync ./build-deploy s3://dev.dog --cache-control "max-age=$expire_time" --delete
+
+
