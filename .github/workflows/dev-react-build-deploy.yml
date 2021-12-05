@@ -19,7 +19,7 @@ jobs:
           key: ${{ runner.os }}-modules-${{ hashFiles('**/yarn.lock') }}
 
       - uses: actions/setup-node@v1
-      - with:
+        with:
           node-version: 14.16
       - name: 'Install Deps'
         if: steps.yarn-cache.outputs.cache-hit != 'true'
