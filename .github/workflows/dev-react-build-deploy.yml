@@ -22,8 +22,8 @@ jobs:
         with:
           node-version: 14.16
       - name: 'Install Deps'
-        if: steps.yarn-cache.outputs.cache-hit != 'true'
-        run: yarn install --production --frozen-lockfile
+#        if: steps.yarn-cache.outputs.cache-hit != 'true'
+        run: yarn install --frozen-lockfile
 
       - name: 'Build'
         run: yarn workspace @scaffold-eth/react-app _staging_build
