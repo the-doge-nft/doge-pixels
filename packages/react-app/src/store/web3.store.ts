@@ -177,6 +177,10 @@ class Web3Store {
         Http.get("/v1/config").then(({ data }) => this.addressToPuppers = data)
     }
 
+    refreshPupperOwnershipMap() {
+        Http.get("/v1/config/refresh").then(({ data }) => this.addressToPuppers = data)
+    }
+
     async getShibaDimensions() {
         Http.get("/v1/px/dimensions").then(({data}) => {
             this.WIDTH = data.width;

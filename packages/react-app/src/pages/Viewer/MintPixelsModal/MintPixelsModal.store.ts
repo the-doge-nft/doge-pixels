@@ -81,7 +81,8 @@ class MintPixelsModalStore extends Reactionable((Navigable(EmptyClass))) {
       this.pushNavigation(MintModalView.Complete)
       AppStore.web3.refreshPupperBalance()
       AppStore.web3.refreshDogBalance()
-      AppStore.web3.getPupperOwnershipMap()
+      AppStore.web3.refreshPupperOwnershipMap()
+
     } catch (e) {
       this.hasUserSignedTx = false
       showErrorToast("error minting")

@@ -28,9 +28,6 @@ jobs:
       - name: 'Build'
         run: yarn workspace @scaffold-eth/react-app _staging_build
 
-      - run: gzip -kr .
-        working-directory: build
-
       - uses: actions/upload-artifact@v2
         with:
           name: aws_develop_build
