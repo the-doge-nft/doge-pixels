@@ -28,7 +28,7 @@ it('Returns the kobosu width and height', async () => {
     expect(body.width).toEqual(640)
     expect(body.height).toEqual(480)
   }
-  
+
 
   // one call to get data from the contract
   await testDimensions()
@@ -54,7 +54,7 @@ it('Testing getting signers', (done) => {
           PXContract.balanceOf(signerAddress).then(pupperBalance => {
             expect(pupperBalance.toNumber()).toEqual(5)
             request.get("/v1/config/refresh").then(res => {
-              expect(res.body[signerAddress].length).toEqual(5)
+              expect(res.body[signerAddress].tokenIDs.length).toEqual(5)
               done()
             })
           })
