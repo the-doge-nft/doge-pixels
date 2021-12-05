@@ -2,6 +2,7 @@ const ethers = require("ethers")
 const { provider, PXContract } = require("../../config/ethers")
 const {redisClient} = require("../../config/redis")
 const logger = require("../../config/config");
+const {env} = require("../../config/vars");
 
 
 async function main() {
@@ -106,7 +107,10 @@ async function getAddressToOwnershipMap() {
     addressToPuppers = await addRemoveAddresses(addressToPuppers, from, to, tokenID)
   }
 
-  addressToPuppers = await applyENSName(addressToPuppers)
+  if (env !== "test") {
+    addressToPuppers = await applyENSName(addressToPuppers)
+  }
+
   await redisClient.set(redisClient.keys.ADDRESS_TO_TOKENID, JSON.stringify(addressToPuppers))
 }
 
