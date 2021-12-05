@@ -1,9 +1,14 @@
 const fs = require("fs");
+const path = require("path");
 
-const srcFile = "../hardhat/hardhat_contracts.json"
-const dstFile = "./src/contracts/hardhat_contracts.json"
+const srcFile = path.join(__dirname, "../../hardhat/hardhat_contracts.json")
+const dstFile = path.join(__dirname, "../src/contracts/hardhat_contracts.json")
 const srcFileExists = fs.existsSync(srcFile)
 const dstFileExists = fs.existsSync(dstFile)
+
+console.log(`src: ${srcFile}`)
+console.log(`dst: ${dstFile}`)
+
 
 if (srcFileExists) {
 
