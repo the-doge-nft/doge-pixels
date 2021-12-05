@@ -5,18 +5,19 @@ const {ethers, upgrades} = require("hardhat");
 const testABI = require("./contracts/hardhat_contracts.json")
 const {BigNumber} = require("ethers");
 const {main: pxMain} = require("../src/api/web3/px");
-const {PXContract} = require("../src/config/ethers");
+const {PXContract, provider} = require("../src/config/ethers");
 
 const request = supertest(app)
 jest.setTimeout(10 * 1000)
 
-// beforeAll(() => {
-//   // listen for events on the px contract
-//   pxMain()
-// })
+beforeAll(() => {
+  // listen for events on the px contract
+  pxMain()
+})
 
 afterAll(() => {
   redisClient.disconnect()
+  provider._websocket.terminate()
 })
 
 it('Returns the kobosu width and height', async () => {
@@ -52,7 +53,6 @@ it('Testing getting signers', (done) => {
           PXContract.balanceOf(signerAddress).then(pupperBalance => {
             expect(pupperBalance.toNumber()).toEqual(5)
             request.get("/v1/config/refresh").then(res => {
-              console.log("res: ", res.body)
               expect(res.body[signerAddress].length).toEqual(5)
               done()
             })
@@ -63,8 +63,8 @@ it('Testing getting signers', (done) => {
   })
 })
 
-// const sleep = async (ms) => {
-//   await new Promise(r => setTimeout(r, ms));
-// }
+const sleep = async (ms) => {
+  await new Promise(r => setTimeout(r, ms));
+}
 
 
