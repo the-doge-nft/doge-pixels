@@ -222,6 +222,7 @@ const Nav = () => {
   </HStack>
 }
 
+
 const Title = () => {
   const history = useHistory()
   const {colorMode} = useColorMode()
