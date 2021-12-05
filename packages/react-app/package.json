@@ -95,7 +95,7 @@
     "start": "cross-env PORT=3001 TSC_WATCHFILE=UseFsEventsWithFallbackDynamicPolling react-app-rewired start",
     "_surge": "cp build/index.html build/200.html && surge ./build",
     "_aws_dev_deploy": "aws s3 sync ./build s3://dev.dog",
-    "_staging_build": "yarn prestart && REACT_APP_DOG_ENV=surge_staging react-app-rewired build",
+    "_staging_build": "yarn prestart && CI=false REACT_APP_DOG_ENV=surge_staging react-app-rewired build",
     "deploy:surge": "yarn _staging_build && yarn _surge",
     "deploy:aws": "yarn _staging_build && yarn _aws_dev_deploy",
     "prestart": "node ./scripts/create_contracts.js",
