@@ -16,7 +16,7 @@ beforeAll(() => {
 })
 
 afterAll(() => {
-  redisClient.disconnect()
+  redisClient.client.disconnect()
   provider._websocket.terminate()
 })
 
