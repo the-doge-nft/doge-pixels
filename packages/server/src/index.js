@@ -4,7 +4,10 @@ const app = require('./config/express');
 const logger = require("./config/config");
 const {redisClient} = require("./config/redis")
 
+console.log("test")
+
 redisClient.on('connect', () => {
+  console.log("redis connected")
   app.listen(port, () => logger.info(`server started on port ${port}`))
   pxMain()
 })

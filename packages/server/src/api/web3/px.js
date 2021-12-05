@@ -6,7 +6,7 @@ const logger = require("../../config/config");
 
 async function main() {
   getAddressToOwnershipMap()
-  // listenToPXTransfers()
+  listenToPXTransfers()
 }
 
 function addRemoveAddresses(source, from, to, tokenID) {
@@ -44,36 +44,24 @@ function addRemoveAddresses(source, from, to, tokenID) {
   return copy
 }
 
-function listenToPXTransfers () {
+function listenToPXTransfers() {
   /*
     Listening to transfer events on the PX contract updating the address -> [tokenIDs...] stored in redis
    */
   logger.info(`Listening to PX contract: ${PXContract.address} 👂`)
 
-  // @TODO: this misses sometimes
-  // https://github.com/ethers-io/ethers.js/discussions/2167
+  // NOTE: do not depend on this listener - it randomly does not fire on some Transfer events
   PXContract.on('Transfer(address,address,uint256)', async (from, to, _tokenID) => {
-    logger.info("HIT TRANSFER")
+    logger.info("PX transfer detected - rebuilding address to token ID map")
     getAddressToOwnershipMap()
-
-
-    // @TODO events hit here to update blob, redis is not always synchronous, need a queue for processing
-    // const tokenID = _tokenID.toNumber()
-    // const data = await redisClient.get(keys.ADDRESS_TO_TOKENID)
-    // const source = JSON.parse(data)
-    // const dest = JSON.stringify(addRemoveAddresses(source, from, to, tokenID))
-    // redisClient.set(keys.ADDRESS_TO_TOKENID, dest)
   })
 }
 
-// TODO: call after mint & burn to update config
-
-// TODO: debounce this so Transfer listener does not fire this fn repeatedly
 async function getAddressToOwnershipMap() {
   /*
     Builds address -> [tokenIDs..] object for all of PX contract's history
    */
-  logger.info(`Building address to Token ID map ⚒️`)
+  logger.info(`Building initial address to token ID map ⚒️`)
 
   addressToPuppers = {}
   const filter = PXContract.filters.Transfer(null, null)
