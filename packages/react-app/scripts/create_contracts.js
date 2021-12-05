@@ -12,8 +12,9 @@ if (srcFileExists) {
     });
     console.log("src/contracts/hardhat_contracts.json created.");
   } catch (error) {
-    console.log(error);
+    console.log("error hit");
+    throw error
   }
 } else {
-  console.log("could not find hardhat contracts")
+  throw Error("Could not find hardhat contracts")
 }

@@ -6,6 +6,7 @@ const srcFileExists = fs.existsSync(srcFile)
 const dstFileExists = fs.existsSync(dstFile)
 
 if (srcFileExists) {
+
   if (!dstFileExists) {
     console.log("📂 creating ./src/contracts directory")
     fs.mkdirSync("./src/contracts", {recursive: true})
@@ -13,7 +14,10 @@ if (srcFileExists) {
 
   try {
     fs.copyFile(srcFile, dstFile, (err) => {
-      if (err) throw err
+      if (err) {
+        console.log("error hit copying file")
+        throw err
+      }
     });
     console.log("✅ src/contracts/hardhat_contracts.json created");
   } catch (error) {
