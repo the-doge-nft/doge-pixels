@@ -15,6 +15,7 @@ export enum NamedRoutes {
   DSL = "dsl",
 }
 
+
 export interface AppRouteInterface {
   path: string;
   exact: boolean;
