@@ -30,7 +30,7 @@ if (env === "test") {
   //   projectId: infura_project_id,
   //   projectSecret: infura_secret_id
   // })
-  provider = new ethers.providers.WebSocketProvider(`ws://rinkeby.infura.io/ws/v3/${infura_project_id}`, network);
+  provider = new ethers.providers.WebSocketProvider(`wss://rinkeby.infura.io/ws/v3/${infura_project_id}`, network);
 }
 // const provider = new ethers.providers.InfuraProvider.getWebSocketProvider(network=network, apiKey=infura_secret_id)
 
