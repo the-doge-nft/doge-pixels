@@ -5,6 +5,7 @@ import {arrayFuzzyFilterByKey} from "../../helpers/arrays";
 import { Reactionable } from "../../services/mixins/reactionable";
 import { EmptyClass } from "../../helpers/mixins";
 import {ethers} from "ethers";
+import {abbreviate} from "../../helpers/strings";
 
 class DogParkPageStore extends Reactionable(EmptyClass) {
 
@@ -60,7 +61,7 @@ class DogParkPageStore extends Reactionable(EmptyClass) {
 
   @computed
   get filteredDogs() {
-    return arrayFuzzyFilterByKey(this.topDogs, this.addressToSearch, 'address')
+    return arrayFuzzyFilterByKey(this.topDogs, this.addressToSearch, 'address').concat(arrayFuzzyFilterByKey(this.topDogs, this.addressToSearch, 'ens'))
   }
 
   @computed
@@ -104,6 +105,18 @@ class DogParkPageStore extends Reactionable(EmptyClass) {
   @computed
   get isSelectedAddressAuthedUser() {
     return this.selectedAddress === AppStore.web3.address
+  }
+
+  @computed
+  get selectedAddressDisplayName() {
+    if (this.selectedAddress) {
+      if (this.selectedDogs.ens) {
+        return this.selectedDogs.ens
+      } else {
+        return abbreviate(this.selectedAddress)
+      }
+    }
+    return "None"
   }
 
 }
