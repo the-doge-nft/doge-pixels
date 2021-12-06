@@ -4,17 +4,17 @@
   "name": "Pupper Pixel Portal",
   "icons": [
     {
-      "src": "favicon.svg",
+      "src": "favicon.ico",
       "sizes": "64x64 32x32 24x24 16x16",
       "type": "image/x-icon"
     },
     {
-      "src": "favicon.svg",
+      "src": "favicon.ico",
       "type": "image/svg",
       "sizes": "192x192"
     },
     {
-      "src": "favicon.svg",
+      "src": "favicon.ico",
       "type": "image/svg",
       "sizes": "512x512"
     }

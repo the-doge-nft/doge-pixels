@@ -71,13 +71,24 @@ const DogParkPage = observer(function DogParkPage() {
                           (you)
                       </Typography>}
                     </Flex>
-                    <Box my={7}>
-                        <PxPill count={store.selectedDogs[0]?.puppers.length}/>
-                    </Box>
+
+                  {store.selectedUserHasPuppers && <Box my={7}>
+                        <PxPill count={store.selectedDogs?.puppers.length}/>
+                  </Box>}
+                  {!store.selectedUserHasPuppers && <Box mt={10} w={"full"} h={"full"}>
+                      <Flex alignItems={"center"}>
+                        <Typography variant={TVariant.PresStart28} color={"#d6ceb6"}>
+                            No pixels owned
+                        </Typography>
+                        <Typography variant={TVariant.PresStart28} mb={2} ml={3}>
+                            😟
+                        </Typography>
+                      </Flex>
+                  </Box>}
                 </Box>
                   <Box overflowY={"scroll"} flexGrow={1}>
                       <Flex flexWrap={"wrap"} maxHeight={"300px"}>
-                        {store.selectedDogs[0]?.puppers.map(px => {
+                        {store.selectedDogs?.puppers.map(px => {
                           const hex = AppStore.web3.pupperToHexLocal(px)
                           const index = AppStore.web3.pupperToIndexLocal(px)
                           return <Box
@@ -103,11 +114,11 @@ const DogParkPage = observer(function DogParkPage() {
                 {store.selectedPupper && <Box mt={10}>
                     <Flex flexDirection={"column"}>
                       <PixelPane
-                            size={"lg"}
-                            variant={"shadow"}
-                            pupper={store.selectedPupper!}
-                            color={store.selectedPupperHex}
-                            pupperIndex={store.seletedPupperIndex}
+                        size={"lg"}
+                        variant={"shadow"}
+                        pupper={store.selectedPupper!}
+                        color={store.selectedPupperHex}
+                        pupperIndex={store.seletedPupperIndex}
                       />
                       <Box my={10}>
                         <Box>
