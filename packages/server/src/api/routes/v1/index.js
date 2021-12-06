@@ -61,19 +61,29 @@ router.get(
 
 router.get(
   '/px/owner/:tokenID',
-  async (req, res) => {
+  async (req, res, next) => {
     const { tokenID } = req.params
-    const owner = await PXContract.ownerOf(tokenID)
-    return res.send({address: owner})
+    try {
+      const owner = await PXContract.ownerOf(tokenID)
+      return res.send({address: owner})
+    } catch (e) {
+      e.message = "No address found"
+      next(e)
+    }
   }
 )
 
 router.get(
   '/ens/:address',
-  async (req, res) => {
-    const { address } = req.params
-    const ens = await provider.lookupAddress(address)
-    res.send({ens: ens})
+  async (req, res, next) => {
+    try {
+      const { address } = req.params
+      const ens = await provider.lookupAddress(address)
+      res.send({ens: ens})
+    } catch (e) {
+      console.log(e)
+      next(e)
+    }
   }
 )
 

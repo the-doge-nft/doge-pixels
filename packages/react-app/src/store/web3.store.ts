@@ -242,8 +242,12 @@ class Web3Store {
 
     async getPupperBalance() {
         const res = await Http.get(`/v1/px/balance/${this.address}`)
-        const balance = res.data.balance
-        return balance
+        return res.data.balance
+    }
+
+    async getPxOwnerByTokenId(tokenID: number) {
+        const res = await Http.get(`/v1/px/owner/${tokenID}`)
+        return res.data.address
     }
 
     async approvePxSpendDog(amount: BigNumber) {

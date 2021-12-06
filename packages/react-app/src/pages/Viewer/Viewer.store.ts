@@ -68,14 +68,17 @@ class ViewerStore extends Navigable(Eventable(Reactionable((EmptyClass)))) {
 
     this.react(() => this.selectedPupper, async () => {
       try {
-        this.tokenOwner = await AppStore.web3.pxContract!.ownerOf(this.selectedPupper!)
+        this.tokenOwner = await AppStore.web3.getPxOwnerByTokenId(this.selectedPupper!)
 
-        if (this.tokenOwner === AppStore.web3.address) {
-          this.tokenOwnerENS = AppStore.web3.ens
-        } else {
-          AppStore.web3.getENSname(this.tokenOwner).then(({data}) => {
-            this.tokenOwnerENS = data.ens
-          })
+
+        if (this.tokenOwner) {
+          if (this.tokenOwner === AppStore.web3.address) {
+            this.tokenOwnerENS = AppStore.web3.ens
+          } else {
+            AppStore.web3.getENSname(this.tokenOwner).then(({data}) => {
+              this.tokenOwnerENS = data.ens
+            })
+          }
         }
 
         try {

@@ -102,27 +102,23 @@ const DogParkPage = observer(function DogParkPage() {
               <GridItem>
                 {store.selectedPupper && <Box mt={10}>
                     <Flex flexDirection={"column"}>
-                        <PixelPane
+                      <PixelPane
                             size={"lg"}
                             variant={"shadow"}
                             pupper={store.selectedPupper!}
                             color={store.selectedPupperHex}
                             pupperIndex={store.seletedPupperIndex}
-                        />
-                        <Box my={10}>
-                            <Box>
-                                <Typography variant={TVariant.ComicSans18}>HEX:</Typography>
-                                <Typography variant={TVariant.ComicSans18} ml={2}>{store.selectedPupperHex}</Typography>
-                            </Box>
-                            <Box mt={1}>
-                                <Typography variant={TVariant.ComicSans18}>Coordinates:</Typography>
-                                <Typography variant={TVariant.ComicSans18} ml={2}>({store.selectedPupperCoords[0]},{store.selectedPupperCoords[1]})</Typography>
-                            </Box>
-                            <Box mt={1}>
-                                <Typography variant={TVariant.ComicSans18}>Location:</Typography>
-                                <Typography variant={TVariant.ComicSans18} ml={2}>{store.selectedPupperLocation}</Typography>
-                            </Box>
+                      />
+                      <Box my={10}>
+                        <Box>
+                          <Typography variant={TVariant.ComicSans18}>HEX:</Typography>
+                          <Typography variant={TVariant.ComicSans18} ml={2}>{store.selectedPupperHex}</Typography>
                         </Box>
+                        <Box mt={1}>
+                          <Typography variant={TVariant.ComicSans18}>Coordinates:</Typography>
+                          <Typography variant={TVariant.ComicSans18} ml={2}>({store.selectedPupperCoords[0]},{store.selectedPupperCoords[1]})</Typography>
+                        </Box>
+                      </Box>
                     </Flex>
                   <Button onClick={() => history.push(
                     `/?x=${store.selectedPupperCoords[0]}&y=${store.selectedPupperCoords[1]}`
