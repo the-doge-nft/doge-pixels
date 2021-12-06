@@ -65,7 +65,7 @@ const DogParkPage = observer(function DogParkPage() {
                     <Flex alignItems={"center"}>
                       <Icon icon={'person'} boxSize={10}/>
                       <Typography variant={TVariant.PresStart18} ml={3}>
-                        {abbreviate(store.selectedAddress)}
+                        {store.selectedAddressDisplayName}
                       </Typography>
                       {store.isSelectedAddressAuthedUser && <Typography variant={TVariant.PresStart14} ml={3}>
                           (you)
