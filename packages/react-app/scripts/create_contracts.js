@@ -17,7 +17,7 @@ if (srcFileExists) {
     fs.mkdirSync("./src/contracts", {recursive: true})
   }
 
-  try {
+  try {Mem
     fs.copyFile(srcFile, dstFile, (err) => {
       if (err) {
         console.log("error hit copying file")
