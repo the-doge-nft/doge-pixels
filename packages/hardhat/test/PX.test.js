@@ -18,7 +18,7 @@ const runTests = (withUpgrade) => {
     const MOCK_HEIGHT = Math.floor(480 * CROP);
     const MOCK_SUPPLY = MOCK_WIDTH * MOCK_HEIGHT;
     const MOCK_URI = "ipfs://dog-repo/";
-    const DOG_TO_PIXEL_SATOSHIS = 5 * 10 ** 4;
+    const DOG_TO_PIXEL_SATOSHIS = ethers.BigNumber.from('5523989899').mul(10 ** 13);
     const BURN_FEES_PERCENT = 20;
     let FEES_ACCOUNT;
 
@@ -50,7 +50,7 @@ const runTests = (withUpgrade) => {
       factory = await ethers.getContractFactory("DOG20");
       DOG20 = await upgrades.deployProxy(factory);
       await DOG20.deployed();
-      await DOG20.__DOG20_init(signers.map(item => item.address), DOG_TO_PIXEL_SATOSHIS * MOCK_SUPPLY);
+      await DOG20.__DOG20_init(signers.map(item => item.address), DOG_TO_PIXEL_SATOSHIS.mul(MOCK_SUPPLY));
 
       factory = await ethers.getContractFactory("PXMock");
       PX = await upgrades.deployProxy(factory);
@@ -87,7 +87,7 @@ const runTests = (withUpgrade) => {
       const pxDog20BalanceBefore = await DOG20.balanceOf(PX.address);
       const addrPXBalanceBefore = await PX.balanceOf(signer.address);
       const supplyPXBalanceBefore = await PX.puppersRemaining();
-      await DOG20.connect(signer).approve(PX.address, mintQty * DOG_TO_PIXEL_SATOSHIS);
+      await DOG20.connect(signer).approve(PX.address, DOG_TO_PIXEL_SATOSHIS.mul(mintQty));
       let tx;
       const foo = () => {
         if (mintQty > 1) {
@@ -104,11 +104,10 @@ const runTests = (withUpgrade) => {
       } else {
         tx = await foo()
       }
-      expect(await DOG20.balanceOf(PX.address)).to.equal(pxDog20BalanceBefore.toNumber() + mintQty * DOG_TO_PIXEL_SATOSHIS)
-      expect(await DOG20.balanceOf(signer.address)).to.equal(addrDog20BalanceBefore.toNumber() - mintQty * DOG_TO_PIXEL_SATOSHIS)
-
-      expect(await PX.balanceOf(signer.address)).to.equal(addrPXBalanceBefore.toNumber() + mintQty)
-      expect(await PX.puppersRemaining()).to.equal(supplyPXBalanceBefore.toNumber() - mintQty);
+      expect(await DOG20.balanceOf(PX.address)).to.equal(pxDog20BalanceBefore.add(DOG_TO_PIXEL_SATOSHIS.mul(mintQty)))
+      expect(await DOG20.balanceOf(signer.address)).to.equal(addrDog20BalanceBefore.sub(DOG_TO_PIXEL_SATOSHIS.mul(mintQty)))
+      expect(await PX.balanceOf(signer.address)).to.equal(addrPXBalanceBefore.add(mintQty))
+      expect(await PX.puppersRemaining()).to.equal(supplyPXBalanceBefore.sub(mintQty));
 
 
       let receipt = await tx.wait();
@@ -156,12 +155,14 @@ const runTests = (withUpgrade) => {
         tx = await PX.connect(signer).burnPupper(pupper)
       }
 
-      expect(await DOG20.balanceOf(PX.address)).to.equal(pxDog20BalanceBefore.toNumber() - DOG_TO_PIXEL_SATOSHIS)
-      expect(await DOG20.balanceOf(signer.address)).to.equal(addrDog20BalanceBefore.toNumber() + DOG_TO_PIXEL_SATOSHIS * (100 - BURN_FEES_PERCENT) / 100)
-      expect(await DOG20.balanceOf(FEES_ACCOUNT.address)).to.equal(feesDog20BalanceBefore.toNumber() + DOG_TO_PIXEL_SATOSHIS * BURN_FEES_PERCENT / 100)
+      expect(await DOG20.balanceOf(PX.address)).to.equal(pxDog20BalanceBefore.sub(DOG_TO_PIXEL_SATOSHIS))
+      expect(await DOG20.balanceOf(signer.address)).to.equal(addrDog20BalanceBefore.add(DOG_TO_PIXEL_SATOSHIS.mul(100 - BURN_FEES_PERCENT).div(
+        100)))
+      expect(await DOG20.balanceOf(FEES_ACCOUNT.address)).to.equal(feesDog20BalanceBefore.add(DOG_TO_PIXEL_SATOSHIS.mul(
+        BURN_FEES_PERCENT).div(100)))
 
-      expect(await PX.balanceOf(signer.address)).to.equal(addrPXBalanceBefore.toNumber() - 1)
-      expect(await PX.puppersRemaining()).to.equal(supplyPXBalanceBefore.toNumber() + 1);
+      expect(await PX.balanceOf(signer.address)).to.equal(addrPXBalanceBefore.sub(1))
+      expect(await PX.puppersRemaining()).to.equal(supplyPXBalanceBefore.add(1));
       //
       // let receipt = await tx.wait();
       // for (let i = 0; i < receipt.events.length; ++i) {
@@ -210,14 +211,11 @@ const runTests = (withUpgrade) => {
       //   }
       //   await mintPupperWithValidation(signer4, 1, ERROR_D20_TX_EXCEEDS_BALANCE);
       // })
-      it('sender is a contract', function () {
-
-      });
       it('try to mint with sender having no $DOG balance', async function () {
         signers = await ethers.getSigners()
         const [owner, , , , signer4] = signers
-        const balance = (await DOG20.balanceOf(signer4.address)).toNumber()
-        if (balance !== 0) {
+        const balance = await DOG20.balanceOf(signer4.address);
+        if (!balance.isZero()) {
           await DOG20.connect(signer4).transfer(owner.address, balance)
         }
         await mintPupperWithValidation(signer4, 1, ERROR_D20_TX_EXCEEDS_BALANCE)
@@ -236,28 +234,10 @@ const runTests = (withUpgrade) => {
         burnburnburn.push(await mintPupperWithValidation(addr1));
         await PX.connect(addr1).burnPuppers(burnburnburn);
       });
-      it('minting decreases available supply', function () {
-
-      });
       it('unsuccessful minting does not change any balances', function () {
 
       });
-      it('burning token decreases senders $DOG balance', function () {
-
-      });
-      it('burning token increases PX $DOG balance', function () {
-
-      });
-      it('burning token increases available supply', function () {
-
-      });
       it('unsuccessful burning does not change any balances', function () {
-
-      });
-      it('it should throw if trying to mint token above the supply', function () {
-
-      });
-      it('can mint if available supply > 0', function () {
 
       });
       it('cannot mint if available supply == 0', function () {
@@ -267,9 +247,6 @@ const runTests = (withUpgrade) => {
 
       });
       it('cannot burn token if sender is not ERC20Receiver compatible(prevention from locking out $DOG)', function () {
-
-      });
-      it('cannot mint token if sender is not ERC721Receiver', function () {
 
       });
       it('can mint token that has been previously burnt', function () {
