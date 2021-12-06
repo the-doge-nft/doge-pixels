@@ -12,6 +12,7 @@ module.exports = {
   infura_project_id: process.env.INFURA_PROJECT_ID,
   infura_secret_id: process.env.INFURA_SECRET,
   infura_http_endpoint: process.env.INFURA_HTTP_ENDPOINT,
-  infura_ws_endpoint: process.env.INFURA_WS_ENDPOINT
+  infura_ws_endpoint: process.env.INFURA_WS_ENDPOINT,
+  sentry_dns: process.env.SENTRY_DNS
 }
 
