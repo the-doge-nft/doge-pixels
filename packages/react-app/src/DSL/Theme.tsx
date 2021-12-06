@@ -15,6 +15,7 @@ import IconStyle from "./Icon/Icon.style";
 import ModalStyle from "./Modal/Modal.style";
 import LoadingStyle from "./Loading/Loading.style";
 import PixelPaneStyle from "./PixelPane/PixelPane.style";
+import PillStyle from "./Pill/Pill.style";
 
 export const darkModePrimary = "purple.700";
 
@@ -55,7 +56,8 @@ const theme = extendTheme({
     Icon: IconStyle,
     Modal: ModalStyle,
     Loading: LoadingStyle,
-    PixelPane: PixelPaneStyle
+    PixelPane: PixelPaneStyle,
+    Pill: PillStyle
   },
 });
 

@@ -16,6 +16,7 @@ const PixelPaneDemo = () => {
                       pupperIndex={234}
                     />
                     <PixelPane
+                      isNew
                       variant={"shadow"}
                       size={"sm"}
                       pupper={10}
@@ -61,4 +62,4 @@ const PixelPaneDemo = () => {
     </Demo>
 }
 
-export default PixelPaneDemo
+export default PixelPaneDemo;

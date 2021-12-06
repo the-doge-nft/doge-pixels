@@ -1,4 +1,4 @@
-import ViewerStore, {ViewerView} from "../Viewer.store";
+import ViewerStore, {VIEWED_PIXELS_LS_KEY, ViewerView} from "../Viewer.store";
 import {Box, Flex, HStack, useColorMode} from "@chakra-ui/react";
 import Typography, {TVariant} from "../../../DSL/Typography/Typography";
 import React from "react";
@@ -6,6 +6,7 @@ import {observer} from "mobx-react-lite";
 import AppStore from "../../../store/App.store";
 import PixelPane from "../../../DSL/PixelPane/PixelPane";
 import MintBurnButtons from "../MintBurnButtons";
+import LocalStorage from "../../../services/local-storage";
 
 const ManagePane = observer(function ManagePane({store}: {store: ViewerStore}) {
   return <>
@@ -22,8 +23,9 @@ const ManagePane = observer(function ManagePane({store}: {store: ViewerStore}) {
           {AppStore.web3.puppersOwned.map((px, index, arr) => {
             const [x,y] = AppStore.web3.pupperToPixelCoordsLocal(px)
             const hex = AppStore.web3.pupperToHexLocal(px)
-            return <Box mt={3} mx={2} display={"inline-block"}>
+            return <Box mt={3} mx={2} display={"inline-block"} key={`manage-${px}`}>
               <PixelPane
+                isNew={store.getIsPupperNew(px)}
                 size={"sm"}
                 onClick={async () => await store.onManagePixelClick(px)}
                 pupper={px}

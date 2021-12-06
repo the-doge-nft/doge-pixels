@@ -18,6 +18,7 @@ export enum ViewerView {
 }
 
 const SHOW_HELPER_MODAL = "show_helper_modal"
+export const VIEWED_PIXELS_LS_KEY = "viewed_pixels_by_id"
 
 //@TODO passing generics to Navigable typing acknowledged of subclasses
 class ViewerStore extends Navigable(Eventable(Reactionable((EmptyClass)))) {
@@ -150,6 +151,7 @@ class ViewerStore extends Navigable(Eventable(Reactionable((EmptyClass)))) {
       throw Error(`X,Y from contract and local do not agree. Local: ${x1} ${y1}. Remote: ${x} ${y}`)
     }
     this.selectedPupper = pupper
+    this.setPupperSeen(pupper)
     this.publish(SET_CAMERA, [x1, y1, CameraPositionZ.medium])
     this.pushNavigation(ViewerView.Selected)
   }
@@ -163,6 +165,23 @@ class ViewerStore extends Navigable(Eventable(Reactionable((EmptyClass)))) {
     } else {
       return "-"
     }
+  }
+
+  setPupperSeen(pupper: number) {
+    const data = LocalStorage.getItem(VIEWED_PIXELS_LS_KEY, LocalStorage.PARSE_JSON,[])
+    if (!data.includes(pupper)) {
+      data.push(pupper)
+    }
+    LocalStorage.setItem(VIEWED_PIXELS_LS_KEY, data)
+  }
+
+  getIsPupperNew(pupper: number) {
+    const data = LocalStorage.getItem(VIEWED_PIXELS_LS_KEY, LocalStorage.PARSE_JSON, [])
+    let isNew = true
+    if (data.includes(pupper)) {
+      isNew = false
+    }
+    return isNew
   }
 
   destroy() {
