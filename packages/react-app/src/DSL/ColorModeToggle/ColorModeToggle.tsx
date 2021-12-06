@@ -5,6 +5,8 @@ import LightDog from "../../images/lightDog.png";
 import DarkDog from "../../images/darkDog.png"
 import PixelSun from "../../images/sunPixel.svg";
 import PixelMoon from "../../images/moonPixel.svg";
+import LightFavicon from "../../images/favicons/favicon_light.png";
+import DarkFavicon from "../../images/favicons/favicon_dark.png";
 import {web3Modal, web3ModalDarkTheme, web3ModalLightTheme} from "../../services/web3Modal";
 
 interface ColorModeToggleProps {
@@ -16,7 +18,6 @@ const ColorModeToggle = (props: ColorModeToggleProps) => {
 
   const [isDogeVisible, setIsDogeVisible] = useState(false)
 
-
   //@ts-ignore
   useEffect(async () => {
     if (colorMode === "light") {
@@ -25,6 +26,20 @@ const ColorModeToggle = (props: ColorModeToggleProps) => {
     } else {
       // alert("update to dark theme")
       await web3Modal.updateTheme(web3ModalDarkTheme)
+    }
+  }, [colorMode])
+
+  useEffect(() => {
+    const favicon = document.querySelector('link[rel="icon"]')
+
+    if (favicon) {
+      if (colorMode === "dark") {
+        //@ts-ignore
+        favicon.href! = DarkFavicon
+      } else {
+        //@ts-ignore
+        favicon.href! = LightFavicon
+      }
     }
   }, [colorMode])
 
