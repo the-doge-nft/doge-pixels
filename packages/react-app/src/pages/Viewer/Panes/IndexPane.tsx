@@ -1,11 +1,12 @@
 import ViewerStore, {ViewerView} from "../Viewer.store";
-import {Box, Flex} from "@chakra-ui/react";
+import {Box, Flex, Grid, GridItem, Link} from "@chakra-ui/react";
 import Typography, {TVariant} from "../../../DSL/Typography/Typography";
 import Button, {ButtonVariant} from "../../../DSL/Button/Button";
 import AppStore from "../../../store/App.store";
 import React from "react";
 import {observer} from "mobx-react-lite";
 import MintBurnButtons from "../MintBurnButtons";
+import {openToEtherscanAddress} from "../../../helpers/links";
 
 const IndexPane = observer(function IndexPane({store}: {store: ViewerStore}) {
   return  <>
@@ -13,22 +14,52 @@ const IndexPane = observer(function IndexPane({store}: {store: ViewerStore}) {
       <Box overflow={"scroll"} flexGrow={1} h={"full"} mt={4}>
         <Box maxHeight={"300px"}>
           <Typography variant={TVariant.ComicSans18} block>
-            Look. Closer. Closer! Can you see it? A piece of the pupper picture for your pocket. A colored square with your name on it. A portal to the new paradigm of digital doge ownership.
+            Welcome to the pixel portal - your gateway to digital doge ownership.
           </Typography>
-          <Typography variant={TVariant.ComicSans18} mt={4} block>
-            Kabosu doesn’t speak much Japanese, let alone English. But I imagine if she could see you now she’d say something like
+          <Typography variant={TVariant.ComicSans18} block mt={6}>
+            This site has two main functions.
           </Typography>
-          <Typography variant={TVariant.ComicSans18} mt={4} block>
-            w o w - look how far we’ve come?
+          <Grid templateColumns={"0.1fr 1fr"} mt={2}>
+            <GridItem>
+              <Typography variant={TVariant.ComicSans18} block>
+                1.
+              </Typography>
+            </GridItem>
+            <GridItem>
+              <Typography variant={TVariant.ComicSans18} block>
+                Lock $DOG to mint pixels.
+              </Typography>
+            </GridItem>
+            <GridItem>
+              <Typography variant={TVariant.ComicSans18} block>
+                2.
+              </Typography>
+            </GridItem>
+            <GridItem>
+              <Typography variant={TVariant.ComicSans18} block>
+                Burn pixels to redeem their fair value in DOG (minus 1% fee for future development of pixel portal)
+              </Typography>
+            </GridItem>
+          </Grid>
+
+          <Typography variant={TVariant.ComicSans18} block mt={6}>
+            Surely you've heard by now - $DOG is backed. 55,240.9 $DOG = 1 Pixel.
           </Typography>
-          <Typography variant={TVariant.ComicSans18} mt={4} block>
-            In a sea of dog coins where fortunes are lost and millionaires are minted, one thing remains constant: $DOG is backed. 55,240 DOG = 1 Pixel = 55,240 DOG. Lock DOG to mint pixels, or burn pixels to redeem their fair value in DOG.
-          </Typography>
-          <Typography variant={TVariant.ComicSans18} mt={4} block>
-            If you are reading this, you are early. A minted pixel is a bet on the future, a step in the forward direction, a leap of faith. But chaos begets order. And while there are no guarantees, it's likely that early participants in this journey will be handsomely rewarded down the road.
-          </Typography>
-          <Typography variant={TVariant.ComicSans18} mt={4} block>
-            We’ve said too much. Mint today and become a bleeding edge innovator in fractionalized NFT ownership. Mint today and choose hope over fear.
+
+          <Box mt={6}>
+            <Typography variant={TVariant.ComicSans18} block>
+              Total $DOG  = 16,969,696,969
+            </Typography>
+            <Typography variant={TVariant.ComicSans18} block>
+              Total pixels =  307,200
+            </Typography>
+            <Typography variant={TVariant.ComicSans18} block>
+              DOG / pixel = 55,239.89899
+            </Typography>
+          </Box>
+
+          <Typography variant={TVariant.ComicSans18} block mt={8}>
+            Its dangerous to go alone! Take <Link fontWeight={"bold"} onClick={() => openToEtherscanAddress(AppStore.web3.dogContractAddress)}>this</Link>
           </Typography>
         </Box>
       </Box>

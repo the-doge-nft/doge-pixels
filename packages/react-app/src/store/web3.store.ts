@@ -70,9 +70,20 @@ class Web3Store {
     @observable
     addressToPuppers?: AddressToPuppers
 
+    pxContractAddress: string
+    dogContractAddress: string
+
     constructor() {
         makeObservable(this)
         this.addressToPuppers = {}
+        if (isDevModeEnabled()) {
+            this.pxContractAddress = deployedContracts["4"]["rinkeby"]["contracts"]["PX"]["address"]
+            this.dogContractAddress = deployedContracts["4"]["rinkeby"]["contracts"]["DOG20"]["address"]
+        } else {
+            // @TODO: prod deployment
+            this.pxContractAddress = deployedContracts["4"]["rinkeby"]["contracts"]["PX"]["address"]
+            this.dogContractAddress = deployedContracts["4"]["rinkeby"]["contracts"]["DOG20"]["address"]
+        }
     }
 
     async connect() {
@@ -146,13 +157,13 @@ class Web3Store {
         } else if (isStaging() || this.network?.name === "rinkeby") {
             //@ts-ignore
             this.pxContract = new Contract(
-              deployedContracts["4"]["rinkeby"]["contracts"]["PX"]["address"],
+              this.pxContractAddress,
               deployedContracts["4"]["rinkeby"]["contracts"]["PX"].abi,
               signerOrProvider
             )
             //@ts-ignore
             this.dogContract = new Contract(
-              deployedContracts["4"]["rinkeby"]["contracts"]["DOG20"]["address"],
+              this.dogContractAddress,
               deployedContracts["4"]["rinkeby"]["contracts"]["DOG20"].abi,
               signerOrProvider
             )
@@ -312,6 +323,8 @@ class Web3Store {
     coordinateToPupperLocal(x: number, y: number) {
         return ((this.WIDTH * y) + x) + this.PIXEL_TO_ID_OFFSET
     }
+
+
 }
 
 
