@@ -251,9 +251,11 @@ const Title = () => {
     >
       PUPPER PIXEL PORTAL
     </Typography>
-    <motion.div animate={{ rotate: rotation }}>
-      <Typography variant={TVariant.PresStart28} ml={2} pb={"5px"}>🐕</Typography>
-    </motion.div>
+    <Box mb={2} ml={3}>
+      <motion.div animate={{ rotate: rotation, transition: {duration: 0.22} }}>
+        <Typography variant={TVariant.PresStart28}>🐕</Typography>
+      </motion.div>
+    </Box>
   </Flex>
 }
 

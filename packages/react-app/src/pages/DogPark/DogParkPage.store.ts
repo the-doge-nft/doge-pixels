@@ -44,9 +44,9 @@ class DogParkPageStore extends Reactionable(EmptyClass) {
     const tds = ObjectKeys(AppStore.web3.addressToPuppers).map((key, index, arr) => (
       {address: key, puppers: AppStore.web3.addressToPuppers![key].tokenIDs, ens: AppStore.web3.addressToPuppers![key].ens}
     ))
-    console.log("debug:: tds", tds)
     return tds
       .filter(dog => dog.address !== ethers.constants.AddressZero)
+      .filter(dog => dog.puppers.length > 0)
       .sort((a, b) => {
         if (a.puppers.length > b.puppers.length) {
           return -1
@@ -65,7 +65,12 @@ class DogParkPageStore extends Reactionable(EmptyClass) {
 
   @computed
   get selectedDogs() {
-    return this.topDogs.filter(dog => dog.address === this.selectedAddress)
+    return this.topDogs.filter(dog => dog.address === this.selectedAddress)[0]
+  }
+
+  @computed
+  get selectedUserHasPuppers() {
+    return this.selectedDogs?.puppers.length > 0
   }
 
   @computed
@@ -94,11 +99,6 @@ class DogParkPageStore extends Reactionable(EmptyClass) {
   @computed
   get seletedPupperIndex() {
     return AppStore.web3.pupperToIndexLocal(this.selectedPupper!)
-  }
-
-  @computed
-  get selectedPupperLocation() {
-    return "Dog"
   }
 
   @computed
