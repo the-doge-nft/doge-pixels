@@ -27,7 +27,7 @@ jobs:
         run: yarn install --frozen-lockfile
 
       - name: "Test"
-        run: yarn workspace @scaffold-eth/server prestart && yarn server:test
+        run: yarn workspace @dog/server prestart && yarn server:test
 
       - name: "Set Up SSH"
         if: success()
@@ -44,5 +44,5 @@ jobs:
 
       - name: "Deploy"
         if: success()
-        run: yarn workspace @scaffold-eth/server dev:deploy
+        run: yarn workspace @dog/server dev:deploy
 

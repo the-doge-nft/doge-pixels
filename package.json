@@ -1,44 +1,39 @@
 {
-  "name": "@scaffold-eth/monorepo",
+  "name": "@dog/monorepo",
   "version": "1.0.0",
   "keywords": [
     "ethereum",
     "react",
-    "uniswap",
     "workspaces",
     "yarn"
   ],
   "private": true,
   "scripts": {
-    "react-app:build": "yarn workspace @scaffold-eth/react-app build --max-old-space-size=12288",
-    "react-app:eject": "yarn workspace @scaffold-eth/react-app eject",
-    "react-app:start": "yarn workspace @scaffold-eth/react-app start",
-    "react-app:test": "yarn workspace @scaffold-eth/react-app test",
-    "server:test": "yarn workspace @scaffold-eth/server test",
-    "server:start": "yarn workspace @scaffold-eth/server dev",
-    "server:stop": "yarn workspace @scaffold-eth/server stop",
-    "chain": "yarn workspace @scaffold-eth/hardhat chain",
-    "fork": "yarn workspace @scaffold-eth/hardhat fork",
-    "node": "yarn workspace @scaffold-eth/hardhat chain",
-    "test": "yarn workspace @scaffold-eth/hardhat test",
-    "start-deployment-tool": "yarn workspace @scaffold-eth/deployment-tool start",
-    "compile": "yarn workspace @scaffold-eth/hardhat compile",
-    "deploy": "yarn workspace @scaffold-eth/hardhat deploy",
-    "watch": "yarn workspace @scaffold-eth/hardhat watch",
-    "accounts": "yarn workspace @scaffold-eth/hardhat accounts",
-    "balance": "yarn workspace @scaffold-eth/hardhat balance",
-    "send": "yarn workspace @scaffold-eth/hardhat send",
-    "ipfs": "yarn workspace @scaffold-eth/react-app ipfs",
-    "surge": "yarn workspace @scaffold-eth/react-app deploy:surge",
-    "s3": "yarn workspace @scaffold-eth/react-app s3",
-    "ship": "yarn workspace @scaffold-eth/react-app ship",
-    "generate": "yarn workspace @scaffold-eth/hardhat generate",
-    "account": "yarn workspace @scaffold-eth/hardhat account",
+    "react-app:build": "yarn workspace @dog/react-app build --max-old-space-size=12288",
+    "react-app:eject": "yarn workspace @dog/react-app eject",
+    "react-app:start": "yarn workspace @dog/react-app start",
+    "react-app:test": "yarn workspace @dog/react-app test",
+    "server:test": "yarn workspace @dog/server test",
+    "server:start": "yarn workspace @dog/server dev",
+    "server:stop": "yarn workspace @dog/server stop",
+    "chain": "yarn workspace @dog/hardhat chain",
+    "fork": "yarn workspace @dog/hardhat fork",
+    "node": "yarn workspace @dog/hardhat chain",
+    "test": "yarn workspace @dog/hardhat test",
+    "start-deployment-tool": "yarn workspace @dog/deployment-tool start",
+    "compile": "yarn workspace @dog/hardhat compile",
+    "deploy": "yarn workspace @dog/hardhat deploy",
+    "watch": "yarn workspace @dog/hardhat watch",
+    "accounts": "yarn workspace @dog/hardhat accounts",
+    "balance": "yarn workspace @dog/hardhat balance",
+    "send": "yarn workspace @dog/hardhat send",
+    "generate": "yarn workspace @dog/hardhat generate",
+    "account": "yarn workspace @dog/hardhat account",
     "mineContractAddress": "cd packages/hardhat && npx hardhat mineContractAddress",
     "wallet": "cd packages/hardhat && npx hardhat wallet",
     "fundedwallet": "cd packages/hardhat && npx hardhat fundedwallet",
     "clean": "cd packages/hardhat && npx hardhat clean",
-    "fund-account":  "yarn workspace @scaffold-eth/hardhat fund-account"
+    "fund-account": "yarn workspace @dog/hardhat fund-account"
   },
   "workspaces": {
     "packages": [
@@ -54,7 +49,5 @@
     ]
   },
   "dependencies": {},
-  "devDependencies": {
-    "husky": "^7.0.2"
-  }
+  "devDependencies": {}
 }
