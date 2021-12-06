@@ -9,6 +9,7 @@ import PixelPane from "../../../DSL/PixelPane/PixelPane";
 import {SET_CAMERA} from "../../../services/mixins/eventable";
 import {useHistory} from "react-router-dom";
 import {CameraPositionZ} from "../ThreeScene";
+import Icon from "../../../DSL/Icon/Icon";
 
 const SelectedPixelPane = observer(function SelectedPixelPane({store}: {store: ViewerStore}) {
   const history = useHistory()
@@ -46,17 +47,18 @@ const SelectedPixelPane = observer(function SelectedPixelPane({store}: {store: V
             Owned by
           </Typography>
 
-          <Box>
+          <Flex alignItems={"center"}>
+            <Icon icon={'person'} />
             <Button variant={ButtonVariant.Text} onClick={() => {
               history.push({
                 pathname: `/park/${store.tokenOwner}/${store.selectedPupper}`,
               })
             }}>
-              <Typography block variant={TVariant.PresStart18} mt={2}>
+              <Typography block variant={TVariant.PresStart18}>
                 {store.selectedTokenOwnerDisplayName}
               </Typography>
             </Button>
-          </Box>
+          </Flex>
         </Box>}
 
         {store.openSeaLink && <Flex justifyContent={"center"} mt={6}>

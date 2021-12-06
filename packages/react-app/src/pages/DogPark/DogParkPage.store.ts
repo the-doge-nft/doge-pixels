@@ -110,7 +110,7 @@ class DogParkPageStore extends Reactionable(EmptyClass) {
   @computed
   get selectedAddressDisplayName() {
     if (this.selectedAddress) {
-      if (this.selectedDogs.ens) {
+      if (this.selectedDogs?.ens) {
         return this.selectedDogs.ens
       } else {
         return abbreviate(this.selectedAddress)

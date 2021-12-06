@@ -30,7 +30,7 @@ function BigInput<T extends object>({
   const formState = useFormState()
   const { colorMode } = useColorMode()
   const errors = formState.errors as object
-  return useObserver(() => <Box pt={3} pb={4} px={5} borderRadius={9}>
+  return useObserver(() => <Box pt={3} pb={4} borderRadius={9}>
     <VStack spacing={3} align={"flex-start"} w={"full"}>
       <Grid templateColumns={"2fr 1fr 0.75fr 0.5fr"} alignItems={"end"} justifyContent={"center"}>
         <GridItem colSpan={1}>
@@ -94,7 +94,7 @@ function BigInput<T extends object>({
           </Typography>}
           {Object.entries(errors).map(error => <Typography
             block
-            variant={TVariant.ComicSans16}
+            variant={TVariant.ComicSans18}
             color={"red"}>
             {error[1]}
           </Typography>)}

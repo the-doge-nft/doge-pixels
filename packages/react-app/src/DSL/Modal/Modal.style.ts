@@ -60,12 +60,12 @@ const ModalStyle = {
         maxWidth: "36rem"
       },
       body: {
-        px: 8,
+        px: 10,
         pb: 12
       },
       title: {
         mt: 8,
-        mb: 2
+        mb: 6
       }
     },
   }
