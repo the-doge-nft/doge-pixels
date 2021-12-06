@@ -54,12 +54,9 @@ const MintPixelsModal = observer(({ isOpen, onClose, onSuccess, goToPixels }: Mi
 const MintForm = observer(({ store }: { store: MintPixelsModalStore }) => {
   return (
     <>
-        <Box mb={8} mt={4}>
-          <Typography variant={TVariant.ComicSans18}>
-            Trade $DOG for pixels. Each pixel is worth 55,240 $DOG.
-          </Typography>
-        </Box>
-
+      <Typography variant={TVariant.ComicSans18}>
+        Trade $DOG for pixels. Each pixel is worth 55,240 $DOG.
+      </Typography>
       <Form onSubmit={async (data) => store.handleMintSubmit(data.pixel_count)}>
         <Box mt={5}>
           <BigInput

@@ -7,7 +7,6 @@ import DogParkPageStore from "./DogParkPage.store";
 import TextInput from "../../DSL/Form/TextInput";
 import Form from "../../DSL/Form/Form";
 import model from "../../DSL/Form/model";
-import {abbreviate} from "../../helpers/strings";
 import AppStore from "../../store/App.store";
 import UserCard from "./UserCard";
 import {useHistory, useParams} from "react-router-dom";
@@ -43,7 +42,7 @@ const DogParkPage = observer(function DogParkPage() {
         <Form onSubmit={async () => console.log("test")}>
           <TextInput {...model(store, "addressToSearch")} placeholder={"Search pixel owners by address"}/>
         </Form>
-        <Grid templateColumns={"1fr 1fr"} pt={4} flexGrow={1}>
+        <Grid templateColumns={"1fr 1fr"} my={4} flexGrow={1}>
           {!store.selectedAddress && <GridItem>
             {!store.isSearchInputEmpty && store.filteredDogs.length > 1 && <Typography
                 mt={2}
@@ -140,6 +139,11 @@ const DogParkPage = observer(function DogParkPage() {
               </GridItem>
           </>}
         </Grid>
+        <Box>
+          <Pane h={"inherit"}>
+            <Typography variant={TVariant.PresStart15}>DOG Locked</Typography>
+          </Pane>
+        </Box>
       </Flex>
     </GridItem>
   </Grid>

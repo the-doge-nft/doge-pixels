@@ -18,19 +18,20 @@ const ManagePane = observer(function ManagePane({store}: {store: ViewerStore}) {
         Your Pixels ({AppStore.web3.puppersOwned.length})
       </Typography>
       <Box overflow={"scroll"} h={"full"} mt={3}>
-        <Flex maxHeight={"350px"} flexWrap={"wrap"} mt={0}>
+        <Box maxHeight={"350px"}>
           {AppStore.web3.puppersOwned.map((px, index, arr) => {
             const [x,y] = AppStore.web3.pupperToPixelCoordsLocal(px)
             const hex = AppStore.web3.pupperToHexLocal(px)
-            return <Box ml={3} mt={3}>
+            return <Box mt={3} mx={2} display={"inline-block"}>
               <PixelPane
+                size={"sm"}
                 onClick={async () => await store.onManagePixelClick(px)}
                 pupper={px}
                 color={hex}
                 pupperIndex={AppStore.web3.pupperToIndexLocal(px)}
               />
             </Box>})}
-        </Flex>
+        </Box>
       </Box>
       <Box mt={10}>
         <MintBurnButtons store={store}/>

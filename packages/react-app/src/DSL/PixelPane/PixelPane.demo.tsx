@@ -9,6 +9,24 @@ const PixelPaneDemo = () => {
             <Box>
                 <HStack>
                     <PixelPane
+                      onClick={(pupper) => alert(`you hit pupper: ${pupper}`)}
+                      size={"sm"}
+                      pupper={10}
+                      color={"#c5b68b"}
+                      pupperIndex={234}
+                    />
+                    <PixelPane
+                      variant={"shadow"}
+                      size={"sm"}
+                      pupper={10}
+                      color={"#e7ca6e"}
+                      pupperIndex={543}
+                    />
+                </HStack>
+            </Box>
+            <Box mt={8}>
+                <HStack>
+                    <PixelPane
                       pupper={10}
                       color={"#b6b76b"}
                       pupperIndex={342}

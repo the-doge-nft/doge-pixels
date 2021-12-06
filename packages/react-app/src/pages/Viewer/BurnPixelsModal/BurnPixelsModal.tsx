@@ -56,40 +56,40 @@ const SelectPixels = observer(({store}: { store: BurnPixelsModalStore}) => {
         see them again.
       </Typography>
 
-      <Box overflow={"scroll"} flexGrow={1} h={"full"} mt={6}>
-        <Box mx={"auto"} maxHeight={"350px"} ml={3}>
-          {AppStore.web3.puppersOwned.map(px => {
-            const hex = AppStore.web3.pupperToHexLocal(px)
-            const index = AppStore.web3.pupperToIndexLocal(px)
-            const isPixelSelected = store.selectedPixels.includes(px)
-            return <Box display={"inline-block"}
-                        mt={2}
-                        mx={1}
-                        p={2}
-                        bg={isPixelSelected ? "yellow.700" : "inherit"}>
-              <PixelPane
-                size={"md"}
-                pupper={px}
-                color={hex}
-                pupperIndex={index}
-                onClick={() => store.handlePixelSelect(px)}
-              />
-            </Box>
-          })}
+      <Flex overflow={"scroll"} flexGrow={1} h={"full"} mt={6} justifyContent={"center"}>
+        <Box maxHeight={"300px"} width={"416px"}>
+            {AppStore.web3.puppersOwned.map(px => {
+              const hex = AppStore.web3.pupperToHexLocal(px)
+              const index = AppStore.web3.pupperToIndexLocal(px)
+              const isPixelSelected = store.selectedPixels.includes(px)
+              return <Box display={"inline-block"}
+                          mt={2}
+                          mx={1}
+                          p={2}
+                          bg={isPixelSelected ? "yellow.700" : "inherit"}>
+                <PixelPane
+                  size={"sm"}
+                  pupper={px}
+                  color={hex}
+                  pupperIndex={index}
+                  onClick={() => store.handlePixelSelect(px)}
+                />
+              </Box>
+            })}
         </Box>
-      </Box>
-      <Flex justifyContent={"space-between"} alignItems={"center"} mt={12}>
+      </Flex>
+      <Flex justifyContent={"space-between"} alignItems={"flex-start"} mt={12}>
         <Flex flexDirection={"column"}>
-          <Typography variant={TVariant.PresStart14}>$DOG</Typography>
+          <Typography variant={TVariant.PresStart15}>$DOG</Typography>
           <Typography
-          variant={TVariant.PresStart14}>
+          variant={TVariant.ComicSans18}>
         {formatWithThousandsSeparators(store.selectedPixelsDogValue)}
           </Typography>
         </Flex>
         {!store.isAllPixelsSelected &&
-          <Button variant={ButtonVariant.Text} onClick={() => store.selectAllPixels()}>Select All</Button>}
+          <Button p={0} variant={ButtonVariant.Text} onClick={() => store.selectAllPixels()}>Select all</Button>}
         {store.isAllPixelsSelected &&
-          <Button variant={ButtonVariant.Text} onClick={() => store.deselectAllPixels()}>Deselect All</Button>}
+          <Button p={0} variant={ButtonVariant.Text} onClick={() => store.deselectAllPixels()}>Deselect all</Button>}
       </Flex>
 
       <Flex justifyContent={"center"} mt={14} w={"full"}>

@@ -111,11 +111,8 @@ class Web3Store {
         }
 
         if (isDevModeEnabled()) {
-            if (this.network?.name === "homestead") {
-                await this.disconnect()
-                throw Error("🚨 We don't test on prod here, switch to a testnet or local 🚨")
-            } else if (this.network?.name !== "rinkeby") {
-                alert("Disconnecting your wallet. Please connect to Rinkeby.")
+            if (this.network?.name !== "rinkeby") {
+                alert("Please connect to Rinkeby.")
                 await this.disconnect()
                 window.location.reload()
             }
@@ -167,21 +164,9 @@ class Web3Store {
               deployedContracts["4"]["rinkeby"]["contracts"]["DOG20"].abi,
               signerOrProvider
             )
+        } else {
+            throw Error("Shouldn't hit")
         }
-        // else {
-        //     //@ts-ignore
-        //     this.pxContract = new Contract(
-        //       deployedContracts["31337"]["localhost"]["contracts"]["PX"]["address"],
-        //       deployedContracts["31337"]["localhost"]["contracts"]["PX"].abi,
-        //       signerOrProvider
-        //     )
-        //     //@ts-ignore
-        //     this.dogContract = new Contract(
-        //       deployedContracts["31337"]["localhost"]["contracts"]["DOG20"]["address"],
-        //       deployedContracts["31337"]["localhost"]["contracts"]["DOG20"].abi,
-        //       signerOrProvider
-        //     )
-        // }
     }
 
     async errorGuardContracts() {
