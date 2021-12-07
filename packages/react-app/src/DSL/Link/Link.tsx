@@ -1,0 +1,36 @@
+import React from "react";
+import {Link as ChakraLink, LinkProps as ChakraLinkProps, useStyleConfig} from "@chakra-ui/react";
+import {Link as ReactRouterLink} from "react-router-dom";
+import {Type} from "../Fonts/Fonts";
+
+
+interface LinkProps extends ChakraLinkProps {
+  to?: any;
+  size?: "sm" | "md" | "lg";
+  isActive?: boolean;
+  isNav?: boolean;
+  variant?: Type
+}
+
+const NavLink = ({size = "md", to, ...rest}: LinkProps) => {
+  return <ChakraLink size={size} to={to} {...rest} as={ReactRouterLink}>
+      {rest.children}
+  </ChakraLink>
+}
+
+const NormalLink = ({size = "md", ...rest}: LinkProps) => {
+  return <ChakraLink size={size} {...rest}>
+      {rest.children}
+  </ChakraLink>
+}
+
+const Link = ({isNav, variant = Type.PresStart, size="md", ...rest}: LinkProps) => {
+  const styles = useStyleConfig('Link', {variant, size})
+  if (isNav) {
+    return <NavLink variant={variant} {...rest} __css={styles}/>
+  } else {
+    return <NormalLink variant={variant} {...rest} __css={styles}/>
+  }
+}
+
+export default Link;

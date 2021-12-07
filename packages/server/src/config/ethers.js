@@ -29,6 +29,10 @@ const startProviderListener = () => {
     provider = new ethers.providers.WebSocketProvider(`ws://127.0.0.1:8545`);
   } else {
     provider = new ethers.providers.WebSocketProvider(vars.infura_ws_endpoint, network);
+    // provider = new ethers.providers.InfuraProvider(network=network, apiKey={
+    //   projectId: vars.infura_project_id,
+    //   projectSecret: vars.infura_secret_id
+    // })
   }
   keepAlive({
     provider,

@@ -8,7 +8,6 @@ const PixelPaneStyle = {
       flexDirection: "column",
       maxWidth: "fit-content",
       position: "relative",
-      zIndex: 100
     },
     swatch: {
       borderStyle: "solid",

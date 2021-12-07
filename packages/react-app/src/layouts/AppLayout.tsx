@@ -10,11 +10,12 @@ import {
   MenuItem,
   MenuList,
   useColorMode,
-  VStack
+  VStack,
+  Link as ChakraLink
 } from "@chakra-ui/react";
 import Typography, {TVariant} from "../DSL/Typography/Typography";
 import Button, {ButtonVariant} from "../DSL/Button/Button";
-import {useHistory, useLocation} from "react-router-dom";
+import {matchPath, useHistory, useLocation} from "react-router-dom";
 import routes, {NamedRoutes, route} from "../App.routes";
 import {web3Modal} from "../services/web3Modal";
 import {showDebugToast, showErrorToast} from "../DSL/Toast/Toast";
@@ -27,6 +28,8 @@ import Icon from "../DSL/Icon/Icon";
 import {motion} from "framer-motion";
 import {formatWithThousandsSeparators} from "../helpers/numberFormatter";
 import { BigNumber, ethers } from "ethers";
+import Link from "../DSL/Link/Link";
+import {Link as ReactRouteLink} from "react-router-dom"
 
 interface AppLayoutProps {
   children?: any;
@@ -190,33 +193,27 @@ const Balances = observer(function Balances() {
 
 const Nav = () => {
   const location = useLocation();
-  const history = useHistory();
 
-  return <HStack spacing={4}>
-    {routes.map((route, index) => {
-      const isActive = location.pathname === route.path;
+  return <HStack spacing={8}>
+    {routes.map((route) => {
       let path = route.path
-      let isPark = false
       if (route.name === NamedRoutes.DOG_PARK) {
-        isPark = true
-        // @TODO: direct load to address with no pixels in the park is broken
         if (AppStore.web3.address) {
           path = `/park/${AppStore.web3.address}`
         } else {
-          path = "/park"
+          path = '/park'
         }
       }
+      const match = matchPath(location.pathname, {
+        path: route.path,
+        exact: true,
+        strict: false
+      })
+      console.log("debug:: match", match)
       return (
-        <Button
-          key={`${route}-${index}`}
-          variant={ButtonVariant.Text}
-          textDecoration={isActive ? "underline" : "none"}
-          onClick={() => history.push(path)}
-        >
-          <Box __css={{wordSpacing: isPark ? "-6px" : "0px"}}>
-            {route.title}
-          </Box>
-        </Button>
+        <Link key={route.path} to={path} isNav textDecoration={match ? "underline" : "none"}>
+          {route.title}
+        </Link>
       );
     })}
   </HStack>
@@ -251,7 +248,7 @@ const Title = () => {
     >
       PUPPER PIXEL PORTAL
     </Typography>
-    <Box mb={2} ml={3}>
+    <Box mb={2} ml={3} display={"inline-block"}>
       <motion.div animate={{ rotate: rotation, transition: {duration: 0.22} }}>
         <Typography variant={TVariant.PresStart28}>🐕</Typography>
       </motion.div>
