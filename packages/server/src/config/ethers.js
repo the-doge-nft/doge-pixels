@@ -4,6 +4,8 @@ const ABI = require('../contracts/hardhat_contracts.json')
 const testABI = require('../../test/contracts/hardhat_contracts.json')
 const logger = require("./config");
 const vars = require("./vars");
+const Sentry = require("@sentry/node");
+
 
 let pxContractInfo
 let network
@@ -27,6 +29,12 @@ if (env === "test") {
 } else {
   provider = new ethers.providers.WebSocketProvider(vars.infura_ws_endpoint, network);
 }
+
+provider._websocket.on('close', async (code) => {
+  logger.error(`⚠️ WS provider closed: ${code}`);
+  Sentry.captureMessage("⚠️ WS provider closed");
+})
+
 
 const PXContract = new ethers.Contract(pxContractInfo["address"], pxContractInfo["abi"], provider)
 
