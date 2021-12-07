@@ -43,7 +43,7 @@ const IndexPane = observer(function IndexPane({store}: {store: ViewerStore}) {
           </Grid>
 
           <Typography variant={TVariant.ComicSans18} block mt={6}>
-            Surely you've heard by now - $DOG is backed. 55,240.9 $DOG = 1 Pixel.
+            Surely you've heard by now - $DOG is backed. 55,239.9 $DOG = 1 Pixel.
           </Typography>
 
           <Box mt={6}>
