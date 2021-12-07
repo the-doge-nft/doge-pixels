@@ -5,10 +5,12 @@ const testABI = require('../../test/contracts/hardhat_contracts.json')
 const logger = require("./config");
 const vars = require("./vars");
 const Sentry = require("@sentry/node");
-
+const {keepAlive} = require("./helpers");
 
 let pxContractInfo
 let network
+let provider
+
 
 if (env === "development") {
   network = "rinkeby"
@@ -21,20 +23,25 @@ if (env === "development") {
   pxContractInfo = ABI["4"][network]["contracts"]["PX"]
 }
 
-let provider
-
-logger.info(`init infura connection on network: ${network}`)
-if (env === "test") {
-  provider = new ethers.providers.WebSocketProvider(`ws://127.0.0.1:8545`);
-} else {
-  provider = new ethers.providers.WebSocketProvider(vars.infura_ws_endpoint, network);
+const startProviderListener = () => {
+  logger.info(`Creating WS provider on network: ${network}`)
+  if (env === "test") {
+    provider = new ethers.providers.WebSocketProvider(`ws://127.0.0.1:8545`);
+  } else {
+    provider = new ethers.providers.WebSocketProvider(vars.infura_ws_endpoint, network);
+  }
+  keepAlive({
+    provider,
+    onDisconnect: (err) => {
+      const debugString = `The ws connection was closed: ${JSON.stringify(err, null, 2)}`
+      logger.error(debugString);
+      Sentry.captureMessage(debugString)
+      startProviderListener()
+    }
+  })
 }
 
-provider._websocket.on('close', async (code) => {
-  logger.error(`⚠️ WS provider closed: ${code}`);
-  Sentry.captureMessage("⚠️ WS provider closed");
-})
-
+startProviderListener()
 
 const PXContract = new ethers.Contract(pxContractInfo["address"], pxContractInfo["abi"], provider)
 

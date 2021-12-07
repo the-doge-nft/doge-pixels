@@ -84,9 +84,9 @@ class MintPixelsModalStore extends Reactionable((Navigable(EmptyClass))) {
       AppStore.web3.refreshPupperOwnershipMap()
 
     } catch (e) {
-      this.hasUserSignedTx = false
       showErrorToast("error minting")
       console.error(e)
+      this.hasUserSignedTx = false
       this.destroyNavigation()
       this.pushNavigation(MintModalView.Mint)
     }
