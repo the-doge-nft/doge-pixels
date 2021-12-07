@@ -64,6 +64,10 @@ router.get(
   async (req, res, next) => {
     const { tokenID } = req.params
     try {
+      if (!tokenID) {
+        throw Error()
+      }
+      logger.info(`querying token ID ${tokenID}`)
       const owner = await PXContract.ownerOf(tokenID)
       return res.send({address: owner})
     } catch (e) {

@@ -195,8 +195,7 @@ const ThreeScene =({onPixelSelect, store}: ThreeSceneProps) => {
               tooltipRef.current.style.top = y+"px"
 
               // BEWARE: below dom manipulations are heavily dependent upon the structure of <PixelPane/>
-              const zeroChild = tooltipRef.current?.children[0]
-              const firstChild = zeroChild?.children[0]
+              const firstChild = tooltipRef.current?.children[0]
               const firstGrandchild = firstChild?.children[0] as HTMLDivElement
               const secondGrandchild = firstChild?.children[1] as HTMLDivElement
               const firstGreatGrandChild = secondGrandchild?.children[0] as HTMLDivElement
