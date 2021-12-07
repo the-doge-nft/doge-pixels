@@ -74,7 +74,7 @@ router.get(
         for (const address in check) {
           if (check[address] && check[address].tokenIDs) {
             if (check[address].tokenIDs.includes(Number(tokenID))) {
-              res.send({address})
+              return res.send({address})
             }
           }
         }
