@@ -30,7 +30,10 @@ const ColorModeToggleStyle = {
         boxShadow: `4px 4px 0px ${lightOrDark(colorMode,"black", "white")}`
       },
       px: `${containerXPadding}px`,
-      py: "8px"
+      py: "8px",
+      userSelect: "none",
+      msUserSelect: "none",
+      webkitUserSelect: "none"
     },
     handle: {
       position: "relative",

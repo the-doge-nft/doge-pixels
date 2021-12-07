@@ -63,13 +63,24 @@ router.get(
   '/px/owner/:tokenID',
   async (req, res, next) => {
     const { tokenID } = req.params
+    logger.info(`querying token ID ${tokenID}`)
     try {
-      if (!tokenID) {
-        throw Error()
+      // const owner = await PXContract.ownerOf(tokenID)
+      // return res.send({address: owner})
+
+      const data = await redisClient.get(redisClient.keys.ADDRESS_TO_TOKENID)
+      if (data) {
+        const check = JSON.parse(data)
+        for (const address in check) {
+          if (check[address] && check[address].tokenIDs) {
+            if (check[address].tokenIDs.includes(Number(tokenID))) {
+              res.send({address})
+            }
+          }
+        }
       }
-      logger.info(`querying token ID ${tokenID}`)
-      const owner = await PXContract.ownerOf(tokenID)
-      return res.send({address: owner})
+
+      throw Error()
     } catch (e) {
       e.message = "No address found"
       next(e)

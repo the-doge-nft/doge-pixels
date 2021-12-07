@@ -248,7 +248,7 @@ const ThreeScene =({onPixelSelect, store}: ThreeSceneProps) => {
           </mesh>
         </group>
       </Canvas>
-      <Box ref={tooltipRef} position={"absolute"} left={5} top={0} zIndex={10} display={"none"}>
+      <Box ref={tooltipRef} position={"absolute"} left={5} top={0} zIndex={100} display={"none"}>
         <PixelPane size={"md"} pupper={0} color={"fff"} pupperIndex={0}/>
       </Box>
       <Box position={"absolute"} bottom={0} left={0}>

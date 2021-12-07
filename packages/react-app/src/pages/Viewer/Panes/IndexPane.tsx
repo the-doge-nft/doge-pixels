@@ -1,12 +1,14 @@
 import ViewerStore, {ViewerView} from "../Viewer.store";
-import {Box, Flex, Grid, GridItem, Link} from "@chakra-ui/react";
+import {Box, Flex, Grid, GridItem} from "@chakra-ui/react";
 import Typography, {TVariant} from "../../../DSL/Typography/Typography";
 import Button, {ButtonVariant} from "../../../DSL/Button/Button";
 import AppStore from "../../../store/App.store";
 import React from "react";
 import {observer} from "mobx-react-lite";
 import MintBurnButtons from "../MintBurnButtons";
-import {openToEtherscanAddress} from "../../../helpers/links";
+import Link from "../../../DSL/Link/Link";
+import { getEtherscanURL } from "../../../helpers/links";
+import {Type} from "../../../DSL/Fonts/Fonts";
 
 const IndexPane = observer(function IndexPane({store}: {store: ViewerStore}) {
   return  <>
@@ -58,8 +60,19 @@ const IndexPane = observer(function IndexPane({store}: {store: ViewerStore}) {
             </Typography>
           </Box>
 
-          <Typography variant={TVariant.ComicSans18} block mt={8}>
-            Its dangerous to go alone! Take <Link fontWeight={"bold"} onClick={() => openToEtherscanAddress(AppStore.web3.dogContractAddress)}>this</Link>
+          <Typography variant={TVariant.ComicSans18} block mt={8} display={"inline-block"} alignItems={"flex-end"}>
+            Its dangerous to go alone! Take
+            <Box display={"inline-flex"} alignItems={"flex-end"} ml={"4px"}>
+              <Link
+                size={"lg"}
+                variant={Type.ComicSans}
+                href={getEtherscanURL(AppStore.web3.dogContractAddress)}
+                isExternal
+                fontWeight={"bold"}
+              >
+                this
+              </Link>
+            </Box>
           </Typography>
         </Box>
       </Box>
