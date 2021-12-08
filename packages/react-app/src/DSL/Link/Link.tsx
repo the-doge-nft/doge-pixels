@@ -12,19 +12,19 @@ interface LinkProps extends ChakraLinkProps {
   variant?: Type
 }
 
-const NavLink = ({size = "md", to, ...rest}: LinkProps) => {
-  return <ChakraLink size={size} to={to} {...rest} as={ReactRouterLink}>
+const NavLink = ({to, ...rest}: LinkProps) => {
+  return <ChakraLink to={to} {...rest} as={ReactRouterLink}>
       {rest.children}
   </ChakraLink>
 }
 
-const NormalLink = ({size = "md", ...rest}: LinkProps) => {
-  return <ChakraLink size={size} {...rest}>
+const NormalLink = ({...rest}: LinkProps) => {
+  return <ChakraLink {...rest}>
       {rest.children}
   </ChakraLink>
 }
 
-const Link = ({isNav, variant = Type.PresStart, size="md", ...rest}: LinkProps) => {
+const Link = ({isNav, variant = Type.PresStart, size = "md", ...rest}: LinkProps) => {
   const styles = useStyleConfig('Link', {variant, size})
   if (isNav) {
     return <NavLink variant={variant} {...rest} __css={styles}/>

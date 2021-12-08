@@ -14,103 +14,89 @@ import Icon from "../../DSL/Icon/Icon";
 import PxPill from "./PxPill";
 import PixelPane from "../../DSL/PixelPane/PixelPane";
 import Button from "../../DSL/Button/Button";
+import {convertToAbbreviation} from "../../helpers/numberFormatter";
 
 const DogParkPage = observer(function DogParkPage() {
   const history = useHistory()
   const { address, tokenID } = useParams<{address: string, tokenID: string}>()
   const store = useMemo(() => new DogParkPageStore(address, Number(tokenID)), [])
   useEffect(() => {
-
-    AppStore.web3.getPupperOwnershipMap()
-
-    if (AppStore.web3.web3Provider) {
-      AppStore.web3.refreshDogBalance()
-      AppStore.web3.refreshPupperBalance()
-    }
+    store.init()
   }, [])
   return <Grid templateColumns={"0.5fr 1fr"} flexGrow={1}>
-    <GridItem>
-      <Pane display={"flex"} flexDirection={"column"} h={"full"}>
-        <Typography variant={TVariant.PresStart24}>Top Dogs 🚀</Typography>
-        <Box flexGrow={1} mt={4}>
-          {store.topDogs.map((dog) => <UserCard store={store} dog={dog}/>)}
-        </Box>
-      </Pane>
+    <GridItem display={"flex"} flexDirection={"column"} flexGrow={1}>
+      <TopDogs store={store}/>
+      <Box mt={8}>
+        <DogKennel store={store}/>
+      </Box>
     </GridItem>
     <GridItem ml={16}>
       <Flex height={"100%"} flexDirection={"column"}>
-        <Form onSubmit={async () => console.log("test")}>
-          <TextInput {...model(store, "addressToSearch")} placeholder={"Search pixel owners by address"}/>
-        </Form>
-        <Grid templateColumns={"1fr 1fr"} my={4} flexGrow={1}>
-          {!store.selectedAddress && <GridItem>
-            {!store.isSearchInputEmpty && store.filteredDogs.length > 1 && <Typography
-                mt={2}
-                variant={TVariant.PresStart18}
-                block
-            >
-                Similar results
-            </Typography>}
-            {!store.isSearchInputEmpty && !store.selectedAddress && store.filteredDogs.map(dog => <UserCard store={store} dog={dog}/>)}
-            {!store.isSearchInputEmpty && store.isFilteredResultEmpty && <Typography
-                variant={TVariant.PresStart14}>
-                No results found
-            </Typography>}
-          </GridItem>}
+        <Box mb={8}>
+          <Form onSubmit={async () => {}}>
+            <TextInput rightIcon={"search"} {...model(store, "addressToSearch")} placeholder={"Search pixel owners by address"}/>
+          </Form>
+        </Box>
+
+        <Flex flexDirection={"column"} flexGrow={1}>
+          {!store.selectedAddress && <SearchHints store={store} />}
 
           {store.selectedAddress && <>
-              <GridItem display={"flex"} flexDirection={"column"} mt={6}>
-                <Box>
-                    <Flex alignItems={"center"}>
-                      <Icon icon={'person'} boxSize={10}/>
-                      <Typography variant={TVariant.PresStart18} ml={3}>
-                        {store.selectedAddressDisplayName}
-                      </Typography>
-                      {store.isSelectedAddressAuthedUser && <Typography variant={TVariant.PresStart14} ml={3}>
-                          (you)
-                      </Typography>}
+              <Box mb={5}>
+            <Flex alignItems={"center"}>
+              <Flex alignItems={"flex-end"}>
+                <Icon icon={'person'} boxSize={8}/>
+                <Typography variant={TVariant.PresStart20} ml={3}>
+                  {store.selectedAddressDisplayName}
+                </Typography>
+                {store.isSelectedAddressAuthedUser && <Typography variant={TVariant.PresStart15} ml={3}>
+                    (you)
+                </Typography>}
+              </Flex>
+              <Box ml={4}>
+                <PxPill count={store.selectedUserHasPuppers ? store.selectedDogs?.puppers.length : 0}/>
+              </Box>
+            </Flex>
+            {!store.selectedUserHasPuppers && <Box w={"full"} h={"full"}>
+                <Flex alignItems={"center"} w={"full"} h={"full"} justifyContent={"center"}>
+                    <Typography variant={TVariant.PresStart28} color={"#d6ceb6"}>
+                        No pixels owned
+                    </Typography>
+                    <Typography variant={TVariant.PresStart28} mb={2} ml={3}>
+                        😟
+                    </Typography>
+                </Flex>
+            </Box>}
+          </Box>
+          <Grid templateColumns={"1fr 1fr"} h={"full"}>
+              <GridItem display={"flex"} flexDirection={"column"}>
+                <Box overflowY={"scroll"} flexGrow={1}>
+                    <Flex flexWrap={"wrap"} maxHeight={"300px"}>
+                      {store.selectedDogs?.puppers.map(px => {
+                        const hex = AppStore.web3.pupperToHexLocal(px)
+                        const index = AppStore.web3.pupperToIndexLocal(px)
+                        return <Box
+                          bg={store.selectedPupper === px ? "yellow.700" : "inherit"}
+                          p={2}
+                          m={1}
+                          mt={0}
+                          _hover={{bg: "yellow.700"}}
+                        >
+                          <PixelPane
+                            size={"sm"}
+                            key={`top_dog_${px}`}
+                            pupper={px}
+                            color={hex}
+                            pupperIndex={index}
+                            onClick={(px) => store.selectedPupper = px}
+                          />
+                        </Box>
+                      })}
                     </Flex>
-
-                  {store.selectedUserHasPuppers && <Box my={7}>
-                        <PxPill count={store.selectedDogs?.puppers.length}/>
-                  </Box>}
-                  {!store.selectedUserHasPuppers && <Box mt={10} w={"full"} h={"full"}>
-                      <Flex alignItems={"center"}>
-                        <Typography variant={TVariant.PresStart28} color={"#d6ceb6"}>
-                            No pixels owned
-                        </Typography>
-                        <Typography variant={TVariant.PresStart28} mb={2} ml={3}>
-                            😟
-                        </Typography>
-                      </Flex>
-                  </Box>}
                 </Box>
-                  <Box overflowY={"scroll"} flexGrow={1}>
-                      <Flex flexWrap={"wrap"} maxHeight={"300px"}>
-                        {store.selectedDogs?.puppers.map(px => {
-                          const hex = AppStore.web3.pupperToHexLocal(px)
-                          const index = AppStore.web3.pupperToIndexLocal(px)
-                          return <Box
-                            bg={store.selectedPupper === px ? "yellow.700" : "inherit"}
-                            p={2}
-                            m={1}
-                            _hover={{bg: "yellow.700"}}
-                          >
-                            <PixelPane
-                              key={`top_dog_${px}`}
-                              size={"md"}
-                              pupper={px}
-                              color={hex}
-                              pupperIndex={index}
-                              onClick={(px) => store.selectedPupper = px}
-                            />
-                          </Box>
-                        })}
-                      </Flex>
-                  </Box>
               </GridItem>
-              <GridItem>
-                {store.selectedPupper && <Box mt={10}>
+              <GridItem display={"flex"} justifyContent={"center"}>
+                {store.selectedPupper && <Box maxWidth={"fit-content"}>
                     <Flex flexDirection={"column"}>
                       <PixelPane
                         size={"lg"}
@@ -137,16 +123,85 @@ const DogParkPage = observer(function DogParkPage() {
                   </Button>
                 </Box>}
               </GridItem>
+          </Grid>
           </>}
-        </Grid>
-        <Box>
-          <Pane h={"inherit"}>
-            <Typography variant={TVariant.PresStart15}>DOG Locked</Typography>
-          </Pane>
-        </Box>
+
+        </Flex>
       </Flex>
     </GridItem>
   </Grid>
 });
+
+const SearchHints = ({store}: {store: DogParkPageStore}) => {
+  return <>
+    {!store.isSearchInputEmpty && store.filteredDogs.length > 1 && <Typography
+        mt={2}
+        variant={TVariant.PresStart18}
+        block
+    >
+        Similar results
+    </Typography>}
+    {!store.isSearchInputEmpty && !store.selectedAddress && store.filteredDogs.map(dog => <UserCard store={store} dog={dog}/>)}
+    {!store.isSearchInputEmpty && store.isFilteredResultEmpty && <Typography
+        variant={TVariant.PresStart15}>
+        No results found
+    </Typography>}
+  </>
+}
+
+const DogKennel = observer(({store}: {store: DogParkPageStore}) => {
+  const [num, abbr] = store.lockedDog ? convertToAbbreviation(Math.trunc(store.lockedDog)) : ["N/A", ""]
+  return <Pane h={"inherit"}>
+    <Flex flexDirection={"column"}>
+      <Flex mb={6} alignItems={"flex-end"}>
+        <Typography variant={TVariant.PresStart20} block height={"max-content"}>$DOG Locked</Typography>
+        <Typography variant={TVariant.PresStart24} ml={3} height={"max-content"} block>🔒</Typography>
+      </Flex>
+      <Flex flexGrow={1} alignItems={"center"}>
+        <Flex alignItems={"baseline"}>
+          <Typography variant={TVariant.PresStart45}
+            color={"yellow.700"}
+            textShadow={"6px 6px 0px black"}
+            border={"none"}
+            fontSize={"65px"}
+            height={"auto"}
+            //@ts-ignore
+            sx={{"-webkit-text-stroke":"1px black"}}
+            block
+          >
+            {num}
+          </Typography>
+          <Typography variant={TVariant.PresStart45}
+            color={"yellow.50"}
+            textShadow={"6px 6px 0px black"}
+            border={"none"}
+            fontSize={"45px"}
+            height={"auto"}
+            //@ts-ignore
+            sx={{"-webkit-text-stroke":"1px black"}}
+            block
+            ml={8}
+          >
+            {abbr}
+          </Typography>
+        </Flex>
+      </Flex>
+    </Flex>
+  </Pane>
+})
+
+const TopDogs = observer(({store}: {store: DogParkPageStore}) => {
+  return <Pane display={"flex"} flexDirection={"column"} h={"full"}>
+    <Flex mb={6} alignItems={"flex-end"}>
+      <Typography variant={TVariant.PresStart20} block height={"max-content"}>Top Dogs</Typography>
+      <Typography variant={TVariant.PresStart24} ml={3} height={"max-content"} block>🚀</Typography>
+    </Flex>
+    <Box overflowY={"scroll"} flexGrow={1} mt={4}>
+      <Flex flexWrap={"wrap"} maxHeight={"300px"}>
+        {store.topDogs.map((dog) => <UserCard store={store} dog={dog}/>)}
+      </Flex>
+    </Box>
+  </Pane>
+})
 
 export default DogParkPage;

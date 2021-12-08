@@ -64,3 +64,25 @@ export function bytesToHumanReadable(bytes: number, decimals = 2) {
 
   return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + " " + sizes[i];
 }
+
+
+export function convertToAbbreviation(val: number) {
+
+  // thousands, millions, billions etc..
+  var s = ["", "k", "m", "b", "t"];
+
+  // dividing the value by 3.
+  var sNum = Math.floor(("" + val).length / 3);
+
+  // calculating the precised value.
+  var sVal = parseFloat((
+    sNum != 0 ? (val / Math.pow(1000, sNum)) : val).toPrecision(2));
+
+  if (sVal % 1 != 0) {
+    //@ts-ignore
+    sVal = sVal.toFixed(1);
+  }
+
+  // appending the letter to precised val.
+  return [sVal, s[sNum]];
+}

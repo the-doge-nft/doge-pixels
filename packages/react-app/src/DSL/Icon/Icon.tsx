@@ -22,8 +22,9 @@ import {
   VscChevronDown,
   VscChevronUp
 } from "react-icons/all";
-import LeftArrow from "../../images/LeftArrow.svg"
-import User from "../../images/User.svg"
+import LeftArrow from "../../images/LeftArrow.svg";
+import User from "../../images/User.svg";
+import Search from "../../images/Search.svg";
 
 export type ReactIconName =
   | "arrow-right-down"
@@ -48,8 +49,9 @@ export type ReactIconName =
 type CustomIconName =
   "arrow-left"
   | "person"
+  | "search";
 
-const customIcons: CustomIconName[] = ['arrow-left', 'person']
+const customIcons: CustomIconName[] = ['arrow-left', 'person', 'search']
 
 const iconStringToComponentMap = {
   "arrow-right-down": FiArrowDownRight,
@@ -70,11 +72,13 @@ const iconStringToComponentMap = {
   moon: BsMoonFill,
   "chevron-up": VscChevronUp,
   "chevron-down": VscChevronDown,
+  search: Search
 };
 
 const customIconStringToComponentMap = {
   person: User,
   "arrow-left": LeftArrow,
+  search: Search
 }
 
 interface IconProps extends ChakraIconProps {

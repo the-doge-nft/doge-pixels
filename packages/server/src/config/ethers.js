@@ -8,19 +8,23 @@ const Sentry = require("@sentry/node");
 const {keepAlive} = require("./helpers");
 
 let pxContractInfo
+let dogContractInfo
 let network
 let provider
 
 
-if (env === "development") {
+if (env === "production") {
   network = "rinkeby"
   pxContractInfo = ABI["4"][network]["contracts"]["PX"]
+  dogContractInfo = ABI["4"][network]["contracts"]["DOG20"]
 } else if (env === "test") {
   network = "localhost"
   pxContractInfo = testABI["31337"][network]["contracts"]["PX"]
+  dogContractInfo = testABI["31337"][network]["contracts"]["DOG20"]
 } else {
   network = "rinkeby"
   pxContractInfo = ABI["4"][network]["contracts"]["PX"]
+  dogContractInfo = ABI["4"][network]["contracts"]["DOG20"]
 }
 
 const startProviderListener = () => {
@@ -48,5 +52,6 @@ const startProviderListener = () => {
 startProviderListener()
 
 const PXContract = new ethers.Contract(pxContractInfo["address"], pxContractInfo["abi"], provider)
+const DOGContract = new ethers.Contract(dogContractInfo["address"], dogContractInfo["abi"], provider)
 
-module.exports = {provider, PXContract}
+module.exports = {provider, PXContract, DOGContract}

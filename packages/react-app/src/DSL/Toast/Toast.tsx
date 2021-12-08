@@ -23,7 +23,7 @@ const ToastBase = ({title, description, onClose, id, variant}: ToastBaseProps) =
   }
   return <Box p={3} border={"1px solid black"} borderRadius={"0px"} bg={colorToVariant[variant]} color={"white"}>
     <Flex justifyContent={"space-between"} alignItems={"start"}>
-      <Typography variant={TVariant.PresStart14} mb={2} block color={"white"}>{title}</Typography>
+      <Typography variant={TVariant.PresStart15} mb={2} block color={"white"}>{title}</Typography>
       <Button onClick={onClose} variant={ButtonVariant.Text} size={"sm"} p={0} minWidth={0} color={"white"}>
         x
       </Button>
