@@ -107,11 +107,10 @@ class Web3Store {
         } catch (e) {
             this.disconnect()
             console.error("connection error: ", e)
-            showErrorToast("error connecting")
         }
 
         if (isDevModeEnabled()) {
-            if (this.network?.name !== "rinkeby") {
+            if (this.network?.name && this.network.name !== "rinkeby") {
                 alert("Please connect to Rinkeby.")
                 await this.disconnect()
                 window.location.reload()
@@ -135,7 +134,6 @@ class Web3Store {
             this.chainId = null
             this.dogBalance = null
         } catch (e) {
-            showErrorToast("Error disconnecting")
             console.error(e)
         }
     }

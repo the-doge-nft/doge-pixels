@@ -32,7 +32,12 @@ const Button = ({ submit, children, variant = ButtonVariant.Primary, size = "md"
       size={size}
       {...rest}
     >
-      <Typography variant={buttonTypographyMap[size]} color={"inherit"}>
+      <Typography
+        variant={buttonTypographyMap[size]}
+        color={"inherit"}
+        overflow={"hidden"}
+        textOverflow={"ellipsis"}
+      >
         {children}
       </Typography>
     </ChakraButton>
