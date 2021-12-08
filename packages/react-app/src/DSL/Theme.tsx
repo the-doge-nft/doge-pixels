@@ -17,6 +17,7 @@ import LoadingStyle from "./Loading/Loading.style";
 import PixelPaneStyle from "./PixelPane/PixelPane.style";
 import PillStyle from "./Pill/Pill.style";
 import LinkStyle from "./Link/Link.style";
+import CheckboxStyle from "./Form/CheckboxInput/Checkbox.style";
 
 export const darkModePrimary = "purple.700";
 
@@ -59,7 +60,8 @@ const theme = extendTheme({
     Loading: LoadingStyle,
     PixelPane: PixelPaneStyle,
     Pill: PillStyle,
-    Link: LinkStyle
+    Link: LinkStyle,
+    Checkbox: CheckboxStyle
   },
 });
 

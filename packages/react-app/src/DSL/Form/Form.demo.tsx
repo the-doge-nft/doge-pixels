@@ -14,6 +14,7 @@ import BigInput from "./BigInput";
 import SelectInput from "./SelectInput";
 import ToggleInput from "./ToggleInput";
 import { maxValue, required } from "./validation";
+import CheckboxInput from "./CheckboxInput/CheckboxInput";
 
 class DemoFormStore {
   @observable
@@ -30,6 +31,9 @@ class DemoFormStore {
 
   @observable
   toggle = false;
+
+  @observable
+  check = false
 
   get selectItems() {
     return [
@@ -48,11 +52,12 @@ const DemoForm = () => {
   return <Demo title={"Form"}>
       <Box px={{base: 5, md: "20%"}}>
         <DemoBasicForm />
-        <DemoTextInputForm store={store} />
-        <DemoNumberInputForm store={store} />
-        <DemoBigInput store={store} />
+        <DemoTextInputForm store={store}/>
+        <DemoNumberInputForm store={store}/>
+        <DemoBigInput store={store}/>
         {/*<DemoSelectInput store={store} />*/}
-        {/*<ToggleDemo store={store} />*/}
+        {/*<ToggleDemo store={store}/>*/}
+        <CheckboxDemo store={store}/>
       </Box>
     </Demo>
 };
@@ -167,6 +172,24 @@ const ToggleDemo = observer(({ store }: { store: DemoFormStore }) => {
     </SubDemo>
   );
 });
+
+const CheckboxDemo = observer(({store}: {store: DemoFormStore}) => {
+  return (
+    <SubDemo title={"Checkbox Input"}>
+      <Form onSubmit={async data => alert(JSON.stringify(data))}>
+        <CheckboxInput name={"check_uncontrolled"} />
+        <CheckboxInput {...model(store, "check")} />
+
+        <HStack mt={6}>
+          <Submit w={"100%"} />
+          <Button w={"100%"} variant={ButtonVariant.Text} onClick={() => (store.check = !store.check)}>
+            change controlled
+          </Button>
+        </HStack>
+      </Form>
+    </SubDemo>
+  )
+})
 
 export const SubDemo = ({ title, children }: { title: string; children: any }) => {
   return (

@@ -264,8 +264,12 @@ class Web3Store {
         return res.data.balance
     }
 
-    mintPuppers(pixel_amount: number) {
-        return this.pxContract!.mintPuppers(pixel_amount)
+    mintPuppers(pixel_amount: number, forcedGasLimit?: BigNumber) {
+        let overrides: any = {}
+        if (forcedGasLimit) {
+            overrides = {gasLimit: forcedGasLimit}
+        }
+        return this.pxContract!.mintPuppers(pixel_amount, overrides)
     }
 
     pupperToPixelCoords(pupper: number) {

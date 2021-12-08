@@ -18,7 +18,7 @@ export enum MintModalView {
 
 class MintPixelsModalStore extends Reactionable((Navigable(EmptyClass))) {
   @observable
-  pixel_count?: number = 1;
+  pixel_count? = 1;
 
   @observable
   allowance?: BigNumber
@@ -27,7 +27,10 @@ class MintPixelsModalStore extends Reactionable((Navigable(EmptyClass))) {
   allowanceToGrant: BigNumber = BigNumber.from(0)
 
   @observable
-  hasUserSignedTx: boolean = false
+  hasUserSignedTx = false
+
+  @observable
+  approveInfinite = false
 
   constructor() {
     super();
@@ -74,7 +77,14 @@ class MintPixelsModalStore extends Reactionable((Navigable(EmptyClass))) {
   async mintPixels(amount: number) {
     this.hasUserSignedTx = false
     try {
-      const tx = await AppStore.web3.mintPuppers(amount)
+      const estimatedGas = await AppStore.web3.pxContract?.estimateGas.mintPuppers(amount)
+      if (!estimatedGas) {
+        throw Error("Could not estimate gas")
+      }
+
+      const gasLimitSafetyOffset = 100000
+      const tx = await AppStore.web3.mintPuppers(amount, estimatedGas.add(gasLimitSafetyOffset))
+
       this.hasUserSignedTx = true
       showDebugToast(`minting ${this.pixel_count!} pixel`)
       await tx.wait()
@@ -96,6 +106,9 @@ class MintPixelsModalStore extends Reactionable((Navigable(EmptyClass))) {
   async approveDogSpend() {
     this.hasUserSignedTx = false
     try {
+      if (this.approveInfinite) {
+        this.allowanceToGrant = ethers.constants.MaxUint256
+      }
       const tx = await AppStore.web3.approvePxSpendDog(this.allowanceToGrant)
       this.hasUserSignedTx = true
       showDebugToast(`approving DOG spend: ${formatWithThousandsSeparators(ethers.utils.formatEther(this.allowanceToGrant))}`)

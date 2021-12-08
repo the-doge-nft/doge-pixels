@@ -70,7 +70,7 @@ const MemeModal = ({isOpen, onClose, type}: MemeModalProps) => {
     isOpen={isOpen}
     onClose={onClose}
   >
-    <Image src={getImageByType(type, index)}/>
+    <Image w={"full"} src={getImageByType(type, index)}/>
   </Modal>
 }
 
