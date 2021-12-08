@@ -58,15 +58,15 @@ const routes: AppRouteInterface[] = [
   },
 ];
 
-if (isDevModeEnabled()) {
-  routes.push({
-    path: "/dsl",
-    name: NamedRoutes.DSL,
-    exact: true,
-    layout: AppLayout,
-    component: DSLPage,
-    title: "DSL",
-  })
-}
+// if (isDevModeEnabled()) {
+//   routes.push({
+//     path: "/dsl",
+//     name: NamedRoutes.DSL,
+//     exact: true,
+//     layout: AppLayout,
+//     component: DSLPage,
+//     title: "DSL",
+//   })
+// }
 
 export default routes;
