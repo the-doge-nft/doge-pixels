@@ -209,7 +209,6 @@ const Nav = () => {
         exact: true,
         strict: false
       })
-      console.log("debug:: match", match)
       return (
         <Link key={route.path} to={path} isNav textDecoration={match ? "underline" : "none"}>
           {route.title}

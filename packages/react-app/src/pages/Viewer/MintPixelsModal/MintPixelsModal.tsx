@@ -7,12 +7,13 @@ import Button from "../../../DSL/Button/Button";
 import {Box, Flex} from "@chakra-ui/react";
 import Form from "../../../DSL/Form/Form";
 import {maxValue, minValue, required} from "../../../DSL/Form/validation";
-import AppStore from "../../../store/App.store";
 import Submit from "../../../DSL/Form/Submit";
 import BigInput from "../../../DSL/Form/BigInput";
 import Loading from "../../../DSL/Loading/Loading";
 import {formatWithThousandsSeparators} from "../../../helpers/numberFormatter";
-import { ethers } from "ethers";
+import {ethers} from "ethers";
+import CheckboxInput from "../../../DSL/Form/CheckboxInput/CheckboxInput";
+import model from "../../../DSL/Form/model";
 
 interface MintPixelsModalProps extends Pick<ModalProps, "isOpen" | "onClose"> {
   onSuccess?: () => void;
@@ -91,13 +92,25 @@ const MintForm = observer(({ store }: { store: MintPixelsModalStore }) => {
 const Approval = observer(({store}: {store: MintPixelsModalStore}) => {
   return (
     <Box>
-      <Typography display={"block"} variant={TVariant.PresStart30} my={6}>
-        {formatWithThousandsSeparators(ethers.utils.formatEther(store.allowanceToGrant))}
-      </Typography>
+      <Box my={6}>
+        {store.approveInfinite
+          ? <Flex justifyContent={"center"}>
+            <Typography display={"block"} variant={TVariant.PresStart45} lineHeight={"normal"}>
+              &infin;
+            </Typography>
+          </Flex>
+          : <Typography display={"block"} variant={TVariant.PresStart30}>
+            {formatWithThousandsSeparators(ethers.utils.formatEther(store.allowanceToGrant))}
+          </Typography>
+        }
+      </Box>
       <Typography block variant={TVariant.ComicSans18} mt={4}>
         Please approve $DOG to be spent for pixels.
       </Typography>
       <Form onSubmit={async () => store.pushNavigation(MintModalView.LoadingApproval)}>
+        <Box mt={5}>
+          <CheckboxInput {...model(store, "approveInfinite")} label={"Approve infinite"}/>
+        </Box>
         <Flex
           flexDirection={"column"}
           mt={14}

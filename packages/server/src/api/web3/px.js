@@ -23,7 +23,7 @@ function sortTokenIDsByAscendingTime(source) {
   */
   const copy = JSON.parse(JSON.stringify(source))
   for (const address in source) {
-    source[address].tokenIDs.reverse()
+    copy[address].tokenIDs.reverse()
   }
   return copy
 }
