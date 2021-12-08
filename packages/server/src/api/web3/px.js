@@ -16,13 +16,23 @@ function removeZeroAddress(source) {
   return copy
 }
 
+function sortTokenIDsByAscendingTime(source) {
+  /*
+    getLogs() returns logs from past -> present. reverse tokenIds in their
+    respective arrays so newest are at the front and oldest are at the end
+  */
+  const copy = JSON.parse(JSON.stringify(source))
+  for (const address in source) {
+    source[address].tokenIDs.reverse()
+  }
+  return copy
+}
+
 async function addRemoveAddresses(source, from, to, tokenID) {
   if (typeof source !== "object") {
     throw Error("source must be an object")
   }
   const copy = JSON.parse(JSON.stringify(source))
-  const isBurn = (to === ethers.constants.AddressZero)
-  const isMint = (from === ethers.constants.AddressZero)
 
   // remove from *from* index
   if (from in copy) {
@@ -42,6 +52,9 @@ async function addRemoveAddresses(source, from, to, tokenID) {
   } else {
     copy[to] = {tokenIDs: [tokenID]}
   }
+
+  const isBurn = (to === ethers.constants.AddressZero)
+  const isMint = (from === ethers.constants.AddressZero)
 
   if (isMint) {
     debugString = "🍵 mint: "
@@ -119,6 +132,7 @@ async function getAddressToOwnershipMap() {
 
   // remove burned pixels from ownership map for now
   addressToPuppers = removeZeroAddress(addressToPuppers)
+  addressToPuppers = sortTokenIDsByAscendingTime(addressToPuppers)
 
   await redisClient.set(redisClient.keys.ADDRESS_TO_TOKENID, JSON.stringify(addressToPuppers))
 }
