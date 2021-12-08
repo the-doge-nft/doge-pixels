@@ -50,7 +50,7 @@ function App() {
 
 const DevBanner = () => {
   return <>
-    {!isProduction() && <Box w={"100%"} bg={"black"} whiteSpace={"nowrap"} overflowX={"hidden"}>
+    {!isProduction() && <Box w={"100%"} bg={"black"} whiteSpace={"nowrap"} overflowX={"hidden"} position={"absolute"}>
         <motion.div
             animate={{ x: ["100%", "-100%"], display: "flex", alignItems: "center", padding: "3px 0px" }}
             transition={{ x: {duration: 60, repeat: Infinity, ease: "linear", repeatType: "loop"} }}

@@ -10,6 +10,12 @@ async function main() {
   listenToPXTransfers()
 }
 
+function removeZeroAddress(source) {
+  const copy = JSON.parse(JSON.stringify(source))
+  delete copy[ethers.constants.AddressZero]
+  return copy
+}
+
 async function addRemoveAddresses(source, from, to, tokenID) {
   if (typeof source !== "object") {
     throw Error("source must be an object")
@@ -110,6 +116,9 @@ async function getAddressToOwnershipMap() {
   if (env !== "test") {
     addressToPuppers = await applyENSName(addressToPuppers)
   }
+
+  // remove burned pixels from ownership map for now
+  addressToPuppers = removeZeroAddress(addressToPuppers)
 
   await redisClient.set(redisClient.keys.ADDRESS_TO_TOKENID, JSON.stringify(addressToPuppers))
 }

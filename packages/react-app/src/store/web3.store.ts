@@ -261,6 +261,11 @@ class Web3Store {
         return this.dogContract!.initMock([this.address!], this.DOG_TO_PIXEL_SATOSHIS.mul(freePixelsInDOG))
     }
 
+    async getDogLocked() {
+        const res = await Http.get("/v1/dog/locked")
+        return res.data.balance
+    }
+
     mintPuppers(pixel_amount: number) {
         return this.pxContract!.mintPuppers(pixel_amount)
     }

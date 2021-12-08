@@ -5,7 +5,6 @@ import { TextProps } from "@chakra-ui/layout/dist/types/text";
 export enum TVariant {
   PresStart10 = "PresStart10",
   PresStart12 = "PresStart12",
-  PresStart14 = "PresStart14",
   PresStart15 = "PresStart15",
   PresStart16 = "PresStart16",
   PresStart18 = "PresStart18",

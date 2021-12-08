@@ -1,8 +1,9 @@
 const express = require('express')
 const {redisClient} = require('../../../config/redis')
-const {PXContract, provider} = require("../../../config/ethers");
+const {PXContract, provider, DOGContract} = require("../../../config/ethers");
 const logger = require("../../../config/config");
 const {getAddressToOwnershipMap} = require("../../web3/px");
+const {ethers} = require("ethers");
 
 const router = express.Router()
 
@@ -96,7 +97,18 @@ router.get(
       const ens = await provider.lookupAddress(address)
       res.send({ens: ens})
     } catch (e) {
-      console.log(e)
+      next(e)
+    }
+  }
+)
+
+router.get(
+  '/dog/locked',
+  async (req, res, next) => {
+    try {
+      const balance = await DOGContract.balanceOf(PXContract.address)
+      res.send({balance: ethers.utils.formatEther(balance)})
+    } catch (e) {
       next(e)
     }
   }

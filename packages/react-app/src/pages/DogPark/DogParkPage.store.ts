@@ -18,6 +18,9 @@ class DogParkPageStore extends Reactionable(EmptyClass) {
   @observable
   selectedPupper: number | null = null
 
+  @observable
+  lockedDog: number | null = null
+
   constructor(selectedAddress?: string, selectedPupper?: number) {
     super()
     makeObservable(this)
@@ -38,6 +41,16 @@ class DogParkPageStore extends Reactionable(EmptyClass) {
         this.addressToSearch = ""
       }
     })
+  }
+
+  init() {
+    AppStore.web3.getDogLocked().then(balance => this.lockedDog = balance)
+    AppStore.web3.getPupperOwnershipMap()
+
+    if (AppStore.web3.web3Provider) {
+      AppStore.web3.refreshDogBalance()
+      AppStore.web3.refreshPupperBalance()
+    }
   }
 
   @computed

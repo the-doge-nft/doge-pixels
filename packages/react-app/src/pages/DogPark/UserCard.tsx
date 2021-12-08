@@ -9,12 +9,13 @@ import Icon from "../../DSL/Icon/Icon";
 
 const UserCard = ({store, dog}: {store: DogParkPageStore, dog: { address: string, puppers: number[], ens?: string} }) => {
   return <Flex
+    w={"full"}
     justifyContent={"space-between"}
     alignItems={"center"}
     key={`${dog.address}`}
     px={2}
-    py={3}
-    my={3}
+    py={2}
+    my={1}
     color={"black"}
     _hover={{
       cursor: "pointer",
@@ -29,7 +30,7 @@ const UserCard = ({store, dog}: {store: DogParkPageStore, dog: { address: string
     <Flex alignItems={"center"}>
       <Icon icon={'person'} display={"inline-block"}/>
       <Typography
-        variant={TVariant.PresStart14}
+        variant={TVariant.PresStart15}
         ml={4}
         block
       >

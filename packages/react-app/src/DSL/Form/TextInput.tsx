@@ -1,11 +1,14 @@
 import Control from "./Control";
-import { FormErrorMessage } from "@chakra-ui/react";
+import { FormErrorMessage, InputGroup, InputRightElement } from "@chakra-ui/react";
 import React, { useEffect } from "react";
 import { AllowedStyleProps, BaseInputProps } from "./interfaces";
 import { Input } from "./Input/Input";
 import { useControlledFormField, useFormField } from "./useFormField";
+import Icon from "../Icon/Icon";
 
-interface TextInputProps extends BaseInputProps, AllowedStyleProps {}
+interface TextInputProps extends BaseInputProps, AllowedStyleProps {
+  rightIcon?: any
+}
 
 const TextInput = ({
   name,
@@ -16,29 +19,36 @@ const TextInput = ({
   value,
   onChange,
   horizontal = false,
+  rightIcon,
   ...rest
 }: TextInputProps) => {
   const { isRequired, inputValue, inputOnChange, restInput, meta } = useFormField(validate, name, initialValue);
   useControlledFormField(inputOnChange, value);
 
+  const rightIconWidth = "60px"
+
   return (
     <Control name={name} isRequired={isRequired} label={label} horizontal={horizontal}>
-      <Input
-        id={name}
-        placeholder={placeholder}
-        {...restInput}
-        {...rest}
-        onChange={e => {
-          // TODO: below input change could be put in else only to trigger if onChange not passed
-          // forcing the above useEffect to be present
-          const value = e.target.value;
-          if (onChange) {
-            onChange(value);
-          }
-          inputOnChange(value);
-        }}
-        value={inputValue}
-      />
+      <InputGroup>
+        <Input
+          id={name}
+          placeholder={placeholder}
+          {...restInput}
+          {...rest}
+          onChange={e => {
+            // TODO: below input change could be put in else only to trigger if onChange not passed
+            // forcing the above useEffect to be present
+            const value = e.target.value;
+            if (onChange) {
+              onChange(value);
+            }
+            inputOnChange(value);
+          }}
+          value={inputValue}
+          pr={rightIcon ? rightIconWidth : "inherit"}
+        />
+        {rightIcon && <InputRightElement top={"50%"} transform={"translateY(-50%)"} width={rightIconWidth} children={<Icon icon={rightIcon}/>}/>}
+      </InputGroup>
       <FormErrorMessage>{meta.error}</FormErrorMessage>
     </Control>
   );
