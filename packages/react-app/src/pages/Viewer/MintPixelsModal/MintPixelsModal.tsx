@@ -14,6 +14,9 @@ import {formatWithThousandsSeparators} from "../../../helpers/numberFormatter";
 import {ethers} from "ethers";
 import CheckboxInput from "../../../DSL/Form/CheckboxInput/CheckboxInput";
 import model from "../../../DSL/Form/model";
+import Link from "../../../DSL/Link/Link";
+import {abbreviate} from "../../../helpers/strings";
+import { getEtherscanURL } from "../../../helpers/links";
 
 interface MintPixelsModalProps extends Pick<ModalProps, "isOpen" | "onClose"> {
   onSuccess?: () => void;
@@ -47,7 +50,7 @@ const MintPixelsModal = observer(({ isOpen, onClose, onSuccess, goToPixels }: Mi
       {store.currentView === MintModalView.Approval && <Approval store={store}/>}
       {store.currentView === MintModalView.LoadingApproval && <LoadingApproval store={store}/>}
       {store.currentView === MintModalView.LoadingPixels && <LoadingPixels store={store}/>}
-      {store.currentView === MintModalView.Complete && <Complete onSuccess={goToPixels}/>}
+      {store.currentView === MintModalView.Complete && <Complete onSuccess={goToPixels} txHash={store.txHash}/>}
     </Modal>
   );
 });
@@ -154,7 +157,7 @@ const LoadingPixels = observer(({store}: {store: MintPixelsModalStore}) => {
   );
 });
 
-const Complete = observer(({onSuccess}: {onSuccess: () => void}) => {
+const Complete = observer(({onSuccess, txHash}: {onSuccess: () => void, txHash: string | null}) => {
   return <Box pt={10} pb={4}>
       <Typography variant={TVariant.PresStart28} textAlign={"center"} block>
         Pixels Minted
@@ -162,6 +165,9 @@ const Complete = observer(({onSuccess}: {onSuccess: () => void}) => {
       <Typography variant={TVariant.PresStart28} textAlign={"center"} mt={4} block>
         🌟🦄💫🐸🐕🚀
       </Typography>
+      <Flex justifyContent={"center"}>
+        {txHash && <Link href={getEtherscanURL(txHash, "tx")} isExternal>{abbreviate(txHash)}</Link>}
+      </Flex>
       <Flex justifyContent={"center"} mt={12}>
         <Button onClick={() => onSuccess()}>Go to pixels</Button>
       </Flex>

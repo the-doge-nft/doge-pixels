@@ -66,7 +66,7 @@ const IndexPane = observer(function IndexPane({store}: {store: ViewerStore}) {
               <Link
                 size={"lg"}
                 variant={Type.ComicSans}
-                href={getEtherscanURL(AppStore.web3.dogContractAddress)}
+                href={getEtherscanURL(AppStore.web3.dogContractAddress, "address")}
                 isExternal
                 fontWeight={"bold"}
               >
