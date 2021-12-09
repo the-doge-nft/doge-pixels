@@ -1,7 +1,5 @@
 import { Global } from "@emotion/react";
-//@ts-ignore
 import ComicSans from "./ComicSansMS.woff2";
-//@ts-ignore
 import PressStart from "./PressStart2P-Regular.ttf";
 import React from "react";
 
