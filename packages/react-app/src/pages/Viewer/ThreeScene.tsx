@@ -20,7 +20,7 @@ interface ThreeSceneProps {
 }
 
 export enum CameraPositionZ {
-  far = 5500,
+  far = 5200,
   medium = 300,
   close = 80
 }
