@@ -11,6 +11,8 @@ let pxContractInfo
 let dogContractInfo
 let network
 let provider
+let PXContract
+let DOGContract
 
 
 if (env === "production") {
@@ -38,6 +40,10 @@ const startProviderListener = () => {
     //   projectSecret: vars.infura_secret_id
     // })
   }
+
+  PXContract = new ethers.Contract(pxContractInfo["address"], pxContractInfo["abi"], provider)
+  DOGContract = new ethers.Contract(dogContractInfo["address"], dogContractInfo["abi"], provider)
+
   keepAlive({
     provider,
     onDisconnect: (err) => {
@@ -50,8 +56,5 @@ const startProviderListener = () => {
 }
 
 startProviderListener()
-
-const PXContract = new ethers.Contract(pxContractInfo["address"], pxContractInfo["abi"], provider)
-const DOGContract = new ethers.Contract(dogContractInfo["address"], dogContractInfo["abi"], provider)
 
 module.exports = {provider, PXContract, DOGContract}

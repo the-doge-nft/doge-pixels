@@ -32,6 +32,9 @@ class MintPixelsModalStore extends Reactionable((Navigable(EmptyClass))) {
   @observable
   approveInfinite = false
 
+  @observable
+  txHash: string | null = null
+
   constructor() {
     super();
     makeObservable(this);
@@ -87,7 +90,8 @@ class MintPixelsModalStore extends Reactionable((Navigable(EmptyClass))) {
 
       this.hasUserSignedTx = true
       showDebugToast(`minting ${this.pixel_count!} pixel`)
-      await tx.wait()
+      const receipt = await tx.wait()
+      this.txHash = receipt.transactionHash
       this.pushNavigation(MintModalView.Complete)
       AppStore.web3.refreshPupperBalance()
       AppStore.web3.refreshDogBalance()
