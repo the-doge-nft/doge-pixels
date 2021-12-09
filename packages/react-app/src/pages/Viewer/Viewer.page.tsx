@@ -87,6 +87,7 @@ const ViewerPage = observer(function ViewerPage() {
         onClose={() => store.isMintModalOpen = false}
         onSuccess={() => store.isMintMemeModalOpen = true}
         goToPixels={() => {
+          AppStore.web3.refreshPupperOwnershipMap()
           store.isMintModalOpen = false
           store.isMintMemeModalOpen = false
           if (store.currentView !== ViewerView.Manage) {

@@ -164,6 +164,9 @@ export default function panzoom(camera, owner, toKeepInBounds, minDepth, maxDept
   function smoothZoom(x, y, scale) {
     var from = { delta: scale }
     var to = { delta: scale * 2 }
+
+    console.log("debug:: from - to", from ,to)
+
     if (smoothZoomAnimation) {
       smoothZoomAnimation.cancel();
     }
@@ -371,15 +374,51 @@ export default function panzoom(camera, owner, toKeepInBounds, minDepth, maxDept
       return
     }
 
+    const [x1, x2, y1, y2] = getVisibleCoordinates(toKeepInBounds.position.z)
+
     zoomPayload.dz = newZ - camera.position.z
     zoomPayload.dx = -(scaleMultiplier - 1) * dx
     zoomPayload.dy = (scaleMultiplier - 1) * dy
 
+
+    const futureX1 = x1 + zoomPayload.dx
+    const futureX2 = x2 + zoomPayload.dx
+    const futureY1 = y1 + zoomPayload.dy
+    const futureY2 = y2 + zoomPayload.dy
+    const isZoomingOut = zoomPayload.dz > 0
+
+
+    if ((futureX1) < api.xLowerBound) {
+      if (isZoomingOut) {
+        zoomPayload.dx += Math.abs(zoomPayload.dz / 10)
+      }
+      // console.log("debug:: we want to push right")
+    }
+
+    if ((futureX2) > api.xUpperBound) {
+      if (isZoomingOut) {
+        zoomPayload.dx -= Math.abs(zoomPayload.dz / 10)
+      }
+      // console.log("debug:: we want to push left")
+    }
+
+    if ((futureY1) < api.yLowerBound) {
+      if (isZoomingOut) {
+        zoomPayload.dy += Math.abs(zoomPayload.dz / 10)
+      }
+    }
+
+    if ((futureY2) > api.yUpperBound) {
+      if (isZoomingOut) {
+        zoomPayload.dy -= Math.abs(zoomPayload.dz / 10)
+      }
+    }
+
     api.fire('beforezoom', zoomPayload)
 
     camera.position.z += zoomPayload.dz
-    camera.position.x -= (scaleMultiplier - 1) * dx
-    camera.position.y += (scaleMultiplier - 1) * dy
+    camera.position.x += zoomPayload.dx
+    camera.position.y += zoomPayload.dy
 
     api.fire('change')
   }
@@ -415,10 +454,10 @@ export default function panzoom(camera, owner, toKeepInBounds, minDepth, maxDept
 
   function getCurrentScale() {
     // TODO: This is the only code that depends on camera. Extract?
+    // vertical field of view in radians
     var vFOV = camera.fov * Math.PI / 180
     var height = 2 * Math.tan( vFOV / 2 ) * camera.position.z
     var currentScale = owner.clientHeight / height
-
     return currentScale
   }
 
