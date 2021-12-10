@@ -29,7 +29,6 @@ const ColorBox = ({ name, hex }: { name: string; hex: string }) => {
 
 const DemoColors = () => {
   const theme = useTheme();
-  console.log("debug:: theme", theme.colors);
   return (
     <Demo title={"Colors"}>
       <Flex wrap={"wrap"}>

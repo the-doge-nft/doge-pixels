@@ -66,7 +66,6 @@ const Modal = ({
     <ReactModal
       onRequestClose={onClose}
       isOpen={isOpen}
-      //@ts-ignore
       style={styleOverrides}
       {...rest}
     >

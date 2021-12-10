@@ -121,11 +121,9 @@ class Web3Store {
     async disconnect() {
         try {
             await web3Modal.clearCachedProvider()
-            //@ts-ignore
-            if (this.provider.disconnect && typeof this.provider.disconnect === "function") {
-                //@ts-ignore
-                await this.provider.disconnect()
-            }
+            // if (this.provider.disconnect && typeof this.provider.disconnect === "function") {
+            //     await this.provider.disconnect()
+            // }
             showDebugToast(`disconnecting: ${this.address}`)
 
             this.address = null

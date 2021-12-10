@@ -42,8 +42,7 @@ const ThreeScene =({onPixelSelect, store}: ThreeSceneProps) => {
   const canvasContainerRef = useRef<HTMLDivElement | null>(null)
   const dogeMeshRef = useRef<Object3D | null>(null)
   const selectedPixelOverlayRef = useRef<Object3D>(null);
-  const hoverPixelOverlayRef = useRef<Object3D>(null);
-  const newHoverOverlayRef = useRef<Object3D>(null);
+  const hoverOverlayRef = useRef<Object3D>(null);
   const tooltipRef = useRef<HTMLDivElement | null>(null);
 
   //@TODO: CC connect type
@@ -133,7 +132,12 @@ const ThreeScene =({onPixelSelect, store}: ThreeSceneProps) => {
   }, [])
 
   return (
-    <Box ref={canvasContainerOnMount} position={"absolute"} w={"100%"} h={"100%"}>
+    <Box ref={canvasContainerOnMount}
+         w={"100%"}
+         h={"100%"}
+         position={"absolute"}
+         zIndex={2}
+    >
       <Canvas
         camera={camera}
         onCreated={({gl}) => {
@@ -177,22 +181,26 @@ const ThreeScene =({onPixelSelect, store}: ThreeSceneProps) => {
           ref={dogeMeshRef}
           position={[(imageWorldUnitsWidth / 2) - 1, -1 * imageWorldUnitsHeight / 2, 0]}
           onPointerMove={e => {
-            if (hoverPixelOverlayRef.current) {
-              [hoverPixelOverlayRef.current.position.x, hoverPixelOverlayRef.current.position.y] =
-                getWorldPixelCoordinate(e.point, overlayLength);
-            }
-
-            if (newHoverOverlayRef.current) {
-              [newHoverOverlayRef.current.position.x, newHoverOverlayRef.current.position.y] =
+            if (hoverOverlayRef.current) {
+              [hoverOverlayRef.current.position.x, hoverOverlayRef.current.position.y] =
                 getWorldPixelCoordinate(e.point, overlayLength);
             }
 
             if (tooltipRef.current) {
-              const {clientX, clientY} = e
-              const x = clientX - 15
-              const y = clientY - 70
+              const {pageX, pageY} = e
+              const box = tooltipRef.current?.getBoundingClientRect()
+              const canvas = e.srcElement as HTMLCanvasElement
+              const {left: canvasLeft, top: canvasTop} = canvas.getBoundingClientRect()
+              const tooltipOffset = 45
+
+              const x = pageX - canvasLeft + tooltipOffset
               tooltipRef.current.style.left = x+"px"
-              tooltipRef.current.style.top = y+"px"
+
+              const y = pageY - canvasTop + tooltipOffset
+              const futureY = y + box.height
+              if ((futureY) < window.innerHeight - canvasTop) {
+                tooltipRef.current.style.top = y+"px"
+              }
 
               // BEWARE: below dom manipulations are heavily dependent upon the structure of <PixelPane/>
               const firstChild = tooltipRef.current?.children[0]
@@ -229,7 +237,7 @@ const ThreeScene =({onPixelSelect, store}: ThreeSceneProps) => {
           <meshBasicMaterial attach={"material"} color={0xff0000} opacity={0.8} transparent={true} depthTest={false}/>
         </mesh>
 
-        <group ref={newHoverOverlayRef}>
+        <group ref={hoverOverlayRef}>
           <mesh position={[-0.5, 0, 0.001]}>
             <planeGeometry attach={"geometry"} args={[0.05, 1.05]}/>
             <meshBasicMaterial attach={"material"} color={0xf1c232} opacity={1} transparent={true} depthTest={false}/>
@@ -248,7 +256,7 @@ const ThreeScene =({onPixelSelect, store}: ThreeSceneProps) => {
           </mesh>
         </group>
       </Canvas>
-      <Box ref={tooltipRef} position={"absolute"} left={5} top={0} zIndex={100} display={"none"}>
+      <Box ref={tooltipRef} position={"absolute"} zIndex={2} display={"none"} pointerEvents={"none"}>
         <PixelPane size={"md"} pupper={0} color={"fff"} pupperIndex={0}/>
       </Box>
       <Box position={"absolute"} bottom={0} left={0}>

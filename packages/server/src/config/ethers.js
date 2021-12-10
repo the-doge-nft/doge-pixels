@@ -11,6 +11,8 @@ let pxContractInfo
 let dogContractInfo
 let network
 let provider
+let PXContract
+let DOGContract
 
 
 if (env === "production") {
@@ -32,26 +34,27 @@ const startProviderListener = () => {
   if (env === "test") {
     provider = new ethers.providers.WebSocketProvider(`ws://127.0.0.1:8545`);
   } else {
-    provider = new ethers.providers.WebSocketProvider(vars.infura_ws_endpoint, network);
-    // provider = new ethers.providers.InfuraProvider(network=network, apiKey={
-    //   projectId: vars.infura_project_id,
-    //   projectSecret: vars.infura_secret_id
-    // })
+    // provider = new ethers.providers.WebSocketProvider(vars.infura_ws_endpoint, network);
+    provider = new ethers.providers.InfuraProvider(network=network, apiKey={
+      projectId: vars.infura_project_id,
+      projectSecret: vars.infura_secret_id
+    })
   }
-  keepAlive({
-    provider,
-    onDisconnect: (err) => {
-      const debugString = `The ws connection was closed: ${JSON.stringify(err, null, 2)}`
-      logger.error(debugString);
-      Sentry.captureMessage(debugString)
-      startProviderListener()
-    }
-  })
+
+  PXContract = new ethers.Contract(pxContractInfo["address"], pxContractInfo["abi"], provider)
+  DOGContract = new ethers.Contract(dogContractInfo["address"], dogContractInfo["abi"], provider)
+
+  // keepAlive({
+  //   provider,
+  //   onDisconnect: (err) => {
+  //     const debugString = `The ws connection was closed: ${JSON.stringify(err, null, 2)}`
+  //     logger.error(debugString);
+  //     Sentry.captureMessage(debugString)
+  //     startProviderListener()
+  //   }
+  // })
 }
 
 startProviderListener()
-
-const PXContract = new ethers.Contract(pxContractInfo["address"], pxContractInfo["abi"], provider)
-const DOGContract = new ethers.Contract(dogContractInfo["address"], dogContractInfo["abi"], provider)
 
 module.exports = {provider, PXContract, DOGContract}
