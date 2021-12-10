@@ -44,15 +44,15 @@ const startProviderListener = () => {
   PXContract = new ethers.Contract(pxContractInfo["address"], pxContractInfo["abi"], provider)
   DOGContract = new ethers.Contract(dogContractInfo["address"], dogContractInfo["abi"], provider)
 
-  keepAlive({
-    provider,
-    onDisconnect: (err) => {
-      const debugString = `The ws connection was closed: ${JSON.stringify(err, null, 2)}`
-      logger.error(debugString);
-      Sentry.captureMessage(debugString)
-      startProviderListener()
-    }
-  })
+  // keepAlive({
+  //   provider,
+  //   onDisconnect: (err) => {
+  //     const debugString = `The ws connection was closed: ${JSON.stringify(err, null, 2)}`
+  //     logger.error(debugString);
+  //     Sentry.captureMessage(debugString)
+  //     startProviderListener()
+  //   }
+  // })
 }
 
 startProviderListener()
