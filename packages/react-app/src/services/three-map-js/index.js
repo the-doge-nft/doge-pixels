@@ -151,6 +151,7 @@ export default function panzoom(camera, owner, toKeepInBounds, minDepth, maxDept
     }
 
     var from = { x: x, y: y }
+    var to = { x: x, y: y }
     var to = { x: 2 * x, y: 2 * y }
     smoothPanAnimation = animate(from, to, {
       easing: 'linear',
@@ -301,7 +302,8 @@ export default function panzoom(camera, owner, toKeepInBounds, minDepth, maxDept
     if (!panstartFired) {
       api.fire('panstart')
       panstartFired = true
-      smoothScroll.start()
+      // @TODO: if we want momentum based movement uncomment the below
+      // smoothScroll.start()
     }
   }
 

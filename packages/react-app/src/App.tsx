@@ -10,7 +10,6 @@ import AppStore from "./store/App.store";
 AppStore.init()
 
 function App() {
-  console.log("debug:: app mount");
   return (
     <>
     <DevBanner/>

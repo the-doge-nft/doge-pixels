@@ -1,5 +1,5 @@
 import {Box, Image, useColorMode, useMultiStyleConfig} from "@chakra-ui/react";
-import { AnimatePresence, motion } from "framer-motion";
+import {AnimatePresence, AnimationControls, motion, MotionStyle} from "framer-motion";
 import React, { useEffect, useState } from "react";
 import LightDog from "../../images/lightDog.png";
 import DarkDog from "../../images/darkDog.png"
@@ -15,30 +15,25 @@ interface ColorModeToggleProps {
 const ColorModeToggle = (props: ColorModeToggleProps) => {
   const styles = useMultiStyleConfig("ColorModeToggle", {})
   const { colorMode, toggleColorMode } = useColorMode()
-
   const [isDogeVisible, setIsDogeVisible] = useState(false)
 
-  //@ts-ignore
-  useEffect(async () => {
-    if (colorMode === "light") {
-      // alert("update to light theme")
-      await web3Modal.updateTheme(web3ModalLightTheme);
-    } else {
-      // alert("update to dark theme")
-      await web3Modal.updateTheme(web3ModalDarkTheme)
-    }
-  }, [colorMode])
+  // @TODO: this doesn't work :(
+  // useEffect(() => {
+  //   if (colorMode === "light") {
+  //     web3Modal.updateTheme(web3ModalLightTheme);
+  //   } else {
+  //     web3Modal.updateTheme(web3ModalDarkTheme)
+  //   }
+  // }, [colorMode])
 
   useEffect(() => {
-    const favicon = document.querySelector('link[rel="icon"]')
+    const favicon = document.querySelector<HTMLAnchorElement>('link[rel="icon"]')
 
     if (favicon) {
       if (colorMode === "dark") {
-        //@ts-ignore
-        favicon.href! = DarkFavicon
+        favicon.href = DarkFavicon
       } else {
-        //@ts-ignore
-        favicon.href! = LightFavicon
+        favicon.href = LightFavicon
       }
     }
   }, [colorMode])
@@ -50,11 +45,9 @@ const ColorModeToggle = (props: ColorModeToggleProps) => {
     onMouseLeave={() => setIsDogeVisible(false)}
   >
     <motion.div
-      //@ts-ignore
-      style={styles.handle}
-      //@ts-ignore
+      style={styles.handle as MotionStyle}
       animate={{
-        left: styles.handle.left
+        left: styles.handle.left as any
       }}
     >
       <AnimatePresence>

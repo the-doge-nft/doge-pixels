@@ -145,15 +145,15 @@ class ViewerStore extends Navigable(Eventable(Reactionable((EmptyClass)))) {
   // @TODO selecting PixelPane in ManagePane.tsx & SelectedPixelPane.tsx should call
   // similar functions from this store
   async onManagePixelClick(pupper: number) {
+    this.pushNavigation(ViewerView.Selected)
+    this.selectedPupper = pupper
+    this.setPupperSeen(pupper)
     const [x, y] = await AppStore.web3.pupperToPixelCoords(pupper)
     const [x1, y1] = AppStore.web3.pupperToPixelCoordsLocal(pupper)
     if (x.toNumber() !== x1 || y.toNumber() !== y1) {
       throw Error(`X,Y from contract and local do not agree. Local: ${x1} ${y1}. Remote: ${x} ${y}`)
     }
-    this.selectedPupper = pupper
-    this.setPupperSeen(pupper)
     this.publish(SET_CAMERA, [x1, y1, CameraPositionZ.medium])
-    this.pushNavigation(ViewerView.Selected)
   }
 
   @computed
