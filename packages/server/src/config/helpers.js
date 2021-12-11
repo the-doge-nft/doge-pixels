@@ -1,17 +1,18 @@
 const logger = require("./config");
+const Sentry = require("@sentry/node");
 const keepAlive = ({
-                     provider,
-                     onDisconnect,
-                     expectedPongBack = 15000,
-                     checkInterval = 7500,
-                   }) => {
+     provider,
+     onDisconnect,
+     expectedPongBack = 15000,
+     checkInterval = 7500,
+   }) => {
   let pingTimeout;
   let keepAliveInterval;
 
   provider._websocket.on('open', () => {
     keepAliveInterval = setInterval(() => {
-      provider._websocket.ping();
       logger.info("WS PING")
+      provider._websocket.ping();
 
       // Use `WebSocket#terminate()`, which immediately destroys the connection,
       // instead of `WebSocket#close()`, which waits for the close timer.
@@ -19,12 +20,15 @@ const keepAlive = ({
       // sends out pings plus a conservative assumption of the latency.
       pingTimeout = setTimeout(() => {
         provider._websocket.terminate();
+        Sentry.captureMessage("Terminating WS")
       }, expectedPongBack);
     }, checkInterval);
   });
 
   provider._websocket.on('close', (err) => {
-    logger.info("WS DISCONNECTING")
+    const debugString = "WS close detected"
+    logger.info(debugString)
+    Sentry.captureMessage(debugString)
     if (keepAliveInterval) {
       clearInterval(keepAliveInterval);
     }

@@ -1,5 +1,5 @@
 const ethers = require("ethers")
-const { provider, PXContract } = require("../../config/ethers")
+const { EthersClient } = require("../../config/ethers")
 const {redisClient} = require("../../config/redis")
 const logger = require("../../config/config");
 const {env} = require("../../config/vars");
@@ -79,7 +79,7 @@ async function applyENSName(source) {
     if (source.hasOwnProperty(address)) {
       const cachedENS = await redisClient.hGet(redisClient.keys.ENS_LOOKUP, address)
       if (cachedENS == null) {
-        const lookupENS = await provider.lookupAddress(address);
+        const lookupENS = await EthersClient.provider.lookupAddress(address);
         if (lookupENS) {
           await redisClient.hSet(redisClient.keys.ENS_LOOKUP, address, lookupENS)
           copy[address].ens = lookupENS
@@ -100,8 +100,8 @@ function listenToPXTransfers() {
     ⚠️ NOTE: do not depend on this listener - it randomly does not fire on some Transfer events. We persist
              it here to *hopefull* pick up any transfers happening external to our UI
    */
-  logger.info(`Listening to PX contract: ${PXContract.address} 👂`)
-  PXContract.on('Transfer(address,address,uint256)', async (from, to, _tokenID) => {
+  logger.info(`Listening to PX contract: ${EthersClient.PXContract.address} 👂`)
+  EthersClient.PXContract.on('Transfer(address,address,uint256)', async (from, to, _tokenID) => {
     logger.info("PX transfer detected - rebuilding address to token ID map")
     getAddressToOwnershipMap()
   })
@@ -117,8 +117,8 @@ async function getAddressToOwnershipMap() {
   await redisClient.del(redisClient.keys.ENS_LOOKUP)
 
   let addressToPuppers = {}
-  const filter = PXContract.filters.Transfer(null, null)
-  const logs = await PXContract.queryFilter(filter)
+  const filter = EthersClient.PXContract.filters.Transfer(null, null)
+  const logs = await EthersClient.PXContract.queryFilter(filter)
 
   for (const tx of logs) {
     const {from, to} = tx.args
