@@ -5,7 +5,7 @@ import {Canvas, useLoader} from "@react-three/fiber";
 import Kobosu from "../../images/THE_ACTUAL_NFT_IMAGE.png";
 import KobosuJson from "../../images/kobosu.json"
 import {Box} from "@chakra-ui/react";
-import {getWorldPixelCoordinate} from "./helpers";
+import {getVisibleCoordinates, getWorldPixelCoordinate} from "./helpers";
 import {onPixelSelectType} from "./Viewer.page";
 import ViewerStore from "./Viewer.store";
 import {SET_CAMERA} from "../../services/mixins/eventable";
@@ -147,11 +147,21 @@ const ThreeScene =({onPixelSelect, store}: ThreeSceneProps) => {
             camera.aspect = width / height;
             gl.setSize(width, height);
             camera.updateProjectionMatrix();
+
+            // if (dogeMeshRef.current) {
+              const [x1, x2, y1, y2] = getVisibleCoordinates(camera, dogeMeshRef.current!.position.z)
+              console.log("debug:: bounds", x1, x2, y1, y2)
+
+            if (x1 <= 0 || x2 >= 640) {
+              console.log("debug:: zooming")
+              camera.position.z -= 50
+            }
+            // }
+
           })
           gl.toneMapping = THREE.NoToneMapping;
 
           if (dogeMeshRef.current) {
-            //@TODO: CC add type declaration
             panZoom = createPanZoom(
               camera,
               gl.domElement.parentElement,

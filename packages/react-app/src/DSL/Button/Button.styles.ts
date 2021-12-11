@@ -14,6 +14,7 @@ const ButtonStyle = {
       borderRadius: "0px",
       borderStyle: "solid",
       boxShadow: "8px 8px 0px 0px",
+      minWidth: "fit-content",
       _hover: {
         bg: "yellow.700",
         _disabled: {
@@ -32,6 +33,7 @@ const ButtonStyle = {
       },
     }),
     text: ({ colorMode }: { colorMode: colorModeType }) => ({
+      minWidth: "fit-content",
       borderRadius: "0px",
       border: "none",
       bg: "none",

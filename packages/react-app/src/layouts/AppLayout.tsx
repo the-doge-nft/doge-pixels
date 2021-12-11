@@ -83,11 +83,22 @@ const AppLayout = observer(function AppLayout({children}: AppLayoutProps) {
 
   return (
     <Flex w={"100vw"} h={"100vh"} p={{base:0, md: 8}} flexDirection={"column"}>
-      <Flex mb={10} justifyContent={"space-between"} alignItems={"center"} display={{base: "none", md: "flex"}}>
-        <Flex alignItems={"center"} mb={2}>
-          <Title/>
-        </Flex>
-        <Flex alignItems={"center"}>
+      <Grid
+        templateColumns={{base: "1fr", lg: "0.5fr 1.5fr", xl: "1fr 1fr"}}
+        templateRows={"1fr"}
+        mb={10}
+        display={{base: "none", md: "grid"}}
+      >
+        <GridItem w={"full"}>
+          <Flex alignItems={"center"} mb={2}>
+            <Title/>
+          </Flex>
+        </GridItem>
+        <GridItem
+          display={{base: "none", lg: "flex"}}
+          alignItems={"center"}
+          justifyContent={"flex-end"} w={"full"}
+        >
           <Nav/>
           <Box ml={10} mr={6}>
             <ColorModeToggle/>
@@ -99,34 +110,29 @@ const AppLayout = observer(function AppLayout({children}: AppLayoutProps) {
           </Button>}
           <VStack>
             {AppStore.web3.address && AppStore.web3.web3Provider &&
-                <Menu>
-                  <MenuButton overFlow={"hidden"}>
-                      <Flex alignItems={"center"} overflow={"hidden"}>
-                          <Typography variant={TVariant.PresStart15}>
-                            {AppStore.web3.addressForDisplay}
-                          </Typography>
-                          <Icon
-                              boxSize={6}
-                              ml={2}
-                              icon={'person'}
-                          />
-                      </Flex>
-                  </MenuButton>
-                  <MenuList maxWidth={"fit-content"}>
+            <Menu>
+                <MenuButton overFlow={"hidden"}>
+                    <Flex alignItems={"center"} overflow={"hidden"}>
+                        <Typography variant={TVariant.PresStart15}>
+                          {AppStore.web3.addressForDisplay}
+                        </Typography>
+                        <Icon
+                            boxSize={6}
+                            ml={2}
+                            icon={'person'}
+                        />
+                    </Flex>
+                </MenuButton>
+                <MenuList maxWidth={"fit-content"}>
                     <Balances/>
-                    {/*<MenuItem onClick={() => {*/}
-                    {/*  */}
-                    {/*}}>*/}
-                    {/*      <Typography variant={TVariant.PresStart12}>My Pixels</Typography>*/}
-                    {/*</MenuItem>*/}
                     <MenuItem onClick={() => AppStore.web3.disconnect()}>
-                      <Typography variant={TVariant.PresStart15}>Disconnect {'>'}</Typography>
+                        <Typography variant={TVariant.PresStart15}>Disconnect {'>'}</Typography>
                     </MenuItem>
-                  </MenuList>
-                </Menu>}
+                </MenuList>
+            </Menu>}
           </VStack>
-        </Flex>
-      </Flex>
+        </GridItem>
+      </Grid>
       {children}
     </Flex>
   );
@@ -223,7 +229,9 @@ const Title = () => {
   const history = useHistory()
   const {colorMode} = useColorMode()
   const [rotation, setRotation] = useState(0)
-  return <Flex alignItems={"center"}>
+  return <Flex
+    alignItems={"center"}
+  >
     <Typography
       display={"inline-block"}
       variant={TVariant.PresStart28}
@@ -245,13 +253,20 @@ const Title = () => {
         history.push(route(NamedRoutes.VIEWER))
       }}
     >
-      PUPPER PIXEL PORTAL
-    </Typography>
-    <Box mb={2} ml={3} display={"inline-block"}>
-      <motion.div animate={{ rotate: rotation, transition: {duration: 0.22} }}>
+      PUPPER PIXEL PORTAL<Box ml={1} display={"inline-block"} textShadow={"none"}>
+      <motion.div animate={{
+        display: "inline-block",
+        position: "relative",
+        left: "2px",
+        bottom: "1px",
+        textShadow: "none",
+        rotate: rotation,
+        transition: {duration: 0.22}
+      }}>
         <Typography variant={TVariant.PresStart28}>🐕</Typography>
       </motion.div>
     </Box>
+    </Typography>
   </Flex>
 }
 
