@@ -5,7 +5,7 @@ const {ethers, upgrades} = require("hardhat");
 const testABI = require("./contracts/hardhat_contracts.json")
 const {BigNumber} = require("ethers");
 const {main: pxMain} = require("../src/api/web3/px");
-const {PXContract, provider} = require("../src/config/ethers");
+const {EthersClient} = require("../src/config/ethers");
 
 const request = supertest(app)
 jest.setTimeout(10 * 1000)
@@ -17,7 +17,7 @@ beforeAll(() => {
 
 afterAll(() => {
   redisClient.client.disconnect()
-  provider._websocket.terminate()
+  EthersClient.provider._websocket.terminate()
 })
 
 it('Returns the kobosu width and height', async () => {

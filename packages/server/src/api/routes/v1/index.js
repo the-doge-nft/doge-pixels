@@ -1,6 +1,6 @@
 const express = require('express')
 const {redisClient} = require('../../../config/redis')
-const {PXContract, provider, DOGContract} = require("../../../config/ethers");
+const {PXContract, provider, DOGContract, getProvider, getDOGContract, EthersClient} = require("../../../config/ethers");
 const logger = require("../../../config/config");
 const {getAddressToOwnershipMap} = require("../../web3/px");
 const {ethers} = require("ethers");
@@ -9,7 +9,7 @@ const router = express.Router()
 
 router.get(
   '/status',
-  (req, res) => res.send('u did it')
+  (req, res) => res.send('A-OKAY')
 )
 
 router.get(
@@ -36,8 +36,8 @@ router.get(
     if (cache) {
       res.send(JSON.parse(cache))
     } else {
-      const width = await PXContract.SHIBA_WIDTH()
-      const height = await PXContract.SHIBA_HEIGHT()
+      const width = await EthersClient.PXContract.SHIBA_WIDTH()
+      const height = await EthersClient.PXContract.SHIBA_HEIGHT()
       const data = {width: width.toNumber(), height: height.toNumber()}
       redisClient.set(redisClient.keys.SHIBA_DIMENSIONS, JSON.stringify(data))
       res.send(data)
@@ -51,7 +51,7 @@ router.get(
     //@TODO: check if ETH address is valid
     //@TODO: could pull balance from keys.ADDRESS_TO_TOKENID
     const { address } = req.params
-    const balance = await PXContract.balanceOf(address)
+    const balance = await EthersClient.PXContract.balanceOf(address)
     if (balance) {
       res.send({balance: balance.toNumber()})
     } else {
@@ -66,9 +66,6 @@ router.get(
     const { tokenID } = req.params
     logger.info(`querying token ID ${tokenID}`)
     try {
-      // const owner = await PXContract.ownerOf(tokenID)
-      // return res.send({address: owner})
-
       const data = await redisClient.get(redisClient.keys.ADDRESS_TO_TOKENID)
       if (data) {
         const check = JSON.parse(data)
@@ -94,7 +91,7 @@ router.get(
   async (req, res, next) => {
     try {
       const { address } = req.params
-      const ens = await provider.lookupAddress(address)
+      const ens = await EthersClient.provider.lookupAddress(address)
       res.send({ens: ens})
     } catch (e) {
       next(e)
@@ -106,17 +103,12 @@ router.get(
   '/dog/locked',
   async (req, res, next) => {
     try {
-      const balance = await DOGContract.balanceOf(PXContract.address)
+      const balance = await EthersClient.DOGContract.balanceOf(EthersClient.PXContract.address)
       res.send({balance: ethers.utils.formatEther(balance)})
     } catch (e) {
       next(e)
     }
   }
-)
-
-router.get(
-  '/test',
-  async (req, res) => res.send('dev_update_4')
 )
 
 module.exports = router;
