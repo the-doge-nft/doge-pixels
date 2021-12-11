@@ -1,3 +1,5 @@
+import {getVisibleCoordinates} from "../../pages/Viewer/helpers";
+
 var wheel = require('wheel')
 var eventify = require('ngraph.events')
 var kinetic = require('./lib/kinetic.js')
@@ -248,7 +250,7 @@ export default function panzoom(camera, owner, toKeepInBounds, minDepth, maxDept
   }
 
   function onSmoothScroll(x, y) {
-    const [x1, x2, y1, y2] = getVisibleCoordinates(toKeepInBounds.position.z)
+    const [x1, x2, y1, y2] = getVisibleCoordinates(camera, toKeepInBounds.position.z)
     if ((x1 < api.xLowerBound) || (x2 > api.xUpperBound)) {
       camera.position.x = camera.position.x
     } else if ((y1 < api.yLowerBound) || (y2 > api.yUpperBound)
@@ -342,7 +344,7 @@ export default function panzoom(camera, owner, toKeepInBounds, minDepth, maxDept
     panPayload.dx = -dx/(currentScale * dampenFactor)
     panPayload.dy = dy/(currentScale * dampenFactor)
 
-    const [x1, x2, y1, y2] = getVisibleCoordinates(toKeepInBounds.position.z)
+    const [x1, x2, y1, y2] = getVisibleCoordinates(camera, toKeepInBounds.position.z)
     if ((x1 < api.xLowerBound && panPayload.dx < 0) || (x2 > api.xUpperBound && panPayload.dx > 0)) {
       camera.position.x = camera.position.x
     } else if ((y1 < api.yLowerBound && panPayload.dy < 0) || (y2 > api.yUpperBound && panPayload.dy > 0)) {
@@ -361,22 +363,23 @@ export default function panzoom(camera, owner, toKeepInBounds, minDepth, maxDept
     e.preventDefault()
 
     var scaleMultiplier = getScaleMultiplier(e.deltaY)
+    console.log("debug:: scalemult", scaleMultiplier)
     smoothScroll.cancel()
     zoomTo(e.clientX, e.clientY, scaleMultiplier)
   }
 
-  function zoomTo(offsetX, offsetY, scaleMultiplier) {
+    function zoomTo(offsetX, offsetY, scaleMultiplier) {
     var currentScale = getCurrentScale()
 
-    var dx = (offsetX - owner.clientWidth / 2) / currentScale
-    var dy = (offsetY - owner.clientHeight / 2) / currentScale
+    var dx = ((offsetX - owner.clientWidth / 2) / currentScale)
+    var dy = ((offsetY - owner.clientHeight / 2) / currentScale)
 
     var newZ = camera.position.z * scaleMultiplier
     if (newZ < api.min || newZ > api.max) {
       return
     }
 
-    const [x1, x2, y1, y2] = getVisibleCoordinates(toKeepInBounds.position.z)
+    const [x1, x2, y1, y2] = getVisibleCoordinates(camera, toKeepInBounds.position.z)
 
     zoomPayload.dz = newZ - camera.position.z
     zoomPayload.dx = -(scaleMultiplier - 1) * dx
@@ -391,30 +394,32 @@ export default function panzoom(camera, owner, toKeepInBounds, minDepth, maxDept
 
 
     if ((futureX1) < api.xLowerBound) {
+      // push camera right
       if (isZoomingOut) {
-        zoomPayload.dx += Math.abs(zoomPayload.dz / 10)
+        zoomPayload.dx += Math.abs(zoomPayload.dx)
       }
-      // console.log("debug:: we want to push right")
     }
 
     if ((futureX2) > api.xUpperBound) {
+      // push camera left
       if (isZoomingOut) {
-        zoomPayload.dx -= Math.abs(zoomPayload.dz / 10)
-      }
-      // console.log("debug:: we want to push left")
-    }
-
-    if ((futureY1) < api.yLowerBound) {
-      if (isZoomingOut) {
-        zoomPayload.dy += Math.abs(zoomPayload.dz / 10)
+        zoomPayload.dx -= Math.abs(zoomPayload.dx)
       }
     }
 
-    if ((futureY2) > api.yUpperBound) {
-      if (isZoomingOut) {
-        zoomPayload.dy -= Math.abs(zoomPayload.dz / 10)
-      }
-    }
+    // if ((futureY1) < api.yLowerBound) {
+    //   // push camera up
+    //   if (isZoomingOut) {
+    //     zoomPayload.dy += Math.abs(futureY1)
+    //   }
+    // }
+    //
+    // if ((futureY2) > api.yUpperBound) {
+    //   // push camera down
+    //   if (isZoomingOut) {
+    //     zoomPayload.dy -= Math.abs(futureY2)
+    //   }
+    // }
 
     api.fire('beforezoom', zoomPayload)
 
@@ -424,35 +429,6 @@ export default function panzoom(camera, owner, toKeepInBounds, minDepth, maxDept
 
     api.fire('change')
   }
-
-  function getVisibleCoordinates(depth) {
-    const height = visibleHeightAtZDepth(depth, camera)
-    const width = visibleWidthAtZDepth(depth, camera)
-
-    const x1 =  camera.position.x - (width/2)
-    const x2 =  camera.position.x + (width/2)
-    const y1 = camera.position.y - (height/2)
-    const y2 = camera.position.y + (height/2)
-    return [x1, x2, y1, y2]
-  }
-
-  function visibleHeightAtZDepth( depth, camera ) {
-    // compensate for cameras not positioned at z=0
-    const cameraOffset = camera.position.z;
-    if ( depth < cameraOffset ) depth -= cameraOffset;
-    else depth += cameraOffset;
-
-    // vertical fov in radians
-    const vFOV = camera.fov * Math.PI / 180;
-
-    // Math.abs to ensure the result is always positive
-    return 2 * Math.tan( vFOV / 2 ) * Math.abs( depth );
-  };
-
-  function visibleWidthAtZDepth( depth, camera ) {
-    const height = visibleHeightAtZDepth( depth, camera );
-    return height * camera.aspect;
-  };
 
   function getCurrentScale() {
     // TODO: This is the only code that depends on camera. Extract?
