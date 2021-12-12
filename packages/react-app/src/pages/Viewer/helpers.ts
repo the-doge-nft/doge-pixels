@@ -33,3 +33,8 @@ const getVisibleHeightAtZDepth = (cameraPosition: Vector3, cameraFOV: number, de
   return 2 * Math.tan( vFOV / 2 ) * Math.abs( depth );
 };
 
+export const solveForBounds = (cameraPosition: Vector3, cameraFOV: number, cameraAspect: number, depth: number) => {
+  const height = getVisibleHeightAtZDepth(cameraPosition, cameraFOV, depth)
+  const width = height * cameraAspect
+  return [width/2, 640 - 1 - (width / 2), (-480 + (height/2)), (-height/2) - 1]
+}
