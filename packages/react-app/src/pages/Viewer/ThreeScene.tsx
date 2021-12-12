@@ -20,7 +20,7 @@ interface ThreeSceneProps {
 }
 
 export enum CameraPositionZ {
-  far = 5200,
+  far = 5400,
   medium = 300,
   close = 80
 }
@@ -59,7 +59,7 @@ const ThreeScene =({onPixelSelect, store}: ThreeSceneProps) => {
       camera.updateProjectionMatrix();
 
       camera.position.x = imageWorldUnitsWidth / 2 - 0.65;
-      camera.position.y = -1 * imageWorldUnitsHeight / 2 + 0.26;
+      camera.position.y = (-1 * imageWorldUnitsHeight / 2) + 40;
       camera.position.z = CameraPositionZ.far - 1000;
 
       canvasContainerRef.current = node

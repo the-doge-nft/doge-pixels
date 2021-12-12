@@ -1,4 +1,11 @@
-import {getVisibleCoordinates} from "../../pages/Viewer/helpers";
+import {
+  getVisibleCoordinates,
+  solveForBounds,
+  solveForX1,
+  solveForX2,
+  solveForY1,
+  solveForY2
+} from "../../pages/Viewer/helpers";
 import {Vector3} from "three/src/math/Vector3";
 
 var wheel = require('wheel')
@@ -61,7 +68,7 @@ export default function panzoom(camera, owner, toKeepInBounds, minDepth, maxDept
   var toKeepInBoundsBounding = new THREE.Box3().setFromObject(toKeepInBounds)
   var api = eventify({
     dispose: dispose,
-    speed: 0.02,
+    speed: 0.008,
     min: minDepth,
     max: maxDepth,
     yUpperBound: toKeepInBoundsBounding.max.y,
@@ -416,31 +423,61 @@ export default function panzoom(camera, owner, toKeepInBounds, minDepth, maxDept
 
     const isZoomingOut = zoomPayload.dz > 0
 
-    if ((x1) < api.xLowerBound) {
-      // push camera right
-      if (isZoomingOut) {
-        zoomPayload.dx += 10
+    if (((x1) < api.xLowerBound) && ((x2) > api.xUpperBound) && isZoomingOut) {
+      zoomPayload.dz = 0
+      zoomPayload.dx = 0
+      zoomPayload.dy = 0
+    } else {
+      if ((x1) < api.xLowerBound) {
+        // push camera right
+        if (isZoomingOut) {
+          const [x] = solveForBounds(
+            futureCamePos,
+            camera.fov,
+            camera.aspect,
+            toKeepInBounds.position.z
+          )
+          zoomPayload.dx = (x - futureCamePos.x)
+        }
       }
-    }
 
-    if ((x2) > api.xUpperBound) {
-      // push camera left
-      if (isZoomingOut) {
-        zoomPayload.dx -= Math.abs(zoomPayload.dz / 10)
+      if ((x2) > api.xUpperBound) {
+        // push camera left
+        if (isZoomingOut) {
+          const [, x] = solveForBounds(
+            futureCamePos,
+            camera.fov,
+            camera.aspect,
+            toKeepInBounds.position.z
+          )
+          zoomPayload.dx = (x - futureCamePos.x)
+        }
       }
-    }
 
-    if ((y1) < api.yLowerBound) {
-      // push camera up
-      if (isZoomingOut) {
-        zoomPayload.dy += Math.abs(zoomPayload.dz / 10)
+      if ((y1) < api.yLowerBound) {
+        // push camera up
+        if (isZoomingOut) {
+          const [,, y] = solveForBounds(
+            futureCamePos,
+            camera.fov,
+            camera.aspect,
+            toKeepInBounds.position.z
+          )
+          zoomPayload.dy = (y - camera.position.y)
+        }
       }
-    }
 
-    if ((y2) > api.yUpperBound) {
-      // push camera down
-      if (isZoomingOut) {
-        zoomPayload.dy -= Math.abs(zoomPayload.dz / 10)
+      if ((y2) > api.yUpperBound) {
+        // push camera down
+        if (isZoomingOut) {
+          const [,,, y] = solveForBounds(
+            futureCamePos,
+            camera.fov,
+            camera.aspect,
+            toKeepInBounds.position.z
+          )
+          zoomPayload.dy = (y - camera.position.y)
+        }
       }
     }
 

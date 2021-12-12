@@ -10,6 +10,11 @@ export const InputStyle = {
       borderStyle: "style",
       borderColor: lightOrDark(colorMode, "black", "white"),
       color: lightOrDark(colorMode, "black", "white"),
+      _focus: {
+        _placeholder: {
+          color: "transparent"
+        }
+      }
       // borderRadius: "0px"
     },
   }),

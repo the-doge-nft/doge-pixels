@@ -47,7 +47,7 @@ const TextInput = ({
           value={inputValue}
           pr={rightIcon ? rightIconWidth : "inherit"}
         />
-        {rightIcon && <InputRightElement top={"50%"} transform={"translateY(-50%)"} width={rightIconWidth} children={<Icon icon={rightIcon}/>}/>}
+        {rightIcon && <InputRightElement zIndex={0} top={"50%"} transform={"translateY(-50%)"} width={rightIconWidth} children={<Icon icon={rightIcon}/>}/>}
       </InputGroup>
       <FormErrorMessage>{meta.error}</FormErrorMessage>
     </Control>
