@@ -253,19 +253,7 @@ const Title = () => {
         history.push(route(NamedRoutes.VIEWER))
       }}
     >
-      PUPPER PIXEL PORTAL<Box ml={1} display={"inline-block"} textShadow={"none"}>
-      <motion.div animate={{
-        display: "inline-block",
-        position: "relative",
-        left: "2px",
-        bottom: "1px",
-        textShadow: "none",
-        rotate: rotation,
-        transition: {duration: 0.22}
-      }}>
-        <Typography variant={TVariant.PresStart28}>🐕</Typography>
-      </motion.div>
-    </Box>
+      PUPPER PIXEL PORTAL
     </Typography>
   </Flex>
 }
