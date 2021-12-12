@@ -1,4 +1,5 @@
 import {getVisibleCoordinates} from "../../pages/Viewer/helpers";
+import {Vector3} from "three/src/math/Vector3";
 
 var wheel = require('wheel')
 var eventify = require('ngraph.events')
@@ -109,7 +110,7 @@ export default function panzoom(camera, owner, toKeepInBounds, minDepth, maxDept
     if (x || y) {
       e.preventDefault()
       e.stopPropagation()
-      smoothPanByOffset(4 * x, 4 * y)
+      smoothPanByOffset(50 * x, 50 * y)
     }
 
     if (z) {
@@ -153,8 +154,7 @@ export default function panzoom(camera, owner, toKeepInBounds, minDepth, maxDept
     }
 
     var from = { x: x, y: y }
-    var to = { x: x, y: y }
-    var to = { x: 2 * x, y: 2 * y }
+    var to = { x: 100 * x, y: 100 * y }
     smoothPanAnimation = animate(from, to, {
       easing: 'linear',
       duration: 0,
@@ -167,8 +167,6 @@ export default function panzoom(camera, owner, toKeepInBounds, minDepth, maxDept
   function smoothZoom(x, y, scale) {
     var from = { delta: scale }
     var to = { delta: scale * 2 }
-
-    console.log("debug:: from - to", from ,to)
 
     if (smoothZoomAnimation) {
       smoothZoomAnimation.cancel();
@@ -250,7 +248,13 @@ export default function panzoom(camera, owner, toKeepInBounds, minDepth, maxDept
   }
 
   function onSmoothScroll(x, y) {
-    const [x1, x2, y1, y2] = getVisibleCoordinates(camera, toKeepInBounds.position.z)
+    const [x1, x2, y1, y2] = getVisibleCoordinates(
+      camera.position,
+      camera.fov,
+      camera.aspect,
+      toKeepInBounds.position.z
+    )
+
     if ((x1 < api.xLowerBound) || (x2 > api.xUpperBound)) {
       camera.position.x = camera.position.x
     } else if ((y1 < api.yLowerBound) || (y2 > api.yUpperBound)
@@ -304,8 +308,7 @@ export default function panzoom(camera, owner, toKeepInBounds, minDepth, maxDept
     if (!panstartFired) {
       api.fire('panstart')
       panstartFired = true
-      // @TODO: if we want momentum based movement uncomment the below
-      // smoothScroll.start()
+      smoothScroll.start()
     }
   }
 
@@ -338,88 +341,108 @@ export default function panzoom(camera, owner, toKeepInBounds, minDepth, maxDept
   function panByOffset(dx, dy) {
     var currentScale = getCurrentScale()
 
-    //@TODO: CC custom
-    const dampenFactor = 1
+    panPayload.dx = -dx/currentScale
+    panPayload.dy = dy/currentScale
 
-    panPayload.dx = -dx/(currentScale * dampenFactor)
-    panPayload.dy = dy/(currentScale * dampenFactor)
+    const futureCamPos = new Vector3(
+      camera.position.x + panPayload.dx,
+      camera.position.y + panPayload.dy,
+      camera.position.z
+    )
 
-    const [x1, x2, y1, y2] = getVisibleCoordinates(camera, toKeepInBounds.position.z)
-    if ((x1 < api.xLowerBound && panPayload.dx < 0) || (x2 > api.xUpperBound && panPayload.dx > 0)) {
+    const [x1, x2, y1, y2] = getVisibleCoordinates(futureCamPos, camera.fov, camera.aspect, toKeepInBounds.position.z)
+
+    const isPanningLeft = panPayload.dx < 0
+    const isPanningRight = panPayload.dx > 0
+    const isPanningDown = panPayload.dy < 0
+    const isPanningUp = panPayload.dy > 0
+
+    const isOverflowLeft = x1 < api.xLowerBound
+    const isOverflowRight = x2 > api.xUpperBound
+    const isOverflowBottom = y1 < api.yLowerBound
+    const isOverflowTop = y2 > api.yUpperBound
+
+    if ((isOverflowLeft && isPanningLeft) || (isOverflowRight && isPanningRight)) {
       camera.position.x = camera.position.x
-    } else if ((y1 < api.yLowerBound && panPayload.dy < 0) || (y2 > api.yUpperBound && panPayload.dy > 0)) {
+    } else if ((isOverflowBottom && isPanningDown) || (isOverflowTop && isPanningUp)) {
       camera.position.y = camera.position.y
     } else {
       // we fire first, so that clients can manipulate the payload
       api.fire('beforepan', panPayload)
       camera.position.x += panPayload.dx
       camera.position.y += panPayload.dy
+      api.fire('change')
     }
 
-    api.fire('change')
   }
 
   function onMouseWheel(e) {
     e.preventDefault()
 
     var scaleMultiplier = getScaleMultiplier(e.deltaY)
-    console.log("debug:: scalemult", scaleMultiplier)
     smoothScroll.cancel()
     zoomTo(e.clientX, e.clientY, scaleMultiplier)
   }
 
-    function zoomTo(offsetX, offsetY, scaleMultiplier) {
+  function zoomTo(offsetX, offsetY, scaleMultiplier) {
     var currentScale = getCurrentScale()
+    // canvas is not full screen - must offset further
+    const {left, top} = owner.getBoundingClientRect()
 
-    var dx = ((offsetX - owner.clientWidth / 2) / currentScale)
-    var dy = ((offsetY - owner.clientHeight / 2) / currentScale)
+    var dx = ((offsetX - left - owner.clientWidth / 2) / currentScale)
+    var dy = ((offsetY - top - owner.clientHeight / 2) / currentScale)
 
     var newZ = camera.position.z * scaleMultiplier
     if (newZ < api.min || newZ > api.max) {
       return
     }
 
-    const [x1, x2, y1, y2] = getVisibleCoordinates(camera, toKeepInBounds.position.z)
-
     zoomPayload.dz = newZ - camera.position.z
     zoomPayload.dx = -(scaleMultiplier - 1) * dx
     zoomPayload.dy = (scaleMultiplier - 1) * dy
 
+    const futureCamePos = new Vector3(
+      camera.position.x + zoomPayload.dx,
+      camera.position.y + zoomPayload.dy,
+      camera.position.z
+    )
 
-    const futureX1 = x1 + zoomPayload.dx
-    const futureX2 = x2 + zoomPayload.dx
-    const futureY1 = y1 + zoomPayload.dy
-    const futureY2 = y2 + zoomPayload.dy
+    const [x1, x2, y1, y2] = getVisibleCoordinates(
+      futureCamePos,
+      camera.fov,
+      camera.aspect,
+      toKeepInBounds.position.z
+    )
+
     const isZoomingOut = zoomPayload.dz > 0
 
-
-    if ((futureX1) < api.xLowerBound) {
+    if ((x1) < api.xLowerBound) {
       // push camera right
       if (isZoomingOut) {
-        zoomPayload.dx += Math.abs(zoomPayload.dx)
+        zoomPayload.dx += 10
       }
     }
 
-    if ((futureX2) > api.xUpperBound) {
+    if ((x2) > api.xUpperBound) {
       // push camera left
       if (isZoomingOut) {
-        zoomPayload.dx -= Math.abs(zoomPayload.dx)
+        zoomPayload.dx -= Math.abs(zoomPayload.dz / 10)
       }
     }
 
-    // if ((futureY1) < api.yLowerBound) {
-    //   // push camera up
-    //   if (isZoomingOut) {
-    //     zoomPayload.dy += Math.abs(futureY1)
-    //   }
-    // }
-    //
-    // if ((futureY2) > api.yUpperBound) {
-    //   // push camera down
-    //   if (isZoomingOut) {
-    //     zoomPayload.dy -= Math.abs(futureY2)
-    //   }
-    // }
+    if ((y1) < api.yLowerBound) {
+      // push camera up
+      if (isZoomingOut) {
+        zoomPayload.dy += Math.abs(zoomPayload.dz / 10)
+      }
+    }
+
+    if ((y2) > api.yUpperBound) {
+      // push camera down
+      if (isZoomingOut) {
+        zoomPayload.dy -= Math.abs(zoomPayload.dz / 10)
+      }
+    }
 
     api.fire('beforezoom', zoomPayload)
 
@@ -440,6 +463,7 @@ export default function panzoom(camera, owner, toKeepInBounds, minDepth, maxDept
   }
 
   function getScaleMultiplier(delta) {
+    // used to amplify effects based on delta & speed for zooming
     var scaleMultiplier = 1
     if (delta > 10) {
       delta = 10;
