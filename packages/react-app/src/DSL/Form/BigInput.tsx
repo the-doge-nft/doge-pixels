@@ -45,6 +45,7 @@ function BigInput<T extends object>({
             showValidation={false}
             validate={validate}
             {...model(store, storeKey)}
+            showBigInputDrop
           />
         </GridItem>
         {label && <GridItem
@@ -53,9 +54,13 @@ function BigInput<T extends object>({
           display={"flex"}
           alignItems={"center"}
           justifyContent={"center"}
+          position={"relative"}
           mx={4}
         >
           <Typography variant={TVariant.PresStart45} sx={styles.label}>
+            {label}
+          </Typography>
+          <Typography variant={TVariant.PresStart45} sx={styles.drop}>
             {label}
           </Typography>
         </GridItem>}
