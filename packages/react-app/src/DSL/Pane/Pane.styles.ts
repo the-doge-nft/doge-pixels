@@ -24,8 +24,9 @@ const PaneStyle = {
           borderStyle: "solid",
           borderWidth: "1px",
           borderColor: lightOrDark(colorMode, "black", "white")
-    }
-    }},
+        }
+      }
+    },
     title: {
 
     }

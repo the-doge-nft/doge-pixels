@@ -18,8 +18,10 @@ import PixelPaneStyle from "./PixelPane/PixelPane.style";
 import PillStyle from "./Pill/Pill.style";
 import LinkStyle from "./Link/Link.style";
 import CheckboxStyle from "./Form/CheckboxInput/Checkbox.style";
+import BigTextStyle from "./BigText/BigText.style";
 
 export const darkModePrimary = "purple.700";
+export const darkModeGradient = "linear-gradient(0deg, #5A19EC 0.03%, #FF3BEB 99.98%);"
 
 export type colorModeType = "light" | "dark";
 export const lightOrDark = (colorMode: colorModeType, ifLight: string, ifDark: string) => {
@@ -61,7 +63,8 @@ const theme = extendTheme({
     PixelPane: PixelPaneStyle,
     Pill: PillStyle,
     Link: LinkStyle,
-    Checkbox: CheckboxStyle
+    Checkbox: CheckboxStyle,
+    BigText: BigTextStyle
   },
 });
 

@@ -137,6 +137,7 @@ const ThreeScene =({onPixelSelect, store}: ThreeSceneProps) => {
          h={"100%"}
          position={"absolute"}
          zIndex={2}
+         _focus={{boxShadow: "none", borderColor: "inherit"}}
     >
       <Canvas
         camera={camera}

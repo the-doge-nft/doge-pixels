@@ -11,9 +11,10 @@ export const MintBurnButtons = observer(({store}: {store: ViewerStore}) => {
         <Button mr={3} width={"fit-content"} onClick={() => (store.isMintModalOpen = true)}>
             Mint
         </Button>
+      {AppStore.web3.puppersOwned.length > 0 &&
         <Button ml={3} width={"fit-content"} onClick={() => (store.isBurnModalOpen = true)}>
             Burn
-        </Button>
+        </Button>}
     </Flex>}
     {AppStore.web3.puppersOwned.length > 0 && store.currentView !== ViewerView.Manage && <Button
         width={"fit-content"}

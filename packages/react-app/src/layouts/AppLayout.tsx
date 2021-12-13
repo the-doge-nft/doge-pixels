@@ -30,6 +30,7 @@ import {formatWithThousandsSeparators} from "../helpers/numberFormatter";
 import { BigNumber, ethers } from "ethers";
 import Link from "../DSL/Link/Link";
 import {Link as ReactRouteLink} from "react-router-dom"
+import BigText from "../DSL/BigText/BigText";
 
 interface AppLayoutProps {
   children?: any;
@@ -229,19 +230,7 @@ const Title = () => {
   const history = useHistory()
   const {colorMode} = useColorMode()
   const [rotation, setRotation] = useState(0)
-  return <Flex
-    alignItems={"center"}
-  >
-    <Typography
-      display={"inline-block"}
-      variant={TVariant.PresStart28}
-      mr={1}
-      color={"yellow.700"}
-      zIndex={1}
-      textShadow={"4px 4px 0px black"}
-      userSelect={"none"}
-      //@ts-ignore
-      sx={{"-webkit-text-stroke": lightOrDark(colorMode, "1px black", "1px white")}}
+  return <Box
       _hover={{
         cursor: "pointer"
       }}
@@ -252,10 +241,13 @@ const Title = () => {
         setRotation(rotation + 360)
         history.push(route(NamedRoutes.VIEWER))
       }}
+      w={"full"}
+      userSelect={"none"}
     >
-      PUPPER PIXEL PORTAL
-    </Typography>
-  </Flex>
+      <BigText size={"sm"}>
+        PUPPER PIXEL PORTAL
+      </BigText>
+    </Box>
 }
 
 export default AppLayout;
