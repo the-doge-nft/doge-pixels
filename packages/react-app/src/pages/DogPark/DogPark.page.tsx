@@ -48,8 +48,8 @@ const DogParkPage = observer(function DogParkPage() {
           {store.selectedAddress && <>
             <Box mb={5} h={store.selectedUserHasPuppers ? "initial" : "full"}>
               <Flex alignItems={"center"}>
-                <Flex alignItems={"flex-end"}>
-                  <Icon icon={'person'} boxSize={8}/>
+                <Flex alignItems={"center"}>
+                  <Icon icon={'person'} boxSize={6}/>
                   <Typography variant={TVariant.PresStart20} ml={3}>
                     {store.selectedAddressDisplayName}
                   </Typography>

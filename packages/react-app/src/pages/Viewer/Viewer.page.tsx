@@ -1,5 +1,5 @@
 import React, {Suspense, useCallback, useEffect, useMemo} from "react";
-import {Box, Button, Flex, Grid, GridItem} from "@chakra-ui/react";
+import {Box, Flex, Grid, GridItem} from "@chakra-ui/react";
 import ThreeScene from "./ThreeScene";
 import ViewerStore, {ViewerView} from "./Viewer.store";
 import {observer} from "mobx-react-lite";
@@ -10,7 +10,7 @@ import IndexPane from "./Panes/IndexPane";
 import MintPixelsModal from "./MintPixelsModal/MintPixelsModal";
 import SelectedPixelPane from "./Panes/SelectedPixelPane";
 import AppStore from "../../store/App.store";
-import {ButtonVariant} from "../../DSL/Button/Button";
+import Button, {ButtonVariant} from "../../DSL/Button/Button";
 import Icon from "../../DSL/Icon/Icon";
 import Loading from "../../DSL/Loading/Loading";
 import ScrollHelperModal from "./ScrollHelperModal/ScrollHelperModal";
@@ -68,17 +68,18 @@ const ViewerPage = observer(function ViewerPage() {
             title={store.currentView === ViewerView.Index &&
               <Typography variant={TVariant.PresStart20}>Own the doge</Typography>}>
               {store.showGoBack && <Box position={"relative"} left={"-25px"} top={"-20px"}>
-                  <Button
+                  <Box
                     p={0}
                     size={"sm"}
+                    _hover={{cursor: "pointer"}}
+                    _active={{transform: "translate(4px, 4px)"}}
                     onClick={() => {
                       store.popNavigation()
                       store.clearSelectedPupper()
                     }}
-                    variant={ButtonVariant.Text}
                   >
-                    <Icon icon={"arrow-left"} />
-                </Button>
+                    <Icon icon={"arrow-left"}/>
+                </Box>
               </Box>}
             {store.currentView === ViewerView.Index && <IndexPane store={store}/>}
             {store.currentView === ViewerView.Manage && <ManagePane store={store}/>}
