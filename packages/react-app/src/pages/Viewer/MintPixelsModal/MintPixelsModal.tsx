@@ -145,7 +145,7 @@ const LoadingApproval = observer(({store}: {store: MintPixelsModalStore}) => {
 
 const LoadingPixels = observer(({store}: {store: MintPixelsModalStore}) => {
   useEffect(() => {
-    store.mintPixels(store.pixel_count!)
+    store.mintPixels(Number(store.pixel_count!))
   }, [])
   return (
     <Box mt={20} mb={10}>
