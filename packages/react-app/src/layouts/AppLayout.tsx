@@ -118,7 +118,8 @@ const AppLayout = observer(function AppLayout({children}: AppLayoutProps) {
                           {AppStore.web3.addressForDisplay}
                         </Typography>
                         <Icon
-                            boxSize={6}
+                            color={"white"}
+                            boxSize={5}
                             ml={2}
                             icon={'person'}
                         />

@@ -40,7 +40,7 @@ const ButtonStyle = {
         _hover: {
           bg: lightOrDark(colorMode, "yellow.700", darkModeGradient),
           // borderImageSource: lightOrDark(colorMode, "none", darkModeGradient),
-          // borderImageSlice: "1 1 1",
+          // borderImageSlice: "1 0 0 1",
           _disabled: {
             color: "gray.900",
           },
@@ -67,10 +67,13 @@ const ButtonStyle = {
         border: "none",
         bg: "none",
         textUnderlineOffset: "4px",
+        boxShadow: "none",
         _active: {
+          boxShadow: "none",
           transform: "translate(2px, 2px)"
         },
         _hover: {
+          boxShadow: "none",
           textDecoration: "underline",
         },
         _focus: {

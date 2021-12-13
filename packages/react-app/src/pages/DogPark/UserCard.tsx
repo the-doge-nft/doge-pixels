@@ -28,7 +28,7 @@ const UserCard = ({store, dog}: {store: DogParkPageStore, dog: { address: string
     }}
   >
     <Flex alignItems={"center"} overflow={"hidden"}>
-      <Icon icon={'person'} display={"inline-block"}/>
+      <Icon icon={'person'} display={"inline-block"} boxSize={5}/>
       <Typography
         variant={TVariant.PresStart15}
         ml={4}
