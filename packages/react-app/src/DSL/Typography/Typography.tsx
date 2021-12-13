@@ -29,7 +29,7 @@ interface TypographyProps extends TextProps {
   block?: boolean;
 }
 
-const Typography = ({ children, block, variant, ...rest }: TypographyProps) => {
+const Typography = ({ children, block, variant, __css, ...rest }: TypographyProps) => {
   return (
     <Text as={block ? "div" : "span"} variant={variant} _hover={{}} {...rest}>
       {children}

@@ -27,12 +27,15 @@ const UserCard = ({store, dog}: {store: DogParkPageStore, dog: { address: string
       store.selectedPupper = null
     }}
   >
-    <Flex alignItems={"center"}>
+    <Flex alignItems={"center"} overflow={"hidden"}>
       <Icon icon={'person'} display={"inline-block"}/>
       <Typography
         variant={TVariant.PresStart15}
         ml={4}
         block
+        overflow={"hidden"}
+        textOverflow={"ellipsis"}
+        overflowWrap={"initial"}
       >
         {dog.ens ? dog.ens : abbreviate(dog.address, 4)}
       </Typography>

@@ -19,6 +19,7 @@ export interface NumberInputProps extends BaseInputProps, AllowedStyleProps {
   stepper?: boolean;
   size?: any;
   showValidation?: boolean;
+  sx?: any;
 }
 
 const NumberInput = observer(({

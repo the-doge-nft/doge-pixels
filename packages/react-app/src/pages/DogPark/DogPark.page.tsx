@@ -15,6 +15,7 @@ import PxPill from "./PxPill";
 import PixelPane from "../../DSL/PixelPane/PixelPane";
 import Button from "../../DSL/Button/Button";
 import {convertToAbbreviation} from "../../helpers/numberFormatter";
+import BigText from "../../DSL/BigText/BigText";
 
 const DogParkPage = observer(function DogParkPage() {
   const history = useHistory()
@@ -31,44 +32,48 @@ const DogParkPage = observer(function DogParkPage() {
       </Box>
     </GridItem>
     <GridItem ml={16}>
-      <Flex height={"100%"} flexDirection={"column"}>
+      <Flex height={"full"} flexDirection={"column"}>
         <Box mb={8}>
           <Form onSubmit={async () => {}}>
-            <TextInput rightIcon={"search"} {...model(store, "addressToSearch")} placeholder={"Search pixel owners by address"}/>
+            <TextInput
+              rightIcon={"search"}
+              placeholder={"Search pixel owners by address"}
+              {...model(store, "addressToSearch")}
+            />
           </Form>
         </Box>
 
-        <Flex flexDirection={"column"} flexGrow={1}>
+        <Flex flexDirection={"column"} flexGrow={1} h={"full"}>
           {!store.selectedAddress && <SearchHints store={store} />}
-
           {store.selectedAddress && <>
-              <Box mb={5}>
-            <Flex alignItems={"center"}>
-              <Flex alignItems={"flex-end"}>
-                <Icon icon={'person'} boxSize={8}/>
-                <Typography variant={TVariant.PresStart20} ml={3}>
-                  {store.selectedAddressDisplayName}
-                </Typography>
-                {store.isSelectedAddressAuthedUser && <Typography variant={TVariant.PresStart15} ml={3}>
-                    (you)
-                </Typography>}
-              </Flex>
-              <Box ml={4}>
-                <PxPill count={store.selectedUserHasPuppers ? store.selectedDogs?.puppers.length : 0}/>
-              </Box>
-            </Flex>
-            {!store.selectedUserHasPuppers && <Box w={"full"} h={"full"}>
-                <Flex alignItems={"center"} w={"full"} h={"full"} justifyContent={"center"}>
-                    <Typography variant={TVariant.PresStart28} color={"#d6ceb6"}>
-                        No pixels owned
-                    </Typography>
-                    <Typography variant={TVariant.PresStart28} mb={2} ml={3}>
-                        😟
-                    </Typography>
+            <Box mb={5} h={store.selectedUserHasPuppers ? "initial" : "full"}>
+              <Flex alignItems={"center"}>
+                <Flex alignItems={"flex-end"}>
+                  <Icon icon={'person'} boxSize={8}/>
+                  <Typography variant={TVariant.PresStart20} ml={3}>
+                    {store.selectedAddressDisplayName}
+                  </Typography>
+                  {store.isSelectedAddressAuthedUser && <Typography variant={TVariant.PresStart15} ml={3}>
+                      (you)
+                  </Typography>}
                 </Flex>
-            </Box>}
-          </Box>
-          <Grid templateColumns={"1fr 1fr"} h={"full"}>
+                <Box ml={4}>
+                  <PxPill count={store.selectedUserHasPuppers ? store.selectedDogs?.puppers.length : 0}/>
+                </Box>
+              </Flex>
+              {!store.selectedUserHasPuppers && <Box w={"full"} h={"full"}>
+                  <Flex alignItems={"center"} w={"full"} h={"full"} justifyContent={"center"}>
+                      <Typography variant={TVariant.PresStart28} color={"#d6ceb6"}>
+                          No pixels owned
+                      </Typography>
+                      <Typography variant={TVariant.PresStart28} mb={2} ml={3}>
+                          😟
+                      </Typography>
+                  </Flex>
+              </Box>}
+            </Box>
+
+          {store.selectedUserHasPuppers && <Grid templateColumns={"1fr 1fr"} h={"full"}>
               <GridItem display={"flex"} flexDirection={"column"}>
                 <Box overflowY={"scroll"} flexGrow={1}>
                     <Flex flexWrap={"wrap"} maxHeight={"300px"}>
@@ -123,7 +128,7 @@ const DogParkPage = observer(function DogParkPage() {
                   </Button>
                 </Box>}
               </GridItem>
-          </Grid>
+          </Grid>}
           </>}
 
         </Flex>
@@ -158,33 +163,9 @@ const DogKennel = observer(({store}: {store: DogParkPageStore}) => {
         <Typography variant={TVariant.PresStart24} ml={3} height={"max-content"} block>🔒</Typography>
       </Flex>
       <Flex flexGrow={1} alignItems={"center"}>
-        <Flex alignItems={"baseline"}>
-          <Typography variant={TVariant.PresStart45}
-            color={"yellow.700"}
-            textShadow={"6px 6px 0px black"}
-            border={"none"}
-            fontSize={"65px"}
-            height={"auto"}
-            //@ts-ignore
-            sx={{"-webkit-text-stroke":"1px black"}}
-            block
-          >
-            {num}
-          </Typography>
-          <Typography variant={TVariant.PresStart45}
-            color={"yellow.50"}
-            textShadow={"6px 6px 0px black"}
-            border={"none"}
-            fontSize={"45px"}
-            height={"auto"}
-            //@ts-ignore
-            sx={{"-webkit-text-stroke":"1px black"}}
-            block
-            ml={8}
-          >
-            {abbr}
-          </Typography>
-        </Flex>
+        <BigText size={"md"} label={abbr}>
+          {num}
+        </BigText>
       </Flex>
     </Flex>
   </Pane>
