@@ -60,6 +60,8 @@ const Modal = ({
   const chakraStyles = useMultiStyleConfig("Modal", {size: size})
   const { colorMode } = useColorMode()
 
+  console.log("debug:: modal styles", chakraStyles.drop)
+
   //@TODO CC
   // ReactModal.setAppElement('#react-modal-main');
   return (
@@ -70,6 +72,7 @@ const Modal = ({
       {...rest}
     >
       <Draggable handle={".handle"} defaultPosition={defaultPosition}>
+        <Box position={"relative"} zIndex={2}>
           <Box __css={chakraStyles.container}>
             <Flex
               _hover={{
@@ -99,13 +102,24 @@ const Modal = ({
             </Flex>
             <Box __css={chakraStyles.body}>
               {title && <Box __css={chakraStyles.title}>
-                <Typography variant={TVariant.PresStart20}>
-                  {title}
-                </Typography>
+                  <Typography variant={TVariant.PresStart20}>
+                    {title}
+                  </Typography>
               </Box>}
               {children}
             </Box>
           </Box>
+          <Box
+            sx={chakraStyles.drop}
+            // position={"absolute"}
+            // w={"full"}
+            // h={"full"}
+            // top={"8px"}
+            // left={"8px"}
+            // border={"1px solid white"}
+            // zIndex={-1}
+          />
+        </Box>
       </Draggable>
     </ReactModal>
   );

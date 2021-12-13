@@ -18,7 +18,7 @@ export enum MintModalView {
 
 class MintPixelsModalStore extends Reactionable((Navigable(EmptyClass))) {
   @observable
-  pixel_count? = 1;
+  pixel_count: number | string = 1;
 
   @observable
   allowance?: BigNumber
@@ -139,8 +139,13 @@ class MintPixelsModalStore extends Reactionable((Navigable(EmptyClass))) {
 
   @computed
   get dogCount() {
+    console.log("debug:: pixel count", this.pixel_count)
     if (this.pixel_count) {
-      return ethers.utils.formatEther(AppStore.web3.DOG_TO_PIXEL_SATOSHIS.mul(this.pixel_count!))
+      //@CC: TODO protect agaist edge cases here "0.1" "-" etc
+      if (this.pixel_count === "-" || this.pixel_count === ".") {
+        return 0
+      }
+      return ethers.utils.formatEther(AppStore.web3.DOG_TO_PIXEL_SATOSHIS.mul(this.pixel_count))
     } else {
       return 0
     }

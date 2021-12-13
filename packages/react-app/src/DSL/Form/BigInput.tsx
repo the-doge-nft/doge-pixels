@@ -56,6 +56,7 @@ function BigInput<T extends object>({
           justifyContent={"center"}
           position={"relative"}
           mx={4}
+          zIndex={1}
         >
           <Typography variant={TVariant.PresStart45} sx={styles.label}>
             {label}

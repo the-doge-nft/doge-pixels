@@ -2,7 +2,7 @@ import { colorModeType, lightOrDark } from "../Theme";
 
 
 const ModalStyle = {
-  parts: ["container", "body", "title"],
+  parts: ["container", "body", "title", "drop"],
   baseStyle: ({colorMode}: {colorMode: colorModeType}) => ({
     container: {
       width: "100%",
@@ -15,10 +15,19 @@ const ModalStyle = {
       /* 👇 because of the drag handle */
       pt: "0px",
       pointerEvents: "all",
-      boxShadow: lightOrDark(colorMode, "10px 10px 0px black", "10px 10px 0px white"),
       overflow: "hidden",
       position: "relative"
     },
+    drop: {
+      position: "absolute",
+      width: "100%",
+      height: "100%",
+      top: "8px",
+      left: "8px",
+      zIndex: -1,
+      border: lightOrDark(colorMode, "1px solid black", "1px solid white"),
+      bg: lightOrDark(colorMode, "black", "transparent"),
+    }
   }),
   sizes: {
     xs: {
