@@ -1,11 +1,13 @@
-import React, { useEffect } from "react";
+import React, {useEffect, useRef} from "react";
 import {
+  Box,
   FormErrorMessage,
   NumberDecrementStepper,
   NumberIncrementStepper,
   NumberInput as ChakraNumberInput,
   NumberInputField,
   NumberInputStepper,
+  useColorMode, useMultiStyleConfig,
 } from "@chakra-ui/react";
 import { composeValidators, required } from "../validation";
 import { useField } from "react-final-form";
@@ -14,12 +16,14 @@ import { AllowedStyleProps, BaseInputProps } from "../interfaces";
 import { useControlledFormField, useFormField } from "../useFormField";
 import Typography, {TVariant} from "../../Typography/Typography";
 import {observer} from "mobx-react-lite";
+import {darkModeGradient, lightOrDark} from "../../Theme";
 
 export interface NumberInputProps extends BaseInputProps, AllowedStyleProps {
   stepper?: boolean;
   size?: any;
   showValidation?: boolean;
   sx?: any;
+  showBigInputDrop?: boolean
 }
 
 const NumberInput = observer(({
@@ -35,10 +39,13 @@ const NumberInput = observer(({
   showValidation = true,
   horizontal,
   isDisabled,
+  showBigInputDrop = false,
   ...rest
 }: NumberInputProps) => {
   const { isRequired, inputValue, inputOnChange, restInput, meta } = useFormField(validate, name, initialValue);
   useControlledFormField(inputOnChange, value);
+
+  const styles = useMultiStyleConfig("BigText", {size: "md"})
 
   return (
     <Control name={name} isRequired={isRequired} label={label} horizontal={horizontal}>
@@ -54,13 +61,22 @@ const NumberInput = observer(({
         isDisabled={isDisabled}
         isRequired={isRequired}
       >
-        <NumberInputField
-          {...restInput}
-          {...rest}
-          id={name}
-          isInvalid={meta.error && meta.touched}
-          placeholder={placeholder}
-        />
+        <Box position={"relative"}>
+          <NumberInputField
+            {...restInput}
+            {...rest}
+            id={name}
+            isInvalid={meta.error && meta.touched}
+            placeholder={placeholder}
+          />
+          {showBigInputDrop && <Typography
+            sx={{...styles.drop, top: "4px", right: "4px", left: "auto"}}
+            variant={TVariant.PresStart95}
+            block
+          >
+            {inputValue}
+          </Typography>}
+        </Box>
         {stepper && (
           <NumberInputStepper>
             <NumberIncrementStepper />
