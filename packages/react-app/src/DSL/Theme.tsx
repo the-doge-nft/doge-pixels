@@ -20,7 +20,10 @@ import LinkStyle from "./Link/Link.style";
 import CheckboxStyle from "./Form/CheckboxInput/Checkbox.style";
 import BigTextStyle from "./BigText/BigText.style";
 
+export const lightModePrimary = "yellow.700";
 export const darkModePrimary = "purple.700";
+export const darkModeSecondary = "magenta.50";
+
 export const darkModeGradient = "linear-gradient(0deg, #5A19EC 0.03%, #FF3BEB 99.98%);"
 
 export type colorModeType = "light" | "dark";

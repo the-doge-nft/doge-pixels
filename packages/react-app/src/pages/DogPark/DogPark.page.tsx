@@ -1,4 +1,4 @@
-import {Box, Flex, Grid, GridItem} from "@chakra-ui/react";
+import {Box, Flex, Grid, GridItem, useColorMode} from "@chakra-ui/react";
 import {observer} from "mobx-react-lite";
 import React, {useEffect, useMemo} from "react";
 import Pane from "../../DSL/Pane/Pane";
@@ -16,11 +16,14 @@ import PixelPane from "../../DSL/PixelPane/PixelPane";
 import Button from "../../DSL/Button/Button";
 import {convertToAbbreviation} from "../../helpers/numberFormatter";
 import BigText from "../../DSL/BigText/BigText";
+import {darkModeSecondary, lightModePrimary} from "../../DSL/Theme";
 
 const DogParkPage = observer(function DogParkPage() {
   const history = useHistory()
   const { address, tokenID } = useParams<{address: string, tokenID: string}>()
   const store = useMemo(() => new DogParkPageStore(address, Number(tokenID)), [])
+  const {colorMode} = useColorMode()
+
   useEffect(() => {
     store.init()
   }, [])
@@ -81,11 +84,13 @@ const DogParkPage = observer(function DogParkPage() {
                         const hex = AppStore.web3.pupperToHexLocal(px)
                         const index = AppStore.web3.pupperToIndexLocal(px)
                         return <Box
-                          bg={store.selectedPupper === px ? "yellow.700" : "inherit"}
+                          bg={store.selectedPupper === px
+                            ? (colorMode === "light" ? lightModePrimary : darkModeSecondary)
+                            : "inherit"}
                           p={2}
                           m={1}
                           mt={0}
-                          _hover={{bg: "yellow.700"}}
+                          _hover={{bg: (colorMode === "light" ? lightModePrimary : darkModeSecondary)}}
                         >
                           <PixelPane
                             size={"sm"}

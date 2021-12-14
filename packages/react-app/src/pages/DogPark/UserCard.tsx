@@ -1,13 +1,16 @@
 import React from "react";
 import DogParkPageStore from "./DogParkPage.store";
-import {Box, Flex} from "@chakra-ui/react";
+import {Box, Flex, useColorMode} from "@chakra-ui/react";
 import Typography, {TVariant} from "../../DSL/Typography/Typography";
 import {abbreviate} from "../../helpers/strings";
 import AppStore from "../../store/App.store";
 import PxPill from "./PxPill";
 import Icon from "../../DSL/Icon/Icon";
+import {darkModePrimary, darkModeSecondary, lightModePrimary} from "../../DSL/Theme";
 
 const UserCard = ({store, dog}: {store: DogParkPageStore, dog: { address: string, puppers: number[], ens?: string} }) => {
+  const {colorMode} = useColorMode()
+
   return <Flex
     w={"full"}
     justifyContent={"space-between"}
@@ -19,7 +22,7 @@ const UserCard = ({store, dog}: {store: DogParkPageStore, dog: { address: string
     color={"black"}
     _hover={{
       cursor: "pointer",
-      bg: "yellow.700"
+      bg: colorMode === "light" ? lightModePrimary : darkModeSecondary
     }}
     onClick={() => {
       store.selectedAddress = dog.address

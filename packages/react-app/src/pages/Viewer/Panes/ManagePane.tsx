@@ -7,8 +7,10 @@ import AppStore from "../../../store/App.store";
 import PixelPane from "../../../DSL/PixelPane/PixelPane";
 import MintBurnButtons from "../MintBurnButtons";
 import LocalStorage from "../../../services/local-storage";
+import {darkModeSecondary, lightModePrimary} from "../../../DSL/Theme";
 
 const ManagePane = observer(function ManagePane({store}: {store: ViewerStore}) {
+  const {colorMode} = useColorMode()
   return <>
     <Flex flexDirection={"column"} flexGrow={1}>
       <Typography
@@ -20,16 +22,22 @@ const ManagePane = observer(function ManagePane({store}: {store: ViewerStore}) {
       </Typography>
       <Box overflow={"scroll"} h={"full"} mt={3}>
         <Box maxHeight={"350px"}>
-          {AppStore.web3.puppersOwned.map((px, index, arr) => {
-            const [x,y] = AppStore.web3.pupperToPixelCoordsLocal(px)
-            const hex = AppStore.web3.pupperToHexLocal(px)
-            return <Box mt={3} mx={2} display={"inline-block"} key={`manage-${px}`}>
+          {AppStore.web3.puppersOwned.map((px) => {
+            return <Box
+              p={2}
+              m={1}
+              display={"inline-block"}
+              key={`manage-${px}`}
+              _hover={{
+                bg: colorMode === "light" ? lightModePrimary : darkModeSecondary
+              }}
+            >
               <PixelPane
                 isNew={store.getIsPupperNew(px)}
                 size={"sm"}
                 onClick={async () => store.onManagePixelClick(px)}
                 pupper={px}
-                color={hex}
+                color={AppStore.web3.pupperToHexLocal(px)}
                 pupperIndex={AppStore.web3.pupperToIndexLocal(px)}
               />
             </Box>})}

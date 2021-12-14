@@ -21,6 +21,19 @@ const PixelPaneStyle = {
       borderLeftWidth: "1px",
       borderRightWidth: "1px",
       borderBottomWidth: "1px"
+    },
+    drop: {
+      display: "none",
+      zIndex: -1,
+      position: "absolute",
+      w: "full",
+      h: "full",
+      top: "8px",
+      left: "8px",
+      bg: lightOrDark(colorMode, "black", "purple.700"),
+      borderWidth: "1px",
+      borderStyle: "solid",
+      borderColor: lightOrDark(colorMode, "black", "white")
     }
   }),
   sizes: {
@@ -57,8 +70,8 @@ const PixelPaneStyle = {
   },
   variants: {
     shadow: ({colorMode}: {colorMode: colorModeType}) => ({
-      container: {
-        boxShadow: lightOrDark(colorMode, "10px 10px 0px black", "10px 10px 0px white")
+      drop: {
+        display: "block"
       }
     })
   },
