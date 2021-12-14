@@ -4,6 +4,14 @@ import App from "./App";
 import { ChakraProvider, ColorModeScript } from "@chakra-ui/react";
 import theme from "./DSL/Theme";
 import Fonts from "./DSL/Fonts/Fonts";
+import * as Sentry from "@sentry/react";
+import { Integrations } from "@sentry/tracing";
+
+Sentry.init({
+  dsn: process.env.REACT_APP_SENTRY_DSN,
+  integrations: [new Integrations.BrowserTracing()],
+  tracesSampleRate: 1.0
+})
 
 ReactDOM.render(
   <React.StrictMode>
