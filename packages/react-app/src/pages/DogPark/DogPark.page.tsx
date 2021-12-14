@@ -163,9 +163,11 @@ const DogKennel = observer(({store}: {store: DogParkPageStore}) => {
         <Typography variant={TVariant.PresStart24} ml={3} height={"max-content"} block>🔒</Typography>
       </Flex>
       <Flex flexGrow={1} alignItems={"center"}>
-        <BigText size={"md"} label={abbr}>
-          {num}
-        </BigText>
+        <Box>
+          <BigText size={"md"} label={abbr}>
+            {num}
+          </BigText>
+        </Box>
       </Flex>
     </Flex>
   </Pane>

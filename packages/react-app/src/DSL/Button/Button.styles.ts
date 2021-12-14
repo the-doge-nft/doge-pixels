@@ -42,8 +42,8 @@ const ButtonStyle = {
         w: "full",
         _hover: {
           bg: lightOrDark(colorMode, "yellow.700", darkModeGradient),
-          // borderImageSource: lightOrDark(colorMode, "none", darkModeGradient),
-          // borderImageSlice: "1 0 0 1",
+          borderImageSource: lightOrDark(colorMode, "none", darkModeGradient),
+          borderImageSlice: "1 1",
           _disabled: {
             color: lightOrDark(colorMode, "#d6ceb6", "#482e84"),
             borderColor: lightOrDark(colorMode, "#d6ceb6", "#482e84"),
@@ -59,6 +59,9 @@ const ButtonStyle = {
           _disabled: {
             boxShadow: "none",
             transform: "translate(1px, 1px)"
+          },
+          _focus: {
+            boxShadow: "none"
           }
         },
         _disabled: {

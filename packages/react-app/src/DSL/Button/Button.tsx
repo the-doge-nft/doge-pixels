@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, {useEffect, useState} from "react";
 import {Box, Button as ChakraButton,  ButtonProps as ChakraButtonProps, useMultiStyleConfig} from "@chakra-ui/react";
 import { ThemeTypings } from "@chakra-ui/styled-system/dist/types/theming.types";
 import Typography, { TVariant } from "../Typography/Typography";
@@ -37,6 +37,8 @@ const Button = ({ submit, children, variant = ButtonVariant.Primary, size = "md"
       display={"inline-block"}
       zIndex={1}
       __css={styles.container}
+      onMouseEnter={() => setIsHover(true)}
+      onMouseLeave={() => setIsHover(false)}
       {...rest}
     >
       <ChakraButton
@@ -47,8 +49,6 @@ const Button = ({ submit, children, variant = ButtonVariant.Primary, size = "md"
         __css={styles.button}
         onClick={onClick}
         isLoading={isLoading}
-        onMouseEnter={() => setIsHover(true)}
-        onMouseLeave={() => setIsHover(false)}
       >
         <Typography
           variant={buttonTypographyMap[size]}
