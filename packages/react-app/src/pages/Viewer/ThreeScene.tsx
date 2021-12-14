@@ -72,6 +72,7 @@ const ThreeScene =({onPixelSelect, store}: ThreeSceneProps) => {
   }, []);
 
   const texture = useLoader(THREE.TextureLoader, Kobosu);
+  console.log("debug:: texture", texture.mipmaps)
   texture.magFilter = THREE.NearestFilter;
   const scale = 480;
   const aspectRatio = texture.image.width / texture.image.height;
@@ -152,20 +153,6 @@ const ThreeScene =({onPixelSelect, store}: ThreeSceneProps) => {
             camera.aspect = width / height;
             gl.setSize(width, height);
             camera.updateProjectionMatrix();
-
-            // if (dogeMeshRef.current) {
-            //   const [x1, x2, y1, y2] = getVisibleCoordinates(
-            //     camera,
-            //     dogeMeshRef.current!.position.z
-            //   )
-            //   console.log("debug:: bounds", x1, x2, y1, y2)
-            //
-            //   if (x1 <= 0 || x2 >= 640) {
-            //     console.log("debug:: zooming")
-            //     camera.position.z -= 50
-            //   }
-            // }
-
           })
           gl.toneMapping = THREE.NoToneMapping;
 
@@ -228,6 +215,7 @@ const ThreeScene =({onPixelSelect, store}: ThreeSceneProps) => {
               const [pixelX, pixelY] = getWorldPixelCoordinate(e.point, overlayLength);
               const indexX = Math.floor(pixelX + overlayLength);
               const indexY = -1*Math.floor(pixelY + overlayLength);
+
               //@ts-ignore
               const hex = KobosuJson[indexY][indexX]
               firstGrandchild.style.background = hex
