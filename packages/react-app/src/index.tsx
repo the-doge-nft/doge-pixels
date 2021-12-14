@@ -7,6 +7,8 @@ import Fonts from "./DSL/Fonts/Fonts";
 import * as Sentry from "@sentry/react";
 import { Integrations } from "@sentry/tracing";
 
+console.log("debug:: dns", process.env.REACT_APP_SENTRY_DSN)
+
 Sentry.init({
   dsn: process.env.REACT_APP_SENTRY_DSN,
   integrations: [new Integrations.BrowserTracing()],

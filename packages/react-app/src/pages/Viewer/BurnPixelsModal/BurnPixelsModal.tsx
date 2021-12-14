@@ -1,4 +1,4 @@
-import { Box, Flex } from "@chakra-ui/react";
+import {Box, Flex, useColorMode} from "@chakra-ui/react";
 import { observer } from "mobx-react-lite";
 import React, { useEffect, useMemo } from "react";
 import Modal from "../../../DSL/Modal/Modal";
@@ -11,6 +11,7 @@ import PixelPane from "../../../DSL/PixelPane/PixelPane";
 import Button, { ButtonVariant } from "../../../DSL/Button/Button";
 import Loading from "../../../DSL/Loading/Loading";
 import { formatWithThousandsSeparators } from "../../../helpers/numberFormatter";
+import {darkModeSecondary, lightModePrimary} from "../../../DSL/Theme";
 
 interface BurnPixelsModalProps {
   isOpen: boolean;
@@ -42,6 +43,7 @@ const BurnPixelsModal = observer(({isOpen, onClose, defaultPixel, onSuccess, onC
 })
 
 const SelectPixels = observer(({store}: { store: BurnPixelsModalStore}) => {
+  const {colorMode} = useColorMode()
   return <Flex flexDirection={"column"}>
 
     {!store.isUserPixelOwner && <>
@@ -66,7 +68,10 @@ const SelectPixels = observer(({store}: { store: BurnPixelsModalStore}) => {
                           mt={2}
                           mx={1}
                           p={2}
-                          bg={isPixelSelected ? "yellow.700" : "inherit"}>
+                          bg={isPixelSelected ? (colorMode === "light" ? lightModePrimary : darkModeSecondary) : "inherit"}
+                          _hover={{
+                            bg: (colorMode === "light" ? lightModePrimary : darkModeSecondary)
+                          }}>
                 <PixelPane
                   size={"sm"}
                   pupper={px}

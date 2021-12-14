@@ -27,6 +27,7 @@ const PixelPane = ({pupper, color, onClick, pupperIndex, variant = "solid", size
               cursor: "pointer",
           } : {}}
           onClick={() => onClick && onClick(pupper)}
+          zIndex={1}
         >
             {isNew && <Box position={"absolute"} top={-2} right={-3}>
                 <Pill>New</Pill>
@@ -40,6 +41,7 @@ const PixelPane = ({pupper, color, onClick, pupperIndex, variant = "solid", size
                     # {pupperIndex}
                 </Typography>
             </Box>
+        <Box __css={styles.drop}/>
     </Box>
 }
 
