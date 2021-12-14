@@ -141,6 +141,7 @@ const AppLayout = observer(function AppLayout({children}: AppLayoutProps) {
 });
 
 const Balances = observer(function Balances() {
+  const {colorMode} = useColorMode()
   return <Grid px={3} mt={2} templateColumns={"1fr 1fr"}>
       {AppStore.web3.web3Provider && <>
         <GridItem mr={4} display={"flex"} flexDirection={"column"}>
@@ -151,34 +152,40 @@ const Balances = observer(function Balances() {
               : 0}
           </Typography>
           <Dev>
-            <Flex flexDirection={"column"} border={"1px solid black"} alignItems={"center"} my={6} pb={2}>
-              <Box>
-                <Button
-                  p={2}
-                  size={"sm"}
-                  variant={ButtonVariant.Text}
-                  onClick={async () => {
-                    try {
-                      const tx = await AppStore.web3.getDogToAccount()
-                      await tx.wait()
-                      showDebugToast("Free $DOG aquired")
-                      AppStore.web3.refreshDogBalance()
-                    } catch (e) {
-                      console.error(e)
-                      showErrorToast("Error getting free $DOG")
-                    }
-                  }}
-                >
-                  💰
-                </Button>
-                <Button
-                    p={2}
-                    size={"sm"}
-                    variant={ButtonVariant.Text}
-                    onClick={async () => AppStore.web3.refreshDogBalance()}>
-                  🔄
-                </Button>
-              </Box>
+            <Flex
+                flexDirection={"column"}
+                borderWidth={"1px"}
+                borderStyle={"solid"}
+                borderColor={colorMode === "light" ? "black" : "white"}
+                alignItems={"center"}
+                my={6}
+                pb={2}>
+              <Flex alignItems={"center"} my={2}>
+                  <Box
+                      mr={1}
+                      _hover={{cursor: "pointer"}}
+                      onClick={async () => {
+                      try {
+                        const tx = await AppStore.web3.getDogToAccount()
+                        await tx.wait()
+                        showDebugToast("Free $DOG aquired")
+                        AppStore.web3.refreshDogBalance()
+                      } catch (e) {
+                        console.error(e)
+                        showErrorToast("Error getting free $DOG")
+                      }
+                    }}
+                  >
+                    💰
+                  </Box>
+                  <Box
+                      ml={1}
+                    _hover={{cursor: "pointer"}}
+                    onClick={async () => AppStore.web3.refreshDogBalance()}
+                  >
+                      🔄
+                  </Box>
+              </Flex>
               <Typography variant={TVariant.ComicSans10}>Dev tools</Typography>
             </Flex>
           </Dev>
@@ -188,9 +195,18 @@ const Balances = observer(function Balances() {
           <Typography variant={TVariant.PresStart15}>Pixels</Typography>
           <Typography variant={TVariant.ComicSans18} mt={1} block>{AppStore.web3.pupperBalance === 0 ? "None 😕" : AppStore.web3.pupperBalance}</Typography>
           <Dev>
-              <Flex flexDirection={"column"} border={"1px solid black"} alignItems={"center"} my={6} pb={2}>
-                <Button p={2} size={"sm"} variant={ButtonVariant.Text}
-                      onClick={async () => AppStore.web3.refreshPupperBalance()}>🔄</Button>
+              <Flex
+                flexDirection={"column"}
+                borderWidth={"1px"}
+                borderStyle={"solid"}
+                borderColor={colorMode === "light" ? "black" : "white"}
+                alignItems={"center"}
+                my={6}
+                pb={2}
+              >
+                  <Box onClick={async () => AppStore.web3.refreshPupperBalance()} my={2}>
+                      🔄
+                  </Box>
                 <Typography variant={TVariant.ComicSans10}>Dev tools</Typography>
               </Flex>
           </Dev>
