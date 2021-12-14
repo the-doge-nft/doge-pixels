@@ -25,7 +25,7 @@ const ColorModeToggleStyle = {
         cursor: "pointer"
       },
       _active: {
-        transform: "translate(4px, 4px)",
+        transform: "translate(6px, 6px)",
       },
       px: `${containerXPadding}px`,
       py: "8px",

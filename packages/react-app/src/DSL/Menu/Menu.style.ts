@@ -12,15 +12,15 @@ const MenuStyle = {
       px: 3,
       py: 2,
       borderRadius: "30px",
-      boxShadow: lightOrDark(colorMode, "10px 10px 0px black", "10px 10px 0px white"),
+      // boxShadow: lightOrDark(colorMode, "10px 10px 0px black", "10px 10px 0px white"),
       _hover: {
         cursor: "pointer"
       },
       _active: {
-        // transform: "translate(4px, 4px)",
-        boxShadow: `4px 4px 0px ${lightOrDark(colorMode,"black", "white")}`,
-        borderBottomLeftRadius: "0px",
-        borderBottomRightRadius: "0px"
+        transform: "translate(4px, 4px)",
+        // boxShadow: `4px 4px 0px ${lightOrDark(colorMode,"black", "white")}`,
+        // borderBottomLeftRadius: "0px",
+        // borderBottomRightRadius: "0px"
       },
       height: "50px"
     },
@@ -44,15 +44,15 @@ const MenuStyle = {
     },
     list: {
       py: 5,
-      mt: -2,
-      transform: "translate(6px, 6px)",
+      mt: 2,
+      // transform: "translate(px, 6px)",
       borderRadius: "0px",
       borderWidth: "1px",
       borderStyle: "solid",
       borderColor: lightOrDark(colorMode, "black", "white"),
       bg: lightOrDark(colorMode, "yellow.50", "purple.700"),
       zIndex: 2,
-      boxShadow: `4px 4px 0px ${lightOrDark(colorMode,"black", "white")}`,
+      boxShadow: `6px 6px 0px ${lightOrDark(colorMode,"black", "white")}`,
     },
   }),
   variants: {},
