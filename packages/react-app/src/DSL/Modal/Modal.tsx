@@ -109,16 +109,7 @@ const Modal = ({
               {children}
             </Box>
           </Box>
-          <Box
-            sx={chakraStyles.drop}
-            // position={"absolute"}
-            // w={"full"}
-            // h={"full"}
-            // top={"8px"}
-            // left={"8px"}
-            // border={"1px solid white"}
-            // zIndex={-1}
-          />
+          <Box sx={chakraStyles.drop}/>
         </Box>
       </Draggable>
     </ReactModal>
