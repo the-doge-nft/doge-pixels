@@ -112,19 +112,30 @@ const AppLayout = observer(function AppLayout({children}: AppLayoutProps) {
           <VStack>
             {AppStore.web3.address && AppStore.web3.web3Provider &&
             <Menu>
-                <MenuButton overFlow={"hidden"}>
-                    <Flex alignItems={"center"} overflow={"hidden"}>
-                        <Typography variant={TVariant.PresStart15}>
-                          {AppStore.web3.addressForDisplay}
-                        </Typography>
-                        <Icon
-                            color={"white"}
-                            boxSize={5}
-                            ml={2}
-                            icon={'person'}
-                        />
-                    </Flex>
-                </MenuButton>
+                <Box position={"relative"} zIndex={1}>
+                    <MenuButton overFlow={"hidden"}>
+                        <Flex alignItems={"center"} overflow={"hidden"}>
+                            {/*<Typography variant={TVariant.PresStart15}>*/}
+                            {/*  {AppStore.web3.addressForDisplay}*/}
+                            {/*</Typography>*/}
+                            <Icon
+                                color={"white"}
+                                boxSize={5}
+                                icon={'person'}
+                            />
+                        </Flex>
+                    </MenuButton>
+                    <Box
+                        position={"absolute"}
+                        w={"full"}
+                        h={"full"}
+                        bg={"black"}
+                        top={"10px"}
+                        left={"10px"}
+                        borderRadius={"30px"}
+                        zIndex={-1}
+                    />
+                </Box>
                 <MenuList maxWidth={"fit-content"}>
                     <Balances/>
                     <MenuItem onClick={() => AppStore.web3.disconnect()}>
