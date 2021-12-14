@@ -3,3 +3,7 @@
     background-color: none!important;
     /* display: none!important; */
 }
+
+.react-draggable {
+    overflow: inherit!important;
+}

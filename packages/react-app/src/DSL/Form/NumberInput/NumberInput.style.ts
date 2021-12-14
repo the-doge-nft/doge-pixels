@@ -6,9 +6,6 @@ export const NumberInputStyle = {
   baseStyle: ({ colorMode }: { colorMode: colorModeType }) => ({
     field: {
       fontFamily: GlobalFont,
-      // _disabled: {
-      //   bg: "purple.50",
-      // },
       bg: lightOrDark(colorMode, "yellow.50", darkModePrimary),
       color: lightOrDark(colorMode, "black", "white"),
       borderWidth: "1px",

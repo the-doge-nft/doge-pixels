@@ -72,7 +72,13 @@ const Modal = ({
       {...rest}
     >
       <Draggable handle={".handle"} defaultPosition={defaultPosition}>
-        <Box position={"relative"} zIndex={2}>
+        <Box
+          position={"relative"}
+          overflow={"hidden"}
+          zIndex={1}
+          width={"100%"}
+          maxWidth={chakraStyles.container.maxWidth as string}
+        >
           <Box __css={chakraStyles.container}>
             <Flex
               _hover={{

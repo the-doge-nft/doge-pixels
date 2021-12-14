@@ -6,6 +6,9 @@ const ButtonStyle = {
     container: {
       _focus: {
         boxShadow: "none"
+      },
+      _active: {
+        boxShadow: "none"
       }
     },
     button: {

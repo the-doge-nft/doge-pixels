@@ -10,7 +10,6 @@ import IndexPane from "./Panes/IndexPane";
 import MintPixelsModal from "./MintPixelsModal/MintPixelsModal";
 import SelectedPixelPane from "./Panes/SelectedPixelPane";
 import AppStore from "../../store/App.store";
-import Button, {ButtonVariant} from "../../DSL/Button/Button";
 import Icon from "../../DSL/Icon/Icon";
 import Loading from "../../DSL/Loading/Loading";
 import ScrollHelperModal from "./ScrollHelperModal/ScrollHelperModal";
@@ -90,9 +89,11 @@ const ViewerPage = observer(function ViewerPage() {
       <MintPixelsModal
         isOpen={store.isMintModalOpen}
         onClose={() => store.isMintModalOpen = false}
-        onSuccess={() => store.isMintMemeModalOpen = true}
-        goToPixels={() => {
+        onSuccess={() => {
+          store.isMintMemeModalOpen = true
           AppStore.web3.refreshPupperOwnershipMap()
+        }}
+        goToPixels={() => {
           store.isMintModalOpen = false
           store.isMintMemeModalOpen = false
           if (store.currentView !== ViewerView.Manage) {
@@ -104,7 +105,10 @@ const ViewerPage = observer(function ViewerPage() {
         defaultPixel={store.selectedPupper}
         isOpen={store.isBurnModalOpen}
         onClose={() => store.isBurnModalOpen = false}
-        onSuccess={() => store.isBurnMemeModalOpen = true}
+        onSuccess={() => {
+          AppStore.web3.refreshPupperOwnershipMap()
+          store.isBurnMemeModalOpen = true
+        }}
         onCompleteClose={() => {
           store.isBurnModalOpen = false
           store.isBurnMemeModalOpen = false
