@@ -1,6 +1,6 @@
 .ReactModal__Overlay, .ReactModal__Overlay--after-open {
     z-index: 3;
-    background-color: none!important;
+    background-color: transparent!important;
     /* display: none!important; */
 }
 
