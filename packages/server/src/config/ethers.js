@@ -46,9 +46,6 @@ class EthersHandler {
 
     this.PXContract = new ethers.Contract(this.pxContractInfo["address"], this.pxContractInfo["abi"], this.provider)
     this.DOGContract = new ethers.Contract(this.dogContractInfo["address"], this.dogContractInfo["abi"], this.provider)
-    // this.DOGContract.connect(provider)
-    // this.PXContract.connect(provider)
-    this.PXContract.SHIBA_WIDTH().then(width => logger.info(`SHIB WIDHT: ${width}`))
 
     keepAlive({
       provider: this.provider,
