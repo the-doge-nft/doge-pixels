@@ -11,7 +11,8 @@ import {
   MenuList,
   useColorMode,
   VStack,
-  Link as ChakraLink
+  Link as ChakraLink,
+  useMultiStyleConfig
 } from "@chakra-ui/react";
 import Typography, {TVariant} from "../DSL/Typography/Typography";
 import Button, {ButtonVariant} from "../DSL/Button/Button";
@@ -82,6 +83,8 @@ const AppLayout = observer(function AppLayout({children}: AppLayoutProps) {
     }
   }, [AppStore.web3.provider])
 
+  const {colorMode} = useColorMode()
+
   return (
     <Flex w={"100vw"} h={"100vh"} p={{base:0, md: 8}} flexDirection={"column"}>
       <Grid
@@ -111,38 +114,7 @@ const AppLayout = observer(function AppLayout({children}: AppLayoutProps) {
           </Button>}
           <VStack>
             {AppStore.web3.address && AppStore.web3.web3Provider &&
-            <Menu>
-                <Box position={"relative"} zIndex={1}>
-                    <MenuButton overFlow={"hidden"}>
-                        <Flex alignItems={"center"} overflow={"hidden"}>
-                            {/*<Typography variant={TVariant.PresStart15}>*/}
-                            {/*  {AppStore.web3.addressForDisplay}*/}
-                            {/*</Typography>*/}
-                            <Icon
-                                color={"white"}
-                                boxSize={5}
-                                icon={'person'}
-                            />
-                        </Flex>
-                    </MenuButton>
-                    <Box
-                        position={"absolute"}
-                        w={"full"}
-                        h={"full"}
-                        bg={"black"}
-                        top={"10px"}
-                        left={"10px"}
-                        borderRadius={"30px"}
-                        zIndex={-1}
-                    />
-                </Box>
-                <MenuList maxWidth={"fit-content"}>
-                    <Balances/>
-                    <MenuItem onClick={() => AppStore.web3.disconnect()}>
-                        <Typography variant={TVariant.PresStart15}>Disconnect {'>'}</Typography>
-                    </MenuItem>
-                </MenuList>
-            </Menu>}
+            <UserMenu />}
           </VStack>
         </GridItem>
       </Grid>
@@ -150,6 +122,36 @@ const AppLayout = observer(function AppLayout({children}: AppLayoutProps) {
     </Flex>
   );
 });
+
+const UserMenu = () => {
+  const styles = useMultiStyleConfig("Menu", {})
+  return <Menu>
+    <Box position={"relative"} zIndex={1}>
+      <MenuButton overFlow={"hidden"}>
+        <Flex alignItems={"center"} overflow={"hidden"}>
+          <Icon
+            color={"white"}
+            boxSize={5}
+            icon={'person'}
+          />
+        </Flex>
+      </MenuButton>
+      <Box __css={styles.drop}/>
+    </Box>
+
+    <MenuList maxWidth={"fit-content"}>
+      <Box px={3} mb={4}>
+        <Typography variant={TVariant.PresStart10}>
+          {AppStore.web3.addressForDisplay}
+        </Typography>
+      </Box>
+      <Balances/>
+      <MenuItem onClick={() => AppStore.web3.disconnect()}>
+        <Typography variant={TVariant.PresStart15}>Disconnect {'>'}</Typography>
+      </MenuItem>
+    </MenuList>
+  </Menu>
+}
 
 const Balances = observer(function Balances() {
   const {colorMode} = useColorMode()
