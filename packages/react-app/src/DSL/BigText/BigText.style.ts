@@ -16,7 +16,7 @@ const BigTextStyle = {
       "-webkit-text-stroke": lightOrDark(colorMode, "1px black", "none"),
     },
     label: {
-      bg: lightOrDark(colorMode, "yellow.700", darkModeGradient),
+      bg: lightOrDark(colorMode, "yellow.50", darkModeGradient),
       backgroundClip: "text",
       "-webkit-background-clip": "text",
 

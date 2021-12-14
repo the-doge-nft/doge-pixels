@@ -46,6 +46,7 @@ function BigInput<T extends object>({
             validate={validate}
             {...model(store, storeKey)}
             showBigInputDrop
+            isDisabled
           />
         </GridItem>
         {label && <GridItem
