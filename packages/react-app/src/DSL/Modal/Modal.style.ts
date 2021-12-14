@@ -26,7 +26,7 @@ const ModalStyle = {
       left: "8px",
       zIndex: -1,
       border: lightOrDark(colorMode, "1px solid black", "1px solid white"),
-      bg: lightOrDark(colorMode, "black", "transparent"),
+      bg: lightOrDark(colorMode, "black", "purple.700"),
     }
   }),
   sizes: {
@@ -66,7 +66,10 @@ const ModalStyle = {
     },
     lg: {
       container: {
-        maxWidth: "36rem"
+        maxWidth: "36rem",
+      },
+      drop: {
+        maxWidth: "36rem",
       },
       body: {
         px: 10,
