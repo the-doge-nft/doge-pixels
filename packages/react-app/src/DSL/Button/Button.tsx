@@ -37,8 +37,6 @@ const Button = ({ submit, children, variant = ButtonVariant.Primary, size = "md"
       display={"inline-block"}
       zIndex={1}
       __css={styles.container}
-      onMouseEnter={() => setIsHover(true)}
-      onMouseLeave={() => setIsHover(false)}
       {...rest}
     >
       <ChakraButton
@@ -49,6 +47,8 @@ const Button = ({ submit, children, variant = ButtonVariant.Primary, size = "md"
         __css={styles.button}
         onClick={onClick}
         isLoading={isLoading}
+        onMouseEnter={() => setIsHover(true)}
+        onMouseLeave={() => setIsHover(false)}
       >
         <Typography
           variant={buttonTypographyMap[size]}

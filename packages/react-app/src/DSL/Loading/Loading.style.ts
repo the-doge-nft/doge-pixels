@@ -1,4 +1,4 @@
-import { colorModeType, lightOrDark } from "../Theme";
+import {colorModeType, darkModeGradient, lightOrDark} from "../Theme";
 
 const LoadingStyle = {
     parts: ["container", "pixel"],
@@ -16,7 +16,7 @@ const LoadingStyle = {
             borderColor: lightOrDark(colorMode, "black", "white"),
         },
         pixel: {
-            bg: lightOrDark(colorMode, "black", "white"),
+            bg: lightOrDark(colorMode, "none", darkModeGradient),
             mr: 2,
             display: "inline-block",
             height: "100%",

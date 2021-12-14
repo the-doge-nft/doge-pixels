@@ -4,7 +4,7 @@ import {Object3D} from "three";
 import {Canvas, useLoader} from "@react-three/fiber";
 import Kobosu from "../../images/THE_ACTUAL_NFT_IMAGE.png";
 import KobosuJson from "../../images/kobosu.json"
-import {Box} from "@chakra-ui/react";
+import {Box, useColorMode} from "@chakra-ui/react";
 import {getWorldPixelCoordinate} from "./helpers";
 import {onPixelSelectType} from "./Viewer.page";
 import ViewerStore from "./Viewer.store";
@@ -38,12 +38,16 @@ const ThreeScene =({onPixelSelect, store}: ThreeSceneProps) => {
 
   const [camera] = useState<THREE.PerspectiveCamera>(cam);
   const [isDragging, setIsDragging] = useState(false);
+  const {colorMode} = useColorMode()
 
   const canvasContainerRef = useRef<HTMLDivElement | null>(null)
   const dogeMeshRef = useRef<Object3D | null>(null)
   const selectedPixelOverlayRef = useRef<Object3D>(null);
   const hoverOverlayRef = useRef<Object3D>(null);
   const tooltipRef = useRef<HTMLDivElement | null>(null);
+
+  const selectedColor = colorMode === "light" ? 0xff0000 : 0xff00e5
+  const hoverColor = colorMode === "light" ? 0xf1c232 : 0x6E1DEC
 
   //@TODO: CC connect type
   var panZoom: any
@@ -248,25 +252,25 @@ const ThreeScene =({onPixelSelect, store}: ThreeSceneProps) => {
 
         <mesh ref={selectedPixelOverlayRef} position={[0, 0, 0.0001]} visible={false}>
           <planeGeometry attach={"geometry"} args={[overlayLength, overlayLength]}/>
-          <meshBasicMaterial attach={"material"} color={0xff0000} opacity={0.8} transparent={true} depthTest={false}/>
+          <meshBasicMaterial attach={"material"} color={selectedColor} opacity={0.8} transparent={true} depthTest={false}/>
         </mesh>
 
         <group ref={hoverOverlayRef}>
           <mesh position={[-0.5, 0, 0.001]}>
             <planeGeometry attach={"geometry"} args={[0.05, 1.05]}/>
-            <meshBasicMaterial attach={"material"} color={0xf1c232} opacity={1} transparent={true} depthTest={false}/>
+            <meshBasicMaterial attach={"material"} color={hoverColor} opacity={1} transparent={true} depthTest={false}/>
           </mesh>
           <mesh position={[0.5, 0, 0.001]}>
             <planeGeometry attach={"geometry"} args={[0.05, 1.05]}/>
-            <meshBasicMaterial attach={"material"} color={0xf1c232} opacity={1} transparent={true} depthTest={false}/>
+            <meshBasicMaterial attach={"material"} color={hoverColor} opacity={1} transparent={true} depthTest={false}/>
           </mesh>
           <mesh position={[0, 0.5, 0.001]} rotation={new THREE.Euler(0, 0, Math.PI / 2)}>
             <planeGeometry attach={"geometry"} args={[0.05, 1]}/>
-            <meshBasicMaterial attach={"material"} color={0xf1c232} opacity={1} transparent={true} depthTest={false}/>
+            <meshBasicMaterial attach={"material"} color={hoverColor} opacity={1} transparent={true} depthTest={false}/>
           </mesh>
           <mesh position={[0, -0.5, 0.001]} rotation={new THREE.Euler(0, 0, -Math.PI / 2)}>
             <planeGeometry attach={"geometry"} args={[0.05, 1]}/>
-            <meshBasicMaterial attach={"material"} color={0xf1c232} opacity={1} transparent={true} depthTest={false}/>
+            <meshBasicMaterial attach={"material"} color={hoverColor} opacity={1} transparent={true} depthTest={false}/>
           </mesh>
         </group>
       </Canvas>
