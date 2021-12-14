@@ -42,7 +42,9 @@ const ButtonStyle = {
           // borderImageSource: lightOrDark(colorMode, "none", darkModeGradient),
           // borderImageSlice: "1 0 0 1",
           _disabled: {
-            color: "gray.900",
+            color: lightOrDark(colorMode, "#d6ceb6", "#482e84"),
+            borderColor: lightOrDark(colorMode, "#d6ceb6", "#482e84"),
+            bg: lightOrDark(colorMode, "yellow.50", "purple.700")
           },
         },
         _focus: {
@@ -53,11 +55,17 @@ const ButtonStyle = {
           boxShadow: "none",
           _disabled: {
             boxShadow: "none",
+            transform: "translate(1px, 1px)"
           }
         },
+        _disabled: {
+          color: lightOrDark(colorMode, "#d6ceb6", "#482e84"),
+          borderColor: lightOrDark(colorMode, "#d6ceb6", "#482e84"),
+        }
       },
       drop: {
         borderImageSlice: "1 1",
+        bg: lightOrDark(colorMode, "black", "none")
       }
     }),
     text: ({ colorMode }: { colorMode: colorModeType }) => ({
