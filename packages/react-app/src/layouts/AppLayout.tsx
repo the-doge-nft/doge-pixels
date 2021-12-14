@@ -174,8 +174,7 @@ const Balances = observer(function Balances() {
                         console.error(e)
                         showErrorToast("Error getting free $DOG")
                       }
-                    }}
-                  >
+                    }}>
                     💰
                   </Box>
                   <Box
@@ -245,7 +244,6 @@ const Nav = () => {
 
 const Title = () => {
   const history = useHistory()
-  const {colorMode} = useColorMode()
   const [rotation, setRotation] = useState(0)
   return <Box
       _hover={{

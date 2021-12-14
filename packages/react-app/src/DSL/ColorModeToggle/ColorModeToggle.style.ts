@@ -9,7 +9,7 @@ export const colorModeToggleSizes = {
 }
 
 const ColorModeToggleStyle = {
-  parts: ["container", "handle", "dogImage", "leftIcon", "rightIcon"],
+  parts: ["container", "handle", "dogImage", "leftIcon", "rightIcon", "drop"],
   baseStyle: ({colorMode}: { colorMode: colorModeType }) => ({
     container: {
       color: lightOrDark(colorMode,"black", "white"),
@@ -21,19 +21,19 @@ const ColorModeToggleStyle = {
       borderStyle: "solid",
       borderWidth: "1px",
       borderColor: lightOrDark(colorMode,"black", "white"),
-      boxShadow: "8px 8px 0px",
       _hover: {
         cursor: "pointer"
       },
       _active: {
         transform: "translate(4px, 4px)",
-        boxShadow: `4px 4px 0px ${lightOrDark(colorMode,"black", "white")}`
       },
       px: `${containerXPadding}px`,
       py: "8px",
       userSelect: "none",
       msUserSelect: "none",
-      webkitUserSelect: "none"
+      webkitUserSelect: "none",
+      zIndex: 2,
+      bg: lightOrDark(colorMode, "yellow.50", "purple.700")
     },
     handle: {
       position: "relative",
@@ -64,6 +64,20 @@ const ColorModeToggleStyle = {
       right: `${containerXPadding}px`,
       position: "absolute",
       mr: 2
+    },
+    drop: {
+      zIndex: -1,
+      position: "absolute",
+      width: `${containerWidth}px`,
+      height: "100%",
+      borderRadius: "35px",
+      bg: lightOrDark(colorMode, "black", "purple.700"),
+      borderWidth: "1px",
+      borderStyle: "solid",
+      borderColor: lightOrDark(colorMode, "black", "white"),
+      top: "10px",
+      left: "10px",
+      // display: "none"
     }
   })
 }
