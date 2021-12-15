@@ -1,5 +1,5 @@
 import React, {createContext} from "react";
-import {Box, Grid, GridItem, useColorMode, useMultiStyleConfig, VStack} from "@chakra-ui/react";
+import {Box, Grid, GridItem, useMultiStyleConfig, VStack} from "@chakra-ui/react";
 import NumberInput from "./NumberInput/NumberInput";
 import model from "./model";
 import {useObserver} from "mobx-react-lite";
@@ -8,7 +8,6 @@ import Icon from "../Icon/Icon";
 import {useFormState} from "react-final-form";
 import Button from "../Button/Button";
 import {BaseInputValidators} from "./interfaces";
-import {lightOrDark} from "../Theme";
 
 interface BigInputProps {
   label?: string;
@@ -20,7 +19,7 @@ interface BigInputProps {
 
 export const BigInputContext = createContext({ showEmblem: false, isDisabled: false });
 
-function BigInput<T extends object>({
+function BigInput({
   label,
   store,
   storeKey,
@@ -28,7 +27,6 @@ function BigInput<T extends object>({
   renderLeftOfValidation
 }: BigInputProps) {
   const formState = useFormState()
-  const { colorMode } = useColorMode()
   const errors = formState.errors as object
   const styles = useMultiStyleConfig("BigText", {size: "md"})
   return useObserver(() => <Box pt={3} pb={4} borderRadius={9}>

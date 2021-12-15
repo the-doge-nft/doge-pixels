@@ -21,11 +21,12 @@ import {darkModeSecondary, lightModePrimary} from "../../DSL/Theme";
 const DogParkPage = observer(function DogParkPage() {
   const history = useHistory()
   const { address, tokenID } = useParams<{address: string, tokenID: string}>()
-  const store = useMemo(() => new DogParkPageStore(address, Number(tokenID)), [])
+  const store = useMemo(() => new DogParkPageStore(address, Number(tokenID)), [address, tokenID])
   const {colorMode} = useColorMode()
 
   useEffect(() => {
     store.init()
+    // eslint-disable-next-line
   }, [])
   return <Grid templateColumns={"0.5fr 1fr"} flexGrow={1}>
     <GridItem display={"flex"} flexDirection={"column"} flexGrow={1}>

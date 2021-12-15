@@ -1,6 +1,6 @@
 import React from "react";
-import { Box, useColorMode, useStyleConfig } from "@chakra-ui/react";
-import Typography, { TVariant } from "../Typography/Typography";
+import {Box, useStyleConfig} from "@chakra-ui/react";
+import Typography, {TVariant} from "../Typography/Typography";
 
 interface DemoProps extends React.Props<any> {
   title: string;

@@ -1,8 +1,5 @@
-import { HttpConfig, httpFactory } from "./http";
+import {HttpConfig, httpFactory} from "./http";
 import ApiErrorInterceptor from "./interceptors/api-error.interceptor";
-import AuthInterceptorFactory from "./interceptors/auth.interceptor";
-import AuthHandler from "../helpers/AuthHandler";
-import { AxiosRequestConfig } from "axios";
 
 const Http = httpFactory(HttpConfig);
 

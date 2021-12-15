@@ -40,6 +40,7 @@ export function arrayDiffSetByField<T, L, K extends keyof T, I extends keyof L>(
 }
 
 export function arrayFindByField<T, K extends keyof T>(array: T[], val: any, field: K = "id" as any): T | undefined {
+  // eslint-disable-next-line
   return array.find(item => item[field] == val);
 }
 
@@ -82,6 +83,7 @@ export function arrayFindIndexByField<T, K extends keyof T>(
   val: any,
   field: K = "id" as any,
 ): number | null {
+  // eslint-disable-next-line
   return array.findIndex(item => item[field] == val);
 }
 
@@ -119,7 +121,7 @@ export function arrayUnshiftImmutable<T>(arr: T[], newObj: T) {
   return ret;
 }
 
-export function arrayRange<T>(range: number) {
+export function arrayRange(range: number) {
   // @ts-ignore
   return [...Array(range).keys()];
 }

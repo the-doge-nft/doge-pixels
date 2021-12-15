@@ -1,5 +1,4 @@
 
-const _currencyFormatters: any = {};
 export const STILL_LOADING_SIGN = "-";
 
 /**
@@ -75,9 +74,10 @@ export function convertToAbbreviation(val: number) {
   var sNum = Math.floor(("" + val).length / 3);
 
   // calculating the precised value.
-  var sVal = parseFloat((
-    sNum != 0 ? (val / Math.pow(1000, sNum)) : val).toPrecision(2));
+  // eslint-disable-next-line
+  var sVal = parseFloat((sNum != 0 ? (val / Math.pow(1000, sNum)) : val).toPrecision(2));
 
+  // eslint-disable-next-line
   if (sVal % 1 != 0) {
     //@ts-ignore
     sVal = sVal.toFixed(1);

@@ -7,7 +7,7 @@ const CheckboxStyle = {
       borderColor: lightOrDark(colorMode, "black", "white"),
       borderWidth: "1px",
       borderRadius: "0px",
-      color: "black",
+      color: lightOrDark(colorMode, "black", "white"),
       _focus: {
         boxShadow: "none"
       },
@@ -15,12 +15,12 @@ const CheckboxStyle = {
         boxShadow: "none"
       },
       _checked: {
-        color: "black",
-        borderColor: "black",
-        bg: "yellow.50",
+        color: lightOrDark(colorMode, "black", "white"),
+        borderColor: lightOrDark(colorMode, "black", "white"),
+        bg: lightOrDark(colorMode, "yellow.50", "purple.700"),
         _hover: {
-          bg: "yellow.50",
-          borderColor: "black",
+          bg: lightOrDark(colorMode, "yellow.50", "purple.700"),
+          borderColor: lightOrDark(colorMode, "black", "white"),
         }
       }
     }

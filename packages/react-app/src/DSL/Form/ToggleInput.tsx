@@ -1,8 +1,8 @@
-import React, { useEffect } from "react";
-import { Box, FormErrorMessage, Switch } from "@chakra-ui/react";
-import { BaseInputProps } from "./interfaces";
+import React from "react";
+import {FormErrorMessage, Switch} from "@chakra-ui/react";
+import {BaseInputProps} from "./interfaces";
 import Control from "./Control";
-import { observer } from "mobx-react-lite";
+import {observer} from "mobx-react-lite";
 import {useControlledFormField, useFormField} from "./useFormField";
 
 interface ToggleInputProps extends BaseInputProps {}

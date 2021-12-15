@@ -1,10 +1,9 @@
 import React from "react";
-import { observer } from "mobx-react-lite";
-import { Box, Flex, VStack } from "@chakra-ui/react";
-import Typography, { TVariant } from "../../../DSL/Typography/Typography";
+import {observer} from "mobx-react-lite";
+import {Box, Flex, VStack} from "@chakra-ui/react";
+import Typography, {TVariant} from "../../../DSL/Typography/Typography";
 import ViewerStore from "../Viewer.store";
-import Button, { ButtonVariant } from "../../../DSL/Button/Button";
-import { abbreviate } from "../../../helpers/strings";
+import Button, {ButtonVariant} from "../../../DSL/Button/Button";
 import PixelPane from "../../../DSL/PixelPane/PixelPane";
 import {SET_CAMERA} from "../../../services/mixins/eventable";
 import {useHistory} from "react-router-dom";

@@ -1,4 +1,4 @@
-import React, {useEffect, useRef} from "react";
+import React from "react";
 import {
   Box,
   FormErrorMessage,
@@ -7,16 +7,13 @@ import {
   NumberInput as ChakraNumberInput,
   NumberInputField,
   NumberInputStepper,
-  useColorMode, useMultiStyleConfig,
+  useMultiStyleConfig,
 } from "@chakra-ui/react";
-import { composeValidators, required } from "../validation";
-import { useField } from "react-final-form";
 import Control from "../Control";
-import { AllowedStyleProps, BaseInputProps } from "../interfaces";
-import { useControlledFormField, useFormField } from "../useFormField";
+import {AllowedStyleProps, BaseInputProps} from "../interfaces";
+import {useControlledFormField, useFormField} from "../useFormField";
 import Typography, {TVariant} from "../../Typography/Typography";
 import {observer} from "mobx-react-lite";
-import {darkModeGradient, lightOrDark} from "../../Theme";
 
 export interface NumberInputProps extends BaseInputProps, AllowedStyleProps {
   stepper?: boolean;

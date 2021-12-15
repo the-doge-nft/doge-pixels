@@ -4,6 +4,7 @@ export function getShallowEqualDiffKeys<T, T2>(obj1: T, obj2: T2): Extract<keyof
   const diff: Extract<keyof T | keyof T2, string>[] = [];
   for (const [key] of Object.entries(obj1)) {
     //@ts-ignore
+    // eslint-disable-next-line
     if (obj1[key] != obj2[key]) {
       //@ts-ignore
       diff.push(key);
@@ -11,6 +12,7 @@ export function getShallowEqualDiffKeys<T, T2>(obj1: T, obj2: T2): Extract<keyof
   }
   for (const [key] of Object.entries(obj2)) {
     //@ts-ignore
+    // eslint-disable-next-line
     if (obj2[key] != obj1[key]) {
       //@ts-ignore
       if (!diff.includes(key)) {

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import Demo from "../Demo/Demo";
 import ColorModeToggle from "./ColorModeToggle";
 

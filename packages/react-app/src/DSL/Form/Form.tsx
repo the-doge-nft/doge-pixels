@@ -1,10 +1,7 @@
-import { Form as ReactFinalForm } from "react-final-form";
+import {Form as ReactFinalForm} from "react-final-form";
 import React from "react";
-import Typography, { TVariant } from "../Typography/Typography";
 import FormError from "./FormError";
-import { FORM_ERROR, FormApi, Mutator } from "final-form";
-import Dev from "../../common/Dev";
-import { Box } from "@chakra-ui/react";
+import {FORM_ERROR, FormApi} from "final-form";
 import ApiError from "../../services/exceptions/api.error";
 
 export interface FormProps {

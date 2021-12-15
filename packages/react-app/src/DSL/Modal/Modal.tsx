@@ -1,11 +1,5 @@
 import React from "react";
-import {
-  Box,
-  Flex,
-  ModalProps as ChakraModalProps,
-  useColorMode,
-  useMultiStyleConfig,
-} from "@chakra-ui/react";
+import {Box, Flex, useColorMode, useMultiStyleConfig,} from "@chakra-ui/react";
 import Icon from "../Icon/Icon";
 import {lightOrDark} from "../Theme";
 import Draggable from "react-draggable";
@@ -60,8 +54,6 @@ const Modal = ({
   const chakraStyles = useMultiStyleConfig("Modal", {size: size})
   const { colorMode } = useColorMode()
 
-  console.log("debug:: modal styles", chakraStyles.drop)
-
   //@TODO CC
   // ReactModal.setAppElement('#react-modal-main');
   return (
@@ -80,27 +72,34 @@ const Modal = ({
           maxWidth={chakraStyles.container.maxWidth as string}
         >
           <Box __css={chakraStyles.container}>
-            <Flex
-              _hover={{
-                cursor: "pointer"
-              }}
-              _active={{
-                cursor: "grabbing"
-              }}
-              className={"handle"}
-              justifyContent={"flex-end"}
-              borderBottom={"1px solid"}
-              borderColor={lightOrDark(colorMode, "black", "white")}>
+            <Flex>
+              <Flex
+                width={"100%"}
+                _hover={{
+                  cursor: "pointer"
+                }}
+                _active={{
+                  cursor: "grabbing"
+                }}
+                className={"handle"}
+                justifyContent={"flex-end"}
+                borderBottom={"1px solid"}
+                borderColor={lightOrDark(colorMode, "black", "white")}
+              />
               <Box
+                p={1}
                 borderLeft={"1px solid"}
+                borderBottom={"1px solid"}
                 borderColor={lightOrDark(colorMode, "black", "white")}
               >
                 <Box
+                  // size={"sm"}
+                  // variant={ButtonVariant.Text}
                   px={1}
                   _hover={{cursor: "pointer"}}
                   _active={{transform: "translate(2px, 2px)"}}
                   color={lightOrDark(colorMode, "black", "white")}
-                  onClick={() => onClose()}
+                  onClick={onClose}
                 >
                   <Icon icon={"close"} fontSize={"18px"}/>
                 </Box>

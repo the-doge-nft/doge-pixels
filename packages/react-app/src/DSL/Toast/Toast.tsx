@@ -1,7 +1,6 @@
 import {Box, Button, createStandaloneToast, Flex } from "@chakra-ui/react";
 import theme from "../Theme";
 import { isDevModeEnabled } from "../../environment/helpers";
-import { t } from "@lingui/macro";
 import {ButtonVariant} from "../Button/Button";
 import Typography, { TVariant } from "../Typography/Typography";
 

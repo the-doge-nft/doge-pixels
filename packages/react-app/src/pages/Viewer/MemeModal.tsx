@@ -59,7 +59,7 @@ const MemeModal = ({isOpen, onClose, type}: MemeModalProps) => {
     if (isOpen) {
       setIndex(getRandomMemeIndex(type))
     }
-  }, [isOpen])
+  }, [isOpen, type])
 
   const windowWidth = window.innerWidth;
   const windowHeight = window.innerHeight;

@@ -15,6 +15,7 @@ const ButtonStyle = {
       color: lightOrDark(colorMode, "black", "white"),
       textDecorationColor: lightOrDark(colorMode, "black", "white"),
       borderWidth: "1px",
+      cursor: "pointer"
     },
     drop: {
       zIndex: -1,

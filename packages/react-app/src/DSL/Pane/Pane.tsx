@@ -1,4 +1,4 @@
-import {Box, useMultiStyleConfig, useStyleConfig} from "@chakra-ui/react";
+import {Box, useMultiStyleConfig} from "@chakra-ui/react";
 import React from "react";
 import { AllowedStyleProps } from "../Form/interfaces";
 

@@ -1,8 +1,8 @@
-import { Box, Flex, useTheme } from "@chakra-ui/react";
+import {Box, Flex} from "@chakra-ui/react";
 import React from "react";
 import Demo from "../Demo/Demo";
 import Colors from "./Colors";
-import Typography, { TVariant } from "../Typography/Typography";
+import Typography, {TVariant} from "../Typography/Typography";
 
 const ColorBox = ({ name, hex }: { name: string; hex: string }) => {
   return (
@@ -28,7 +28,6 @@ const ColorBox = ({ name, hex }: { name: string; hex: string }) => {
 };
 
 const DemoColors = () => {
-  const theme = useTheme();
   return (
     <Demo title={"Colors"}>
       <Flex wrap={"wrap"}>
@@ -43,7 +42,7 @@ const DemoColors = () => {
                 hex={Colors[color][hue] as string}
               />
             ));
-          }
+          } else return <></>
         })}
       </Flex>
     </Demo>

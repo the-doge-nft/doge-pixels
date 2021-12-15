@@ -1,4 +1,4 @@
-import {colorModeType, darkModeGradient, darkModePrimary, lightOrDark} from "../Theme";
+import {colorModeType, darkModeGradient, lightOrDark} from "../Theme";
 
 const BigTextStyle = {
   parts: ["main", "label", "drop"],

@@ -6,11 +6,6 @@ import {useControlledFormField, useFormField} from "../useFormField";
 import {Checkbox, FormErrorMessage, FormLabel} from "@chakra-ui/react";
 import Typography, {TVariant} from "../../Typography/Typography";
 
-interface CheckboxInputProps extends BaseInputProps {
-  value: boolean;
-  initialValue: boolean;
-}
-
 
 const CheckboxInput = observer(({validate, name, initialValue, label, horizontal, onChange, value}: BaseInputProps) => {
   const { isRequired, inputValue, inputOnChange, restInput, meta } = useFormField(validate, name, initialValue, true);
@@ -19,6 +14,7 @@ const CheckboxInput = observer(({validate, name, initialValue, label, horizontal
     if (value !== undefined && value !== null) {
       inputOnChange(value);
     }
+    // eslint-disable-next-line
   }, [value]);
 
   useControlledFormField(inputOnChange, value)

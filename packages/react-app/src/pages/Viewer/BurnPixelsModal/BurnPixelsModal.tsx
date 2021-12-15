@@ -22,12 +22,14 @@ interface BurnPixelsModalProps {
 }
 
 const BurnPixelsModal = observer(({isOpen, onClose, defaultPixel, onSuccess, onCompleteClose}: BurnPixelsModalProps) => {
-  const store = useMemo(() => new BurnPixelsModalStore(defaultPixel), [isOpen])
+  // eslint-disable-next-line
+  const store = useMemo(() => new BurnPixelsModalStore(defaultPixel), [isOpen, defaultPixel])
 
   useEffect(() => {
     if (store.currentView === BurnPixelsModalView.Complete) {
       onSuccess && onSuccess()
     }
+    // eslint-disable-next-line
   }, [store.currentView])
 
   return <Modal
@@ -113,6 +115,7 @@ const SelectPixels = observer(({store}: { store: BurnPixelsModalStore}) => {
 const LoadingBurning = observer(({store}: {store: BurnPixelsModalStore}) => {
   useEffect(() => {
     store.burnSelectedPixels()
+    // eslint-disable-next-line
   }, [])
   return (
     <Box mt={20} mb={10}>

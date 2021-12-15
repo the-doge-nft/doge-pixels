@@ -1,10 +1,8 @@
-import React, { useEffect } from "react";
+import React from "react";
 import Control from "./Control";
-import { BaseInputProps } from "./interfaces";
-import { FormErrorMessage, Select } from "@chakra-ui/react";
-import { useField } from "react-final-form";
-import { composeValidators, required } from "./validation";
-import { useControlledFormField, useFormField } from "./useFormField";
+import {BaseInputProps} from "./interfaces";
+import {FormErrorMessage, Select} from "@chakra-ui/react";
+import {useControlledFormField, useFormField} from "./useFormField";
 
 export type SelectItem = {
   id: string;

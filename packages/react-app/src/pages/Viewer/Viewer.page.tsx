@@ -16,21 +16,22 @@ import ScrollHelperModal from "./ScrollHelperModal/ScrollHelperModal";
 import {useQuery} from "../../helpers/hooks";
 import Typography, { TVariant } from "../../DSL/Typography/Typography";
 import MemeModal from "./MemeModal";
+import Drawer from "../../DSL/Drawer/Drawer";
 
 export type onPixelSelectType = (x: number, y: number) => void;
 
 const ViewerPage = observer(function ViewerPage() {
   const query = useQuery()
-  const store = useMemo(() => new ViewerStore(
-    query.get("x"),
-    query.get("y")
-  ), []);
+  const x = query.get("x")
+  const y = query.get("y")
+  const store = useMemo(() => new ViewerStore(x,y), [x, y]);
 
   useEffect(() => {
     store.init()
     return () => {
       store.destroy()
     }
+    // eslint-disable-next-line
   }, [])
 
   const onPixelSelect: onPixelSelectType = useCallback((x: number, y: number) => {
@@ -38,6 +39,10 @@ const ViewerPage = observer(function ViewerPage() {
     if (store.currentView !== ViewerView.Selected) {
       store.pushNavigation(ViewerView.Selected)
     }
+    if (AppStore.rwd.isMobile) {
+      store.isSelectedDrawerOpen = true
+    }
+    // eslint-disable-next-line
   }, []);
   return (
     <>
@@ -128,6 +133,13 @@ const ViewerPage = observer(function ViewerPage() {
         isOpen={store.isBurnMemeModalOpen}
         onClose={() => store.isBurnMemeModalOpen = false}
       />
+      <Drawer
+        isOpen={store.isSelectedDrawerOpen}
+        onClose={() => store.isSelectedDrawerOpen = false}
+        // title={"Selected Pixel Pane"}
+      >
+        <SelectedPixelPane store={store}/>
+      </Drawer>
     </>
   );
 });

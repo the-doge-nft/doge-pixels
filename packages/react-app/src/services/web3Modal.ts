@@ -1,8 +1,6 @@
 import Web3Modal from "web3modal";
 import WalletConnectProvider from "@walletconnect/web3-provider";
 import {INFURA_ID} from "../constants";
-import Portis from "@portis/web3";
-import Fortmatic from "fortmatic";
 import Authereum from "authereum";
 import WalletLink from "walletlink";
 import "./web3Modal.css";

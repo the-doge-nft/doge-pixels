@@ -1,10 +1,9 @@
-import React, {useState} from "react";
-import Button, { ButtonProps } from "../Button/Button";
-import { useFormState } from "react-final-form";
-import { ObjectKeys } from "../../helpers/objects";
-import { t } from "@lingui/macro";
-import Typography from "../Typography/Typography";
-import { observer } from "mobx-react-lite";
+import React from "react";
+import Button, {ButtonProps} from "../Button/Button";
+import {useFormState} from "react-final-form";
+import {ObjectKeys} from "../../helpers/objects";
+import {t} from "@lingui/macro";
+import {observer} from "mobx-react-lite";
 
 interface SubmitProps extends ButtonProps {
   label?: string;

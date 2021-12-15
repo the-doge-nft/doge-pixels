@@ -1,6 +1,6 @@
 import Control from "./Control";
 import { FormErrorMessage, InputGroup, InputRightElement } from "@chakra-ui/react";
-import React, { useEffect } from "react";
+import React from "react";
 import { AllowedStyleProps, BaseInputProps } from "./interfaces";
 import { Input } from "./Input/Input";
 import { useControlledFormField, useFormField } from "./useFormField";

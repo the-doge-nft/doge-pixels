@@ -1,7 +1,6 @@
-import React, {useEffect, useState} from "react";
-import {Box, Button as ChakraButton,  ButtonProps as ChakraButtonProps, useMultiStyleConfig} from "@chakra-ui/react";
-import { ThemeTypings } from "@chakra-ui/styled-system/dist/types/theming.types";
-import Typography, { TVariant } from "../Typography/Typography";
+import React, {useState} from "react";
+import {Box, Button as ChakraButton, useMultiStyleConfig} from "@chakra-ui/react";
+import Typography, {TVariant} from "../Typography/Typography";
 import {AllowedStyleProps} from "../Form/interfaces";
 
 export enum ButtonVariant {
@@ -46,6 +45,7 @@ const Button = ({ submit, children, variant = ButtonVariant.Primary, size = "md"
         size={size}
         __css={styles.button}
         onClick={onClick}
+        // onTouchStart={onClick}
         isLoading={isLoading}
         onMouseEnter={() => setIsHover(true)}
         onMouseLeave={() => setIsHover(false)}
