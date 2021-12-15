@@ -1,10 +1,6 @@
 import {
   getVisibleCoordinates,
   solveForBounds,
-  solveForX1,
-  solveForX2,
-  solveForY1,
-  solveForY2
 } from "../../pages/Viewer/helpers";
 import {Vector3} from "three/src/math/Vector3";
 
@@ -209,9 +205,9 @@ export default function panzoom(camera, owner, toKeepInBounds, minDepth, maxDept
 
       var delta = 0
       if (currentPinchLength < lastPinchZoomLength) {
-        delta = 1
+        delta = 5
       } else if (currentPinchLength > lastPinchZoomLength) {
-        delta = -1
+        delta = -5
       }
 
       var scaleMultiplier = getScaleMultiplier(delta)
@@ -263,10 +259,12 @@ export default function panzoom(camera, owner, toKeepInBounds, minDepth, maxDept
     )
 
     if ((x1 < api.xLowerBound) || (x2 > api.xUpperBound)) {
-      camera.position.x = camera.position.x
+      return
+      // camera.position.x = camera.position.x
     } else if ((y1 < api.yLowerBound) || (y2 > api.yUpperBound)
     ) {
-      camera.position.y = camera.position.y
+      return
+      // camera.position.y = camera.position.y
     } else {
       api.fire('change')
       camera.position.x = x;
@@ -370,9 +368,9 @@ export default function panzoom(camera, owner, toKeepInBounds, minDepth, maxDept
     const isOverflowTop = y2 > api.yUpperBound
 
     if ((isOverflowLeft && isPanningLeft) || (isOverflowRight && isPanningRight)) {
-      camera.position.x = camera.position.x
+      return
     } else if ((isOverflowBottom && isPanningDown) || (isOverflowTop && isPanningUp)) {
-      camera.position.y = camera.position.y
+      return
     } else {
       // we fire first, so that clients can manipulate the payload
       api.fire('beforepan', panPayload)

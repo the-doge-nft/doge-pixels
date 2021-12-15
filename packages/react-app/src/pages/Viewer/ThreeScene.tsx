@@ -13,6 +13,8 @@ import Button, {ButtonVariant} from "../../DSL/Button/Button";
 import createPanZoom from "../../services/three-map-js";
 import { useQuery } from "../../helpers/hooks";
 import PixelPane from "../../DSL/PixelPane/PixelPane";
+import AppStore from "../../store/App.store";
+import {observer} from "mobx-react-lite";
 
 interface ThreeSceneProps {
   onPixelSelect: onPixelSelectType;
@@ -25,7 +27,7 @@ export enum CameraPositionZ {
   close = 80
 }
 
-const ThreeScene =({onPixelSelect, store}: ThreeSceneProps) => {
+const ThreeScene = observer(({onPixelSelect, store}: ThreeSceneProps) => {
   const query = useQuery()
   const zClippingSafetyBuffer = 3
 
@@ -53,6 +55,7 @@ const ThreeScene =({onPixelSelect, store}: ThreeSceneProps) => {
   var panZoom: any
   useEffect(() => {
     panZoom?.dispose()
+  // eslint-disable-next-line
   }, [])
 
   const canvasContainerOnMount = useCallback((node: HTMLDivElement) => {
@@ -69,10 +72,10 @@ const ThreeScene =({onPixelSelect, store}: ThreeSceneProps) => {
       canvasContainerRef.current = node
       node.focus()
     }
+    // eslint-disable-next-line
   }, []);
 
   const texture = useLoader(THREE.TextureLoader, Kobosu);
-  console.log("debug:: texture", texture.mipmaps)
   texture.magFilter = THREE.NearestFilter;
   const scale = 480;
   const aspectRatio = texture.image.width / texture.image.height;
@@ -134,6 +137,7 @@ const ThreeScene =({onPixelSelect, store}: ThreeSceneProps) => {
     return () => {
       store?.unsubscribeAllFrom(CameraTools)
     }
+    // eslint-disable-next-line
   }, [])
 
   return (
@@ -243,7 +247,7 @@ const ThreeScene =({onPixelSelect, store}: ThreeSceneProps) => {
           <meshBasicMaterial attach={"material"} color={selectedColor} opacity={0.8} transparent={true} depthTest={false}/>
         </mesh>
 
-        <group ref={hoverOverlayRef}>
+        {!AppStore.rwd.isMobile && <group ref={hoverOverlayRef}>
           <mesh position={[-0.5, 0, 0.001]}>
             <planeGeometry attach={"geometry"} args={[0.05, 1.05]}/>
             <meshBasicMaterial attach={"material"} color={hoverColor} opacity={1} transparent={true} depthTest={false}/>
@@ -260,11 +264,12 @@ const ThreeScene =({onPixelSelect, store}: ThreeSceneProps) => {
             <planeGeometry attach={"geometry"} args={[0.05, 1]}/>
             <meshBasicMaterial attach={"material"} color={hoverColor} opacity={1} transparent={true} depthTest={false}/>
           </mesh>
-        </group>
+        </group>}
       </Canvas>
+      {!AppStore.rwd.isMobile &&
       <Box ref={tooltipRef} position={"absolute"} zIndex={2} display={"none"} pointerEvents={"none"}>
         <PixelPane size={"md"} pupper={0} color={"fff"} pupperIndex={0}/>
-      </Box>
+      </Box>}
       <Box position={"absolute"} bottom={0} left={0}>
         <Button size={"sm"}
                 variant={ButtonVariant.Text}
@@ -278,7 +283,7 @@ const ThreeScene =({onPixelSelect, store}: ThreeSceneProps) => {
       </Box>
     </Box>
   );
-};
+});
 
 
 export default ThreeScene;

@@ -2,7 +2,7 @@ import { VStack } from "@chakra-ui/react";
 import React from "react";
 import Button from "../Button/Button";
 import Demo from "../Demo/Demo";
-import toast, {showDebugToast, showErrorToast, showSuccessToast} from "./Toast";
+import {showDebugToast, showErrorToast, showSuccessToast} from "./Toast";
 
 const DemoToast = () => {
   return (

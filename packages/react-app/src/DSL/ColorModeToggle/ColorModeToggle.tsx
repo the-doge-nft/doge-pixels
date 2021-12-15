@@ -1,13 +1,14 @@
 import {Box, Image, useColorMode, useMultiStyleConfig} from "@chakra-ui/react";
-import {AnimatePresence, AnimationControls, motion, MotionStyle} from "framer-motion";
-import React, { useEffect, useState } from "react";
+import {AnimatePresence, motion, MotionStyle} from "framer-motion";
+import React, {useEffect, useState} from "react";
 import LightDog from "../../images/lightDog.png";
 import DarkDog from "../../images/darkDog.png"
 import PixelSun from "../../images/sunPixel.svg";
 import PixelMoon from "../../images/moonPixel.svg";
 import LightFavicon from "../../images/favicons/favicon_light.png";
 import DarkFavicon from "../../images/favicons/favicon_dark.png";
-import {web3Modal, web3ModalDarkTheme, web3ModalLightTheme} from "../../services/web3Modal";
+
+// import {web3Modal, web3ModalDarkTheme, web3ModalLightTheme} from "../../services/web3Modal";
 
 interface ColorModeToggleProps {
 }
@@ -38,7 +39,7 @@ const ColorModeToggle = (props: ColorModeToggleProps) => {
     }
   }, [colorMode])
 
-  return <Box position={"relative"} zIndex={2}>
+  return <Box display={"inline-block"} position={"relative"} zIndex={2}>
     <Box
       __css={styles.container}
       onClick={toggleColorMode}
@@ -66,10 +67,10 @@ const ColorModeToggle = (props: ColorModeToggleProps) => {
         </AnimatePresence>
       </motion.div>
       <Box __css={styles.leftIcon}>
-        <img src={PixelSun} width={"22px"} height={"22px"}/>
+        <img alt={"sun"} src={PixelSun} width={"22px"} height={"22px"}/>
       </Box>
       <Box __css={styles.rightIcon}>
-        <img src={PixelMoon} width={"22px"} height={"22px"}/>
+        <img alt={"moon"} src={PixelMoon} width={"22px"} height={"22px"}/>
       </Box>
     </Box>
     <Box __css={styles.drop}/>

@@ -15,8 +15,7 @@ import {ethers} from "ethers";
 import CheckboxInput from "../../../DSL/Form/CheckboxInput/CheckboxInput";
 import model from "../../../DSL/Form/model";
 import Link from "../../../DSL/Link/Link";
-import {abbreviate} from "../../../helpers/strings";
-import { getEtherscanURL } from "../../../helpers/links";
+import {getEtherscanURL} from "../../../helpers/links";
 
 interface MintPixelsModalProps extends Pick<ModalProps, "isOpen" | "onClose"> {
   onSuccess?: () => void;
@@ -24,17 +23,21 @@ interface MintPixelsModalProps extends Pick<ModalProps, "isOpen" | "onClose"> {
 }
 
 const MintPixelsModal = observer(({ isOpen, onClose, onSuccess, goToPixels }: MintPixelsModalProps) => {
+  // eslint-disable-next-line
   const store = useMemo(() => new MintPixelsModalStore(), [isOpen]);
+
   useEffect(() => {
     if (isOpen) {
       store.init()
     }
+    // eslint-disable-next-line
   }, [isOpen])
 
   useEffect(() => {
     if (store.currentView === MintModalView.Complete) {
       onSuccess && onSuccess()
     }
+    // eslint-disable-next-line
   }, [store.currentView])
 
   return (
@@ -132,6 +135,7 @@ const Approval = observer(({store}: {store: MintPixelsModalStore}) => {
 const LoadingApproval = observer(({store}: {store: MintPixelsModalStore}) => {
   useEffect(() => {
     store.approveDogSpend()
+    // eslint-disable-next-line
   }, [])
   return (
     <Box mt={20} mb={10}>
@@ -146,6 +150,7 @@ const LoadingApproval = observer(({store}: {store: MintPixelsModalStore}) => {
 const LoadingPixels = observer(({store}: {store: MintPixelsModalStore}) => {
   useEffect(() => {
     store.mintPixels(Number(store.pixel_count!))
+    // eslint-disable-next-line
   }, [])
   return (
     <Box mt={20} mb={10}>

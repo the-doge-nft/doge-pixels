@@ -1,19 +1,16 @@
-import React, { useMemo } from "react";
+import React, {useMemo} from "react";
 import Demo from "../Demo/Demo";
 import Form from "./Form";
-import { Box, HStack, VStack } from "@chakra-ui/react";
-import Button, { ButtonVariant } from "../Button/Button";
+import {Box, HStack, VStack} from "@chakra-ui/react";
+import Button, {ButtonVariant} from "../Button/Button";
 import TextInput from "./TextInput";
 import NumberInput from "./NumberInput/NumberInput";
-import { autorun, makeObservable, observable } from "mobx";
+import {makeObservable, observable} from "mobx";
 import model from "./model";
 import Submit from "./Submit";
-import { observer } from "mobx-react-lite";
-import Typography, { TVariant } from "../../DSL/Typography/Typography";
+import {observer} from "mobx-react-lite";
+import Typography, {TVariant} from "../../DSL/Typography/Typography";
 import BigInput from "./BigInput";
-import SelectInput from "./SelectInput";
-import ToggleInput from "./ToggleInput";
-import { maxValue, required } from "./validation";
 import CheckboxInput from "./CheckboxInput/CheckboxInput";
 
 class DemoFormStore {
@@ -127,19 +124,19 @@ const DemoNumberInputForm = observer(({ store }: { store: DemoFormStore }) => {
   );
 });
 
-const DemoSelectInput = observer(({ store }: { store: DemoFormStore }) => {
-  return (
-    <SubDemo title={"Select Input"}>
-      <Form onSubmit={async data => alert(JSON.stringify(data))}>
-        <HStack spacing={2}>
-          <TextInput name={"test"} />
-          <SelectInput items={store.selectItems} {...model(store, "product")} />
-        </HStack>
-        <Submit w={"100%"} mt={3} />
-      </Form>
-    </SubDemo>
-  );
-});
+// const DemoSelectInput = observer(({ store }: { store: DemoFormStore }) => {
+//   return (
+//     <SubDemo title={"Select Input"}>
+//       <Form onSubmit={async data => alert(JSON.stringify(data))}>
+//         <HStack spacing={2}>
+//           <TextInput name={"test"} />
+//           <SelectInput items={store.selectItems} {...model(store, "product")} />
+//         </HStack>
+//         <Submit w={"100%"} mt={3} />
+//       </Form>
+//     </SubDemo>
+//   );
+// });
 
 const DemoBigInput = observer(({ store }: { store: DemoFormStore }) => {
   return (
@@ -156,22 +153,22 @@ const DemoBigInput = observer(({ store }: { store: DemoFormStore }) => {
   );
 });
 
-const ToggleDemo = observer(({ store }: { store: DemoFormStore }) => {
-  return (
-    <SubDemo title={"Toggle Input"}>
-      <Form onSubmit={async data => alert(JSON.stringify(data))}>
-        <ToggleInput name={"toggle_uncontrolled"} />
-        <ToggleInput {...model(store, "toggle")} />
-        <HStack mt={6}>
-          <Submit w={"100%"} />
-          <Button w={"100%"} variant={ButtonVariant.Text} onClick={() => (store.toggle = !store.toggle)}>
-            change controlled
-          </Button>
-        </HStack>
-      </Form>
-    </SubDemo>
-  );
-});
+// const ToggleDemo = observer(({ store }: { store: DemoFormStore }) => {
+//   return (
+//     <SubDemo title={"Toggle Input"}>
+//       <Form onSubmit={async data => alert(JSON.stringify(data))}>
+//         <ToggleInput name={"toggle_uncontrolled"} />
+//         <ToggleInput {...model(store, "toggle")} />
+//         <HStack mt={6}>
+//           <Submit w={"100%"} />
+//           <Button w={"100%"} variant={ButtonVariant.Text} onClick={() => (store.toggle = !store.toggle)}>
+//             change controlled
+//           </Button>
+//         </HStack>
+//       </Form>
+//     </SubDemo>
+//   );
+// });
 
 const CheckboxDemo = observer(({store}: {store: DemoFormStore}) => {
   return (

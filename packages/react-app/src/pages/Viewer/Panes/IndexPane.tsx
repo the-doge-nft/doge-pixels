@@ -1,13 +1,12 @@
-import ViewerStore, {ViewerView} from "../Viewer.store";
+import ViewerStore from "../Viewer.store";
 import {Box, Flex, Grid, GridItem} from "@chakra-ui/react";
 import Typography, {TVariant} from "../../../DSL/Typography/Typography";
-import Button, {ButtonVariant} from "../../../DSL/Button/Button";
 import AppStore from "../../../store/App.store";
 import React from "react";
 import {observer} from "mobx-react-lite";
 import MintBurnButtons from "../MintBurnButtons";
 import Link from "../../../DSL/Link/Link";
-import { getEtherscanURL } from "../../../helpers/links";
+import {getEtherscanURL} from "../../../helpers/links";
 import {Type} from "../../../DSL/Fonts/Fonts";
 
 const IndexPane = observer(function IndexPane({store}: {store: ViewerStore}) {

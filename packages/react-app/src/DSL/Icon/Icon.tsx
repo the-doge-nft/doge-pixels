@@ -1,24 +1,24 @@
 import React from "react";
-import {Icon as ChakraIcon, IconProps as ChakraIconProps, useStyleConfig, Image} from "@chakra-ui/react";
+import {Icon as ChakraIcon, IconProps as ChakraIconProps, useStyleConfig} from "@chakra-ui/react";
 import {
+  BsArrowLeftRight,
+  BsMoonFill,
+  BsSunFill,
   CgClose,
+  FaMoneyBillWaveAlt,
   FiArrowDown,
   FiArrowDownRight,
-  IoWallet,
-  FiCheckCircle,
-  FiCheck,
   FiArrowUpLeft,
-  BsArrowLeftRight,
-  FaMoneyBillWaveAlt,
+  FiCheck,
+  FiCheckCircle,
   FiRefreshCcw,
-  TiWarning,
   GoEye,
   GoEyeClosed,
-  BsSunFill,
-  BsMoonFill,
+  HiArrowLeft,
+  IoWallet,
+  TiWarning,
   VscChevronDown,
-  VscChevronUp,
-  HiArrowLeft
+  VscChevronUp
 } from "react-icons/all";
 
 import User from "./custom/User";

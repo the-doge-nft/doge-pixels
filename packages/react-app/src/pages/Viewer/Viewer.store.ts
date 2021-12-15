@@ -1,12 +1,10 @@
 import {action, computed, makeObservable, observable} from "mobx";
-import {AbstractConstructor, EmptyClass} from "../../helpers/mixins";
+import {EmptyClass} from "../../helpers/mixins";
 import {Navigable} from "../../services/mixins/navigable";
 import AppStore from "../../store/App.store";
-import { Eventable, SET_CAMERA } from "../../services/mixins/eventable";
-import { Reactionable } from "../../services/mixins/reactionable";
+import {Eventable, SET_CAMERA} from "../../services/mixins/eventable";
+import {Reactionable} from "../../services/mixins/reactionable";
 import LocalStorage from "../../services/local-storage";
-import * as Https from "https";
-import {Http} from "../../services";
 import {CameraPositionZ} from "./ThreeScene";
 import {abbreviate} from "../../helpers/strings";
 
@@ -52,6 +50,9 @@ class ViewerStore extends Navigable(Eventable(Reactionable((EmptyClass)))) {
   @observable
   openSeaLink: string | null = null
 
+  @observable
+  isSelectedDrawerOpen = false
+
   constructor(private _x: string | null, private _y?: string | null) {
     super()
     makeObservable(this);
@@ -83,7 +84,7 @@ class ViewerStore extends Navigable(Eventable(Reactionable((EmptyClass)))) {
         }
 
         try {
-          const tokenURI = await AppStore.web3.pxContract!.tokenURI(this.selectedPupper!)
+          // const tokenURI = await AppStore.web3.pxContract!.tokenURI(this.selectedPupper!)
           // @TODO: partyka - current ipfs links do not work
           // https://ipfs.io/ipns/k51qzi5uqu5djqiqaht7oyvstxe24g4zk4lgt4nf92q7b4t9x3xjoqzkvmha1w/metadata/metadata-22_2.json
           this.selectedURI = {

@@ -1,7 +1,6 @@
 import React from "react";
 import {Box, Flex, useMultiStyleConfig} from "@chakra-ui/react";
 import Typography, {TVariant} from "../Typography/Typography";
-import { darkModeGradient } from "../Theme";
 
 interface BigTextProps {
   children: string | number;

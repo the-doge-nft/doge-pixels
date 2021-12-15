@@ -6,13 +6,13 @@ import ViewerPage from "./pages/Viewer/Viewer.page";
 import DSLPage from "./pages/DSL.page";
 import DogParkPage from "./pages/DogPark/DogPark.page";
 import {isDevModeEnabled} from "./environment/helpers";
+import MobileHomePage from "./pages/MobileHome/MobileHome.page";
 
 export enum NamedRoutes {
   VIEWER = "viewer",
-  POOLSTATS = "stats",
-  DOG_PARK = "profile",
-  DEV = "dev",
+  DOG_PARK = "park",
   DSL = "dsl",
+  MOBILE_HOME = "mobile"
 }
 
 
@@ -56,6 +56,14 @@ const routes: AppRouteInterface[] = [
     component: DogParkPage,
     title: "Dog park",
   },
+  {
+    path: "/mobile/home",
+    name: NamedRoutes.MOBILE_HOME,
+    exact: true,
+    layout: AppLayout,
+    component: MobileHomePage,
+    title: "Mobile"
+  }
 ];
 
 if (isDevModeEnabled()) {

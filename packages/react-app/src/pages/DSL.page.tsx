@@ -11,6 +11,7 @@ import DemoLoading from "../DSL/Loading/Loading.demo";
 import DemoPixelPane from "../DSL/PixelPane/PixelPane.demo";
 import DemoPill from "../DSL/Pill/Pill.demo";
 import DemoLink from "../DSL/Link/Link.demo";
+import DemoDrawer from "../DSL/Drawer/Drawer.demo";
 
 const DSLPage = () => {
   return (
@@ -19,6 +20,7 @@ const DSLPage = () => {
         <Typography variant={TVariant.PresStart28} block mb={7}>
           ✨ DSL ✨
         </Typography>
+        <DemoDrawer/>
         <DemoLink/>
         <DemoPill/>
         <DemoPixelPane/>

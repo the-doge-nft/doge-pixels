@@ -16,7 +16,7 @@ const LoadingStyle = {
             borderColor: lightOrDark(colorMode, "black", "white"),
         },
         pixel: {
-            bg: lightOrDark(colorMode, "none", darkModeGradient),
+            bg: lightOrDark(colorMode, "black", darkModeGradient),
             mr: 2,
             display: "inline-block",
             height: "100%",

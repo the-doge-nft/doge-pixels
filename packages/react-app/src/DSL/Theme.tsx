@@ -19,6 +19,7 @@ import PillStyle from "./Pill/Pill.style";
 import LinkStyle from "./Link/Link.style";
 import CheckboxStyle from "./Form/CheckboxInput/Checkbox.style";
 import BigTextStyle from "./BigText/BigText.style";
+import DrawerStyle from "./Drawer/Drawer.style";
 
 export const lightModePrimary = "yellow.700";
 export const darkModePrimary = "purple.700";
@@ -47,6 +48,13 @@ const theme = extendTheme({
       },
     }),
   },
+  breakpoints: {
+    sm: "320px", // 320px -> 480px mobile
+    md: "768px", // 481px -> 768px tablets
+    lg: "960px", // 769px -> 1024 small laptops
+    xl: "1200px", // 1025px -> 1200px desktops
+    "2xl": "1536px" // extra large screens (tvs)
+  },
   colors: Colors,
   components: {
     Button: ButtonStyle,
@@ -67,7 +75,8 @@ const theme = extendTheme({
     Pill: PillStyle,
     Link: LinkStyle,
     Checkbox: CheckboxStyle,
-    BigText: BigTextStyle
+    BigText: BigTextStyle,
+    Drawer: DrawerStyle
   },
 });
 

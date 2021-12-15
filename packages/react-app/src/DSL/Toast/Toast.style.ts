@@ -1,5 +1,3 @@
-import {colorModeType, darkModePrimary} from "../Theme";
-
 const ToastStyle = {
     baseStyle: {
         borderStyle: "solid",

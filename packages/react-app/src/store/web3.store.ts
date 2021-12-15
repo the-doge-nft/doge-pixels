@@ -314,7 +314,6 @@ class Web3Store {
         return ((this.WIDTH * y) + x) + this.PIXEL_TO_ID_OFFSET
     }
 
-
 }
 
 

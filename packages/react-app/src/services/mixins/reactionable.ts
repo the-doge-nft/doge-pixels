@@ -1,4 +1,4 @@
-import { AbstractConstructor, Constructor } from "../../helpers/mixins";
+import { Constructor } from "../../helpers/mixins";
 import { IReactionDisposer, IReactionOptions, IReactionPublic, reaction } from "mobx";
 
 export function Reactionable<T extends Constructor>(Base1: T) {

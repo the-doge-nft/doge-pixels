@@ -1,8 +1,8 @@
-import { Box, Flex, Image } from "@chakra-ui/react";
-import { motion } from "framer-motion";
+import {Flex, Image} from "@chakra-ui/react";
+import {motion} from "framer-motion";
 import React from "react";
-import Modal, { ModalProps } from "../../../DSL/Modal/Modal";
-import Typography, { TVariant } from "../../../DSL/Typography/Typography";
+import Modal from "../../../DSL/Modal/Modal";
+import Typography, {TVariant} from "../../../DSL/Typography/Typography";
 import PupperHandImage from "../../../images/pupperpaw.png";
 
 interface ScrollHelperModalProps {

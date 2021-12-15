@@ -1,4 +1,4 @@
-import { Box, Flex, useMultiStyleConfig } from "@chakra-ui/react";
+import { Box, useMultiStyleConfig } from "@chakra-ui/react";
 import React from "react";
 import Typography, { TVariant } from "../Typography/Typography";
 import Pill from "../Pill/Pill";
