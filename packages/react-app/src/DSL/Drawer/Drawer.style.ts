@@ -5,10 +5,21 @@ const DrawerStyle = {
   baseStyle: ({colorMode}: {colorMode: colorModeType}) => ({
     dialog: {
       bg: lightOrDark(colorMode, "yellow.50", "purple.700"),
-      width: "90%",
-      margin: "auto"
+      // mt: 10
+      // width: "90%",
+      // margin: "auto"
     }
-  })
+  }),
+  sizes: {
+    // lg: {
+    //   header: {
+    //     px: 18
+    //   },
+    //   body: {
+    //     px: 18
+    //   }
+    // }
+  }
 }
 
 export default DrawerStyle

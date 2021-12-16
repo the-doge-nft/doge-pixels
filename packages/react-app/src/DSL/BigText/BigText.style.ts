@@ -8,6 +8,7 @@ const BigTextStyle = {
       height: "auto",
       bg: lightOrDark(colorMode, "yellow.700", darkModeGradient),
       backgroundClip: "text",
+      opactiy: 1,
       "-webkit-background-clip": "text",
 
       textFillColor: "transparent",
@@ -33,9 +34,10 @@ const BigTextStyle = {
       top: "3px",
       left: "3px",
       background: lightOrDark(colorMode, "black", darkModeGradient),
-      "-webkit-background-clip": lightOrDark(colorMode, "text","text"),
+      "-webkit-background-clip": "text",
       "-webkit-text-stroke": lightOrDark(colorMode, "none", "2px transparent"),
-      "color": lightOrDark(colorMode, "black","purple.700")
+      "color": lightOrDark(colorMode, "black","purple.700"),
+      border: "none"
     }
   }),
   sizes: {

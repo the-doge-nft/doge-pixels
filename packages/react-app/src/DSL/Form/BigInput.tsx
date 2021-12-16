@@ -8,6 +8,7 @@ import Icon from "../Icon/Icon";
 import {useFormState} from "react-final-form";
 import Button from "../Button/Button";
 import {BaseInputValidators} from "./interfaces";
+import AppStore from "../../store/App.store";
 
 interface BigInputProps {
   label?: string;
@@ -34,9 +35,10 @@ function BigInput({
       <Grid templateColumns={"2fr 1fr 0.75fr 0.5fr"} alignItems={"end"} justifyContent={"center"}>
         <GridItem colSpan={1}>
           <NumberInput
-            px={5}
+            px={8}
             pl={3}
             pr={2}
+            opacity={1}
             textAlign={"end"}
             fontSize={"95px"}
             sx={styles.main}
@@ -48,21 +50,26 @@ function BigInput({
           />
         </GridItem>
         {label && <GridItem
-          pb={4}
           colSpan={1}
-          display={"flex"}
-          alignItems={"center"}
-          justifyContent={"center"}
-          position={"relative"}
-          mx={4}
-          zIndex={1}
         >
-          <Typography variant={TVariant.PresStart45} sx={styles.label}>
-            {label}
-          </Typography>
-          <Typography variant={TVariant.PresStart45} sx={styles.drop}>
-            {label}
-          </Typography>
+          <Box
+              display={"inline-block"}
+              position={"relative"}
+              zIndex={1}
+              mb={5}
+              mx={5}
+          >
+            <Typography
+              variant={TVariant.PresStart45}
+              sx={styles.label}>
+              {label}
+            </Typography>
+            <Typography
+              variant={TVariant.PresStart45}
+              sx={styles.drop}>
+              {label}
+            </Typography>
+          </Box>
         </GridItem>}
         <GridItem
           pb={8}
@@ -72,11 +79,20 @@ function BigInput({
           alignItems={"center"}
           colSpan={1}
         >
-          <Button onClick={() => store[storeKey] = Number(store[storeKey]) + 1} mb={2}>
-            <Icon icon={"chevron-up"} boxSize={"24px"}/>
+          <Button
+            onClick={() => store[storeKey] = Number(store[storeKey]) + 1}
+            mb={2}
+          >
+            <Icon
+              icon={"chevron-up"}
+              boxSize={"24px"}/>
           </Button>
-          <Button onClick={() => store[storeKey] = Number(store[storeKey]) - 1} mt={2}>
-            <Icon icon={"chevron-down"} boxSize={"24px"}/>
+          <Button
+            onClick={() => store[storeKey] = Number(store[storeKey]) - 1}
+            mt={2}>
+            <Icon
+              icon={"chevron-down"}
+              boxSize={"24px"}/>
           </Button>
         </GridItem>
       </Grid>
@@ -85,13 +101,18 @@ function BigInput({
           {renderLeftOfValidation && renderLeftOfValidation()}
         </GridItem>
         <GridItem textAlign={"right"}>
-          {Object.entries(errors).length > 0 && <Typography block variant={TVariant.PresStart15} color={"red"}>
+          {Object.entries(errors).length > 0 && <Typography
+              block
+              color={"red"}
+              variant={TVariant.PresStart20}
+          >
             Oops
           </Typography>}
           {Object.entries(errors).map(error => <Typography
             block
-            variant={TVariant.ComicSans18}
-            color={"red"}>
+            color={"red"}
+            variant={TVariant.ComicSans14}
+          >
             {error[1]}
           </Typography>)}
         </GridItem>

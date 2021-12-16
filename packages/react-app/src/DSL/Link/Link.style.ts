@@ -28,7 +28,7 @@ const LinkStyle = {
       fontSize: "15px"
     },
     lg: {
-      fontSize: "18px"
+      fontSize: "26px"
     }
   },
   variants: {

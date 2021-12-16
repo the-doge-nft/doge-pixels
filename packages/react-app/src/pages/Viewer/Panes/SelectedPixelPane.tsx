@@ -9,6 +9,7 @@ import {SET_CAMERA} from "../../../services/mixins/eventable";
 import {useHistory} from "react-router-dom";
 import {CameraPositionZ} from "../ThreeScene";
 import Icon from "../../../DSL/Icon/Icon";
+import AppStore from "../../../store/App.store";
 
 const SelectedPixelPane = observer(function SelectedPixelPane({store}: {store: ViewerStore}) {
   const history = useHistory()
@@ -69,9 +70,9 @@ const SelectedPixelPane = observer(function SelectedPixelPane({store}: {store: V
         </Flex>}
       </Box>
     </Box>
-    {store.isSelectedPupperOwned &&
+    {store.isSelectedPupperOwned && !AppStore.rwd.isMobile &&
     <VStack spacing={9} mb={6}>
-      <Button onClick={() => store.isBurnModalOpen = true}>Burn</Button>
+      <Button onClick={() => store.modals.isBurnModalOpen = true}>Burn</Button>
     </VStack>}
   </Flex>
 })
