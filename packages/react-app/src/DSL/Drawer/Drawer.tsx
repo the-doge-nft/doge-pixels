@@ -8,8 +8,11 @@ import {
   DrawerFooter,
   DrawerHeader,
   DrawerOverlay,
+  useColorMode,
 } from '@chakra-ui/react'
 import Typography, {TVariant} from "../Typography/Typography";
+import {lightOrDark} from "../Theme";
+import Icon from "../Icon/Icon";
 
 export interface DrawerProps {
   isOpen: boolean;
@@ -21,6 +24,7 @@ export interface DrawerProps {
 }
 
 const Drawer = ({isOpen, onClose, title, children, footer, description}: DrawerProps) => {
+  const { colorMode } = useColorMode()
   return <ChakraDrawer
     isOpen={isOpen}
     onClose={onClose}
@@ -29,8 +33,20 @@ const Drawer = ({isOpen, onClose, title, children, footer, description}: DrawerP
   >
     <DrawerOverlay/>
     <DrawerContent maxH={"85vh"} height={"100%"}>
-      <DrawerCloseButton />
       <DrawerHeader>
+        <Box
+          _hover={{cursor: "pointer"}}
+          _active={{transform: "translate(2px, 2px)"}}
+          color={lightOrDark(colorMode, "black", "white")}
+          onClick={onClose}
+          position={"absolute"}
+          px={2}
+          py={1}
+          right={0}
+          top={0}
+        >
+          <Icon icon={"close"} fontSize={"18px"}/>
+        </Box>
         {title && <Box>
           <Typography
             variant={TVariant.PresStart24}>
