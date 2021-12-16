@@ -93,8 +93,6 @@ const Modal = ({
                 borderColor={lightOrDark(colorMode, "black", "white")}
               >
                 <Box
-                  // size={"sm"}
-                  // variant={ButtonVariant.Text}
                   px={1}
                   _hover={{cursor: "pointer"}}
                   _active={{transform: "translate(2px, 2px)"}}
