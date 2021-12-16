@@ -50,6 +50,8 @@ const Button = ({ submit, children, variant = ButtonVariant.Primary, size = "md"
         isLoading={isLoading}
         onMouseEnter={() => setIsHover(true)}
         onMouseLeave={() => setIsHover(false)}
+        onTouchStart={() => setIsHover(true)}
+        onTouchEnd={() => setIsHover(false)}
       >
         <Typography
           variant={buttonTypographyMap[size]}
@@ -62,7 +64,7 @@ const Button = ({ submit, children, variant = ButtonVariant.Primary, size = "md"
       </ChakraButton>
       <Box
         //@ts-ignore
-        sx={isHover ? {borderImageSource: styles.button["_hover"].borderImageSource} : {}}
+        sx={isHover ? {borderImageSource: styles.button["_hover"]?.borderImageSource} : {}}
         __css={styles.drop}
       />
     </Box>

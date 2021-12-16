@@ -38,31 +38,23 @@ const BurnPixelsDialog = observer(({store, onCompleteClose, onSuccess}: BurnPixe
 const SelectPixels = observer(({store}: { store: BurnPixelsModalStore}) => {
   const {colorMode} = useColorMode()
   return <Flex flexDirection={"column"}>
-
-    {!store.isUserPixelOwner && <>
-        <Typography variant={TVariant.ComicSans18}>
-            No pixels found - try minting first!
-        </Typography>
-    </>}
-
     {store.isUserPixelOwner && <>
-        <Typography variant={TVariant.ComicSans18}>
-            Say goodbye to your pixels forever. Be sure to be careful with which pixels you select. You’ll most likely never
-            see them again.
-        </Typography>
-
         <Flex overflow={"scroll"} flexGrow={1} h={"full"} mt={6} justifyContent={"center"}>
-            <Box maxHeight={"300px"} width={"416px"}>
+            <Box
+                maxHeight={AppStore.rwd.isMobile ? "250px" : "350px"}
+                width={"416px"}
+            >
               {AppStore.web3.puppersOwned.map(px => {
                 const hex = AppStore.web3.pupperToHexLocal(px)
                 const index = AppStore.web3.pupperToIndexLocal(px)
                 const isPixelSelected = store.selectedPixels.includes(px)
-                return <Box display={"inline-block"}
-                            mt={2}
+                return <Box
+                            mt={1}
                             mx={1}
                             p={2}
+                            display={"inline-block"}
                             bg={isPixelSelected ? (colorMode === "light" ? lightModePrimary : darkModeSecondary) : "inherit"}
-                            _hover={{
+                            _touch={{
                               bg: (colorMode === "light" ? lightModePrimary : darkModeSecondary)
                             }}>
                   <PixelPane

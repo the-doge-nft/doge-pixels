@@ -47,9 +47,16 @@ const SelectedPixelPane = observer(function SelectedPixelPane({store}: {store: V
             Owned by
           </Typography>
 
-          <Flex alignItems={"center"}>
+          <Flex alignItems={"center"} pt={AppStore.rwd.isMobile ? 3 : 0}>
             <Icon icon={'person'} />
-            <Button variant={ButtonVariant.Text} onClick={() => {
+
+            {AppStore.rwd.isMobile && <Box ml={3}>
+                <Typography block variant={TVariant.PresStart18}>
+              {store.selectedTokenOwnerDisplayName}
+            </Typography>
+            </Box>}
+
+            {!AppStore.rwd.isMobile && <Button variant={ButtonVariant.Text} onClick={() => {
               history.push({
                 pathname: `/park/${store.tokenOwner}/${store.selectedPupper}`,
               })
@@ -57,7 +64,7 @@ const SelectedPixelPane = observer(function SelectedPixelPane({store}: {store: V
               <Typography block variant={TVariant.PresStart18}>
                 {store.selectedTokenOwnerDisplayName}
               </Typography>
-            </Button>
+            </Button>}
           </Flex>
         </Box>}
 

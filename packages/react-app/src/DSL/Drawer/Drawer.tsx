@@ -1,12 +1,13 @@
 import React from "react"
 import {
+  Box,
   Drawer as ChakraDrawer,
   DrawerBody,
+  DrawerCloseButton,
+  DrawerContent,
   DrawerFooter,
   DrawerHeader,
   DrawerOverlay,
-  DrawerContent,
-  DrawerCloseButton,
 } from '@chakra-ui/react'
 import Typography, {TVariant} from "../Typography/Typography";
 
@@ -16,9 +17,10 @@ export interface DrawerProps {
   title?: string;
   children?: any;
   footer?: any;
+  description?: string
 }
 
-const Drawer = ({isOpen, onClose, title, children, footer}: DrawerProps) => {
+const Drawer = ({isOpen, onClose, title, children, footer, description}: DrawerProps) => {
   return <ChakraDrawer
     isOpen={isOpen}
     onClose={onClose}
@@ -28,13 +30,20 @@ const Drawer = ({isOpen, onClose, title, children, footer}: DrawerProps) => {
     <DrawerOverlay/>
     <DrawerContent maxH={"85vh"} height={"100%"}>
       <DrawerCloseButton />
-      {title && <DrawerHeader>
-        <Typography
+      <DrawerHeader>
+        {title && <Box>
+          <Typography
             variant={TVariant.PresStart24}>
           {title}
         </Typography>
-      </DrawerHeader>}
-      <DrawerBody>{children && children}</DrawerBody>
+        </Box>}
+        {description && <Box>
+            <Typography variant={TVariant.ComicSans18}>{description}</Typography>
+        </Box>}
+      </DrawerHeader>
+      <DrawerBody>
+        {children && children}
+      </DrawerBody>
       <DrawerFooter>{footer && footer}</DrawerFooter>
     </DrawerContent>
   </ChakraDrawer>

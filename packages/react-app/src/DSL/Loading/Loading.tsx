@@ -24,6 +24,7 @@ const Loading = ({title, showSigningHint = false}: { title?: string, showSigning
       </Box>
     </Box>
     {showSigningHint && <Typography
+      textAlign={"center"}
       variant={TVariant.PresStart10}
       mt={6}
       block

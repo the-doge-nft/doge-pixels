@@ -113,7 +113,7 @@ const MobileHomePage = observer(() => {
         isOpen={store.isMintDrawerOpen}
         onClose={() => store.isMintDrawerOpen = false}
         onSuccess={() => console.log()}
-        goToPixels={() => store.isBurnDrawerOpen = false}
+        goToPixels={() => store.isMintDrawerOpen = false}
       />}
       {store.isBurnDrawerOpen &&
       <BurnPixelsDrawer

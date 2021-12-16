@@ -87,18 +87,32 @@ class BurnPixelsDialogStore extends Navigable<AbstractConstructor, BurnPixelsMod
   }
 
   @computed
+  get isUserPixelOwner() {
+    return AppStore.web3.puppersOwned.length > 0
+  }
+
+  @computed
   get modalTitle() {
     switch (this.currentView) {
       case BurnPixelsModalView.Select:
-        return "Burn your Pixels"
+        return "Burn Pixels"
       default:
         return ""
     }
   }
 
   @computed
-  get isUserPixelOwner() {
-    return AppStore.web3.puppersOwned.length > 0
+  get description() {
+    switch (this.currentView) {
+      case BurnPixelsModalView.Select:
+        if (this.isUserPixelOwner) {
+          return "Be sure to be careful with which pixels you select. You’ll most likely never see them again."
+        } else {
+          return "No pixels found - try minting first!"
+        }
+      default:
+        return ""
+    }
   }
 
 }
