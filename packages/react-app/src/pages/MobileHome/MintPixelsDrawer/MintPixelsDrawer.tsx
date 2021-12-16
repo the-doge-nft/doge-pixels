@@ -1,6 +1,6 @@
-import React, { useMemo } from "react";
+import React, {useMemo} from "react";
 import {observer} from "mobx-react-lite";
-import Drawer, {DrawerProps} from "../../../DSL/Drawer/Drawer";
+import Drawer from "../../../DSL/Drawer/Drawer";
 import MintPixelsDialogStore from "../../../common/MintPixels/MintPixelsDialog.store";
 import MintPixelsDialog from "../../../common/MintPixels/MintPixelsDialog";
 import {MintPixelsModalProps} from "../../Viewer/MintPixelsModal/MintPixelsModal";
