@@ -73,7 +73,7 @@ const AppLayout = observer(function AppLayout({children}: AppLayoutProps) {
       // bg={{base: "white", sm: "black", md: "green", lg: "yellow", xl: "orange", "2xl": "purple"}}
     >
       <Grid
-        templateColumns={{base: "1fr", lg: "0.5fr 1.5fr", xl: "1fr 1fr"}}
+        templateColumns={{base: "1fr", md: "0.5fr 1.5fr", xl: "1fr 1fr"}}
         mb={10}
         templateRows={"1fr"}
         display={{base: "none", md: "grid"}}
@@ -84,9 +84,10 @@ const AppLayout = observer(function AppLayout({children}: AppLayoutProps) {
           </Flex>
         </GridItem>
         <GridItem
-          display={{base: "none", lg: "flex"}}
+          display={{base: "none", md: "flex"}}
           alignItems={"center"}
-          justifyContent={"flex-end"} w={"full"}
+          justifyContent={"flex-end"}
+          w={"full"}
         >
           <Nav/>
           <Box ml={10} mr={6}>
