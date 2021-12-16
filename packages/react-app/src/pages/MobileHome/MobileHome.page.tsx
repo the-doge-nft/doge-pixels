@@ -29,7 +29,6 @@ const MobileHomePage = observer(() => {
   return <Flex flexGrow={1} px={4}>
       {!AppStore.web3.web3Provider && <Flex justifyContent={"center"} alignItems={"center"} w={"full"}>
         <Button
-            size={"lg"}
             onClick={() => {
           AppStore.web3.connect()
         }}>

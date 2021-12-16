@@ -33,6 +33,7 @@ const MintPixelsDialog = observer(({store, onSuccess, onGoToPixelsClick}: MintPi
   useEffect(() => {
     if (store.currentView === MintModalView.Complete) {
       onSuccess && onSuccess()
+      AppStore.web3.refreshPupperOwnershipMap()
     }
   }, [store.currentView, onSuccess])
 

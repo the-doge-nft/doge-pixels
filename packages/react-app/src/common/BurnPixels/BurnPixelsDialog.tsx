@@ -23,6 +23,7 @@ const BurnPixelsDialog = observer(({store, onCompleteClose, onSuccess}: BurnPixe
   useEffect(() => {
     if (store.currentView === BurnPixelsModalView.Complete) {
       onSuccess && onSuccess()
+      AppStore.web3.refreshPupperOwnershipMap()
     }
     // eslint-disable-next-line
   }, [store.currentView])

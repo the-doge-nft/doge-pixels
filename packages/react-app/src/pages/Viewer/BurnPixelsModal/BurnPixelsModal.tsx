@@ -14,7 +14,7 @@ interface BurnPixelsModalProps {
 
 const BurnPixelsModal = observer(({isOpen, onClose, defaultPixel, onSuccess, onCompleteClose}: BurnPixelsModalProps) => {
   // eslint-disable-next-line
-  const store = useMemo(() => new BurnPixelsModalStore(defaultPixel), [isOpen, defaultPixel])
+  const store = useMemo(() => new BurnPixelsModalStore(defaultPixel), [defaultPixel])
 
   return <Modal
     size={"lg"}

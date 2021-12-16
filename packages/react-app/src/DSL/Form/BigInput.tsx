@@ -8,7 +8,6 @@ import Icon from "../Icon/Icon";
 import {useFormState} from "react-final-form";
 import Button from "../Button/Button";
 import {BaseInputValidators} from "./interfaces";
-import AppStore from "../../store/App.store";
 
 interface BigInputProps {
   label?: string;
@@ -32,7 +31,7 @@ function BigInput({
   const styles = useMultiStyleConfig("BigText", {size: "md"})
   return useObserver(() => <Box pt={3} pb={4} borderRadius={9}>
     <VStack spacing={3} align={"flex-start"} w={"full"}>
-      <Grid templateColumns={"2fr 1fr 0.75fr 0.5fr"} alignItems={"end"} justifyContent={"center"}>
+      <Grid templateColumns={"2fr 1fr 0.75fr"} alignItems={"end"} justifyContent={"center"}>
         <GridItem colSpan={1}>
           <NumberInput
             px={8}
