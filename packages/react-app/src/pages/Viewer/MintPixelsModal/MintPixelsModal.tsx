@@ -3,9 +3,8 @@ import {useEffect, useMemo} from "react";
 import Modal, {ModalProps} from "../../../DSL/Modal/Modal";
 import MintPixelsDialog from "../../../common/MintPixels/MintPixelsDialog";
 import MintPixelsModalStore from "./MintPixelsModal.store";
-import AppStore from "../../../store/App.store";
 
-interface MintPixelsModalProps extends Pick<ModalProps, "isOpen" | "onClose"> {
+export interface MintPixelsModalProps extends Pick<ModalProps, "isOpen" | "onClose"> {
   onSuccess: () => void;
   goToPixels: () => void;
 }
@@ -16,6 +15,7 @@ const MintPixelsModal = observer(({ isOpen, onClose, onSuccess, goToPixels }: Mi
     if (isOpen) {
       store.init()
     }
+    // eslint-disable-next-line
   }, [])
   return (
     <Modal

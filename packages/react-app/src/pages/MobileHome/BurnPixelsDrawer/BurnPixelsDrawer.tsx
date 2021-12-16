@@ -13,7 +13,7 @@ interface BurnPixelsModalProps {
 }
 
 const BurnPixelsDrawer = observer(({isOpen, onClose, defaultPixel, onSuccess, onCompleteClose}: BurnPixelsModalProps) => {
-  const store = useMemo(() => new BurnPixelsDrawerStore(defaultPixel), [isOpen, defaultPixel])
+  const store = useMemo(() => new BurnPixelsDrawerStore(defaultPixel), [defaultPixel])
   return <Drawer
     title={store.modalTitle}
     isOpen={isOpen}

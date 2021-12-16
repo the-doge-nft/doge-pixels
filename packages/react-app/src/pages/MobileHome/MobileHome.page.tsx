@@ -18,12 +18,14 @@ const MobileHomePage = observer(() => {
   const store = useMemo(() => new MobileHomeStore(), [])
   useEffect(() => {
     store.init()
+    // eslint-disable-next-line
   }, [])
 
   useEffect(() => {
     if (!AppStore.rwd.isMobile) {
       history.push(route(NamedRoutes.VIEWER))
     }
+    // eslint-disable-next-line
   }, [AppStore.rwd.isMobile])
 
   return <Flex flexGrow={1} px={4}>
@@ -52,8 +54,18 @@ const MobileHomePage = observer(() => {
             </Flex>
         </Flex>
 
-        <Flex flexGrow={1} alignItems={"center"}>
-          <Flex w={"full"} my={3} justifyContent={"center"} alignItems={"center"}>
+        <Flex
+            my={10}
+            flexGrow={1}
+            overflowY={"scroll"}>
+          <Flex
+              w={"full"}
+              h={"full"}
+              maxHeight={"300px"}
+              justifyContent={"center"}
+              alignItems={"center"}
+              flexWrap={"wrap"}
+          >
             {AppStore.web3.puppersOwned.map(pupper => {
               const hex = AppStore.web3.pupperToHexLocal(pupper)
               const index = AppStore.web3.pupperToIndexLocal(pupper)
@@ -96,17 +108,21 @@ const MobileHomePage = observer(() => {
         </Box>
       </Flex>}
     <Box>
+      {store.isMintDrawerOpen &&
       <MintPixelsDrawer
         isOpen={store.isMintDrawerOpen}
         onClose={() => store.isMintDrawerOpen = false}
-      />
+        onSuccess={() => console.log()}
+        goToPixels={() => store.isBurnDrawerOpen = false}
+      />}
+      {store.isBurnDrawerOpen &&
       <BurnPixelsDrawer
         isOpen={store.isBurnDrawerOpen}
         onClose={() => store.isBurnDrawerOpen = false}
         onSuccess={() => console.log()}
-        onCompleteClose={() => console.log()}
+        onCompleteClose={() => store.isBurnDrawerOpen = false}
         defaultPixel={null}
-      />
+      />}
     </Box>
   </Flex>
 })
