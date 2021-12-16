@@ -88,7 +88,9 @@ function BigInput({
           </Button>
           <Button
             onClick={() => store[storeKey] = Number(store[storeKey]) - 1}
-            mt={2}>
+            mt={2}
+            isDisabled={store[storeKey] == 0}
+          >
             <Icon
               icon={"chevron-down"}
               boxSize={"24px"}/>
@@ -110,7 +112,7 @@ function BigInput({
           {Object.entries(errors).map(error => <Typography
             block
             color={"red"}
-            variant={TVariant.ComicSans14}
+            variant={TVariant.ComicSans18}
           >
             {error[1]}
           </Typography>)}

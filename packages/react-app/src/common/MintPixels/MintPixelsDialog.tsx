@@ -59,7 +59,7 @@ const MintForm = observer(({ store }: { store: MintPixelsModalStore }) => {
             storeKey={"pixel_count"}
             label={"PX"}
             validate={[
-              required,
+              required("Must mint at least 1 pixel"),
               minValue(1, "Must mint at least 1 pixel"),
               maxValue(store.maxPixelsToPurchase, `Not enough $DOG 😕`)
             ]}
@@ -68,7 +68,7 @@ const MintForm = observer(({ store }: { store: MintPixelsModalStore }) => {
                 <Typography variant={TVariant.PresStart20} block>
                   $DOG
                 </Typography>
-                <Typography variant={TVariant.ComicSans14} block>
+                <Typography variant={TVariant.ComicSans18} block>
                   {formatWithThousandsSeparators(store.dogCount)}
                 </Typography>
               </Box>
