@@ -8,11 +8,11 @@ import { observer } from "mobx-react-lite";
 export const MintBurnButtons = observer(({store}: {store: ViewerStore}) => {
   return <Flex direction={"column"} alignItems={"center"} flexGrow={0}>
     {AppStore.web3.web3Provider && <Flex mb={6}>
-        <Button mr={3} width={"fit-content"} onClick={() => (store.isMintModalOpen = true)}>
+        <Button mr={3} width={"fit-content"} onClick={() => (store.modals.isMintModalOpen = true)}>
             Mint
         </Button>
       {AppStore.web3.puppersOwned.length > 0 &&
-        <Button ml={3} width={"fit-content"} onClick={() => (store.isBurnModalOpen = true)}>
+        <Button ml={3} width={"fit-content"} onClick={() => (store.modals.isBurnModalOpen = true)}>
             Burn
         </Button>}
     </Flex>}

@@ -7,7 +7,7 @@ import {Reactionable} from "../../services/mixins/reactionable";
 import LocalStorage from "../../services/local-storage";
 import {CameraPositionZ} from "./ThreeScene";
 import {abbreviate} from "../../helpers/strings";
-
+import ModalsStore from "../../store/Modals.store";
 
 export enum ViewerView {
   Index = "index",
@@ -15,25 +15,10 @@ export enum ViewerView {
   Selected = "selected"
 }
 
-const SHOW_HELPER_MODAL = "show_helper_modal"
 export const VIEWED_PIXELS_LS_KEY = "viewed_pixels_by_id"
 
 //@TODO passing generics to Navigable typing acknowledged of subclasses
 class ViewerStore extends Navigable(Eventable(Reactionable((EmptyClass)))) {
-  @observable
-  isMintModalOpen = false;
-
-  @observable
-  isBurnModalOpen = false;
-
-  @observable
-  isHelperModalOpen = true;
-
-  @observable
-  isMintMemeModalOpen = false;
-
-  @observable
-  isBurnMemeModalOpen = false;
 
   @observable
   selectedPupper: number | null = null;
@@ -53,9 +38,13 @@ class ViewerStore extends Navigable(Eventable(Reactionable((EmptyClass)))) {
   @observable
   isSelectedDrawerOpen = false
 
+  @observable
+  modals: ModalsStore
+
   constructor(private _x: string | null, private _y?: string | null) {
     super()
     makeObservable(this);
+    this.modals = new ModalsStore()
     this.pushNavigation(ViewerView.Index)
 
     if (_x && _y) {
@@ -65,9 +54,7 @@ class ViewerStore extends Navigable(Eventable(Reactionable((EmptyClass)))) {
   }
 
   init() {
-    this.isHelperModalOpen = LocalStorage.getItem(SHOW_HELPER_MODAL, LocalStorage.PARSE_JSON, true)
-    LocalStorage.setItem(SHOW_HELPER_MODAL, false)
-
+    this.modals.init()
     this.react(() => this.selectedPupper, async () => {
       try {
         this.tokenOwner = await AppStore.web3.getPxOwnerByTokenId(this.selectedPupper!)

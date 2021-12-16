@@ -28,7 +28,7 @@ const Loading = ({title, showSigningHint = false}: { title?: string, showSigning
       mt={6}
       block
     >
-      {"(sign the tx in your wallet to continue️)"}
+      {"(sign the tx in your wallet to continue)"}
     </Typography>}
   </Flex>
 }

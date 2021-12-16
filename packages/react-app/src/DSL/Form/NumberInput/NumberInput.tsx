@@ -14,6 +14,7 @@ import {AllowedStyleProps, BaseInputProps} from "../interfaces";
 import {useControlledFormField, useFormField} from "../useFormField";
 import Typography, {TVariant} from "../../Typography/Typography";
 import {observer} from "mobx-react-lite";
+import AppStore from "../../../store/App.store";
 
 export interface NumberInputProps extends BaseInputProps, AllowedStyleProps {
   stepper?: boolean;
@@ -58,7 +59,7 @@ const NumberInput = observer(({
         isDisabled={isDisabled}
         isRequired={isRequired}
       >
-        <Box position={"relative"}>
+        <Box position={"relative"} mx={3}>
           <NumberInputField
             {...restInput}
             {...rest}

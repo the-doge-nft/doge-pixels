@@ -1,6 +1,6 @@
-import { generatePath } from "react-router-dom";
-import { RouteMiddleware } from "./services/middleware";
-import { FC } from "react";
+import {generatePath} from "react-router-dom";
+import {RouteMiddleware} from "./services/middleware";
+import {FC} from "react";
 import AppLayout from "./layouts/AppLayout";
 import ViewerPage from "./pages/Viewer/Viewer.page";
 import DSLPage from "./pages/DSL.page";
@@ -12,7 +12,7 @@ export enum NamedRoutes {
   VIEWER = "viewer",
   DOG_PARK = "park",
   DSL = "dsl",
-  MOBILE_HOME = "mobile"
+  PIXELS = "mobile"
 }
 
 
@@ -23,7 +23,10 @@ export interface AppRouteInterface {
   layout: FC;
   component: FC | any;
   middleware?: RouteMiddleware;
-  title: string;
+  desktopName: string;
+  mobileName: string
+  showOnMobile: boolean;
+  showOnDesktop: boolean;
 }
 
 
@@ -46,7 +49,10 @@ const routes: AppRouteInterface[] = [
     exact: true,
     layout: AppLayout,
     component: ViewerPage,
-    title: "Portal",
+    desktopName: "Portal",
+    mobileName: "DOGE",
+    showOnMobile: true,
+    showOnDesktop: true,
   },
   {
     path: "/park/:address?/:tokenID?",
@@ -54,15 +60,22 @@ const routes: AppRouteInterface[] = [
     exact: true,
     layout: AppLayout,
     component: DogParkPage,
-    title: "Dog park",
+    desktopName: "Dog park",
+    mobileName: "Park",
+    showOnMobile: false,
+    showOnDesktop: true,
+
   },
   {
-    path: "/mobile/home",
-    name: NamedRoutes.MOBILE_HOME,
+    path: "/pixels",
+    name: NamedRoutes.PIXELS,
     exact: true,
     layout: AppLayout,
     component: MobileHomePage,
-    title: "Mobile"
+    desktopName: "Pixels",
+    mobileName: "PIXELS",
+    showOnMobile: true,
+    showOnDesktop: false,
   }
 ];
 
@@ -73,7 +86,10 @@ if (isDevModeEnabled()) {
     exact: true,
     layout: AppLayout,
     component: DSLPage,
-    title: "DSL",
+    desktopName: "DSL",
+    mobileName: "DSL",
+    showOnMobile: false,
+    showOnDesktop: false,
   })
 }
 

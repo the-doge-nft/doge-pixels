@@ -92,15 +92,15 @@ const ViewerPage = observer(function ViewerPage() {
         </GridItem>
       </Grid>
       <MintPixelsModal
-        isOpen={store.isMintModalOpen}
-        onClose={() => store.isMintModalOpen = false}
+        isOpen={store.modals.isMintModalOpen}
+        onClose={() => store.modals.isMintModalOpen = false}
         onSuccess={() => {
-          store.isMintMemeModalOpen = true
+          store.modals.isMintMemeModalOpen = true
           AppStore.web3.refreshPupperOwnershipMap()
         }}
         goToPixels={() => {
-          store.isMintModalOpen = false
-          store.isMintMemeModalOpen = false
+          store.modals.isMintModalOpen = false
+          store.modals.isMintMemeModalOpen = false
           if (store.currentView !== ViewerView.Manage) {
             store.pushNavigation(ViewerView.Manage)
           }
@@ -108,35 +108,34 @@ const ViewerPage = observer(function ViewerPage() {
       />
       <BurnPixelsModal
         defaultPixel={store.selectedPupper}
-        isOpen={store.isBurnModalOpen}
-        onClose={() => store.isBurnModalOpen = false}
+        isOpen={store.modals.isBurnModalOpen}
+        onClose={() => store.modals.isBurnModalOpen = false}
         onSuccess={() => {
           AppStore.web3.refreshPupperOwnershipMap()
-          store.isBurnMemeModalOpen = true
+          store.modals.isBurnMemeModalOpen = true
         }}
         onCompleteClose={() => {
-          store.isBurnModalOpen = false
-          store.isBurnMemeModalOpen = false
+          store.modals.isBurnModalOpen = false
+          store.modals.isBurnMemeModalOpen = false
         }}
       />
       <ScrollHelperModal
-        isOpen={store.isHelperModalOpen}
-        onClose={() => store.isHelperModalOpen = false}
+        isOpen={store.modals.isHelperModalOpen}
+        onClose={() => store.modals.isHelperModalOpen = false}
       />
       <MemeModal
         type={"mint"}
-        isOpen={store.isMintMemeModalOpen}
-        onClose={() => store.isMintMemeModalOpen = false}
+        isOpen={store.modals.isMintMemeModalOpen}
+        onClose={() => store.modals.isMintMemeModalOpen = false}
       />
       <MemeModal
         type={"burn"}
-        isOpen={store.isBurnMemeModalOpen}
-        onClose={() => store.isBurnMemeModalOpen = false}
+        isOpen={store.modals.isBurnMemeModalOpen}
+        onClose={() => store.modals.isBurnMemeModalOpen = false}
       />
       <Drawer
         isOpen={store.isSelectedDrawerOpen}
         onClose={() => store.isSelectedDrawerOpen = false}
-        // title={"Selected Pixel Pane"}
       >
         <SelectedPixelPane store={store}/>
       </Drawer>

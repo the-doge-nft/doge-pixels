@@ -19,11 +19,12 @@ export interface ButtonProps extends AllowedStyleProps {
   isLoading?: boolean;
 }
 
-type ButtonSize = "sm" | "md"
+type ButtonSize = "sm" | "md" | "lg"
 
 const buttonTypographyMap: { [key in ButtonSize]: TVariant } = {
   sm: TVariant.PresStart12,
   md: TVariant.PresStart15,
+  lg: TVariant.PresStart28
 };
 
 const Button = ({ submit, children, variant = ButtonVariant.Primary, size = "md", isDisabled = false, onClick, isLoading=false, ...rest }: ButtonProps) => {

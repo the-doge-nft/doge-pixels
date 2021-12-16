@@ -112,6 +112,12 @@ const ButtonStyle = {
         p: "14px",
         height: "inherit"
       }
+    },
+    lg: {
+      button: {
+        p: "22px",
+        height: "inherit"
+      }
     }
   },
   defaultProps: {},

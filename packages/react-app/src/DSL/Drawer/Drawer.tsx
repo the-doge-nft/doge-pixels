@@ -10,31 +10,32 @@ import {
 } from '@chakra-ui/react'
 import Typography, {TVariant} from "../Typography/Typography";
 
-interface DrawerProps {
+export interface DrawerProps {
   isOpen: boolean;
   onClose: () => void;
   title?: string;
   children?: any;
+  footer?: any;
 }
 
-const Drawer = ({isOpen, onClose, title, children}: DrawerProps) => {
+const Drawer = ({isOpen, onClose, title, children, footer}: DrawerProps) => {
   return <ChakraDrawer
     isOpen={isOpen}
     onClose={onClose}
     placement={"bottom"}
+    size={"lg"}
   >
     <DrawerOverlay/>
-    <DrawerContent>
+    <DrawerContent maxH={"85vh"} height={"100%"}>
       <DrawerCloseButton />
       {title && <DrawerHeader>
-        <Typography variant={TVariant.PresStart12}>
+        <Typography
+            variant={TVariant.PresStart24}>
           {title}
         </Typography>
       </DrawerHeader>}
-      <DrawerBody>
-        {children && children}
-      </DrawerBody>
-      <DrawerFooter>footer</DrawerFooter>
+      <DrawerBody>{children && children}</DrawerBody>
+      <DrawerFooter>{footer && footer}</DrawerFooter>
     </DrawerContent>
   </ChakraDrawer>
 }
