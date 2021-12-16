@@ -23,7 +23,7 @@ router.get(
 router.get(
   '/config/refresh',
   async (req, res) => {
-    await getAddressToOwnershipMap()
+    await getAddressToOwnershipMap(EthersClient)
     const data = await redisClient.get(redisClient.keys.ADDRESS_TO_TOKENID)
     res.send(JSON.parse(data))
   }
@@ -108,6 +108,14 @@ router.get(
     } catch (e) {
       next(e)
     }
+  }
+)
+
+router.get(
+  '/ws/disconnect',
+  async (req, res, next) => {
+    EthersClient.provider._websocket.terminate();
+    res.send({success: true})
   }
 )
 

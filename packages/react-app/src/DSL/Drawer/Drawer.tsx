@@ -3,7 +3,6 @@ import {
   Box,
   Drawer as ChakraDrawer,
   DrawerBody,
-  DrawerCloseButton,
   DrawerContent,
   DrawerFooter,
   DrawerHeader,
