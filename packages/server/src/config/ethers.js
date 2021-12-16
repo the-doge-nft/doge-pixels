@@ -6,6 +6,7 @@ const logger = require("./config");
 const vars = require("./vars");
 const Sentry = require("@sentry/node");
 const {keepAlive} = require("./helpers");
+const {getAddressToOwnershipMap} = require("../api/web3/px");
 
 
 class EthersHandler {
@@ -38,15 +39,24 @@ class EthersHandler {
       this.provider = new ethers.providers.WebSocketProvider(`ws://127.0.0.1:8545`);
     } else {
       this.provider = new ethers.providers.WebSocketProvider(vars.infura_ws_endpoint, this.network);
-      // provider = new ethers.providers.InfuraProvider(network=network, apiKey={
-      //   projectId: vars.infura_project_id,
-      //   projectSecret: vars.infura_secret_id
-      // })
     }
 
     this.PXContract = new ethers.Contract(this.pxContractInfo["address"], this.pxContractInfo["abi"], this.provider)
     this.DOGContract = new ethers.Contract(this.dogContractInfo["address"], this.dogContractInfo["abi"], this.provider)
 
+    // rebuild ownership map in redis to be safe
+    getAddressToOwnershipMap(this)
+
+    // listen out for transfers on the PX contract
+    const listenDebugString = `Listening to PX contract: ${this.PXContract.address} 👂`
+    logger.info(listenDebugString)
+    Sentry.captureMessage(listenDebugString)
+    this.PXContract.on('Transfer(address,address,uint256)', async (from, to, _tokenID) => {
+      logger.info("PX transfer detected - rebuilding address to token ID map")
+      getAddressToOwnershipMap(this)
+    })
+
+    // keep ws alive, re-initialize if connection is dropped
     keepAlive({
       provider: this.provider,
       onDisconnect: (err) => {

@@ -1,14 +1,8 @@
 const ethers = require("ethers")
-const { EthersClient } = require("../../config/ethers")
 const {redisClient} = require("../../config/redis")
 const logger = require("../../config/config");
 const {env} = require("../../config/vars");
 
-
-async function main() {
-  getAddressToOwnershipMap()
-  listenToPXTransfers()
-}
 
 function removeZeroAddress(source) {
   const copy = JSON.parse(JSON.stringify(source))
@@ -94,20 +88,8 @@ async function applyENSName(source) {
   return copy
 }
 
-function listenToPXTransfers() {
-  /*
-    Listening to transfer events on the PX contract updating the address -> [tokenIDs...] stored in redis
-    ⚠️ NOTE: do not depend on this listener - it randomly does not fire on some Transfer events. We persist
-             it here to *hopefull* pick up any transfers happening external to our UI
-   */
-  logger.info(`Listening to PX contract: ${EthersClient.PXContract.address} 👂`)
-  EthersClient.PXContract.on('Transfer(address,address,uint256)', async (from, to, _tokenID) => {
-    logger.info("PX transfer detected - rebuilding address to token ID map")
-    getAddressToOwnershipMap()
-  })
-}
 
-async function getAddressToOwnershipMap() {
+async function getAddressToOwnershipMap(EthersClient) {
   /*
     Builds address -> [tokenIDs..] object for all of PX contract's history
    */
@@ -137,4 +119,4 @@ async function getAddressToOwnershipMap() {
   await redisClient.set(redisClient.keys.ADDRESS_TO_TOKENID, JSON.stringify(addressToPuppers))
 }
 
-module.exports = {main, getAddressToOwnershipMap}
+module.exports = {getAddressToOwnershipMap}
