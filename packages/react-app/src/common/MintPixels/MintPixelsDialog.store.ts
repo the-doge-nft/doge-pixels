@@ -139,7 +139,6 @@ class MintPixelsDialogStore extends Reactionable((Navigable(EmptyClass))) {
 
   @computed
   get dogCount() {
-    console.log("debug:: pixel count", this.pixel_count)
     if (this.pixel_count) {
       //@CC: TODO protect agaist edge cases here "0.1" "-" etc
       if (this.pixel_count === "-" || this.pixel_count === ".") {
@@ -148,6 +147,16 @@ class MintPixelsDialogStore extends Reactionable((Navigable(EmptyClass))) {
       return ethers.utils.formatEther(AppStore.web3.DOG_TO_PIXEL_SATOSHIS.mul(this.pixel_count))
     } else {
       return 0
+    }
+  }
+
+  @computed
+  get description() {
+    switch (this.currentView) {
+      case MintModalView.Mint:
+        return "Trade $DOG for pixels. Each pixel is worth 55,240 $DOG."
+      default:
+        return undefined
     }
   }
 }

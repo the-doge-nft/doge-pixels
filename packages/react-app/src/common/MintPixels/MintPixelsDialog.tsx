@@ -49,9 +49,6 @@ const MintPixelsDialog = observer(({store, onSuccess, onGoToPixelsClick}: MintPi
 const MintForm = observer(({ store }: { store: MintPixelsModalStore }) => {
   return (
     <>
-      <Typography variant={TVariant.ComicSans18}>
-        Trade $DOG for pixels. Each pixel is worth 55,240 $DOG.
-      </Typography>
       <Form onSubmit={async (data) => store.handleMintSubmit(data.pixel_count)}>
         <Box mt={5}>
           <BigInput
@@ -59,9 +56,9 @@ const MintForm = observer(({ store }: { store: MintPixelsModalStore }) => {
             storeKey={"pixel_count"}
             label={"PX"}
             validate={[
-              required("Must mint at least 1 pixel"),
+              required("1 pixel minimum"),
               minValue(1, "Must mint at least 1 pixel"),
-              maxValue(store.maxPixelsToPurchase, `Not enough $DOG 😕`)
+              maxValue(store.maxPixelsToPurchase, `Not enough $DOG`)
             ]}
             renderLeftOfValidation={() => {
               return <Box>

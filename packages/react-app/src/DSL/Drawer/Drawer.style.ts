@@ -8,6 +8,9 @@ const DrawerStyle = {
       // mt: 10
       // width: "90%",
       // margin: "auto"
+    },
+    body: {
+      height: "100%"
     }
   }),
   sizes: {
