@@ -31,7 +31,6 @@
     "@walletconnect/web3-provider": "^1.5.2",
     "amator": "^1.1.0",
     "arb-ts": "^0.0.18",
-    "authereum": "^0.1.14",
     "axios": "^0.21.4",
     "dotenv": "^8.2.0",
     "ethers": "^5.4.1",
