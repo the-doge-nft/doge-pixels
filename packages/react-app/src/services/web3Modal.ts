@@ -1,7 +1,6 @@
 import Web3Modal from "web3modal";
 import WalletConnectProvider from "@walletconnect/web3-provider";
 import {INFURA_ID} from "../constants";
-import Authereum from "authereum";
 import WalletLink from "walletlink";
 import "./web3Modal.css";
 
@@ -35,9 +34,6 @@ const providerOptions = {
             await provider.enable();
             return provider;
         },
-    },
-    authereum: {
-        package: Authereum, // required
     },
 }
 

@@ -17,12 +17,20 @@ import Button from "../../DSL/Button/Button";
 import {convertToAbbreviation} from "../../helpers/numberFormatter";
 import BigText from "../../DSL/BigText/BigText";
 import {darkModeSecondary, lightModePrimary} from "../../DSL/Theme";
+import {NamedRoutes, route} from "../../App.routes";
 
 const DogParkPage = observer(function DogParkPage() {
   const history = useHistory()
   const { address, tokenID } = useParams<{address: string, tokenID: string}>()
   const store = useMemo(() => new DogParkPageStore(address, Number(tokenID)), [address, tokenID])
   const {colorMode} = useColorMode()
+
+  useEffect(() => {
+    if (AppStore.rwd.isMobile) {
+      history.push(route(NamedRoutes.VIEWER))
+    }
+    // eslint-disable-next-line
+  }, [AppStore.rwd.isMobile])
 
   useEffect(() => {
     store.init()
