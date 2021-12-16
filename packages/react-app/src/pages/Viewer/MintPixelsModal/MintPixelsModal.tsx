@@ -3,6 +3,7 @@ import {useEffect, useMemo} from "react";
 import Modal, {ModalProps} from "../../../DSL/Modal/Modal";
 import MintPixelsDialog from "../../../common/MintPixels/MintPixelsDialog";
 import MintPixelsModalStore from "./MintPixelsModal.store";
+import AppStore from "../../../store/App.store";
 
 interface MintPixelsModalProps extends Pick<ModalProps, "isOpen" | "onClose"> {
   onSuccess: () => void;

@@ -91,12 +91,11 @@ const ViewerPage = observer(function ViewerPage() {
           </Pane>
         </GridItem>
       </Grid>
-      <MintPixelsModal
+      {store.modals.isMintModalOpen && <MintPixelsModal
         isOpen={store.modals.isMintModalOpen}
         onClose={() => store.modals.isMintModalOpen = false}
         onSuccess={() => {
           store.modals.isMintMemeModalOpen = true
-          AppStore.web3.refreshPupperOwnershipMap()
         }}
         goToPixels={() => {
           store.modals.isMintModalOpen = false
@@ -105,40 +104,40 @@ const ViewerPage = observer(function ViewerPage() {
             store.pushNavigation(ViewerView.Manage)
           }
         }}
-      />
-      <BurnPixelsModal
+      />}
+      {store.modals.isBurnModalOpen && <BurnPixelsModal
         defaultPixel={store.selectedPupper}
         isOpen={store.modals.isBurnModalOpen}
         onClose={() => store.modals.isBurnModalOpen = false}
         onSuccess={() => {
-          AppStore.web3.refreshPupperOwnershipMap()
           store.modals.isBurnMemeModalOpen = true
         }}
         onCompleteClose={() => {
           store.modals.isBurnModalOpen = false
           store.modals.isBurnMemeModalOpen = false
         }}
-      />
-      <ScrollHelperModal
+      />}
+      {store.modals.isMintModalOpen && <ScrollHelperModal
         isOpen={store.modals.isHelperModalOpen}
         onClose={() => store.modals.isHelperModalOpen = false}
-      />
-      <MemeModal
+      />}
+      {store.modals.isMintMemeModalOpen && <MemeModal
         type={"mint"}
         isOpen={store.modals.isMintMemeModalOpen}
         onClose={() => store.modals.isMintMemeModalOpen = false}
-      />
-      <MemeModal
+      />}
+      {store.modals.isBurnMemeModalOpen && <MemeModal
         type={"burn"}
         isOpen={store.modals.isBurnMemeModalOpen}
         onClose={() => store.modals.isBurnMemeModalOpen = false}
-      />
+      />}
+      {store.isSelectedDrawerOpen &&
       <Drawer
         isOpen={store.isSelectedDrawerOpen}
         onClose={() => store.isSelectedDrawerOpen = false}
       >
         <SelectedPixelPane store={store}/>
-      </Drawer>
+      </Drawer>}
     </>
   );
 });

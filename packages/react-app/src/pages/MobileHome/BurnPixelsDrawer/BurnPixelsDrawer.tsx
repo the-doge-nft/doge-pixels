@@ -1,7 +1,7 @@
 import { observer } from "mobx-react-lite";
 import React, { useMemo } from "react";
 import BurnPixelsDrawerStore from "./BurnPixelsDrawer.store";
-import Drawer, {DrawerProps} from "../../../DSL/Drawer/Drawer";
+import Drawer from "../../../DSL/Drawer/Drawer";
 import BurnPixelsDialog from "../../../common/BurnPixels/BurnPixelsDialog";
 
 interface BurnPixelsModalProps {
@@ -13,7 +13,7 @@ interface BurnPixelsModalProps {
 }
 
 const BurnPixelsDrawer = observer(({isOpen, onClose, defaultPixel, onSuccess, onCompleteClose}: BurnPixelsModalProps) => {
-  const store = useMemo(() => new BurnPixelsDrawerStore(defaultPixel), [isOpen])
+  const store = useMemo(() => new BurnPixelsDrawerStore(defaultPixel), [isOpen, defaultPixel])
   return <Drawer
     title={store.modalTitle}
     isOpen={isOpen}

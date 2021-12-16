@@ -1,7 +1,6 @@
 import {makeObservable, observable} from "mobx";
 import Web3Store from "./web3.store";
 import RWDStore from "./RWD.store";
-import ModalsStore from "./Modals.store";
 
 class _AppStore {
 

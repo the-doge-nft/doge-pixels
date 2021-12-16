@@ -1,6 +1,5 @@
-import {action, makeObservable, observable} from "mobx";
+import {makeObservable, observable} from "mobx";
 import LocalStorage from "../services/local-storage";
-import {ObjectKeys} from "../helpers/objects";
 
 export enum ModalName {
   Mint = "mint",
