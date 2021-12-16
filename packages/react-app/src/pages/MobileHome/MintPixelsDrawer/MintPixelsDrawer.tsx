@@ -3,8 +3,11 @@ import {observer} from "mobx-react-lite";
 import Drawer, {DrawerProps} from "../../../DSL/Drawer/Drawer";
 import MintPixelsDialogStore from "../../../common/MintPixels/MintPixelsDialog.store";
 import MintPixelsDialog from "../../../common/MintPixels/MintPixelsDialog";
+import {MintPixelsModalProps} from "../../Viewer/MintPixelsModal/MintPixelsModal";
 
-const MintPixelsDrawer = observer(({isOpen, onClose}: Pick<DrawerProps, "isOpen" | "onClose">) => {
+interface MintPixelsDrawer extends MintPixelsModalProps {}
+
+const MintPixelsDrawer = observer(({isOpen, onClose, onSuccess, goToPixels}: MintPixelsDrawer) => {
   const store = useMemo(() => new MintPixelsDialogStore(), [])
   return <Drawer
     title={store.title}
@@ -13,8 +16,8 @@ const MintPixelsDrawer = observer(({isOpen, onClose}: Pick<DrawerProps, "isOpen"
   >
     <MintPixelsDialog
       store={store}
-      onSuccess={() => console.log()}
-      onGoToPixelsClick={() => console.log()}/>
+      onSuccess={onSuccess}
+      onGoToPixelsClick={goToPixels}/>
   </Drawer>
 })
 

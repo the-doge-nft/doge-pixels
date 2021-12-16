@@ -89,7 +89,7 @@ function BigInput({
           <Button
             onClick={() => store[storeKey] = Number(store[storeKey]) - 1}
             mt={2}
-            isDisabled={store[storeKey] == 0}
+            isDisabled={store[storeKey] === 0}
           >
             <Icon
               icon={"chevron-down"}

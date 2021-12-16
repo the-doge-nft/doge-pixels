@@ -49,7 +49,11 @@ class ViewerStore extends Navigable(Eventable(Reactionable((EmptyClass)))) {
 
     if (_x && _y) {
       this.selectedPupper = AppStore.web3.coordinateToPupperLocal(Number(_x), Number(_y))
-      this.pushNavigation(ViewerView.Selected)
+      if (AppStore.rwd.isMobile) {
+        this.isSelectedDrawerOpen = true
+      } else {
+        this.pushNavigation(ViewerView.Selected)
+      }
     }
   }
 
