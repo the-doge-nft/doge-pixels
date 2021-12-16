@@ -3,7 +3,10 @@ import { t } from "@lingui/macro";
 
 export type ValidatorFunction = (value: any, allValues: Object, meta?: FieldState<any>) => any;
 
-const required = (value: any) => (value ? undefined : t`Required`);
+const required = (customString?: string) => (value: any) => {
+  const stringToReturn = customString ? customString : "Required"
+  return (value ? undefined : stringToReturn)
+};
 
 const mustBeANumber = (value: any) => (isNaN(value) ? t`Must be a number` : undefined);
 
