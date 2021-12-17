@@ -65,7 +65,7 @@ class Web3Store {
     pxContract?: PX
 
     @observable
-    network?: Network
+    network: Network | null = null
 
     @observable
     addressToPuppers?: AddressToPuppers
@@ -121,12 +121,15 @@ class Web3Store {
     async disconnect() {
         try {
             await web3Modal.clearCachedProvider()
-            // if (this.provider.disconnect && typeof this.provider.disconnect === "function") {
-            //     await this.provider.disconnect()
-            // }
+            //@ts-ignore
+            if (this.provider.disconnect && typeof this.provider.disconnect === "function") {
+                //@ts-ignore
+                await this.provider.disconnect()
+            }
             showDebugToast(`disconnecting: ${this.address}`)
 
             this.address = null
+            this.network = null
             this.provider = null
             this.web3Provider = null
             this.chainId = null
