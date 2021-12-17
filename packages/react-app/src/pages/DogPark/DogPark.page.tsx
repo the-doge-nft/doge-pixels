@@ -93,6 +93,7 @@ const DogParkPage = observer(function DogParkPage() {
                         const hex = AppStore.web3.pupperToHexLocal(px)
                         const index = AppStore.web3.pupperToIndexLocal(px)
                         return <Box
+                          key={`user-dog-${px}`}
                           bg={store.selectedPupper === px
                             ? (colorMode === "light" ? lightModePrimary : darkModeSecondary)
                             : "inherit"}
@@ -160,7 +161,7 @@ const SearchHints = ({store}: {store: DogParkPageStore}) => {
     >
         Similar results
     </Typography>}
-    {!store.isSearchInputEmpty && !store.selectedAddress && store.filteredDogs.map(dog => <UserCard store={store} dog={dog}/>)}
+    {!store.isSearchInputEmpty && !store.selectedAddress && store.filteredDogs.map(dog => <UserCard key={`filtered-dog-${dog.address}`} store={store} dog={dog}/>)}
     {!store.isSearchInputEmpty && store.isFilteredResultEmpty && <Typography
         variant={TVariant.PresStart15}>
         No results found
@@ -195,7 +196,7 @@ const TopDogs = observer(({store}: {store: DogParkPageStore}) => {
     </Flex>
     <Box overflowY={"scroll"} flexGrow={1} mt={4}>
       <Flex flexWrap={"wrap"} maxHeight={"300px"}>
-        {store.topDogs.map((dog) => <UserCard store={store} dog={dog}/>)}
+        {store.topDogs.map((dog) => <UserCard key={`top-dog-${dog.address}`} store={store} dog={dog}/>)}
       </Flex>
     </Box>
   </Pane>

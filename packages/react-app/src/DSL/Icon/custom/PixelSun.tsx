@@ -5,7 +5,7 @@ import {Icon} from "@chakra-ui/react";
 const PixelSun = ({...rest}: ChakraIconProps) => {
   return <Icon {...rest}>
     {/*<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">*/}
-      <g clip-path="url(#clip0_353_2612)">
+      <g clipPath="url(#clip0_353_2612)">
         <path d="M20.7999 19.2003H19.1999V20.8003H20.7999V19.2003Z" fill="white"/>
         <path d="M22.3995 20.8001H20.7995V22.4001H22.3995V20.8001Z" fill="white"/>
         <path d="M12.7993 6.39958H14.3993V4.79959H12.7993H11.1993H9.5993V6.39958H11.1993H12.7993Z" fill="white"/>

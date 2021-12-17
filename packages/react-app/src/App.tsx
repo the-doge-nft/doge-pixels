@@ -55,7 +55,8 @@ const DevBanner = () => {
             animate={{ x: ["100%", "-100%"], display: "flex", alignItems: "center", padding: "3px 0px" }}
             transition={{ x: {duration: 60, repeat: Infinity, ease: "linear", repeatType: "loop"} }}
         >
-          {new Array(10).fill(undefined).map(item => <Typography
+          {[1,2,3,4,5,6,7,8,9,10].map(item => <Typography
+            key={`${item}-dev-banner`}
             variant={TVariant.PresStart10}
             color={"white"}
             mx={5}
