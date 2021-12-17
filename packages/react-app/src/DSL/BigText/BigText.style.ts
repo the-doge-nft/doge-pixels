@@ -14,7 +14,7 @@ const BigTextStyle = {
       textFillColor: "transparent",
       "-webkit-text-fill-color": "transparent",
 
-      "-webkit-text-stroke": lightOrDark(colorMode, "1px black", "none"),
+      "-webkit-text-stroke": lightOrDark(colorMode, "1px black", "1px transparent"),
     },
     label: {
       bg: lightOrDark(colorMode, "yellow.50", darkModeGradient),
@@ -24,15 +24,15 @@ const BigTextStyle = {
       textFillColor: "transparent",
       "-webkit-text-fill-color": "transparent",
 
-      "-webkit-text-stroke": "1px black",
+      "-webkit-text-stroke": lightOrDark(colorMode, "1px black", "2px transparent"),
       border: "none",
       height: "auto"
     },
     drop: {
       zIndex: -1,
       position: "absolute",
-      top: "3px",
-      left: "3px",
+      top: "4px",
+      left: "4px",
       background: lightOrDark(colorMode, "black", darkModeGradient),
       "-webkit-background-clip": "text",
       "-webkit-text-stroke": lightOrDark(colorMode, "none", "2px transparent"),
