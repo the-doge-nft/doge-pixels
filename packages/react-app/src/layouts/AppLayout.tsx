@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import React, {useEffect, useReducer, useState} from "react";
 import {Box, Flex, Grid, GridItem, HStack, VStack} from "@chakra-ui/react";
 import Button from "../DSL/Button/Button";
 import {matchPath, useHistory, useLocation} from "react-router-dom";
@@ -189,7 +189,6 @@ const MobileNav = () => {
 
 const Title = () => {
   const history = useHistory()
-  const [rotation, setRotation] = useState(0)
   return <Box
       _hover={{
         cursor: "pointer"
@@ -198,8 +197,11 @@ const Title = () => {
         transform: "translate(4px, 4px)"
       }}
       onClick={() => {
-        setRotation(rotation + 360)
-        history.push(route(NamedRoutes.VIEWER))
+        // history.push({ pathname: "/empty" });
+
+        history.replace({ pathname: "/" });
+        // history.push("/")
+        // setTimeout(() => history.push(route(NamedRoutes.VIEWER)), 1)
       }}
       w={"full"}
       userSelect={"none"}
@@ -210,4 +212,17 @@ const Title = () => {
     </Box>
 }
 
+function useForceUpdate() {
+  const [state, dispatch] = useReducer((i) => i + 1, 0);
+
+  return useCallback(() => {
+    //@ts-ignore
+    dispatch({});
+  }, []);
+}
+
 export default AppLayout;
+
+function useCallback(arg0: () => void, arg1: never[]) {
+    throw new Error("Function not implemented.");
+}

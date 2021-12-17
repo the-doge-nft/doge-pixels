@@ -84,7 +84,7 @@ function BigInput({
           >
             <Icon
               icon={"chevron-up"}
-              boxSize={"24px"}/>
+              boxSize={7}/>
           </Button>
           <Button
             onClick={() => store[storeKey] = Number(store[storeKey]) - 1}
@@ -93,7 +93,7 @@ function BigInput({
           >
             <Icon
               icon={"chevron-down"}
-              boxSize={"24px"}/>
+              boxSize={7}/>
           </Button>
         </GridItem>
       </Grid>
