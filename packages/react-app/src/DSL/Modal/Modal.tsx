@@ -87,19 +87,18 @@ const Modal = ({
                 borderColor={lightOrDark(colorMode, "black", "white")}
               />
               <Box
-                p={1}
                 borderLeft={"1px solid"}
                 borderBottom={"1px solid"}
                 borderColor={lightOrDark(colorMode, "black", "white")}
               >
                 <Box
-                  px={1}
+                  p={1}
                   _hover={{cursor: "pointer"}}
-                  _active={{transform: "translate(2px, 2px)"}}
                   color={lightOrDark(colorMode, "black", "white")}
                   onClick={onClose}
+                  lineHeight={"normal"}
                 >
-                  <Icon icon={"close"} fontSize={"18px"}/>
+                  <Icon icon={"close"} boxSize={5}/>
                 </Box>
               </Box>
             </Flex>

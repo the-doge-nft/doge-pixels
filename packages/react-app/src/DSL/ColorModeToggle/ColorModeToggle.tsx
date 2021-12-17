@@ -3,12 +3,12 @@ import {AnimatePresence, motion, MotionStyle} from "framer-motion";
 import React, {useEffect, useState} from "react";
 import LightDog from "../../images/lightDog.png";
 import DarkDog from "../../images/darkDog.png"
-import PixelSun from "../../images/sunPixel.svg";
-import PixelMoon from "../../images/moonPixel.svg";
 import LightFavicon from "../../images/favicons/favicon_light.png";
 import DarkFavicon from "../../images/favicons/favicon_dark.png";
+import Icon from "../Icon/Icon";
+import {web3Modal, web3ModalDarkTheme, web3ModalLightTheme} from "../../services/web3Modal";
+import {darkModeGradient, lightOrDark} from "../Theme";
 
-// import {web3Modal, web3ModalDarkTheme, web3ModalLightTheme} from "../../services/web3Modal";
 
 interface ColorModeToggleProps {
 }
@@ -17,15 +17,6 @@ const ColorModeToggle = (props: ColorModeToggleProps) => {
   const styles = useMultiStyleConfig("ColorModeToggle", {})
   const { colorMode, toggleColorMode } = useColorMode()
   const [isDogeVisible, setIsDogeVisible] = useState(false)
-
-  // @TODO: this doesn't work :(
-  // useEffect(() => {
-  //   if (colorMode === "light") {
-  //     web3Modal.updateTheme(web3ModalLightTheme);
-  //   } else {
-  //     web3Modal.updateTheme(web3ModalDarkTheme)
-  //   }
-  // }, [colorMode])
 
   useEffect(() => {
     const favicon = document.querySelector<HTMLAnchorElement>('link[rel="icon"]')
@@ -47,7 +38,10 @@ const ColorModeToggle = (props: ColorModeToggleProps) => {
       onMouseLeave={() => setIsDogeVisible(false)}
     >
       <motion.div
-        style={styles.handle as MotionStyle}
+        style={{
+          ...styles.handle as MotionStyle,
+          background: colorMode === "dark" ? isDogeVisible ? darkModeGradient : "#180E30" : "black",
+        }}
         animate={{
           left: styles.handle.left as any
         }}
@@ -67,10 +61,10 @@ const ColorModeToggle = (props: ColorModeToggleProps) => {
         </AnimatePresence>
       </motion.div>
       <Box __css={styles.leftIcon}>
-        <img alt={"sun"} src={PixelSun} width={"22px"} height={"22px"}/>
+        <Icon icon={"sun"} boxSize={6}/>
       </Box>
       <Box __css={styles.rightIcon}>
-        <img alt={"moon"} src={PixelMoon} width={"22px"} height={"22px"}/>
+        <Icon icon={"moon"} boxSize={6}/>
       </Box>
     </Box>
     <Box __css={styles.drop}/>

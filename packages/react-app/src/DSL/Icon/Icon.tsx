@@ -1,79 +1,40 @@
 import React from "react";
 import {Icon as ChakraIcon, IconProps as ChakraIconProps, useStyleConfig} from "@chakra-ui/react";
-import {
-  BsArrowLeftRight,
-  BsMoonFill,
-  BsSunFill,
-  CgClose,
-  FaMoneyBillWaveAlt,
-  FiArrowDown,
-  FiArrowDownRight,
-  FiArrowUpLeft,
-  FiCheck,
-  FiCheckCircle,
-  FiRefreshCcw,
-  GoEye,
-  GoEyeClosed,
-  HiArrowLeft,
-  IoWallet,
-  TiWarning,
-  VscChevronDown,
-  VscChevronUp
-} from "react-icons/all";
+import {VscChevronDown, VscChevronUp} from "react-icons/all";
 
 import User from "./custom/User";
 import Search from "./custom/Search";
+import PixelSun from "./custom/PixelSun";
+import PixelMoon from "./custom/PixelMoon";
+import Close from "./custom/Close";
+import Back from "./custom/Back";
 
 export type ReactIconName =
-  | "arrow-right-down"
-  | "arrow-left"
-  | "close"
-  | "wallet"
-  | "arrow-down"
-  | "check-circle"
-  | "check"
-  | "exchange"
-  | "arrow-up-left"
-  | "money"
-  | "refresh"
-  | "warning"
-  | "eye-open"
-  | "eye-closed"
-  | "sun"
-  | "moon"
   | "chevron-up"
   | "chevron-down";
 
 type CustomIconName =
   | "person"
-  | "search";
+  | "search"
+  | "sun"
+  | "moon"
+  | "close"
+  | "back"
 
-const customIcons: CustomIconName[] = ['person', 'search']
+const customIcons: CustomIconName[] = ['person', 'search', 'sun', 'moon', 'close', 'back']
 
 const iconStringToComponentMap = {
-  "arrow-right-down": FiArrowDownRight,
-  close: CgClose,
-  wallet: IoWallet,
-  "arrow-down": FiArrowDown,
-  "check-circle": FiCheckCircle,
-  check: FiCheck,
-  exchange: BsArrowLeftRight,
-  "arrow-up-left": FiArrowUpLeft,
-  money: FaMoneyBillWaveAlt,
-  refresh: FiRefreshCcw,
-  "arrow-left": HiArrowLeft,
-  warning: TiWarning,
-  "eye-open": GoEye,
-  "eye-closed": GoEyeClosed,
-  sun: BsSunFill,
-  moon: BsMoonFill,
   "chevron-up": VscChevronUp,
   "chevron-down": VscChevronDown,
 };
 
 const customIconStringToComponentMap = {
   person: User,
-  search: Search
+  search: Search,
+  sun: PixelSun,
+  moon: PixelMoon,
+  close: Close,
+  back: Back
 }
 
 interface IconProps extends ChakraIconProps {

@@ -17,8 +17,20 @@ import {useQuery} from "../../helpers/hooks";
 import Typography, { TVariant } from "../../DSL/Typography/Typography";
 import MemeModal from "./MemeModal";
 import Drawer from "../../DSL/Drawer/Drawer";
+import {useLocation} from "react-router-dom";
 
 export type onPixelSelectType = (x: number, y: number) => void;
+
+/*
+  Hack to reload page even if we are already on the route
+  that renders this page
+  https://github.com/remix-run/react-router/issues/7416
+ */
+
+const ReloadViewerPage = () => {
+  const location = useLocation();
+  return <ViewerPage key={location.key}/>
+}
 
 const ViewerPage = observer(function ViewerPage() {
   const query = useQuery()
@@ -33,6 +45,11 @@ const ViewerPage = observer(function ViewerPage() {
     }
     // eslint-disable-next-line
   }, [])
+
+  const location = useLocation()
+
+  useEffect(() => {
+  }, [location.key])
 
   const onPixelSelect: onPixelSelectType = useCallback((x: number, y: number) => {
     store.selectedPupper = AppStore.web3.coordinateToPupperLocal(x, y);
@@ -71,7 +88,7 @@ const ViewerPage = observer(function ViewerPage() {
             justifyContent={"space-between"}
             title={store.currentView === ViewerView.Index &&
               <Typography variant={TVariant.PresStart20}>Own the doge</Typography>}>
-              {store.showGoBack && <Box position={"relative"} left={"-25px"} top={"-20px"}>
+              {store.showGoBack && <Box position={"relative"} left={"-20px"} top={"-20px"}>
                   <Box
                     p={0}
                     size={"sm"}
@@ -82,7 +99,7 @@ const ViewerPage = observer(function ViewerPage() {
                       store.clearSelectedPupper()
                     }}
                   >
-                    <Icon icon={"arrow-left"}/>
+                    <Icon icon={"back"} boxSize={7}/>
                 </Box>
               </Box>}
             {store.currentView === ViewerView.Index && <IndexPane store={store}/>}
@@ -142,4 +159,4 @@ const ViewerPage = observer(function ViewerPage() {
   );
 });
 
-export default ViewerPage;
+export default ReloadViewerPage;

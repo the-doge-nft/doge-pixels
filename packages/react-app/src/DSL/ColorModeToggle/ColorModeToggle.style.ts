@@ -35,9 +35,11 @@ const ColorModeToggleStyle = {
       zIndex: 2,
       bg: lightOrDark(colorMode, "yellow.50", "purple.700")
     },
+    // WARNING: these are params to style prop on motion.div
     handle: {
       position: "relative",
-      background: lightOrDark(colorMode, "black", "white"),
+      // background: lightOrDark(colorMode, "black", "#180E30"),
+      border: lightOrDark(colorMode, "1px solid black", "1px solid white"),
       borderRadius: 100,
       width: `${handleSize}px`,
       height: `${handleSize}px`,

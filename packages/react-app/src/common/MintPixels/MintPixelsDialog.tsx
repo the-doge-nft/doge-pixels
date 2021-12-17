@@ -35,7 +35,9 @@ const MintPixelsDialog = observer(({store, onSuccess, onGoToPixelsClick}: MintPi
       onSuccess && onSuccess()
       AppStore.web3.refreshPupperOwnershipMap()
     }
-  }, [store.currentView, onSuccess])
+    // @CC TODO: why is onSuccess here not a dep
+    // eslint-disable-next-line
+  }, [store.currentView])
 
   return <>
     {store.currentView === MintModalView.Mint && <MintForm store={store}/>}

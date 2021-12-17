@@ -1,5 +1,7 @@
 import { colorModeType, darkModePrimary, lightOrDark } from "../Theme";
 
+export const paneDropOffset = 14
+
 const PaneStyle = {
   parts: ["container", "text"],
   baseStyle: ({ colorMode }: { colorMode: colorModeType }) => ({
@@ -19,8 +21,8 @@ const PaneStyle = {
           position: "absolute",
           width: "100%",
           height: "100%",
-          left: "14px",
-          bottom: "-14px",
+          left: `${paneDropOffset}px`,
+          bottom: `-${paneDropOffset}px`,
           borderStyle: "solid",
           borderWidth: "1px",
           borderColor: lightOrDark(colorMode, "black", "white")
