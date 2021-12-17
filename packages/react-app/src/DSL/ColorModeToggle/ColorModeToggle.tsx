@@ -6,8 +6,7 @@ import DarkDog from "../../images/darkDog.png"
 import LightFavicon from "../../images/favicons/favicon_light.png";
 import DarkFavicon from "../../images/favicons/favicon_dark.png";
 import Icon from "../Icon/Icon";
-import {web3Modal, web3ModalDarkTheme, web3ModalLightTheme} from "../../services/web3Modal";
-import {darkModeGradient, lightOrDark} from "../Theme";
+import {darkModeGradient} from "../Theme";
 
 
 interface ColorModeToggleProps {
