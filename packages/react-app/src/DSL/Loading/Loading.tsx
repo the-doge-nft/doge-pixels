@@ -19,6 +19,7 @@ const Loading = ({title, showSigningHint = false}: { title?: string, showSigning
     <Box __css={styles.container}>
       <Box className={"loader"}>
         {Array.from(Array(10).keys()).map((key, index) => <Box
+          key={`loading-${index}`}
           __css={styles.pixel}
         />)}
       </Box>

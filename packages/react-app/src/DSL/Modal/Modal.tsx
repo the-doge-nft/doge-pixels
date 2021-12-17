@@ -24,7 +24,7 @@ let styleOverrides: {overlay: object, content: object} = {
     alignItems: "center",
     background: "none",
     width: "100vw",
-    "pointer-events": "none"
+    pointerEvents: "none"
   },
   content: {
     bottom: "unset",
@@ -55,12 +55,13 @@ const Modal = ({
   const { colorMode } = useColorMode()
 
   //@TODO CC
-  // ReactModal.setAppElement('#react-modal-main');
+  ReactModal.setAppElement('#root');
   return (
     <ReactModal
       onRequestClose={onClose}
       isOpen={isOpen}
       style={styleOverrides}
+      // ariaHideApp={false}
       {...rest}
     >
       <Draggable handle={".handle"} defaultPosition={defaultPosition}>

@@ -132,14 +132,14 @@ const Nav = () => {
         return (
           <Link
             isNav
-            key={route.path}
+            key={`desktop-nav-${route.path}`}
             to={path}
             textDecoration={match ? "underline" : "none"}
           >
             {route.desktopName}
           </Link>
         );
-      } else return <></>
+      } else return null
     })}
   </HStack>
 }
@@ -176,13 +176,13 @@ const MobileNav = () => {
             to={path}
             size={"lg"}
             fontSize={"18px"}
-            key={route.path}
+            key={`mobile-nav-${route.path}`}
             textDecoration={match ? "underline" : "none"}
           >
             {route.mobileName}
           </Link>
         );
-      } else return <></>
+      } else return null
     })}
   </Flex>
 }

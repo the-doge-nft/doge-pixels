@@ -24,7 +24,7 @@ const UserMenu = () => {
   const styles = useMultiStyleConfig("Menu", {})
   return <Menu>
     <Box position={"relative"} zIndex={1}>
-      <MenuButton overFlow={"hidden"}>
+      <MenuButton overflow={"hidden"}>
         <Flex alignItems={"center"} overflow={"hidden"}>
           <Icon
             color={"white"}

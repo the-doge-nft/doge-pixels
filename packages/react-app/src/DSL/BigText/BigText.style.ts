@@ -9,22 +9,22 @@ const BigTextStyle = {
       bg: lightOrDark(colorMode, "yellow.700", darkModeGradient),
       backgroundClip: "text",
       opactiy: 1,
-      "-webkit-background-clip": "text",
+      WebkitBackgroundClip: "text",
 
       textFillColor: "transparent",
-      "-webkit-text-fill-color": "transparent",
+      WebkitTextFillColor: "transparent",
 
-      "-webkit-text-stroke": lightOrDark(colorMode, "1px black", "1px transparent"),
+      WebkitTextStroke: lightOrDark(colorMode, "1px black", "1px transparent"),
     },
     label: {
       bg: lightOrDark(colorMode, "yellow.50", darkModeGradient),
       backgroundClip: "text",
-      "-webkit-background-clip": "text",
+      WebkitBackgroundClip: "text",
 
       textFillColor: "transparent",
-      "-webkit-text-fill-color": "transparent",
+      WebkitTextFillColor: "transparent",
 
-      "-webkit-text-stroke": lightOrDark(colorMode, "1px black", "2px transparent"),
+      WebkitTextStroke: lightOrDark(colorMode, "1px black", "2px transparent"),
       border: "none",
       height: "auto"
     },
@@ -34,8 +34,8 @@ const BigTextStyle = {
       top: "4px",
       left: "4px",
       background: lightOrDark(colorMode, "black", darkModeGradient),
-      "-webkit-background-clip": "text",
-      "-webkit-text-stroke": lightOrDark(colorMode, "none", "2px transparent"),
+      WebkitBackgroundClip: "text",
+      WebkitTextStroke: lightOrDark(colorMode, "none", "2px transparent"),
       "color": lightOrDark(colorMode, "black","purple.700"),
       border: "none"
     }

@@ -5,7 +5,7 @@ import {IconProps as ChakraIconProps} from "@chakra-ui/icon/dist/types/icon";
 const SearchIcon = ({...rest}: ChakraIconProps) => {
   return <Icon {...rest}>
     {/*<svg width="25" height="24" viewBox="0 0 25 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">*/}
-      <g clip-path="url(#clip0_524_5453)">
+      <g clipPath="url(#clip0_524_5453)">
         <path d="M16.444 2.66666H13.7773V5.33332H16.444V2.66666Z" fill="currentColor"/>
         <path d="M16.4443 10.6667V13.3333H19.111V10.6667V8.00001V5.33334H16.4443V8.00001V10.6667Z" fill="currentColor"/>
         <path d="M16.444 13.3333H13.7773V16H16.444V13.3333Z" fill="currentColor"/>

@@ -72,6 +72,7 @@ const MobileHomePage = observer(() => {
               const [x, y] = AppStore.web3.pupperToPixelCoordsLocal(pupper)
               return <Box p={2}>
                 <PixelPane
+                  key={`mobile-home-pixels-${pupper}`}
                   onClick={() => history.push(`/?x=${x}&y=${y}`)}
                   size={"md"}
                   pupper={pupper}
