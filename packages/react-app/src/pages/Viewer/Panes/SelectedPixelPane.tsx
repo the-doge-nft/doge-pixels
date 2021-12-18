@@ -7,7 +7,6 @@ import Button, {ButtonVariant} from "../../../DSL/Button/Button";
 import PixelPane from "../../../DSL/PixelPane/PixelPane";
 import {SET_CAMERA} from "../../../services/mixins/eventable";
 import {useHistory} from "react-router-dom";
-import {CameraPositionZ} from "../ThreeScene";
 import Icon from "../../../DSL/Icon/Icon";
 import AppStore from "../../../store/App.store";
 
@@ -22,7 +21,7 @@ const SelectedPixelPane = observer(function SelectedPixelPane({store}: {store: V
                 color={store.selectedPupperHEX}
                 pupperIndex={store.selectedPupperIndex}
                 variant={"shadow"}
-                onClick={() => store.publish(SET_CAMERA, [store.selectedPixelX, store.selectedPixelY, CameraPositionZ.medium])}
+                onClick={() => store.publish(SET_CAMERA, [store.selectedPixelX, store.selectedPixelY])}
               />}
       </Box>
       <Box mt={8}>

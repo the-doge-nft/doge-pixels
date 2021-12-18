@@ -5,7 +5,6 @@ import AppStore from "../../store/App.store";
 import {Eventable, SET_CAMERA} from "../../services/mixins/eventable";
 import {Reactionable} from "../../services/mixins/reactionable";
 import LocalStorage from "../../services/local-storage";
-import {CameraPositionZ} from "./ThreeScene";
 import {abbreviate} from "../../helpers/strings";
 import ModalsStore from "../../store/Modals.store";
 
@@ -146,7 +145,7 @@ class ViewerStore extends Navigable(Eventable(Reactionable((EmptyClass)))) {
     if (x.toNumber() !== x1 || y.toNumber() !== y1) {
       throw Error(`X,Y from contract and local do not agree. Local: ${x1} ${y1}. Remote: ${x} ${y}`)
     }
-    this.publish(SET_CAMERA, [x1, y1, CameraPositionZ.medium])
+    this.publish(SET_CAMERA, [x1, y1])
   }
 
   @computed

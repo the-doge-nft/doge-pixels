@@ -420,13 +420,14 @@ export default function panzoom(camera, owner, toKeepInBounds, minDepth, maxDept
     )
 
     const isZoomingOut = zoomPayload.dz > 0
+    const pushCenterSafetOffset = 10
 
     if (((x1) < api.xLowerBound) && ((x2) > api.xUpperBound) && isZoomingOut) {
       zoomPayload.dz = 0
       zoomPayload.dx = 0
       zoomPayload.dy = 0
     } else {
-      if ((x1) < api.xLowerBound) {
+      if ((x1) < api.xLowerBound + pushCenterSafetOffset) {
         // push camera right
         if (isZoomingOut) {
           const [x] = solveForBounds(
@@ -435,11 +436,11 @@ export default function panzoom(camera, owner, toKeepInBounds, minDepth, maxDept
             camera.aspect,
             toKeepInBounds.position.z
           )
-          zoomPayload.dx = (x - futureCamePos.x)
+          zoomPayload.dx = ((x + pushCenterSafetOffset) - futureCamePos.x)
         }
       }
 
-      if ((x2) > api.xUpperBound) {
+      if ((x2) > api.xUpperBound - pushCenterSafetOffset) {
         // push camera left
         if (isZoomingOut) {
           const [, x] = solveForBounds(
@@ -448,11 +449,11 @@ export default function panzoom(camera, owner, toKeepInBounds, minDepth, maxDept
             camera.aspect,
             toKeepInBounds.position.z
           )
-          zoomPayload.dx = (x - futureCamePos.x)
+          zoomPayload.dx = ((x - pushCenterSafetOffset) - futureCamePos.x)
         }
       }
 
-      if ((y1) < api.yLowerBound) {
+      if ((y1) < api.yLowerBound + pushCenterSafetOffset) {
         // push camera up
         if (isZoomingOut) {
           const [,, y] = solveForBounds(
@@ -461,11 +462,11 @@ export default function panzoom(camera, owner, toKeepInBounds, minDepth, maxDept
             camera.aspect,
             toKeepInBounds.position.z
           )
-          zoomPayload.dy = (y - camera.position.y)
+          zoomPayload.dy = ((y + pushCenterSafetOffset) - camera.position.y)
         }
       }
 
-      if ((y2) > api.yUpperBound) {
+      if ((y2) > api.yUpperBound - pushCenterSafetOffset) {
         // push camera down
         if (isZoomingOut) {
           const [,,, y] = solveForBounds(
@@ -474,7 +475,7 @@ export default function panzoom(camera, owner, toKeepInBounds, minDepth, maxDept
             camera.aspect,
             toKeepInBounds.position.z
           )
-          zoomPayload.dy = (y - camera.position.y)
+          zoomPayload.dy = ((y - pushCenterSafetOffset) - camera.position.y)
         }
       }
     }
