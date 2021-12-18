@@ -70,10 +70,9 @@ const AppLayout = observer(function AppLayout({children}: AppLayoutProps) {
       h={"100vh"}
       p={{base:0, md: 8}}
       flexDirection={"column"}
-      // bg={{base: "white", sm: "black", md: "green", lg: "yellow", xl: "orange", "2xl": "purple"}}
     >
       <Grid
-        templateColumns={{base: "1fr", md: "0.5fr 1.5fr", xl: "1fr 1fr"}}
+        templateColumns={{base: "1fr", md: "1fr 0.5fr 0.5fr", lg: "1fr 1fr 0.5fr", xl: "1.5fr 1fr 0.5fr"}}
         mb={10}
         templateRows={"1fr"}
         display={{base: "none", md: "grid"}}
@@ -83,16 +82,20 @@ const AppLayout = observer(function AppLayout({children}: AppLayoutProps) {
             <Title/>
           </Flex>
         </GridItem>
+        <GridItem>
+          <Flex w={"full"} h={"full"} alignItems={"center"} justifyContent={"center"}>
+            <Nav/>
+          </Flex>
+        </GridItem>
         <GridItem
           display={{base: "none", md: "flex"}}
           alignItems={"center"}
           justifyContent={"flex-end"}
           w={"full"}
         >
-          <Nav/>
-          <Box ml={10} mr={6}>
+          <Flex ml={10} mr={6}>
             <ColorModeToggle/>
-          </Box>
+          </Flex>
           {!AppStore.web3.web3Provider && <Button ml={8} onClick={() => {
             AppStore.web3.connect()
           }}>
@@ -113,7 +116,7 @@ const AppLayout = observer(function AppLayout({children}: AppLayoutProps) {
 
 const Nav = () => {
   const location = useLocation();
-  return <HStack spacing={8}>
+  return <HStack spacing={12}>
     {routes.map((route) => {
       if (route.showOnDesktop) {
         let path = route.path
