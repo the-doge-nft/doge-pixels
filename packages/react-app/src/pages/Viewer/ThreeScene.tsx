@@ -80,6 +80,9 @@ const ThreeScene = observer(({onPixelSelect, store}: ThreeSceneProps) => {
 
   const texture = useLoader(THREE.TextureLoader, Kobosu);
   texture.magFilter = THREE.NearestFilter;
+  // avoid texture resizing to power of 2
+  // https://stackoverflow.com/questions/55175351/remove-texture-has-been-resized-console-logs-in-three-js
+  texture.minFilter = THREE.LinearFilter;
   const scale = 480;
   const aspectRatio = texture.image.width / texture.image.height;
   const imageWorldUnitsWidth = aspectRatio * scale;
@@ -196,7 +199,7 @@ const ThreeScene = observer(({onPixelSelect, store}: ThreeSceneProps) => {
           const x = query.get("x")
           const y = query.get("y")
           if (x !== null && y !== null) {
-            CameraTools.setCamera([Number(x), Number(y), CameraPositionZ.medium])
+            CameraTools.setCamera([Number(x), Number(y)])
           }
         }}
       >
