@@ -1,11 +1,11 @@
 import React, {useCallback, useEffect, useRef, useState} from "react";
 import * as THREE from "three";
-import {Object3D} from "three";
+import {Object3D, Vector3} from "three";
 import {Canvas, useLoader} from "@react-three/fiber";
 import Kobosu from "../../images/THE_ACTUAL_NFT_IMAGE.png";
 import KobosuJson from "../../images/kobosu.json"
 import {Box, useColorMode} from "@chakra-ui/react";
-import {getWorldPixelCoordinate} from "./helpers";
+import {getWorldPixelCoordinate, solveForBounds} from "./helpers";
 import {onPixelSelectType} from "./Viewer.page";
 import ViewerStore from "./Viewer.store";
 import {SET_CAMERA} from "../../services/mixins/eventable";
@@ -26,6 +26,9 @@ export enum CameraPositionZ {
   medium = 300,
   close = 80
 }
+
+export const IMAGE_WIDTH = 640
+export const IMAGE_HEIGHT = 480
 
 const ThreeScene = observer(({onPixelSelect, store}: ThreeSceneProps) => {
   const query = useQuery()
@@ -111,16 +114,27 @@ const ThreeScene = observer(({onPixelSelect, store}: ThreeSceneProps) => {
       const xPos = x
       const yPos = -1 * y
 
-      camera.position.x = xPos - (overlayLength / 2)
-      camera.position.y = yPos - (overlayLength / 2)
+      const futureX = xPos - (overlayLength / 2)
+      const futureY = yPos - (overlayLength / 2)
+      let futureZ = CameraPositionZ.close
 
       if (z !== undefined) {
-        camera.position.z = z
-      } else {
-        if (camera.position.z === CameraPositionZ.far) {
-          camera.position.z = (CameraPositionZ.far - CameraPositionZ.close) / 2
-        }
+        futureZ = z
       }
+
+      const toBe = new Vector3(
+        futureX,
+        futureY,
+        futureZ
+      )
+      const [_x, _y, _z] = solveForBounds(toBe, camera.fov, camera.aspect, dogeMeshRef.current!.position.z)
+
+      console.log("debug:: x y z", _x, _y, _z)
+
+      camera.position.x = futureX
+      camera.position.y = futureY
+      camera.position.z = futureZ
+
 
       if (selectedPixelOverlayRef.current) {
         selectedPixelOverlayRef.current.visible = true;

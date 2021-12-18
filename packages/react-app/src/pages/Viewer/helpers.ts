@@ -1,4 +1,5 @@
 import { Vector3 } from "three/src/math/Vector3";
+import {IMAGE_HEIGHT, IMAGE_WIDTH} from "./ThreeScene";
 
 export const getPixelIndex = (point: number, length: number) => {
   //@TODO: should 0.5 & 2 be params
@@ -36,5 +37,5 @@ const getVisibleHeightAtZDepth = (cameraPosition: Vector3, cameraFOV: number, de
 export const solveForBounds = (cameraPosition: Vector3, cameraFOV: number, cameraAspect: number, depth: number) => {
   const height = getVisibleHeightAtZDepth(cameraPosition, cameraFOV, depth)
   const width = height * cameraAspect
-  return [width/2, 640 - 1 - (width / 2), (-480 + (height/2)), (-height/2) - 1]
+  return [width/2, IMAGE_WIDTH - 1 - (width / 2), (-IMAGE_HEIGHT + (height/2)), (-height/2) - 1]
 }
