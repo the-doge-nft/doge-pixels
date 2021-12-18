@@ -72,7 +72,7 @@ const AppLayout = observer(function AppLayout({children}: AppLayoutProps) {
       flexDirection={"column"}
     >
       <Grid
-        templateColumns={{base: "1fr", md: "1fr 0.5fr 0.5fr", lg: "1fr 1fr 0.5fr", xl: "1.5fr 1fr 0.5fr"}}
+        templateColumns={{base: "1fr", md: "1fr 1fr 1fr", lg: "1fr 1fr 1fr", xl: "1fr 0.5fr 0.5fr"}}
         mb={10}
         templateRows={"1fr"}
         display={{base: "none", md: "grid"}}
@@ -82,7 +82,7 @@ const AppLayout = observer(function AppLayout({children}: AppLayoutProps) {
             <Title/>
           </Flex>
         </GridItem>
-        <GridItem>
+        <GridItem mx={4}>
           <Flex w={"full"} h={"full"} alignItems={"center"} justifyContent={"center"}>
             <Nav/>
           </Flex>
@@ -93,10 +93,10 @@ const AppLayout = observer(function AppLayout({children}: AppLayoutProps) {
           justifyContent={"flex-end"}
           w={"full"}
         >
-          <Flex ml={10} mr={6}>
+          <Flex>
             <ColorModeToggle/>
           </Flex>
-          {!AppStore.web3.web3Provider && <Button ml={8} onClick={() => {
+          {!AppStore.web3.web3Provider && <Button whiteSpace={{base: "normal", lg: "nowrap"}} ml={8} onClick={() => {
             AppStore.web3.connect()
           }}>
               Connect Wallet
