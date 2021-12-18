@@ -2,7 +2,7 @@ import {colorModeType, lightOrDark} from "../Theme";
 
 const PillStyle = {
   baseStyle: ({colorMode}: {colorMode: colorModeType}) => ({
-    bg: "yellow.700",
+    bg: lightOrDark(colorMode, "yellow.700", "purple.100"),
     borderRadius: 100,
     display: "inline-flex",
     alignItems: "center",

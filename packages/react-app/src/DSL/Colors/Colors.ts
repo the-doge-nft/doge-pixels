@@ -14,7 +14,7 @@ const Colors: ChakraColors = {
   },
   purple: {
     "50": "#B467B6",
-    "100": "#7014AC",
+    "100": "#5A19EC",
     "700": "#180E30",
   },
   magenta: {
