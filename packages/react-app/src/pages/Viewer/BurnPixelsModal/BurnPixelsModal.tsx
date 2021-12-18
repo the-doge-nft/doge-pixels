@@ -3,6 +3,8 @@ import React, {useMemo} from "react";
 import BurnPixelsDialog from "../../../common/BurnPixels/BurnPixelsDialog";
 import Modal from "../../../DSL/Modal/Modal";
 import BurnPixelsModalStore from "./BurnPixelsModal.store";
+import {Box} from "@chakra-ui/react";
+import {BurnPixelsModalView} from "../../../common/BurnPixels/BurnPixelsDialog.store";
 
 interface BurnPixelsModalProps {
   isOpen: boolean;
@@ -22,10 +24,12 @@ const BurnPixelsModal = observer(({isOpen, onClose, defaultPixel, onSuccess, onC
     onClose={onClose}
     title={store.modalTitle}
   >
-    <BurnPixelsDialog
-      store={store}
-      onSuccess={onSuccess}
-      onCompleteClose={onCompleteClose}/>
+    <Box pt={store.currentView === BurnPixelsModalView.Select ? 0 : 12} pb={6}>
+      <BurnPixelsDialog
+        store={store}
+        onSuccess={onSuccess}
+        onCompleteClose={onCompleteClose}/>
+    </Box>
   </Modal>
 })
 

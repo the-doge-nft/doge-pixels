@@ -19,6 +19,9 @@ class BurnPixelsDialogStore extends Navigable<AbstractConstructor, BurnPixelsMod
   @observable
   hasUserSignedTx: boolean = false
 
+  @observable
+  txHash: string | null = null
+
   constructor(defaultPixel: number | null) {
     super();
     makeObservable(this)
@@ -53,11 +56,9 @@ class BurnPixelsDialogStore extends Navigable<AbstractConstructor, BurnPixelsMod
         throw Error("burnSelectedPixels called with incorrect selectedPixels length")
       }
       this.hasUserSignedTx = true
-      await tx.wait()
+      const receipt = await tx.wait()
+      this.txHash = receipt.transactionHash
       this.pushNavigation(BurnPixelsModalView.Complete)
-      AppStore.web3.refreshDogBalance()
-      AppStore.web3.refreshPupperBalance()
-      AppStore.web3.refreshPupperOwnershipMap()
     } catch (e) {
       console.error(e)
       showErrorToast("Error burning pixels")

@@ -34,6 +34,8 @@ const MintPixelsDialog = observer(({store, onSuccess, onGoToPixelsClick}: MintPi
     if (store.currentView === MintModalView.Complete) {
       onSuccess && onSuccess()
       AppStore.web3.refreshPupperOwnershipMap()
+      AppStore.web3.refreshPupperBalance()
+      AppStore.web3.refreshDogBalance()
     }
     // @CC TODO: why is onSuccess here not a dep
     // eslint-disable-next-line
@@ -125,7 +127,7 @@ const LoadingApproval = observer(({store}: {store: MintPixelsModalStore}) => {
     // eslint-disable-next-line
   }, [])
   return (
-    <Box mt={20} mb={10}>
+    <Box>
       <Loading
         title={"Approving..."}
         showSigningHint={!store.hasUserSignedTx}
@@ -140,7 +142,7 @@ const LoadingPixels = observer(({store}: {store: MintPixelsModalStore}) => {
     // eslint-disable-next-line
   }, [])
   return (
-    <Box mt={20} mb={10}>
+    <Box>
       <Loading
         title={"Minting..."}
         showSigningHint={!store.hasUserSignedTx}
@@ -150,7 +152,7 @@ const LoadingPixels = observer(({store}: {store: MintPixelsModalStore}) => {
 });
 
 const Complete = observer(({onSuccess, txHash}: {onSuccess: () => void, txHash: string | null}) => {
-  return <Box pt={10} pb={4}>
+  return <Box>
     <Typography variant={TVariant.PresStart28} textAlign={"center"} block>
       Pixels Minted
     </Typography>

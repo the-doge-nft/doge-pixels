@@ -14,7 +14,7 @@ const ModalStyle = {
       borderColor: lightOrDark(colorMode, "black", "white"),
       // padding: "10px",
       /* 👇 because of the drag handle */
-      pt: "0px",
+      // pt: "0px",
       pointerEvents: "all",
       overflow: "hidden",
       position: "relative"

@@ -325,6 +325,10 @@ const runTests = (withUpgrade) => {
         }
       });
 
+      it('PX can be transferred to other addresses', async function () {
+
+      })
+
       it('=== run at the end === totalSupply should stay constant', function () {
 
       });

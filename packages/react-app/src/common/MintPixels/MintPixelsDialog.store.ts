@@ -84,7 +84,7 @@ class MintPixelsDialogStore extends Reactionable((Navigable(EmptyClass))) {
         throw Error("Could not estimate gas")
       }
 
-      const gasLimitSafetyOffset = 100000
+      const gasLimitSafetyOffset = 50000
       const tx = await AppStore.web3.mintPuppers(amount, estimatedGas.add(gasLimitSafetyOffset))
 
       this.hasUserSignedTx = true
@@ -92,10 +92,6 @@ class MintPixelsDialogStore extends Reactionable((Navigable(EmptyClass))) {
       const receipt = await tx.wait()
       this.txHash = receipt.transactionHash
       this.pushNavigation(MintModalView.Complete)
-      AppStore.web3.refreshPupperBalance()
-      AppStore.web3.refreshDogBalance()
-      AppStore.web3.refreshPupperOwnershipMap()
-
     } catch (e) {
       showErrorToast("error minting")
       console.error(e)
