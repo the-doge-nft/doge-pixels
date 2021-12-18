@@ -3,6 +3,8 @@ import {useEffect, useMemo} from "react";
 import Modal, {ModalProps} from "../../../DSL/Modal/Modal";
 import MintPixelsDialog from "../../../common/MintPixels/MintPixelsDialog";
 import MintPixelsModalStore from "./MintPixelsModal.store";
+import { Box } from "@chakra-ui/react";
+import {MintModalView} from "../../../common/MintPixels/MintPixelsDialog.store";
 
 export interface MintPixelsModalProps extends Pick<ModalProps, "isOpen" | "onClose"> {
   onSuccess: () => void;
@@ -24,10 +26,12 @@ const MintPixelsModal = observer(({ isOpen, onClose, onSuccess, goToPixels }: Mi
       title={store.title}
       onClose={onClose}
     >
-      <MintPixelsDialog
-        store={store}
-        onSuccess={onSuccess}
-        onGoToPixelsClick={goToPixels}/>
+      <Box pt={store.currentView === MintModalView.Mint ? 0 : 12} pb={6}>
+        <MintPixelsDialog
+          store={store}
+          onSuccess={onSuccess}
+          onGoToPixelsClick={goToPixels}/>
+      </Box>
     </Modal>
   );
 });

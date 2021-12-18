@@ -1,5 +1,5 @@
 import React, {useEffect} from "react";
-import {Box, Flex, Grid, GridItem, HStack, VStack} from "@chakra-ui/react";
+import {Box, Flex, Grid, GridItem, HStack, useColorMode, VStack} from "@chakra-ui/react";
 import Button from "../DSL/Button/Button";
 import {matchPath, useHistory, useLocation} from "react-router-dom";
 import routes, {NamedRoutes, route} from "../App.routes";
@@ -149,14 +149,17 @@ const Nav = () => {
 
 const MobileNav = () => {
   const location = useLocation()
+  const { colorMode } = useColorMode()
   return <Flex
     bottom={0}
     zIndex={3}
     height={"100px"}
-    bg={"yellow.50"}
+    bg={colorMode === "light" ? "yellow.50" : "purple.700"}
     alignItems={"center"}
     justifyContent={"space-around"}
-    borderTop={"1px solid black"}
+    borderTopStyle={"solid"}
+    borderTopWidth={"1px"}
+    borderTopColor={colorMode === "light" ? "black" : "white"}
   >
     {routes.map((route) => {
       if (route.showOnMobile) {

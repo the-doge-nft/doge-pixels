@@ -12,6 +12,8 @@ import Form from "../../DSL/Form/Form";
 import Submit from "../../DSL/Form/Submit";
 import Loading from "../../DSL/Loading/Loading";
 import BurnPixelsDialogStore, {BurnPixelsModalView} from "./BurnPixelsDialog.store";
+import Link from "../../DSL/Link/Link";
+import {getEtherscanURL} from "../../helpers/links";
 
 interface BurnPixelsDialogProps {
   store: BurnPixelsDialogStore;
@@ -24,6 +26,8 @@ const BurnPixelsDialog = observer(({store, onCompleteClose, onSuccess}: BurnPixe
     if (store.currentView === BurnPixelsModalView.Complete) {
       onSuccess && onSuccess()
       AppStore.web3.refreshPupperOwnershipMap()
+      AppStore.web3.refreshPupperBalance()
+      AppStore.web3.refreshDogBalance()
     }
     // eslint-disable-next-line
   }, [store.currentView])
@@ -31,7 +35,7 @@ const BurnPixelsDialog = observer(({store, onCompleteClose, onSuccess}: BurnPixe
   return <>
     {store.currentView === BurnPixelsModalView.Select && <SelectPixels store={store}/>}
     {store.currentView === BurnPixelsModalView.LoadingBurning && <LoadingBurning store={store}/>}
-    {store.currentView === BurnPixelsModalView.Complete && <Complete onSuccess={onCompleteClose} />}
+    {store.currentView === BurnPixelsModalView.Complete && <Complete onSuccess={onCompleteClose} txHash={store.txHash}/>}
   </>
 })
 
@@ -101,14 +105,14 @@ const LoadingBurning = observer(({store}: {store: BurnPixelsModalStore}) => {
     // eslint-disable-next-line
   }, [])
   return (
-    <Box mt={20} mb={10}>
+    <Box>
       <Loading title={"Burning..."} showSigningHint={!store.hasUserSignedTx}/>
     </Box>
   )
 })
 
-const Complete = observer(({onSuccess}: {onSuccess: () => void}) => {
-  return <Box pt={10} pb={4}>
+const Complete = observer(({onSuccess, txHash}: {onSuccess: () => void, txHash: string | null}) => {
+  return <Box>
     <Typography variant={TVariant.PresStart28} textAlign={"center"} block>
       Pixels Burned
     </Typography>
@@ -117,6 +121,9 @@ const Complete = observer(({onSuccess}: {onSuccess: () => void}) => {
     </Typography>
     <Flex justifyContent={"center"} mt={12}>
       <Button onClick={() => onSuccess()}>Close</Button>
+    </Flex>
+    <Flex justifyContent={"center"} mt={10}>
+      {txHash && <Link href={getEtherscanURL(txHash, "tx")} isExternal>View tx</Link>}
     </Flex>
   </Box>
 })
