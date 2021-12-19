@@ -93,10 +93,10 @@ const AppLayout = observer(function AppLayout({children}: AppLayoutProps) {
           justifyContent={"flex-end"}
           w={"full"}
         >
-          <Flex>
+          <Flex mr={8}>
             <ColorModeToggle/>
           </Flex>
-          {!AppStore.web3.web3Provider && <Button whiteSpace={{base: "normal", lg: "nowrap"}} ml={8} onClick={() => {
+          {!AppStore.web3.web3Provider && <Button whiteSpace={{base: "normal", lg: "nowrap"}} onClick={() => {
             AppStore.web3.connect()
           }}>
               Connect Wallet

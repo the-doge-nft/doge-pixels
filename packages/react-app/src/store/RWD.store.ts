@@ -3,6 +3,10 @@ import theme from "../DSL/Theme";
 
 class RWDStore {
 
+  // mobile fold is a pain in the ass
+  // https://bugs.webkit.org/show_bug.cgi?id=141832#c5
+  // https://github.com/w3c/csswg-drafts/issues/4329
+
   @observable
   isMobile = false
 
