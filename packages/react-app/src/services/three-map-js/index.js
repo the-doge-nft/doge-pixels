@@ -420,7 +420,7 @@ export default function panzoom(camera, owner, toKeepInBounds, minDepth, maxDept
     )
 
     const isZoomingOut = zoomPayload.dz > 0
-    const pushCenterSafetOffset = 10
+    const pushCenterSafetOffset = 0
 
     if (((x1) < api.xLowerBound) && ((x2) > api.xUpperBound) && isZoomingOut) {
       zoomPayload.dz = 0
