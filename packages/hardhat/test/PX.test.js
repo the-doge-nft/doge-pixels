@@ -201,6 +201,16 @@ const runTests = (withUpgrade) => {
         await PX.connect(addr2).burnPupper(burn[1]);
         await PX.connect(addr3).burnPupper(burn[2]);
       });
+      it('pupper can be transferred from token owner to another address', async function () {
+        const tokenId = await mintPupperWithValidation(addr1)
+        expect(await PX.ownerOf(tokenId)).to.equal(addr1.address)
+
+        await PX.connect(addr1).transferFrom(addr1.address, addr2.address, tokenId)
+        expect(await PX.ownerOf(tokenId)).to.equal(addr2.address)
+
+        await PX.connect(addr2).transferFrom(addr2.address, addr1.address, tokenId)
+        expect(await PX.ownerOf(tokenId)).to.equal(addr1.address)
+      })
       // it('address can only mint up to their $DOG balance', async function () {
       //   const [owner, , , , signer4] = await ethers.getSigners()
       //   let balance = (await DOG20.balanceOf(signer4.address)).toNumber()
@@ -324,11 +334,6 @@ const runTests = (withUpgrade) => {
           }
         }
       });
-
-      it('PX can be transferred to other addresses', async function () {
-
-      })
-
       it('=== run at the end === totalSupply should stay constant', function () {
 
       });
