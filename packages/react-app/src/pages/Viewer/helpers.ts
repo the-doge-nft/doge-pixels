@@ -1,5 +1,6 @@
+import {PerspectiveCamera, WebGLRenderer} from "three";
 import { Vector3 } from "three/src/math/Vector3";
-import {IMAGE_HEIGHT, IMAGE_WIDTH} from "./ThreeScene";
+import {CameraPositionZ, IMAGE_HEIGHT, IMAGE_WIDTH} from "./ThreeScene";
 
 export const getPixelIndex = (point: number, length: number) => {
   //@TODO: should 0.5 & 2 be params
@@ -38,4 +39,45 @@ export const solveForBounds = (cameraPosition: Vector3, cameraFOV: number, camer
   const height = getVisibleHeightAtZDepth(cameraPosition, cameraFOV, depth)
   const width = height * cameraAspect
   return [width/2, IMAGE_WIDTH - 1 - (width / 2), (-IMAGE_HEIGHT + (height/2)), (-height/2) - 1]
+}
+
+export function createCameraTools(
+  camera: PerspectiveCamera,
+  overlayLength: number,
+  selectedPixelOverlayRef: any
+) {
+  return {
+    setCamera: ([x, y, z]: [number, number, number?]) => {
+      const xPos = x
+      const yPos = -1 * y
+
+      const futureX = xPos - (overlayLength / 2)
+      const futureY = yPos - (overlayLength / 2)
+      let futureZ = CameraPositionZ.close
+
+      if (z !== undefined) {
+        futureZ = z
+      }
+
+      camera.position.x = futureX
+      camera.position.y = futureY
+      camera.position.z = futureZ
+
+      if (selectedPixelOverlayRef.current) {
+        selectedPixelOverlayRef.current.visible = true;
+        [selectedPixelOverlayRef.current.position.x, selectedPixelOverlayRef.current.position.y] = [
+          xPos - (overlayLength / 2),
+          yPos - (overlayLength / 2)
+        ];
+      }
+    }
+  }
+}
+
+export function resizeCanvas(gl: WebGLRenderer, camera: PerspectiveCamera) {
+  const width = gl.domElement.parentElement!.clientWidth;
+  const height = gl.domElement.parentElement!.clientHeight;
+  camera.aspect = width / height;
+  gl.setSize(width, height);
+  camera.updateProjectionMatrix();
 }

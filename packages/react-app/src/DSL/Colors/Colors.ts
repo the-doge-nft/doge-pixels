@@ -34,7 +34,9 @@ const Colors: ChakraColors = {
   },
   whiteAlpha: {},
   blackAlpha: {},
-  red: {},
+  red: {
+    "50": "#FF0000"
+  },
   orange: {},
   green: {},
   teal: {},

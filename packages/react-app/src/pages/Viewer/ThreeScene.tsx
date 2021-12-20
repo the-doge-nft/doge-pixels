@@ -1,20 +1,21 @@
-import React, {useCallback, useEffect, useRef, useState} from "react";
+import React, {useEffect, useRef, useState} from "react";
 import * as THREE from "three";
 import {Object3D} from "three";
 import {Canvas, useLoader} from "@react-three/fiber";
 import Kobosu from "../../images/THE_ACTUAL_NFT_IMAGE.png";
 import KobosuJson from "../../images/kobosu.json"
 import {Box, useColorMode} from "@chakra-ui/react";
-import {getWorldPixelCoordinate} from "./helpers";
+import {createCameraTools, getWorldPixelCoordinate, resizeCanvas} from "./helpers";
 import {onPixelSelectType} from "./Viewer.page";
 import ViewerStore from "./Viewer.store";
 import {SET_CAMERA} from "../../services/mixins/eventable";
 import Button, {ButtonVariant} from "../../DSL/Button/Button";
 import createPanZoom, {PanZoomReturn} from "../../services/three-map-js";
-import { useQuery } from "../../helpers/hooks";
+import {useQuery} from "../../helpers/hooks";
 import PixelPane from "../../DSL/PixelPane/PixelPane";
 import AppStore from "../../store/App.store";
 import {observer} from "mobx-react-lite";
+import Colors from "../../DSL/Colors/Colors";
 
 interface ThreeSceneProps {
   onPixelSelect: onPixelSelectType;
@@ -32,51 +33,20 @@ export const IMAGE_HEIGHT = 480
 
 const ThreeScene = observer(({onPixelSelect, store}: ThreeSceneProps) => {
   const query = useQuery()
-  const zClippingSafetyBuffer = 3
 
-  const cam = new THREE.PerspectiveCamera(
-    5,
-    window.innerWidth / window.innerHeight,
-    CameraPositionZ.close - zClippingSafetyBuffer,
-    CameraPositionZ.far + zClippingSafetyBuffer
-  );
-
-  const [camera] = useState<THREE.PerspectiveCamera>(cam);
-  const [isDragging, setIsDragging] = useState(false);
   const {colorMode} = useColorMode()
+  //@ts-ignore
+  const selectedPixelColor = colorMode === "light" ? Colors['red']["50"] : Colors['magenta']['50']
+  //@ts-ignore
+  const hoveredPixelColor = colorMode === "light" ? Colors['yellow']['700'] : Colors['purple']['100']
 
-  const canvasContainerRef = useRef<HTMLDivElement | null>(null)
+  // Setup refs to canvas elements
   const dogeMeshRef = useRef<Object3D | null>(null)
   const selectedPixelOverlayRef = useRef<Object3D>(null);
   const hoverOverlayRef = useRef<Object3D>(null);
   const tooltipRef = useRef<HTMLDivElement | null>(null);
 
-  const selectedColor = colorMode === "light" ? 0xff0000 : 0xff00e5
-  const hoverColor = colorMode === "light" ? 0xf1c232 : 0x6E1DEC
-
-  var panZoom: PanZoomReturn
-  useEffect(() => {
-    panZoom?.dispose()
-  // eslint-disable-next-line
-  }, [])
-
-  const canvasContainerOnMount = useCallback((node: HTMLDivElement) => {
-    if (node) {
-      const width = node.clientWidth;
-      const height = node.clientHeight;
-      camera.aspect = width / height;
-      camera.updateProjectionMatrix();
-
-      camera.position.x = imageWorldUnitsWidth / 2 - 0.65;
-      camera.position.y = (-1 * imageWorldUnitsHeight / 2) + 20;
-      camera.position.z = CameraPositionZ.far;
-
-      canvasContainerRef.current = node
-      node.focus()
-    }
-    // eslint-disable-next-line
-  }, []);
-
+  // Load texture & init some vars
   const texture = useLoader(THREE.TextureLoader, Kobosu);
   texture.magFilter = THREE.NearestFilter;
   // avoid texture resizing to power of 2
@@ -90,6 +60,49 @@ const ThreeScene = observer(({onPixelSelect, store}: ThreeSceneProps) => {
   const worldUnitsPixelArea = imageWorldUnitsArea / (texture.image.width * texture.image.height);
   const overlayLength = Math.sqrt(worldUnitsPixelArea);
 
+  // Create camera
+  const zClippingSafetyBuffer = 3
+  const cam = new THREE.PerspectiveCamera(
+    5,
+    window.innerWidth / window.innerHeight,
+    CameraPositionZ.close - zClippingSafetyBuffer,
+    CameraPositionZ.far + zClippingSafetyBuffer
+  );
+  const [camera] = useState<THREE.PerspectiveCamera>(cam);
+
+  // Init panZoom camera controls
+  var panZoom: PanZoomReturn
+  useEffect(() => {
+    panZoom?.dispose()
+  // eslint-disable-next-line
+  }, [])
+
+  // Create camera controls, init position & subscribe to event bus
+  const CameraTools = createCameraTools(camera, overlayLength, selectedPixelOverlayRef)
+  useEffect(() => {
+    CameraTools.setCamera([
+      imageWorldUnitsWidth / 2 - 0.65,
+      (imageWorldUnitsHeight / 2.2),
+      CameraPositionZ.far
+    ])
+
+    store?.subscribe(SET_CAMERA, CameraTools, "setCamera")
+    return () => {
+      store?.unsubscribeAllFrom(CameraTools)
+    }
+    // eslint-disable-next-line
+  }, [])
+
+
+  // Hide selected pixel overlay if no pupper is selected
+  useEffect(() => {
+    if (!store?.selectedPupper && selectedPixelOverlayRef.current) {
+      selectedPixelOverlayRef.current.visible = false;
+    }
+  }, [store?.selectedPupper])
+
+  // Selected pixel handler
+  const [isDragging, setIsDragging] = useState(false);
   const onPointUp = (e: any) => {
     if (!isDragging) {
       const [pixelX, pixelY] = getWorldPixelCoordinate(e.point, overlayLength);
@@ -105,49 +118,8 @@ const ThreeScene = observer(({onPixelSelect, store}: ThreeSceneProps) => {
     }
   };
 
-  useEffect(() => {
-    if (!store?.selectedPupper && selectedPixelOverlayRef.current) {
-      selectedPixelOverlayRef.current.visible = false;
-    }
-  }, [store?.selectedPupper])
-
-  const CameraTools = {
-    setCamera: ([x, y, z]: [number, number, number?]) => {
-      const xPos = x
-      const yPos = -1 * y
-
-      const futureX = xPos - (overlayLength / 2)
-      const futureY = yPos - (overlayLength / 2)
-      let futureZ = CameraPositionZ.close
-
-      if (z !== undefined) {
-        futureZ = z
-      }
-
-      camera.position.x = futureX
-      camera.position.y = futureY
-      camera.position.z = futureZ
-
-      if (selectedPixelOverlayRef.current) {
-        selectedPixelOverlayRef.current.visible = true;
-        [selectedPixelOverlayRef.current.position.x, selectedPixelOverlayRef.current.position.y] = [
-          xPos - (overlayLength / 2),
-          yPos - (overlayLength / 2)
-        ];
-      }
-    }
-  }
-
-  useEffect(() => {
-    store?.subscribe(SET_CAMERA, CameraTools, "setCamera")
-    return () => {
-      store?.unsubscribeAllFrom(CameraTools)
-    }
-    // eslint-disable-next-line
-  }, [])
-
   return (
-    <Box ref={canvasContainerOnMount}
+    <Box
          w={"100%"}
          h={"100%"}
          position={"absolute"}
@@ -157,13 +129,8 @@ const ThreeScene = observer(({onPixelSelect, store}: ThreeSceneProps) => {
       <Canvas
         camera={camera}
         onCreated={({gl}) => {
-          window.addEventListener("resize", () => {
-            const width = gl.domElement.parentElement!.clientWidth;
-            const height = gl.domElement.parentElement!.clientHeight;
-            camera.aspect = width / height;
-            gl.setSize(width, height);
-            camera.updateProjectionMatrix();
-          })
+          resizeCanvas(gl, camera)
+          window.addEventListener("resize", () => resizeCanvas(gl, camera))
           gl.toneMapping = THREE.NoToneMapping;
 
           if (dogeMeshRef.current) {
@@ -249,25 +216,25 @@ const ThreeScene = observer(({onPixelSelect, store}: ThreeSceneProps) => {
 
         <mesh ref={selectedPixelOverlayRef} position={[0, 0, 0.0001]} visible={false}>
           <planeGeometry attach={"geometry"} args={[overlayLength, overlayLength]}/>
-          <meshBasicMaterial attach={"material"} color={selectedColor} opacity={0.8} transparent={true} depthTest={false}/>
+          <meshBasicMaterial attach={"material"} color={selectedPixelColor} opacity={0.8} transparent={true} depthTest={false}/>
         </mesh>
 
         {!AppStore.rwd.isMobile && <group ref={hoverOverlayRef}>
           <mesh position={[-0.5, 0, 0.001]}>
             <planeGeometry attach={"geometry"} args={[0.05, 1.05]}/>
-            <meshBasicMaterial attach={"material"} color={hoverColor} opacity={1} transparent={true} depthTest={false}/>
+            <meshBasicMaterial attach={"material"} color={hoveredPixelColor} opacity={1} transparent={true} depthTest={false}/>
           </mesh>
           <mesh position={[0.5, 0, 0.001]}>
             <planeGeometry attach={"geometry"} args={[0.05, 1.05]}/>
-            <meshBasicMaterial attach={"material"} color={hoverColor} opacity={1} transparent={true} depthTest={false}/>
+            <meshBasicMaterial attach={"material"} color={hoveredPixelColor} opacity={1} transparent={true} depthTest={false}/>
           </mesh>
           <mesh position={[0, 0.5, 0.001]} rotation={new THREE.Euler(0, 0, Math.PI / 2)}>
             <planeGeometry attach={"geometry"} args={[0.05, 1]}/>
-            <meshBasicMaterial attach={"material"} color={hoverColor} opacity={1} transparent={true} depthTest={false}/>
+            <meshBasicMaterial attach={"material"} color={hoveredPixelColor} opacity={1} transparent={true} depthTest={false}/>
           </mesh>
           <mesh position={[0, -0.5, 0.001]} rotation={new THREE.Euler(0, 0, -Math.PI / 2)}>
             <planeGeometry attach={"geometry"} args={[0.05, 1]}/>
-            <meshBasicMaterial attach={"material"} color={hoverColor} opacity={1} transparent={true} depthTest={false}/>
+            <meshBasicMaterial attach={"material"} color={hoveredPixelColor} opacity={1} transparent={true} depthTest={false}/>
           </mesh>
         </group>}
       </Canvas>
