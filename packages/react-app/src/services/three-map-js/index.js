@@ -20,6 +20,8 @@ var THREE = require('three');
  * @param {Object3D} toKeepInBounds - a three.js Object3D to confine the bounds
  * of the visible region. The camera FOV will max out at the height of the image
  * so the container is completely full with the image at all times.
+ * @param {number} minDepth - min depth
+ * @param {number} maxDepth - max depth
  *
  *
  * @returns {Object} api for the input controller. It currently supports only one
