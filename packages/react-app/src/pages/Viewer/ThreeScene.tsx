@@ -1,16 +1,16 @@
 import React, {useCallback, useEffect, useRef, useState} from "react";
 import * as THREE from "three";
-import {Object3D, Vector3} from "three";
+import {Object3D} from "three";
 import {Canvas, useLoader} from "@react-three/fiber";
 import Kobosu from "../../images/THE_ACTUAL_NFT_IMAGE.png";
 import KobosuJson from "../../images/kobosu.json"
 import {Box, useColorMode} from "@chakra-ui/react";
-import {getWorldPixelCoordinate, solveForBounds} from "./helpers";
+import {getWorldPixelCoordinate} from "./helpers";
 import {onPixelSelectType} from "./Viewer.page";
 import ViewerStore from "./Viewer.store";
 import {SET_CAMERA} from "../../services/mixins/eventable";
 import Button, {ButtonVariant} from "../../DSL/Button/Button";
-import createPanZoom from "../../services/three-map-js";
+import createPanZoom, {PanZoomReturn} from "../../services/three-map-js";
 import { useQuery } from "../../helpers/hooks";
 import PixelPane from "../../DSL/PixelPane/PixelPane";
 import AppStore from "../../store/App.store";
@@ -54,8 +54,7 @@ const ThreeScene = observer(({onPixelSelect, store}: ThreeSceneProps) => {
   const selectedColor = colorMode === "light" ? 0xff0000 : 0xff00e5
   const hoverColor = colorMode === "light" ? 0xf1c232 : 0x6E1DEC
 
-  //@TODO: CC connect type
-  var panZoom: any
+  var panZoom: PanZoomReturn
   useEffect(() => {
     panZoom?.dispose()
   // eslint-disable-next-line
@@ -83,7 +82,7 @@ const ThreeScene = observer(({onPixelSelect, store}: ThreeSceneProps) => {
   // avoid texture resizing to power of 2
   // https://stackoverflow.com/questions/55175351/remove-texture-has-been-resized-console-logs-in-three-js
   texture.minFilter = THREE.LinearFilter;
-  const scale = 480;
+  const scale = IMAGE_HEIGHT;
   const aspectRatio = texture.image.width / texture.image.height;
   const imageWorldUnitsWidth = aspectRatio * scale;
   const imageWorldUnitsHeight = scale;
@@ -125,19 +124,9 @@ const ThreeScene = observer(({onPixelSelect, store}: ThreeSceneProps) => {
         futureZ = z
       }
 
-      const toBe = new Vector3(
-        futureX,
-        futureY,
-        futureZ
-      )
-      const [_x, _y, _z] = solveForBounds(toBe, camera.fov, camera.aspect, dogeMeshRef.current!.position.z)
-
-      console.log("debug:: x y z", _x, _y, _z)
-
       camera.position.x = futureX
       camera.position.y = futureY
       camera.position.z = futureZ
-
 
       if (selectedPixelOverlayRef.current) {
         selectedPixelOverlayRef.current.visible = true;
@@ -180,17 +169,16 @@ const ThreeScene = observer(({onPixelSelect, store}: ThreeSceneProps) => {
           if (dogeMeshRef.current) {
             panZoom = createPanZoom(
               camera,
-              gl.domElement.parentElement,
+              gl.domElement.parentElement!,
               dogeMeshRef.current,
               CameraPositionZ.close,
               CameraPositionZ.far,
             );
-            //@ts-ignore
+
             panZoom.on('panstart', function () {
               setIsDragging(true)
             });
 
-            //@ts-ignore
             panZoom.on('panend', function () {
               setIsDragging(false)
             });
