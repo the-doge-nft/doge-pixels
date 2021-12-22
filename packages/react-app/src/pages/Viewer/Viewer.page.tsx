@@ -126,8 +126,13 @@ const ViewerPage = observer(function ViewerPage() {
         defaultPixel={store.selectedPupper}
         isOpen={store.modals.isBurnModalOpen}
         onClose={() => store.modals.isBurnModalOpen = false}
-        onSuccess={() => {
+        onSuccess={(burnedPixelIDs) => {
           store.modals.isBurnMemeModalOpen = true
+          if (store.selectedPupper) {
+            if (burnedPixelIDs.includes(store.selectedPupper)) {
+              store.getTokenOwner(store.selectedPupper)
+            }
+          }
         }}
         onCompleteClose={() => {
           store.modals.isBurnModalOpen = false

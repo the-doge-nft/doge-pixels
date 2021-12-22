@@ -10,7 +10,7 @@ interface BurnPixelsModalProps {
   isOpen: boolean;
   onClose: () => void;
   defaultPixel: number | null;
-  onSuccess: () =>  void;
+  onSuccess: (burnedPixelIDs: number[]) => void;
   onCompleteClose: () => void;
 }
 

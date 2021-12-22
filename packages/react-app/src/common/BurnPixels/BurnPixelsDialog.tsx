@@ -17,14 +17,14 @@ import {getEtherscanURL} from "../../helpers/links";
 
 interface BurnPixelsDialogProps {
   store: BurnPixelsDialogStore;
-  onSuccess?: () => void;
+  onSuccess?: (burnedPixelIDs: number[]) => void;
   onCompleteClose: () => void
 }
 
 const BurnPixelsDialog = observer(({store, onCompleteClose, onSuccess}: BurnPixelsDialogProps) => {
   useEffect(() => {
     if (store.currentView === BurnPixelsModalView.Complete) {
-      onSuccess && onSuccess()
+      onSuccess && onSuccess(store.selectedPixels)
       AppStore.web3.refreshPupperOwnershipMap()
       AppStore.web3.refreshPupperBalance()
       AppStore.web3.refreshDogBalance()
