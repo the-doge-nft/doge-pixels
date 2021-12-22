@@ -4,9 +4,9 @@ const ABI = require('../contracts/hardhat_contracts.json')
 const testABI = require('../../test/contracts/hardhat_contracts.json')
 const logger = require("./config");
 const vars = require("./vars");
-const Sentry = require("@sentry/node");
 const {keepAlive} = require("./helpers");
 const {getAddressToOwnershipMap} = require("../api/web3/px");
+const {sentryClient} = require("../services/Sentry");
 
 
 class EthersHandler {
@@ -34,7 +34,7 @@ class EthersHandler {
   initWS() {
     const connectingMessage = `Creating WS provider on network: ${this.network}`
     logger.info(connectingMessage)
-    Sentry.captureMessage(connectingMessage)
+    sentryClient.captureMessage(connectingMessage)
     if (env === "test") {
       this.provider = new ethers.providers.WebSocketProvider(`ws://127.0.0.1:8545`);
     } else {
@@ -44,28 +44,27 @@ class EthersHandler {
     this.PXContract = new ethers.Contract(this.pxContractInfo["address"], this.pxContractInfo["abi"], this.provider)
     this.DOGContract = new ethers.Contract(this.dogContractInfo["address"], this.dogContractInfo["abi"], this.provider)
 
-    // rebuild ownership map in redis to be safe
     getAddressToOwnershipMap(this)
 
-    // listen out for transfers on the PX contract
     const listenDebugString = `Listening to PX contract: ${this.PXContract.address} 👂`
     logger.info(listenDebugString)
-    Sentry.captureMessage(listenDebugString)
+    sentryClient.captureMessage(listenDebugString)
     this.PXContract.on('Transfer(address,address,uint256)', async (from, to, _tokenID) => {
       logger.info("PX transfer detected - rebuilding address to token ID map")
       getAddressToOwnershipMap(this)
     })
 
-    // keep ws alive, re-initialize if connection is dropped
-    keepAlive({
-      provider: this.provider,
-      onDisconnect: (err) => {
-        const debugString = `The ws connection was closed: ${JSON.stringify(err, null, 2)}`
-        logger.error(debugString);
-        Sentry.captureMessage(debugString)
-        this.initWS()
-      }
-    })
+    if (env !== "test") {
+      keepAlive({
+        provider: this.provider,
+        onDisconnect: (err) => {
+          const debugString = `The ws connection was closed: ${JSON.stringify(err, null, 2)}`
+          logger.error(debugString);
+          sentryClient.captureMessage(debugString);
+          this.initWS();
+        }
+      })
+    }
   }
 }
 

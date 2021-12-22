@@ -11,13 +11,12 @@ const request = supertest(app)
 jest.setTimeout(10 * 1000)
 
 beforeAll(() => {
-  // listen for events on the px contract
-  pxMain()
+
 })
 
 afterAll(() => {
   redisClient.client.disconnect()
-  EthersClient.provider._websocket.terminate()
+  EthersClient.provider._websocket.close()
 })
 
 it('Returns the kobosu width and height', async () => {

@@ -6,8 +6,7 @@ const { logs } = require('./vars');
 const routes = require('../api/routes/v1');
 const logger = require("./config");
 const Sentry = require("@sentry/node");
-const tracing = require("@sentry/tracing");
-const vars = require("./vars");
+const {sentryClient} = require("../services/Sentry");
 
 const app = express();
 
@@ -17,18 +16,13 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cors())
 app.use('/v1', routes)
 
-if (vars.env !== "test") {
-  Sentry.init({
-    dsn: vars.sentry_dns,
-    tracesSampleRate: 1.0
-  })
-  app.use(Sentry.Handlers.requestHandler());
-  app.use(Sentry.Handlers.errorHandler());
-}
-
 app.use(errorLogger)
 app.use(errorResponder)
 
+if (sentryClient.isActive) {
+  app.use(Sentry.Handlers.requestHandler())
+  app.use(Sentry.Handlers.errorHandler())
+}
 
 function errorLogger(error, req, res, next) {
   logger.error(error)
