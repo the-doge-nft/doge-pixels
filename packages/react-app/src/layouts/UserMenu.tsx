@@ -37,11 +37,19 @@ const UserMenu = () => {
     </Box>
 
     <MenuList maxWidth={"fit-content"}>
-      <Box px={3} mb={4}>
+      <Box px={3} mb={2}>
         <Typography variant={TVariant.PresStart10}>
           {AppStore.web3.addressForDisplay}
         </Typography>
       </Box>
+      <Flex px={3} mb={4} alignItems={"center"}>
+        <Typography variant={TVariant.PresStart10}>
+          chain:
+        </Typography>
+        <Typography variant={TVariant.PresStart10} ml={2} block>
+          {AppStore.web3.network?.name}
+        </Typography>
+      </Flex>
       <Balances/>
       <MenuItem onClick={() => AppStore.web3.disconnect()}>
         <Typography variant={TVariant.PresStart15}>Disconnect {'>'}</Typography>

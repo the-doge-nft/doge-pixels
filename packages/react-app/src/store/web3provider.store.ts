@@ -9,6 +9,7 @@ import {Http} from "../services";
 import {abbreviate} from "../helpers/strings";
 import AppStore from "./App.store";
 import {Core} from "web3modal/dist/core";
+import jsonify from "../helpers/jsonify";
 
 export interface EthersContractError {
   message: string
@@ -43,6 +44,8 @@ class Web3providerStore {
 
   async connect() {
     try {
+      await web3Modal.clearCachedProvider()
+
       this.provider = await web3Modal.connect();
       this.web3Provider = new providers.Web3Provider(this.provider! as ExternalProvider)
       this.signer = this.web3Provider.getSigner()
@@ -74,12 +77,18 @@ class Web3providerStore {
 
   async disconnect() {
     try {
-      await web3Modal.clearCachedProvider()
       //@ts-ignore
       if (this.provider.disconnect && typeof this.provider.disconnect === "function") {
         //@ts-ignore
         await this.provider.disconnect()
       }
+
+      //@ts-ignore
+      if (this.provider.close) {
+        //@ts-ignore
+        await this.provider.close()
+      }
+      await web3Modal.clearCachedProvider()
       showDebugToast(`disconnecting: ${this.address}`)
 
       this.provider = null

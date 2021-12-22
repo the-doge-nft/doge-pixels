@@ -98,18 +98,19 @@ class Web3Store extends Web3providerStore {
         if (isProduction()) {
             throw Error("Should not be production yet")
         } else if (isStaging() || this.network?.name === "rinkeby") {
-            //@ts-ignore
-            this.pxContract = new Contract(
+            const px = new Contract(
               this.pxContractAddress,
               deployedContracts["4"]["rinkeby"]["contracts"]["PX"].abi,
               signerOrProvider
-            )
-            //@ts-ignore
-            this.dogContract = new Contract(
+            ) as unknown
+            this.pxContract = px as PX
+
+            const dog = new Contract(
               this.dogContractAddress,
               deployedContracts["4"]["rinkeby"]["contracts"]["DOG20"].abi,
               signerOrProvider
-            )
+            ) as unknown
+            this.dogContract = dog as DOG20
         } else {
             throw Error("Shouldn't hit")
         }
