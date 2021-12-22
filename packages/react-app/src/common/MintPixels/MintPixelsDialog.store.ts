@@ -1,7 +1,7 @@
 import {computed, makeObservable, observable } from "mobx";
 import { Navigable } from "../../services/mixins/navigable";
 import { Reactionable } from "../../services/mixins/reactionable";
-import {EmptyClass} from "../../helpers/mixins";
+import {Constructor, EmptyClass} from "../../helpers/mixins";
 import { BigNumber, ethers } from "ethers";
 import AppStore from "../../store/App.store";
 import {showDebugToast, showErrorToast} from "../../DSL/Toast/Toast";
@@ -16,7 +16,7 @@ export enum MintModalView {
   Complete = "complete"
 }
 
-class MintPixelsDialogStore extends Reactionable((Navigable(EmptyClass))) {
+class MintPixelsDialogStore extends Reactionable((Navigable<MintModalView, Constructor>(EmptyClass))) {
   @observable
   pixel_count: number | string = 1;
 

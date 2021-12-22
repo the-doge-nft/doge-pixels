@@ -1,5 +1,5 @@
 import {action, computed, makeObservable, observable} from "mobx";
-import {EmptyClass} from "../../helpers/mixins";
+import {Constructor, EmptyClass} from "../../helpers/mixins";
 import {Navigable} from "../../services/mixins/navigable";
 import AppStore from "../../store/App.store";
 import {Eventable, SET_CAMERA} from "../../services/mixins/eventable";
@@ -16,8 +16,7 @@ export enum ViewerView {
 
 export const VIEWED_PIXELS_LS_KEY = "viewed_pixels_by_id"
 
-//@TODO passing generics to Navigable typing acknowledged of subclasses
-class ViewerStore extends Navigable(Eventable(Reactionable((EmptyClass)))) {
+class ViewerStore extends (Eventable(Reactionable(Navigable<ViewerView, Constructor>(EmptyClass)))) {
 
   @observable
   selectedPupper: number | null = null;
