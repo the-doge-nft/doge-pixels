@@ -13,7 +13,7 @@ AppStore.init()
 function App() {
   return (
     <>
-    <DevBanner/>
+    {/*<DevBanner/>*/}
     <BrowserRouter>
       <Switch>
         {routes.map((route, index) => {
