@@ -22,14 +22,8 @@ class Web3Store extends Web3providerStore {
     D20_PRECISION = BigNumber.from("1000000000000000000")
     DOG_TO_PIXEL_SATOSHIS = BigNumber.from("55239898990000000000000")
     PIXEL_TO_ID_OFFSET = 1000000
-    // WIDTH = 640
-    // HEIGHT = 480
-
-    // @TODO: getting width & height may be determined to be critical
-    // data to be loaded before app mount. right now we sync here with the
-    // current rinkeby deployment so PixelPanes by default render the correct color
-    WIDTH = 32
-    HEIGHT = 24
+    WIDTH = 32 // 640
+    HEIGHT = 24 // 480
 
     @observable
     dogBalance: BigNumber | null = null
