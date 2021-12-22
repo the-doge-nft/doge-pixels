@@ -20,7 +20,7 @@ import Dev from "../common/Dev";
 import {showDebugToast, showErrorToast} from "../DSL/Toast/Toast";
 
 
-const UserMenu = () => {
+const UserMenu = observer(() => {
   const styles = useMultiStyleConfig("Menu", {})
   return <Menu>
     <Box position={"relative"} zIndex={1}>
@@ -42,21 +42,21 @@ const UserMenu = () => {
           {AppStore.web3.addressForDisplay}
         </Typography>
       </Box>
-      <Flex px={3} mb={4} alignItems={"center"}>
+      <Balances/>
+      <Flex px={3} mb={2} alignItems={"center"}>
         <Typography variant={TVariant.PresStart10}>
-          chain:
+          connected:
         </Typography>
         <Typography variant={TVariant.PresStart10} ml={2} block>
           {AppStore.web3.network?.name}
         </Typography>
       </Flex>
-      <Balances/>
       <MenuItem onClick={() => AppStore.web3.disconnect()}>
         <Typography variant={TVariant.PresStart15}>Disconnect {'>'}</Typography>
       </MenuItem>
     </MenuList>
   </Menu>
-}
+})
 
 const Balances = observer(function Balances() {
   const {colorMode} = useColorMode()
