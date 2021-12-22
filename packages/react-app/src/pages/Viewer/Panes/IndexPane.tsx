@@ -15,7 +15,7 @@ const IndexPane = observer(function IndexPane({store}: {store: ViewerStore}) {
       <Box overflow={"scroll"} flexGrow={1} h={"full"} mt={4}>
         <Box maxHeight={"300px"}>
           <Typography variant={TVariant.ComicSans18} block>
-            Welcome to the pixel portal - your gateway to digital doge ownership.
+            Welcome to the doge pixel portal - your gateway to ownership of the doge NFT.
           </Typography>
           <Typography variant={TVariant.ComicSans18} block mt={6}>
             This site has two main functions.
