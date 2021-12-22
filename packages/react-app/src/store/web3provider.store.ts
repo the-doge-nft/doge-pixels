@@ -1,5 +1,5 @@
 import {computed, makeObservable, observable} from "mobx";
-import {ExternalProvider, JsonRpcFetchFunc, Web3Provider} from "@ethersproject/providers/src.ts/web3-provider";
+import {ExternalProvider, Web3Provider} from "@ethersproject/providers/src.ts/web3-provider";
 import {Network} from "@ethersproject/networks";
 import {web3Modal} from "../services/web3Modal";
 import {providers, Signer} from "ethers";
@@ -9,7 +9,6 @@ import {Http} from "../services";
 import {abbreviate} from "../helpers/strings";
 import AppStore from "./App.store";
 import {Core} from "web3modal/dist/core";
-import jsonify from "../helpers/jsonify";
 
 export interface EthersContractError {
   message: string
