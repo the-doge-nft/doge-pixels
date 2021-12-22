@@ -58,40 +58,45 @@ class ViewerStore extends (Eventable(Reactionable(Navigable<ViewerView, Construc
   init() {
     this.modals.init()
     this.react(() => this.selectedPupper, async () => {
-      try {
-        if (this.selectedPupper) {
-          this.tokenOwner = await AppStore.web3.getPxOwnerByTokenId(this.selectedPupper!)
-        }
-
-        if (this.tokenOwner) {
-          if (this.tokenOwner === AppStore.web3.address) {
-            this.tokenOwnerENS = AppStore.web3.ens
-          } else {
-            AppStore.web3.getENSname(this.tokenOwner).then(({data}) => {
-              this.tokenOwnerENS = data.ens
-            })
-          }
-        }
-
-        try {
-          // const tokenURI = await AppStore.web3.pxContract!.tokenURI(this.selectedPupper!)
-          // @TODO: partyka - current ipfs links do not work
-          // https://ipfs.io/ipns/k51qzi5uqu5djqiqaht7oyvstxe24g4zk4lgt4nf92q7b4t9x3xjoqzkvmha1w/metadata/metadata-22_2.json
-          this.selectedURI = {
-            imgUrl: "",
-            description: {
-              pupperLocation: "Pupper"
-            }
-          }
-        } catch (e) {
-          console.log("debug:: token URI not found for token that is owned - THIS IS BAAD")
-        }
-      } catch (e) {
-        // @TODO filter if owner is 0 address
-        console.log("debug:: token does not have an owner")
-        this.tokenOwner = null
+      if (this.selectedPupper) {
+        this.getTokenOwner(this.selectedPupper)
+        this.getTokenMetadata(this.selectedPupper)
       }
     }, {fireImmediately: true})
+  }
+
+  async getTokenOwner(tokenID: number) {
+    try {
+      this.tokenOwner = await AppStore.web3.getPxOwnerByTokenId(this.selectedPupper!)
+    } catch (e) {
+      console.log("debug:: token does not have an owner")
+      this.tokenOwner = null
+    }
+
+    if (this.tokenOwner) {
+      if (this.tokenOwner === AppStore.web3.address) {
+        this.tokenOwnerENS = AppStore.web3.ens
+      } else {
+        AppStore.web3.getENSname(this.tokenOwner).then(({data}) => {
+          this.tokenOwnerENS = data.ens
+        })
+      }
+    }
+  }
+
+  async getTokenMetadata(tokenID: number) {
+    try {
+      // const tokenURI = await AppStore.web3.pxContract!.tokenURI(this.selectedPupper!)
+      // https://ipfs.io/ipns/k51qzi5uqu5djqiqaht7oyvstxe24g4zk4lgt4nf92q7b4t9x3xjoqzkvmha1w/metadata/metadata-22_2.json
+      this.selectedURI = {
+        imgUrl: "",
+        description: {
+          pupperLocation: "Pupper"
+        }
+      }
+    } catch (e) {
+      console.log("debug:: token URI not found for token that is owned - THIS IS BAAD")
+    }
   }
 
   @action

@@ -33,7 +33,6 @@ it('Returns the kobosu width and height', async () => {
   await testDimensions()
   // another call to test the cache
   await testDimensions()
-
 })
 
 it('Testing getting signers', (done) => {
