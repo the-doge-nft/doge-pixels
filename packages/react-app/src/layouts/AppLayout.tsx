@@ -1,10 +1,8 @@
-import React, {useEffect} from "react";
+import React from "react";
 import {Box, Flex, Grid, GridItem, HStack, useColorMode, VStack} from "@chakra-ui/react";
 import Button from "../DSL/Button/Button";
 import {matchPath, useHistory, useLocation} from "react-router-dom";
 import routes, {NamedRoutes, route} from "../App.routes";
-import {web3Modal} from "../services/web3Modal";
-import {showDebugToast} from "../DSL/Toast/Toast";
 import {observer} from "mobx-react-lite";
 import AppStore from "../store/App.store";
 import ColorModeToggle from "../DSL/ColorModeToggle/ColorModeToggle";
@@ -17,52 +15,6 @@ interface AppLayoutProps {
 }
 
 const AppLayout = observer(function AppLayout({children}: AppLayoutProps) {
-  useEffect(() => {
-    if (web3Modal.cachedProvider && !AppStore.web3.web3Provider?.connection) {
-      AppStore.web3.connect()
-    }
-  }, [])
-
-  //@TODO: there is some shit here to resolve, sometimes listeners do not connect
-  useEffect(() => {
-    //@ts-ignore
-    if (AppStore.web3.provider?.on) {
-      const handleAccountsChanged = (accounts: string[]) => {
-        showDebugToast("accounts changed")
-        window.location.reload()
-      }
-
-      const handleChainChanged = (_hexChainId: string) => {
-        showDebugToast("chain changed, hard reloading")
-        window.location.reload()
-      }
-
-      const handleDisconnect = (error: { code: number, message: string }) => {
-        showDebugToast('disconnecting')
-        AppStore.web3.disconnect()
-      }
-      //@ts-ignore
-      AppStore.web3.provider.on('accountsChanged', handleAccountsChanged)
-      //@ts-ignore
-      AppStore.web3.provider.on('chainChanged', handleChainChanged)
-      //@ts-ignore
-      AppStore.web3.provider.on('disconnect', handleDisconnect)
-
-      return () => {
-        //@ts-ignore
-        if (AppStore.web3.provider?.removeListener) {
-          //@ts-ignore
-          AppStore.web3.provider.removeListener('accountsChanged', handleAccountsChanged)
-          //@ts-ignore
-          AppStore.web3.provider.removeListener('chainChanged', handleChainChanged)
-          //@ts-ignore
-          AppStore.web3.provider.removeListener('disconnect', handleDisconnect)
-        }
-      }
-    }
-    // eslint-disable-next-line
-  }, [AppStore.web3.provider])
-
   return (
     <>
     <Flex

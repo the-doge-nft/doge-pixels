@@ -18,6 +18,7 @@ class _AppStore {
 
     init() {
         this.rwd.init()
+        this.web3.init()
     }
 }
 
