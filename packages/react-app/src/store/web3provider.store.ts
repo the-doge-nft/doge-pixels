@@ -44,8 +44,6 @@ class Web3providerStore {
 
   async connect() {
     try {
-      await web3Modal.clearCachedProvider()
-
       this.provider = await web3Modal.connect();
       this.web3Provider = new providers.Web3Provider(this.provider! as ExternalProvider)
       this.signer = this.web3Provider.getSigner()
