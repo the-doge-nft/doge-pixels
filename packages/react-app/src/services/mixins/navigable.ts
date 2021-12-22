@@ -1,4 +1,4 @@
-import { AbstractConstructor, Constructor } from "../../helpers/mixins";
+import { Constructor } from "../../helpers/mixins";
 import { action, computed, makeObservable, observable } from "mobx";
 import { arrayPushImmutable } from "../../helpers/arrays";
 
@@ -14,9 +14,7 @@ export interface NavigableInterface<T> {
   popNavigation: () => void;
 }
 
-// mixin to implement an interface
-
-export function Navigable<T extends AbstractConstructor | Constructor, K>(Base1: T) {
+export function Navigable<K, T extends Constructor>(Base1: T) {
   abstract class Navigable extends Base1 implements NavigableInterface<K> {
     @observable
     navigationStack: K[] = [];

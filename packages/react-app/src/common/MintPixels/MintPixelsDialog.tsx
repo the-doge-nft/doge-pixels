@@ -37,7 +37,6 @@ const MintPixelsDialog = observer(({store, onSuccess, onGoToPixelsClick}: MintPi
       AppStore.web3.refreshPupperBalance()
       AppStore.web3.refreshDogBalance()
     }
-    // @CC TODO: why is onSuccess here not a dep
     // eslint-disable-next-line
   }, [store.currentView])
 

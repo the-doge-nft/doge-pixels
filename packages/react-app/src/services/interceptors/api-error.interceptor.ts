@@ -1,8 +1,6 @@
 import { AxiosError } from "axios";
 // import { FORM_ERROR } from "final-form";
-import MfaError from "../exceptions/mfa.error";
-import AccessRestrictedError from "../exceptions/access-restricted.error";
-import MfaVerificationError from "../exceptions/mfa-verification.error";
+
 import { showErrorToast } from "../../DSL/Toast/Toast";
 import ApiError from "../exceptions/api.error";
 // import Sentry from "../../sentry";
@@ -31,9 +29,9 @@ const ApiErrorInterceptor = (config: AxiosError) => {
       logRequestInfoForSentryTracking(config);
     } else if (config.response.data && config.response.data.message) {
       if (config.response.data.message === MFA_ERROR_MESSAGE) {
-        throw new MfaError("2FA must be enabled");
+        // throw new MfaError("2FA must be enabled");
       } else if (config.response.data.message === RESTRICTED_ERROR_MESSAGE && config.response.data.redirect_url) {
-        throw new AccessRestrictedError(config.response.data.message, config.response.data.redirect_url);
+        // throw new AccessRestrictedError(config.response.data.message, config.response.data.redirect_url);
       } else {
         throw new ApiError(config.response.data.message);
       }
@@ -45,7 +43,7 @@ const ApiErrorInterceptor = (config: AxiosError) => {
         config.response.data.reason === INVALID_2FA_MESSAGE ||
         config.response.data.reason === WRONG_PASSWORD_MESSAGE
       ) {
-        throw new MfaVerificationError(config.response.data.reason);
+        // throw new MfaVerificationError(config.response.data.reason);
       } else if (config.response.data.reason === EXPIRED_TOKEN_MESSAGE) {
         console.log("expired token, logging out");
         // AppStore.auth.logout()

@@ -54,7 +54,6 @@ const Modal = ({
   const chakraStyles = useMultiStyleConfig("Modal", {size: size})
   const { colorMode } = useColorMode()
 
-  //@TODO CC
   ReactModal.setAppElement('#root');
   return (
     <ReactModal

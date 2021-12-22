@@ -1,6 +1,6 @@
 import {action, computed, makeObservable, observable} from "mobx";
 import {Navigable} from "../../services/mixins/navigable";
-import {AbstractConstructor, EmptyClass} from "../../helpers/mixins";
+import {Constructor, EmptyClass} from "../../helpers/mixins";
 import AppStore from "../../store/App.store";
 import {showErrorToast} from "../../DSL/Toast/Toast";
 import {ethers} from "ethers";
@@ -11,7 +11,7 @@ export enum BurnPixelsModalView {
   Complete = "complete"
 }
 
-class BurnPixelsDialogStore extends Navigable<AbstractConstructor, BurnPixelsModalView>(EmptyClass){
+class BurnPixelsDialogStore extends Navigable<BurnPixelsModalView, Constructor>(EmptyClass){
 
   @observable
   selectedPixels: number[] = []

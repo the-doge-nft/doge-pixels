@@ -27,7 +27,6 @@ function App() {
                 if (RenderRedirect) {
                   return RenderRedirect;
                 } else {
-                  //@TODO: FIX - Layout will re-render on page tabs here
                   return (
                     <Layout>
                       <Component />
