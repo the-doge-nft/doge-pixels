@@ -2,7 +2,8 @@ import React from "react";
 import {
   Box,
   Flex,
-  Grid, GridItem,
+  Grid,
+  GridItem,
   Menu,
   MenuButton,
   MenuItem,
@@ -26,6 +27,9 @@ const UserMenu = observer(() => {
     <Box position={"relative"} zIndex={1}>
       <MenuButton overflow={"hidden"}>
         <Flex alignItems={"center"} overflow={"hidden"}>
+          <Typography variant={TVariant.PresStart15} mr={2}>
+            {AppStore.web3.addressForDisplay}
+          </Typography>
           <Icon
             color={"white"}
             boxSize={5}
@@ -37,11 +41,6 @@ const UserMenu = observer(() => {
     </Box>
 
     <MenuList maxWidth={"fit-content"}>
-      <Box px={3} mb={2}>
-        <Typography variant={TVariant.PresStart10}>
-          {AppStore.web3.addressForDisplay}
-        </Typography>
-      </Box>
       <Balances/>
       <Flex px={3} mb={2} alignItems={"center"}>
         <Typography variant={TVariant.PresStart10}>
