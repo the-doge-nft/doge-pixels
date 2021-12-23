@@ -54,8 +54,7 @@ const AppLayout = observer(function AppLayout({children}: AppLayoutProps) {
               Connect Wallet
           </Button>}
           <VStack>
-            {AppStore.web3.address && AppStore.web3.web3Provider &&
-            <UserMenu />}
+          {AppStore.web3.address && AppStore.web3.web3Provider && <UserMenu/>}
           </VStack>
         </GridItem>
       </Grid>

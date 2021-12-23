@@ -41,12 +41,13 @@ const MenuStyle = {
     list: {
       py: 5,
       mt: 2,
-      borderRadius: "0px",
+      borderRadius: "12px",
       borderWidth: "1px",
       borderStyle: "solid",
       borderColor: lightOrDark(colorMode, "black", "white"),
       bg: lightOrDark(colorMode, "yellow.50", "purple.700"),
       zIndex: 2,
+      boxShadow: lightOrDark(colorMode, "6px 6px 0px black", "none")
       // boxShadow: `6px 6px 0px ${lightOrDark(colorMode,"black", "white")}`,
     },
     drop: {
