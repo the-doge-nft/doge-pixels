@@ -9,6 +9,8 @@ import ColorModeToggle from "../DSL/ColorModeToggle/ColorModeToggle";
 import Link from "../DSL/Link/Link";
 import BigText from "../DSL/BigText/BigText";
 import UserMenu from "./UserMenu";
+import Typography, {TVariant} from "../DSL/Typography/Typography";
+import { Type } from "../DSL/Fonts/Fonts";
 
 interface AppLayoutProps {
   children?: any;
@@ -21,6 +23,7 @@ const AppLayout = observer(function AppLayout({children}: AppLayoutProps) {
       w={"100vw"}
       h={"100vh"}
       p={{base:0, md: 8}}
+      pb={{base: 0, md: 3}}
       flexDirection={"column"}
     >
       <Grid
@@ -60,10 +63,41 @@ const AppLayout = observer(function AppLayout({children}: AppLayoutProps) {
       </Grid>
       {children}
       {AppStore.rwd.isMobile && <MobileNav/>}
+      {!AppStore.rwd.isMobile && <Footer />}
     </Flex>
     </>
   );
 });
+
+const Footer = () => {
+  const contributers: {name: string, socialLink: string}[] = [
+    {name: "coldplunge", socialLink: "https://twitter.com/xcoldplunge"},
+    {name: "gainormather", socialLink: "https://twitter.com/gainormather"},
+    {name: "ayyyayayyy", socialLink: "https://twitter.com/ayyyayayyy"},
+    //@TODO nemo chips twitter
+    {name: "nemochips", socialLink: "https://twitter.com/"}
+  ]
+  return <Box w={"full"} mt={5}>
+    <Box>
+      <Typography variant={TVariant.ComicSans12}>
+        Built by
+        {contributers.map((person, index, arr) => <Link
+          fontWeight={"bold"}
+          variant={Type.ComicSans}
+          mx={1}
+          href={person.socialLink}
+          isExternal>
+          {person.name}
+          {index === arr.length - 1 ? "" : ","}
+        </Link>)}
+        with support from
+        <Link fontWeight={"bold"} variant={Type.ComicSans} mx={1} href={"https://twitter.com/ownthedoge"} isExternal>
+          The Doge NFT
+        </Link>
+      </Typography>
+    </Box>
+  </Box>
+}
 
 const Nav = () => {
   const location = useLocation();
