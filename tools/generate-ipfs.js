@@ -85,10 +85,6 @@ function createTile(x, y, hexInt, RUN_CONFIG) {
                     hex: `${hex}`,
                     // background_color: '#fff',//todo: select contrast
                     attributes: [
-                        // {
-                        //     trait_type: "REGION",
-                        //     value: "n/a"
-                        // },
                         {
                             trait_type: "XCOORD",
                             value: x
@@ -104,14 +100,6 @@ function createTile(x, y, hexInt, RUN_CONFIG) {
                         {
                             trait_type: "HEX",
                             value: `${hex}`
-                        },
-                        // {
-                        //     trait_type: "RGBA",
-                        //     value: toColor(hex)
-                        // },
-                        {
-                            trait_type: "DENSITY",
-                            value: "DENSE"
                         },
                     ]
                 };
