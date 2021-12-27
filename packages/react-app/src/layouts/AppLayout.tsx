@@ -75,7 +75,7 @@ const Footer = () => {
     {name: "gainormather", socialLink: "https://twitter.com/gainormather"},
     {name: "ayyyayayyy", socialLink: "https://twitter.com/ayyyayayyy"},
     //@TODO nemo chips twitter
-    {name: "nemochips", socialLink: "https://twitter.com/"}
+    {name: "nemochips", socialLink: "https://twitter.com/nemo__chips"}
   ]
   return <Box w={"full"} mt={5}>
     <Box>
