@@ -65,6 +65,8 @@ class Web3Store extends Web3providerStore {
         if (web3Modal.cachedProvider && !this.web3Provider?.connection) {
             this.connect()
         }
+        this.getPupperOwnershipMap()
+        this.getShibaDimensions()
     }
 
     async connect() {
@@ -72,17 +74,11 @@ class Web3Store extends Web3providerStore {
             await super.connect()
             this.connectToContracts(this.signer!)
             await this.errorGuardContracts()
-            this.afterConnectInit()
+            this.refreshDogBalance()
+            this.refreshPupperBalance()
         } catch (e) {
             showErrorToast("Error connecting")
         }
-    }
-
-    afterConnectInit() {
-        this.refreshDogBalance()
-        this.refreshPupperBalance()
-        this.getPupperOwnershipMap()
-        this.getShibaDimensions()
     }
 
     connectToContracts(signerOrProvider?: Signer | Provider) {
@@ -235,6 +231,15 @@ class Web3Store extends Web3providerStore {
 
     coordinateToPupperLocal(x: number, y: number) {
         return ((this.WIDTH * y) + x) + this.PIXEL_TO_ID_OFFSET
+    }
+
+    isPixelIDValid(id: number) {
+        const max = (this.WIDTH * this.HEIGHT) + this.PIXEL_TO_ID_OFFSET + this.WIDTH - 1
+        const min = this.PIXEL_TO_ID_OFFSET
+        if (id < min || id > max) {
+            return false
+        }
+        return true
     }
 }
 

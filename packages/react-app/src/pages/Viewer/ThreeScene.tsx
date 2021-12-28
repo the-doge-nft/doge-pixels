@@ -5,13 +5,12 @@ import {Canvas, useLoader} from "@react-three/fiber";
 import Kobosu from "../../images/THE_ACTUAL_NFT_IMAGE.png";
 import KobosuJson from "../../images/kobosu.json"
 import {Box, useColorMode} from "@chakra-ui/react";
-import {createCameraTools, getWorldPixelCoordinate, resizeCanvas} from "./helpers";
+import {createCanvasPixelSelectionSetter, getWorldPixelCoordinate, resizeCanvas} from "./helpers";
 import {onPixelSelectType} from "./Viewer.page";
 import ViewerStore from "./Viewer.store";
-import {SET_CAMERA} from "../../services/mixins/eventable";
+import {SELECT_PIXEL} from "../../services/mixins/eventable";
 import Button, {ButtonVariant} from "../../DSL/Button/Button";
 import createPanZoom, {PanZoomReturn} from "../../services/three-map-js";
-import {useQuery} from "../../helpers/hooks";
 import PixelPane from "../../DSL/PixelPane/PixelPane";
 import AppStore from "../../store/App.store";
 import {observer} from "mobx-react-lite";
@@ -32,8 +31,6 @@ export const IMAGE_WIDTH = 640
 export const IMAGE_HEIGHT = 480
 
 const ThreeScene = observer(({onPixelSelect, store}: ThreeSceneProps) => {
-  const query = useQuery()
-
   const {colorMode} = useColorMode()
   //@ts-ignore
   const selectedPixelColor = colorMode === "light" ? Colors['red']["50"] : Colors['magenta']['50']
@@ -77,28 +74,28 @@ const ThreeScene = observer(({onPixelSelect, store}: ThreeSceneProps) => {
   // eslint-disable-next-line
   }, [])
 
-  // Create camera controls, init position & subscribe to event bus
-  const CameraTools = createCameraTools(camera, overlayLength, selectedPixelOverlayRef)
+  // Create canvas pixel selection tools
+  const PixelSelectionTools = createCanvasPixelSelectionSetter(camera, overlayLength, selectedPixelOverlayRef)
   useEffect(() => {
-    CameraTools.setCamera([
+    PixelSelectionTools.selectPixel([
       imageWorldUnitsWidth / 2 - 0.65,
       (imageWorldUnitsHeight / 2.2),
       CameraPositionZ.far
     ])
 
-    store?.subscribe(SET_CAMERA, CameraTools, "setCamera")
+    store?.subscribe(SELECT_PIXEL, PixelSelectionTools, "selectPixel")
     return () => {
-      store?.unsubscribeAllFrom(CameraTools)
+      store?.unsubscribeAllFrom(PixelSelectionTools)
     }
     // eslint-disable-next-line
   }, [])
 
-
   // Hide selected pixel overlay if no pupper is selected
   useEffect(() => {
-    if (!store?.selectedPupper && selectedPixelOverlayRef.current) {
-      selectedPixelOverlayRef.current.visible = false;
+    if (!store?.selectedPupper) {
+      PixelSelectionTools.deselectPixel()
     }
+    // eslint-disable-next-line
   }, [store?.selectedPupper])
 
   // Selected pixel handler
@@ -151,10 +148,8 @@ const ThreeScene = observer(({onPixelSelect, store}: ThreeSceneProps) => {
             });
           }
 
-          const x = query.get("x")
-          const y = query.get("y")
-          if (x !== null && y !== null) {
-            CameraTools.setCamera([Number(x), Number(y)])
+          if (store?.selectedPupper) {
+            PixelSelectionTools.selectPixel([store.selectedPixelX, store.selectedPixelY])
           }
         }}
       >

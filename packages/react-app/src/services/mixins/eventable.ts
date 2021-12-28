@@ -1,7 +1,7 @@
 import {Constructor, guardMixinClassInheritance} from "../../helpers/mixins";
 import {ObjectKeys} from "../../helpers/objects";
 
-export const SET_CAMERA = "SET_CAMERA"
+export const SELECT_PIXEL = "SELECT_PIXEL"
 
 interface ListenerType<T extends Object> {
   obj: T

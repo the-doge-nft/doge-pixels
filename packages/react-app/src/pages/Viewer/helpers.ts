@@ -1,6 +1,7 @@
-import {PerspectiveCamera, WebGLRenderer} from "three";
-import { Vector3 } from "three/src/math/Vector3";
+import {Object3D, PerspectiveCamera, WebGLRenderer} from "three";
+import {Vector3} from "three/src/math/Vector3";
 import {CameraPositionZ, IMAGE_HEIGHT, IMAGE_WIDTH} from "./ThreeScene";
+import {RefObject} from "react";
 
 export const getPixelIndex = (point: number, length: number) => {
   //@TODO: should 0.5 & 2 be params
@@ -41,13 +42,13 @@ export const solveForBounds = (cameraPosition: Vector3, cameraFOV: number, camer
   return [width/2, IMAGE_WIDTH - 1 - (width / 2), (-IMAGE_HEIGHT + (height/2)), (-height/2) - 1]
 }
 
-export function createCameraTools(
+export function createCanvasPixelSelectionSetter(
   camera: PerspectiveCamera,
   overlayLength: number,
-  selectedPixelOverlayRef: any
+  selectedPixelOverlayRef: RefObject<Object3D>
 ) {
   return {
-    setCamera: ([x, y, z]: [number, number, number?]) => {
+    selectPixel: ([x, y, z]: [number, number, number?]) => {
       const xPos = x
       const yPos = -1 * y
 
@@ -63,12 +64,17 @@ export function createCameraTools(
       camera.position.y = futureY
       camera.position.z = futureZ
 
-      if (selectedPixelOverlayRef.current) {
+      if (selectedPixelOverlayRef?.current) {
         selectedPixelOverlayRef.current.visible = true;
         [selectedPixelOverlayRef.current.position.x, selectedPixelOverlayRef.current.position.y] = [
           xPos - (overlayLength / 2),
           yPos - (overlayLength / 2)
         ];
+      }
+    },
+    deselectPixel: () => {
+      if (selectedPixelOverlayRef?.current) {
+        selectedPixelOverlayRef.current.visible = false;
       }
     }
   }

@@ -15,7 +15,6 @@ export enum NamedRoutes {
   PIXELS = "mobile"
 }
 
-
 export interface AppRouteInterface {
   path: string;
   exact: boolean;
@@ -42,18 +41,9 @@ export const route = (name: NamedRoutes, params: any = {}) => {
   }
 };
 
+export const SELECTED_PIXEL_PARAM = "selected_pixel"
+
 const routes: AppRouteInterface[] = [
-  {
-    path: "/",
-    name: NamedRoutes.VIEWER,
-    exact: true,
-    layout: AppLayout,
-    component: ViewerPage,
-    desktopName: "Portal",
-    mobileName: "DOGE",
-    showOnMobile: true,
-    showOnDesktop: true,
-  },
   {
     path: "/park/:address?/:tokenID?",
     name: NamedRoutes.DOG_PARK,
@@ -64,7 +54,6 @@ const routes: AppRouteInterface[] = [
     mobileName: "Park",
     showOnMobile: false,
     showOnDesktop: true,
-
   },
   {
     path: "/pixels",
@@ -76,7 +65,18 @@ const routes: AppRouteInterface[] = [
     mobileName: "PIXELS",
     showOnMobile: true,
     showOnDesktop: false,
-  }
+  },
+  {
+    path: `/:${SELECTED_PIXEL_PARAM}?`,
+    name: NamedRoutes.VIEWER,
+    exact: true,
+    layout: AppLayout,
+    component: ViewerPage,
+    desktopName: "Portal",
+    mobileName: "DOGE",
+    showOnMobile: true,
+    showOnDesktop: true,
+  },
 ];
 
 if (isDevModeEnabled()) {
