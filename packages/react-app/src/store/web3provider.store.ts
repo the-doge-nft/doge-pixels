@@ -64,8 +64,9 @@ class Web3providerStore {
           await this.disconnect()
         }
       } else if (isProduction()) {
-        if (this.network.name !== "homestead") {
-          showErrorToast("Please connect to Mainnet.")
+        // @TODO change to homestead
+        if (this.network.name !== "rinkeby") {
+          showErrorToast("Prod deploy is for rinkeby only for now.")
           await this.disconnect()
         }
       }
