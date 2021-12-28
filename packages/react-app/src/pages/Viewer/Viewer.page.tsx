@@ -139,7 +139,7 @@ const ViewerPage = observer(function ViewerPage() {
           store.modals.isBurnMemeModalOpen = false
         }}
       />}
-      {store.modals.isMintModalOpen && <ScrollHelperModal
+      {store.modals.isHelperModalOpen && <ScrollHelperModal
         isOpen={store.modals.isHelperModalOpen}
         onClose={() => store.modals.isHelperModalOpen = false}
       />}

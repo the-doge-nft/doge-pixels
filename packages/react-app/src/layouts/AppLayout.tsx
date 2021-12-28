@@ -82,6 +82,7 @@ const Footer = () => {
       <Typography variant={TVariant.ComicSans12}>
         Built by
         {contributers.map((person, index, arr) => <Link
+          key={`${person.name}`}
           fontWeight={"bold"}
           variant={Type.ComicSans}
           mx={1}
