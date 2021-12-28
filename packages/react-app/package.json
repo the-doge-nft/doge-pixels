@@ -80,8 +80,9 @@
     "_aws_prod_deploy": "aws s3 sync ./build s3://pixels.thedao.ge",
     "_staging_build": "yarn prestart && CI=false REACT_APP_DOG_ENV=surge_staging react-app-rewired build",
     "_prod_build": "yarn prestart && CI=false REACT_APP_DOG_ENV=aws_production react-app-rewired build",
-    "deploy:surge": "yarn _staging_build && yarn _surge",
-    "deploy:aws": "yarn _staging_build && yarn _aws_dev_deploy",
+    "deploy:surge_dev": "yarn _staging_build && yarn _surge",
+    "deploy:aws_dev": "yarn _staging_build && yarn _aws_dev_deploy",
+    "deploy:aws_prod": "yarn _prod_build && yarn _aws_prod_deploy",
     "prestart": "node ./scripts/create_contracts.js",
     "test": "react-app-rewired test"
   }
