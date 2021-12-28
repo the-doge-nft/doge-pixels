@@ -86,9 +86,7 @@ class Web3Store extends Web3providerStore {
     }
 
     connectToContracts(signerOrProvider?: Signer | Provider) {
-        if (isProduction()) {
-            throw Error("Should not be production yet")
-        } else if (isStaging() || this.network?.name === "rinkeby") {
+        if (isProduction() || isStaging() || this.network?.name === "rinkeby") {
             const px = new Contract(
               this.pxContractAddress,
               deployedContracts["4"]["rinkeby"]["contracts"]["PX"].abi,

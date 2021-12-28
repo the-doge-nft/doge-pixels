@@ -42,7 +42,7 @@ const UserMenu = observer(() => {
 
     <MenuList maxWidth={"fit-content"}>
       <Balances/>
-      <Flex px={3} mb={2} alignItems={"center"}>
+      <Flex px={3} mt={8} mb={1} alignItems={"center"}>
         <Typography variant={TVariant.PresStart10}>
           connected:
         </Typography>
@@ -75,7 +75,6 @@ const Balances = observer(function Balances() {
                     borderStyle={"solid"}
                     borderColor={colorMode === "light" ? "black" : "white"}
                     alignItems={"center"}
-                    my={6}
                     pb={2}>
                     <Flex alignItems={"center"} my={2}>
                         <Box
@@ -105,7 +104,6 @@ const Balances = observer(function Balances() {
                     <Typography variant={TVariant.ComicSans10}>Dev tools</Typography>
                 </Flex>
             </Dev>
-
         </GridItem>
         <GridItem ml={4} display={"flex"} flexDirection={"column"}>
             <Typography variant={TVariant.PresStart15}>Pixels</Typography>
@@ -117,7 +115,6 @@ const Balances = observer(function Balances() {
                     borderStyle={"solid"}
                     borderColor={colorMode === "light" ? "black" : "white"}
                     alignItems={"center"}
-                    my={6}
                     pb={2}
                 >
                     <Box onClick={async () => AppStore.web3.refreshPupperBalance()} my={2}>
