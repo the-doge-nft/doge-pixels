@@ -69,11 +69,10 @@ const MobileHomePage = observer(() => {
             {AppStore.web3.puppersOwned.map(pupper => {
               const hex = AppStore.web3.pupperToHexLocal(pupper)
               const index = AppStore.web3.pupperToIndexLocal(pupper)
-              const [x, y] = AppStore.web3.pupperToPixelCoordsLocal(pupper)
               return <Box p={2}>
                 <PixelPane
                   key={`mobile-home-pixels-${pupper}`}
-                  onClick={() => history.push(`/?x=${x}&y=${y}`)}
+                  onClick={() => history.push(`/${pupper}`)}
                   size={"md"}
                   pupper={pupper}
                   color={hex}

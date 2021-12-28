@@ -18,7 +18,7 @@ export enum NamedRoutes {
 export interface AppRouteInterface {
   path: string;
   exact: boolean;
-  name?: NamedRoutes;
+  name: NamedRoutes;
   layout: FC;
   component: FC | any;
   middleware?: RouteMiddleware;
@@ -26,6 +26,7 @@ export interface AppRouteInterface {
   mobileName: string
   showOnMobile: boolean;
   showOnDesktop: boolean;
+  order: number;
 }
 
 
@@ -54,6 +55,7 @@ const routes: AppRouteInterface[] = [
     mobileName: "Park",
     showOnMobile: false,
     showOnDesktop: true,
+    order: 1
   },
   {
     path: "/pixels",
@@ -65,6 +67,7 @@ const routes: AppRouteInterface[] = [
     mobileName: "PIXELS",
     showOnMobile: true,
     showOnDesktop: false,
+    order: 0
   },
   {
     path: `/:${SELECTED_PIXEL_PARAM}?`,
@@ -76,6 +79,7 @@ const routes: AppRouteInterface[] = [
     mobileName: "DOGE",
     showOnMobile: true,
     showOnDesktop: true,
+    order: 0
   },
 ];
 
@@ -90,6 +94,7 @@ if (isDevModeEnabled()) {
     mobileName: "DSL",
     showOnMobile: false,
     showOnDesktop: false,
+    order: 1
   })
 }
 
