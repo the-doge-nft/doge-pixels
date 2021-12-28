@@ -13,30 +13,32 @@ import AppStore from "../../store/App.store";
 import Icon from "../../DSL/Icon/Icon";
 import Loading from "../../DSL/Loading/Loading";
 import ScrollHelperModal from "./ScrollHelperModal/ScrollHelperModal";
-import {useQuery} from "../../helpers/hooks";
-import Typography, { TVariant } from "../../DSL/Typography/Typography";
+import Typography, {TVariant} from "../../DSL/Typography/Typography";
 import MemeModal from "./MemeModal";
 import Drawer from "../../DSL/Drawer/Drawer";
-import {useLocation} from "react-router-dom";
-
-export type onPixelSelectType = (x: number, y: number) => void;
+import {useLocation, useParams} from "react-router-dom";
+import {SELECTED_PIXEL_PARAM} from "../../App.routes";
 
 /*
-  Hack to reload page even if we are already on the route
-  that renders this page
+  Hack to reload page even if we are already on the route that renders this page
   https://github.com/remix-run/react-router/issues/7416
  */
-
 const ReloadViewerPage = () => {
   const location = useLocation();
   return <ViewerPage key={location.key}/>
 }
 
+export type onPixelSelectType = (x: number, y: number) => void;
+
 const ViewerPage = observer(function ViewerPage() {
-  const query = useQuery()
-  const x = query.get("x")
-  const y = query.get("y")
-  const store = useMemo(() => new ViewerStore(x,y), [x, y]);
+  const params = useParams<any>()
+  let defaultPixel: number | null = null
+  if (SELECTED_PIXEL_PARAM in params) {
+    if (AppStore.web3.isPixelIDValid(Number(params[SELECTED_PIXEL_PARAM]))) {
+      defaultPixel = Number(params[SELECTED_PIXEL_PARAM])
+    }
+  }
+  const store = useMemo(() => new ViewerStore(defaultPixel), [defaultPixel]);
 
   useEffect(() => {
     store.init()
@@ -46,8 +48,8 @@ const ViewerPage = observer(function ViewerPage() {
     // eslint-disable-next-line
   }, [])
 
+  // Hack to re-render page even if we are already on said page
   const location = useLocation()
-
   useEffect(() => {
   }, [location.key])
 

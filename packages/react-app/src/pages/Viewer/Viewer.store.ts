@@ -2,7 +2,7 @@ import {action, computed, makeObservable, observable} from "mobx";
 import {Constructor, EmptyClass} from "../../helpers/mixins";
 import {Navigable} from "../../services/mixins/navigable";
 import AppStore from "../../store/App.store";
-import {Eventable, SET_CAMERA} from "../../services/mixins/eventable";
+import {Eventable, SELECT_PIXEL} from "../../services/mixins/eventable";
 import {Reactionable} from "../../services/mixins/reactionable";
 import LocalStorage from "../../services/local-storage";
 import {abbreviate} from "../../helpers/strings";
@@ -39,14 +39,18 @@ class ViewerStore extends (Eventable(Reactionable(Navigable<ViewerView, Construc
   @observable
   modals: ModalsStore
 
-  constructor(private _x: string | null, private _y?: string | null) {
+  constructor(private defaultSelectedPupper: number | null) {
     super()
     makeObservable(this);
     this.modals = new ModalsStore()
     this.pushNavigation(ViewerView.Index)
 
-    if (_x && _y) {
-      this.selectedPupper = AppStore.web3.coordinateToPupperLocal(Number(_x), Number(_y))
+    if (defaultSelectedPupper) {
+      // @TODO - run some validation on default selected pixel
+      // - make sure it is within bounds of image
+      // - make sure it is a number
+
+      this.selectedPupper = Number(defaultSelectedPupper)
       if (AppStore.rwd.isMobile) {
         this.isSelectedDrawerOpen = true
       } else {
@@ -149,7 +153,7 @@ class ViewerStore extends (Eventable(Reactionable(Navigable<ViewerView, Construc
     if (x.toNumber() !== x1 || y.toNumber() !== y1) {
       throw Error(`X,Y from contract and local do not agree. Local: ${x1} ${y1}. Remote: ${x} ${y}`)
     }
-    this.publish(SET_CAMERA, [x1, y1])
+    this.publish(SELECT_PIXEL, [x1, y1])
   }
 
   @computed

@@ -137,7 +137,7 @@ const DogParkPage = observer(function DogParkPage() {
                       </Box>
                     </Flex>
                   <Button onClick={() => history.push(
-                    `/?x=${store.selectedPupperCoords[0]}&y=${store.selectedPupperCoords[1]}`
+                    `/${store.selectedPupper}`
                   )}>
                       View in portal
                   </Button>
