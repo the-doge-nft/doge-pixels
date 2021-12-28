@@ -103,29 +103,25 @@ const Footer = () => {
 const Nav = () => {
   const location = useLocation();
   return <HStack spacing={12}>
-    {routes.map((route) => {
-      if (route.showOnDesktop) {
-        let path = route.path
-        if (route.name === NamedRoutes.DOG_PARK) {
-          if (AppStore.web3.address) {
-            path = `/park/${AppStore.web3.address}`
-          } else {
-            path = '/park'
-          }
-        }
+    {routes.map((appRoute) => {
+      if (appRoute.showOnDesktop) {
+        let path = route(appRoute.name, {
+          address: appRoute.name === NamedRoutes.DOG_PARK && AppStore.web3.address ? AppStore.web3.address : undefined
+        })
         const match = matchPath(location.pathname, {
-          path: route.path,
+          path: appRoute.path,
           exact: true,
           strict: false
         })
+        console.log("debug:: test", match, location.pathname, appRoute.path)
         return (
           <Link
             isNav
-            key={`desktop-nav-${route.path}`}
+            key={`desktop-nav-${appRoute.path}`}
             to={path}
             textDecoration={match ? "underline" : "none"}
           >
-            {route.desktopName}
+            {appRoute.desktopName}
           </Link>
         );
       } else return null
@@ -133,32 +129,27 @@ const Nav = () => {
   </HStack>
 }
 
-const MobileNav = () => {
+const MobileNav = observer(() => {
   const location = useLocation()
   const { colorMode } = useColorMode()
   return <Flex
     bottom={0}
     zIndex={3}
     height={"100px"}
-    bg={colorMode === "light" ? "yellow.50" : "purple.700"}
-    alignItems={"center"}
-    justifyContent={"space-around"}
     borderTopStyle={"solid"}
     borderTopWidth={"1px"}
+    alignItems={"center"}
+    justifyContent={"space-around"}
+    bg={colorMode === "light" ? "yellow.50" : "purple.700"}
     borderTopColor={colorMode === "light" ? "black" : "white"}
   >
-    {routes.map((route) => {
-      if (route.showOnMobile) {
-        let path = route.path
-        if (route.name === NamedRoutes.DOG_PARK) {
-          if (AppStore.web3.address) {
-            path = `/park/${AppStore.web3.address}`
-          } else {
-            path = '/park'
-          }
-        }
+    {routes.map((appRoute) => {
+      if (appRoute.showOnMobile) {
+        let path = route(appRoute.name, {
+          address: appRoute.name === NamedRoutes.DOG_PARK && AppStore.web3.address ? AppStore.web3.address : undefined
+        })
         const match = matchPath(location.pathname, {
-          path: route.path,
+          path: appRoute.path,
           exact: true,
           strict: false
         })
@@ -168,16 +159,16 @@ const MobileNav = () => {
             to={path}
             size={"lg"}
             fontSize={"18px"}
-            key={`mobile-nav-${route.path}`}
+            key={`mobile-nav-${appRoute.path}`}
             textDecoration={match ? "underline" : "none"}
           >
-            {route.mobileName}
+            {appRoute.mobileName}
           </Link>
         );
       } else return null
     })}
   </Flex>
-}
+})
 
 const Title = () => {
   const history = useHistory()
