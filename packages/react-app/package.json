@@ -78,11 +78,12 @@
     "_surge": "cp build/index.html build/200.html && surge ./build squeamish-side.surge.sh",
     "_aws_dev_deploy": "aws s3 sync ./build s3://dev.dog",
     "_aws_prod_deploy": "aws s3 sync ./build s3://pixels.thedao.ge",
+    "_aws_prod_invalidate_cloudfront": "aws cloudfront create-invalidation --distribution-id ERSKXV74XPGYQ --paths '/*'",
     "_staging_build": "yarn prestart && CI=false REACT_APP_DOG_ENV=surge_staging react-app-rewired build",
     "_prod_build": "yarn prestart && CI=false REACT_APP_DOG_ENV=aws_production react-app-rewired build",
     "deploy:surge_dev": "yarn _staging_build && yarn _surge",
     "deploy:aws_dev": "yarn _staging_build && yarn _aws_dev_deploy",
-    "deploy:aws_prod": "yarn _prod_build && yarn _aws_prod_deploy",
+    "deploy:aws_prod": "yarn _prod_build && yarn _aws_prod_deploy && yarn _aws_prod_invalidate_cloudfront",
     "prestart": "node ./scripts/create_contracts.js",
     "test": "react-app-rewired test"
   }

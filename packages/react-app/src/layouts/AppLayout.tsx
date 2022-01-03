@@ -169,7 +169,7 @@ const Links = ({isMobile}: { isMobile?: boolean }) => {
           {appRoute.mobileName}
         </Link>
       )
-      : routes.sort(sortBy).filter(route => route.showOnDesktop).map((appRoute) => <Link
+      : [...routes].sort(sortBy).filter(route => route.showOnDesktop).map((appRoute) => <Link
           isNav
           key={`desktop-nav-${appRoute.path}`}
           to={getPath(appRoute.name)}
