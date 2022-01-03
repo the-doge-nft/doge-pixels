@@ -44,6 +44,10 @@ export const route = (name: NamedRoutes, params: any = {}) => {
 
 export const SELECTED_PIXEL_PARAM = "selected_pixel"
 
+/*
+  NOTE: Ordering here is specific. Since selected pixels have the route '/<pixel_id_here>'
+  it must be rendered as the last child of the <Switch> component
+*/
 const routes: AppRouteInterface[] = [
   {
     path: "/park/:address?/:tokenID?",
