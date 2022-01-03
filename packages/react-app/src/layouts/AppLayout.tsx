@@ -75,7 +75,7 @@ const Footer = () => {
   const contributers: { name: string, socialLink: string }[] = [
     {name: "coldplunge", socialLink: "https://twitter.com/xcoldplunge"},
     {name: "gainormather", socialLink: "https://twitter.com/gainormather"},
-    {name: "ayyyayayyy", socialLink: "https://twitter.com/ayyyayayyy"},
+    {name: "partyka1", socialLink: "https://github.com/partyka1"},
     {name: "nemochips", socialLink: "https://twitter.com/nemo__chips"}
   ]
   return <Box w={"full"} mt={5}>
