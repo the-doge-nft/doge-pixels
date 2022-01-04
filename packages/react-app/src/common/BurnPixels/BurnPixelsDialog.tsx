@@ -43,7 +43,7 @@ const SelectPixels = observer(({store}: { store: BurnPixelsModalStore}) => {
   const {colorMode} = useColorMode()
   return <Flex flexDirection={"column"}>
     {store.isUserPixelOwner && <>
-        <Flex overflow={"scroll"} flexGrow={1} h={"full"} mt={6} justifyContent={"center"}>
+        <Flex overflow={"auto"} flexGrow={1} h={"full"} mt={6} justifyContent={"center"}>
             <Box
                 maxHeight={AppStore.rwd.isMobile ? "250px" : "350px"}
                 width={"416px"}

@@ -103,7 +103,6 @@
 > .web3modal-modal-container
 > .web3modal-modal-card {
     background-color: var(--chakra-colors-purple-700)!important;
-    /*box-shadow: 14px 14px 0px white;*/
 }
 
 .chakra-ui-dark

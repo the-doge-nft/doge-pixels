@@ -47,6 +47,23 @@ const theme = extendTheme({
         color: "fuchsia",
         bg: lightOrDark(colorMode, "yellow.50", darkModePrimary),
       },
+      '::-webkit-scrollbar': {
+        width: '8px',
+        height: '8px',
+      },
+      '::-webkit-scrollbar-track': {
+        borderStyle: 'solid',
+        borderWidth: '1px',
+        borderColor: lightOrDark(colorMode, 'black', 'white'),
+        borderRadius: '8px'
+      },
+      '::-webkit-scrollbar-thumb': {
+        backgroundColor: lightOrDark(colorMode, 'black', 'white'),
+        borderRadius: '8px'
+      },
+      '::-webkit-scrollbar-corner': {
+        backgroundColor: lightOrDark(colorMode, 'yellow.50', darkModePrimary)
+      }
     }),
   },
   breakpoints: {

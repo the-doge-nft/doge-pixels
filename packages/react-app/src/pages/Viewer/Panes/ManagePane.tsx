@@ -19,7 +19,7 @@ const ManagePane = observer(function ManagePane({store}: {store: ViewerStore}) {
         variant={TVariant.PresStart18}>
         Your Pixels ({AppStore.web3.puppersOwned.length})
       </Typography>
-      <Box overflow={"scroll"} h={"full"} mt={3}>
+      <Box overflow={"auto"} h={"full"} mt={3}>
         <Box maxHeight={"350px"}>
           {AppStore.web3.puppersOwned.map((px) => {
             return <Box
