@@ -12,7 +12,7 @@ import {Type} from "../../../DSL/Fonts/Fonts";
 const IndexPane = observer(function IndexPane({store}: {store: ViewerStore}) {
   return  <>
     <Flex flexDirection={"column"} flexGrow={0} h={"100%"}>
-      <Box overflow={"scroll"} flexGrow={1} h={"full"} mt={4}>
+      <Box overflowY={"auto"} flexGrow={1} h={"full"} mt={4}>
         <Box maxHeight={"300px"}>
           <Typography variant={TVariant.ComicSans18} block>
             Welcome to the doge pixel portal - your gateway to ownership of the doge NFT.

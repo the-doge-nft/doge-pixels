@@ -87,7 +87,7 @@ const DogParkPage = observer(function DogParkPage() {
 
           {store.selectedUserHasPuppers && <Grid templateColumns={"1fr 1fr"} h={"full"}>
               <GridItem display={"flex"} flexDirection={"column"}>
-                <Box overflowY={"scroll"} flexGrow={1}>
+                <Box overflowY={"auto"} flexGrow={1}>
                     <Flex flexWrap={"wrap"} maxHeight={"300px"}>
                       {store.selectedDogs?.puppers.map(px => {
                         const hex = AppStore.web3.pupperToHexLocal(px)

@@ -6,11 +6,24 @@ import DarkDog from "../../images/darkDog.png"
 import LightFavicon from "../../images/favicons/favicon_light.png";
 import DarkFavicon from "../../images/favicons/favicon_dark.png";
 import Icon from "../Icon/Icon";
-import {darkModeGradient} from "../Theme";
+import {colorModeType, darkModeGradient} from "../Theme";
 
 
 interface ColorModeToggleProps {
 }
+
+const toggleFaviconColorMode = (colorMode: colorModeType) => {
+  const favicon = document.querySelector<HTMLAnchorElement>('link[rel="icon"]')
+
+  if (favicon) {
+    if (colorMode === "dark") {
+      favicon.href = DarkFavicon
+    } else {
+      favicon.href = LightFavicon
+    }
+  }
+}
+
 
 const ColorModeToggle = (props: ColorModeToggleProps) => {
   const styles = useMultiStyleConfig("ColorModeToggle", {})
@@ -18,15 +31,7 @@ const ColorModeToggle = (props: ColorModeToggleProps) => {
   const [isDogeVisible, setIsDogeVisible] = useState(false)
 
   useEffect(() => {
-    const favicon = document.querySelector<HTMLAnchorElement>('link[rel="icon"]')
-
-    if (favicon) {
-      if (colorMode === "dark") {
-        favicon.href = DarkFavicon
-      } else {
-        favicon.href = LightFavicon
-      }
-    }
+    toggleFaviconColorMode(colorMode)
   }, [colorMode])
 
   return <Box display={"inline-block"} position={"relative"} zIndex={2}>
