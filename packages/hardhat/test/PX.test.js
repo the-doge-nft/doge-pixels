@@ -90,13 +90,7 @@ const runTests = (withUpgrade) => {
       await DOG20.connect(signer).approve(PX.address, DOG_TO_PIXEL_SATOSHIS.mul(mintQty));
       let tx;
       const foo = () => {
-        if (mintQty > 1) {
-          // TODO: test the flow with multiple calls mintPupper()
-          return PX.connect(signer).mintPuppers(mintQty);
-        } else {
-          // TODO: test the flow with calling mintPuppers(qty=1)
-          return PX.connect(signer).mintPupper();
-        }
+        return PX.connect(signer).mintPuppers(mintQty);
       }
       if (_shouldRevertWithMessage) {
         tx = await expectRevert(foo(), _shouldRevertWithMessage);
@@ -149,10 +143,10 @@ const runTests = (withUpgrade) => {
       let tx;
       console.log(`trying to burn ${pupper} with addr ${signer.address}`)
       if (_shouldRevertWithMessage) {
-        tx = await expectRevert(PX.connect(signer).burnPupper(pupper), _shouldRevertWithMessage);
+        tx = await expectRevert(PX.connect(signer).burnPuppers([pupper]), _shouldRevertWithMessage);
         return;
       } else {
-        tx = await PX.connect(signer).burnPupper(pupper)
+        tx = await PX.connect(signer).burnPuppers([pupper])
       }
 
       expect(await DOG20.balanceOf(PX.address)).to.equal(pxDog20BalanceBefore.sub(DOG_TO_PIXEL_SATOSHIS))
@@ -187,19 +181,19 @@ const runTests = (withUpgrade) => {
         const tokenId = await mintPupperWithValidation(addr1);
         expect(await PX.ownerOf(tokenId)).to.equal(addr1.address);
       });
-      it('mintPupper(): can mint a puppy', async function () {
+      it('mintPuppers(): can mint a puppy', async function () {
         await mintPupperWithValidation(addr1);
         await mintPupperWithValidation(addr2);
         await mintPupperWithValidation(addr3);
       });
-      it('burnPupper(): owner can burn a puppy', async function () {
+      it('burnPuppers(): owner can burn a puppy', async function () {
         const burn = [];
         burn.push(await mintPupperWithValidation(addr1));
         burn.push(await mintPupperWithValidation(addr2));
         burn.push(await mintPupperWithValidation(addr3));
-        await PX.connect(addr1).burnPupper(burn[0]);
-        await PX.connect(addr2).burnPupper(burn[1]);
-        await PX.connect(addr3).burnPupper(burn[2]);
+        await PX.connect(addr1).burnPuppers([burn[0]]);
+        await PX.connect(addr2).burnPuppers([burn[1]]);
+        await PX.connect(addr3).burnPuppers([burn[2]]);
       });
       it('pupper can be transferred from token owner to another address', async function () {
         const tokenId = await mintPupperWithValidation(addr1)
