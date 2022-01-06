@@ -125,7 +125,7 @@ contract PX is ERC721CustomUpgradeable, OwnableUpgradeable {
         // First part: custom PX _burn() logic
 
         require(pupper != MAGIC_NULL, "Pupper is magic");
-        require(ERC721CustomUpgradeable.ownerOf(pupper) == msg.sender, "Pupper is not yours");
+        require(ERC721CustomUpgradeable.ownerOf(pupper) == _msgSender(), "Pupper is not yours");
 
         // swap burnt pupper with one at N+1 index
         uint256 oldIndex = pupperToIndex[pupper];
@@ -181,7 +181,7 @@ contract PX is ERC721CustomUpgradeable, OwnableUpgradeable {
                 block.timestamp + block.difficulty +
                 ((uint256(keccak256(abi.encodePacked(block.coinbase)))) / (block.timestamp)) +
                 block.gaslimit +
-                ((uint256(keccak256(abi.encodePacked(msg.sender)))) / (block.timestamp)) +
+                ((uint256(keccak256(abi.encodePacked(_msgSender())))) / (block.timestamp)) +
                 block.number +
                 puppersRemaining
             )));
@@ -227,10 +227,10 @@ contract PX is ERC721CustomUpgradeable, OwnableUpgradeable {
             // move used pupper to `unavailable` pool
             indexToPupper[LAST_INDEX] = pupper;
             pupperToIndex[pupper] = LAST_INDEX;
-            _mint(msg.sender, pupper);
+            _mint(_msgSender(), pupper);
         }
         // transfer collateral to contract's address
-        DOG20.transferFrom(msg.sender, address(this), qty * DOG_TO_PIXEL_SATOSHIS);
+        DOG20.transferFrom(_msgSender(), address(this), qty * DOG_TO_PIXEL_SATOSHIS);
     }
 
     //
@@ -277,7 +277,7 @@ contract PX is ERC721CustomUpgradeable, OwnableUpgradeable {
         uint256 feesAmount = totalAmount * DOG20_FEES_PERCENT / 100;
         uint256 burnerAmount = totalAmount - feesAmount;
         DOG20.transfer(DOG20_FEES_ADDRESS, feesAmount);
-        DOG20.transfer(msg.sender, burnerAmount);
+        DOG20.transfer(_msgSender(), burnerAmount);
     }
 
     //
