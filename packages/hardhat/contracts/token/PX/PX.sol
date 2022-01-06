@@ -177,7 +177,9 @@ contract PX is ERC721CustomUpgradeable, OwnableUpgradeable {
     // mintPuppers
     //
     // Description:
-    // `mintPupper` but for minting multiple puppers with one ETH transaction
+    // GET SOME PIXELS!
+    // Specify amount of pixels you wish to receive. Your ETH address must entrust our contract of handling your
+    // $DOG balance beforehand. You can open your $DOG balance for us with calling `approve` on the $DOG token contract.
     //
     function mintPuppers(uint256 qty) public {
         require(qty > 0, "Non positive quantity");
@@ -207,34 +209,11 @@ contract PX is ERC721CustomUpgradeable, OwnableUpgradeable {
     }
 
     //
-    // mintPupper
-    //
-    // Description:
-    // GET SOME PIXELS!
-    // Specify amount of pixels you wish to receive. Your ETH address must entrust our contract of handling your
-    // $DOG balance beforehand. You can open your $DOG balance for us with calling `approve` on the $DOG token contract.
-    //
-    function mintPupper() public {
-        mintPuppers(1);
-    }
-
-    //
-    // burnPupper
+    // burnPuppers
     //
     // Description:
     // Trade your pixel for $DOG token. Price is the original `DOG_TO_PIXEL_SATOSHIS` paid for original minting of
     // the pixel.
-    //
-    function burnPupper(uint256 pupper) public {
-        _burn(pupper);
-        // transfer collateral to the burner
-        processCollateralAfterBurn(1 * DOG_TO_PIXEL_SATOSHIS);
-    }
-    //
-    // burnPuppers
-    //
-    // Description:
-    // Burn puppers
     //
     function burnPuppers(uint256[] memory puppers) public {
         require(puppers.length > 0, "Empty puppers");
