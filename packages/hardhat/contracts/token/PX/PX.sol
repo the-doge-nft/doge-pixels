@@ -183,7 +183,6 @@ contract PX is ERC721CustomUpgradeable, OwnableUpgradeable {
         require(qty > 0, "Non positive quantity");
         require(qty <= puppersRemaining, "No puppers remaining");
         for (uint256 i = 0; i < qty; ++i) {
-            require(puppersRemaining > 0, "No puppers remaining");
             uint256 index = INDEX_OFFSET + randYishInRange(puppersRemaining);
             // if indexToPupper[index] == null, initialize it with `index` pupper
             // this on-the-go initialization is optimization so gas fees for `indexToPupper` array initialization is delegated to the minter
