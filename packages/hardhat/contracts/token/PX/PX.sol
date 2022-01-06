@@ -91,18 +91,8 @@ contract PX is ERC721CustomUpgradeable, OwnableUpgradeable {
      * Emits a {Transfer} event.
      */
     function _mint(address to, uint256 tokenId) internal virtual override {
-        require(to != address(0), "ERC721: mint to the zero address");
-        require(!_exists(tokenId), "ERC721: token already minted");
-
-        _beforeTokenTransfer(address(0), to, tokenId);
-
-        //        console.log("new pupper");
-        //        console.log(pupper);
-        _balances[to] += 1;
-        _owners[tokenId] = to;
+        super._mint(to, tokenId);
         puppersRemaining -= 1;
-
-        emit Transfer(address(0), to, tokenId);
 
         // !!!! WARNING !!!! !!!! WARNING !!!! !!!! WARNING !!!! !!!! WARNING !!!! !!!! WARNING !!!! !!!! WARNING !!!!
         // !!!! WARNING !!!! _MINT DOES NOT HANDLE TRANSFERING $DOG, PARENT FUNCTION MUST SEND THE TRANSACTION
@@ -135,25 +125,9 @@ contract PX is ERC721CustomUpgradeable, OwnableUpgradeable {
         pupperToIndex[tmpPupper] = oldIndex;
         indexToPupper[oldIndex] = tmpPupper;
         indexToPupper[LAST_INDEX] = pupper;
-
-        // Rest standard ERC721 part of _burn()
-
-        address owner = ERC721CustomUpgradeable.ownerOf(pupper);
-
-        _beforeTokenTransfer(owner, address(0), pupper);
-
-        // Clear approvals
-        _approve(address(0), pupper);
-
-        console.log("burning pupper");
-        console.log(pupper);
-
-        _balances[owner] -= 1;
         puppersRemaining += 1;
 
-        delete _owners[pupper];
-
-        emit Transfer(owner, address(0), pupper);
+        super._burn(pupper);
 
         // !!!! WARNING !!!! !!!! WARNING !!!! !!!! WARNING !!!! !!!! WARNING !!!! !!!! WARNING !!!! !!!! WARNING !!!!
         // !!!! WARNING !!!! _BURN DOES NOT HANDLE TRANSFERING $DOG, PARENT FUNCTION MUST SEND THE TRANSACTION
