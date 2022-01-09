@@ -17,7 +17,7 @@ import Button from "../../DSL/Button/Button";
 import {convertToAbbreviation} from "../../helpers/numberFormatter";
 import BigText from "../../DSL/BigText/BigText";
 import {darkModeSecondary, lightModePrimary} from "../../DSL/Theme";
-import {NamedRoutes, route} from "../../App.routes";
+import {NamedRoutes, route, SELECTED_PIXEL_PARAM} from "../../App.routes";
 
 const DogParkPage = observer(function DogParkPage() {
   const history = useHistory()
@@ -136,9 +136,7 @@ const DogParkPage = observer(function DogParkPage() {
                         </Box>
                       </Box>
                     </Flex>
-                  <Button onClick={() => history.push(
-                    `/${store.selectedPupper}`
-                  )}>
+                  <Button onClick={() => history.push(route(NamedRoutes.PIXELS, {[SELECTED_PIXEL_PARAM]: store.selectedPupper}))}>
                       View in portal
                   </Button>
                 </Box>}
