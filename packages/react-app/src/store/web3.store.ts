@@ -9,7 +9,10 @@ import {isDevModeEnabled, isProduction, isStaging} from "../environment/helpers"
 import {DOG20, PX} from "../../../hardhat/types";
 import KobosuJson from "../images/kobosu.json"
 import {Http} from "../services";
-import Web3providerStore, {EthersContractError} from "./web3provider.store";
+import Web3providerStore, {EthersContractError, Web3ProviderConnectionError} from "./web3provider.store";
+import * as Sentry from "@sentry/react";
+
+
 
 interface AddressToPuppers {
     [k: string]: {
@@ -77,7 +80,13 @@ class Web3Store extends Web3providerStore {
             this.refreshDogBalance()
             this.refreshPupperBalance()
         } catch (e) {
+          if (e instanceof Web3ProviderConnectionError) {
+            // pass
+          } else {
+            console.error(e)
+            Sentry.captureException(e)
             showErrorToast("Error connecting")
+          }
         }
     }
 
