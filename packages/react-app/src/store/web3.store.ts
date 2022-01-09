@@ -234,7 +234,7 @@ class Web3Store extends Web3providerStore {
     }
 
     isPixelIDValid(id: number) {
-        const max = (this.WIDTH * this.HEIGHT) + this.PIXEL_TO_ID_OFFSET + this.WIDTH - 1
+        const max = (this.WIDTH * this.HEIGHT) + this.PIXEL_TO_ID_OFFSET - 1
         const min = this.PIXEL_TO_ID_OFFSET
         if (id < min || id > max) {
             return false
