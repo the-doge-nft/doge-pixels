@@ -2,6 +2,7 @@ import React from "react";
 import {BrowserRouter, Route, Switch} from "react-router-dom";
 import routes from "./App.routes";
 import AppStore from "./store/App.store";
+import "./App.css";
 
 
 AppStore.init()
