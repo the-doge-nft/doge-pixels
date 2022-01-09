@@ -4,6 +4,7 @@ import {Constructor, EmptyClass} from "../../helpers/mixins";
 import AppStore from "../../store/App.store";
 import {showErrorToast} from "../../DSL/Toast/Toast";
 import {ethers} from "ethers";
+import * as Sentry from "@sentry/react";
 
 export enum BurnPixelsModalView {
   Select = "select",
@@ -60,6 +61,7 @@ class BurnPixelsDialogStore extends Navigable<BurnPixelsModalView, Constructor>(
       this.txHash = receipt.transactionHash
       this.pushNavigation(BurnPixelsModalView.Complete)
     } catch (e) {
+      Sentry.captureException(e)
       console.error(e)
       showErrorToast("Error burning pixels")
       this.hasUserSignedTx = false

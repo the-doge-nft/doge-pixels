@@ -6,6 +6,7 @@ import { BigNumber, ethers } from "ethers";
 import AppStore from "../../store/App.store";
 import {showDebugToast, showErrorToast} from "../../DSL/Toast/Toast";
 import { formatWithThousandsSeparators } from "../../helpers/numberFormatter";
+import * as Sentry from "@sentry/react";
 
 
 export enum MintModalView {
@@ -84,7 +85,7 @@ class MintPixelsDialogStore extends Reactionable((Navigable<MintModalView, Const
         throw Error("Could not estimate gas")
       }
 
-      const gasLimitSafetyOffset = 50000
+      const gasLimitSafetyOffset = 80000
       const tx = await AppStore.web3.mintPuppers(amount, estimatedGas.add(gasLimitSafetyOffset))
 
       this.hasUserSignedTx = true
@@ -93,6 +94,7 @@ class MintPixelsDialogStore extends Reactionable((Navigable<MintModalView, Const
       this.txHash = receipt.transactionHash
       this.pushNavigation(MintModalView.Complete)
     } catch (e) {
+      Sentry.captureException(e)
       showErrorToast("error minting")
       console.error(e)
       this.hasUserSignedTx = false
