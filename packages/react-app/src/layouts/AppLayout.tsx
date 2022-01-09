@@ -136,11 +136,21 @@ const Links = ({isMobile}: { isMobile?: boolean }) => {
     })
 
     /*
-      hack for /<pixel_id> functionality. since our path for a selected pixel looks like: /:${SELECTED_PIXEL_PARAM}?
-      we need to make sure other naked routes such as '/park' do not hit a match for '/'.
+      Hack to match NamedRoutes.PIXELS route to the NamedRoutes.VIEWER link as they both render the same
+      component but NamedRoutes.PIXELS is hidden from desktop & mobile views.
     */
-    if (match?.params && SELECTED_PIXEL_PARAM in match.params && match.params[SELECTED_PIXEL_PARAM] !== undefined && isNaN(match.params[SELECTED_PIXEL_PARAM])) {
-      return undefined
+    const isSelectedPixelMatch = matchPath<any>(location.pathname, {
+      path: route(NamedRoutes.PIXELS),
+      exact: true,
+      strict: false
+    })
+
+    if (
+      isSelectedPixelMatch
+      && SELECTED_PIXEL_PARAM in isSelectedPixelMatch.params
+      && routePath === route(NamedRoutes.VIEWER)
+    ) {
+      return true
     }
     return match
   }
