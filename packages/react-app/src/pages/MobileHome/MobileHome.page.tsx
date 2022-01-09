@@ -11,7 +11,7 @@ import {useHistory} from "react-router-dom";
 import MobileHomeStore from "./MobileHome.store";
 import MintPixelsDrawer from "./MintPixelsDrawer/MintPixelsDrawer";
 import BurnPixelsDrawer from "./BurnPixelsDrawer/BurnPixelsDrawer";
-import {NamedRoutes, route } from "../../App.routes";
+import {NamedRoutes, route, SELECTED_PIXEL_PARAM} from "../../App.routes";
 
 const MobileHomePage = observer(() => {
   const history = useHistory()
@@ -72,7 +72,7 @@ const MobileHomePage = observer(() => {
               return <Box p={2}>
                 <PixelPane
                   key={`mobile-home-pixels-${pupper}`}
-                  onClick={() => history.push(`/${pupper}`)}
+                  onClick={() => history.push(route(NamedRoutes.PIXELS, {[SELECTED_PIXEL_PARAM]: pupper}))}
                   size={"md"}
                   pupper={pupper}
                   color={hex}
