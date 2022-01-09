@@ -14,6 +14,8 @@ export interface EthersContractError {
   message: string
 }
 
+export class Web3ProviderConnectionError extends Error {}
+
 class Web3providerStore {
 
   @observable
@@ -52,9 +54,10 @@ class Web3providerStore {
       this.getENSname(this.address!).then(({data}) => this.ens = data.ens)
       showDebugToast(`connected: ${this.address} on : ${this.network.name} (chain ID: ${this.network.chainId})`)
     } catch (e) {
-      this.disconnect()
-      showErrorToast("Error connecting")
-      console.error("connection error: ", e)
+      if (this.provider) {
+        this.disconnect()
+      }
+      throw new Web3ProviderConnectionError()
     }
 
     if (this.network?.name) {
