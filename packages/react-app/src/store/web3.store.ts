@@ -27,6 +27,7 @@ class Web3Store extends Web3providerStore {
     PIXEL_TO_ID_OFFSET = 1000000
     WIDTH = 32 // 640
     HEIGHT = 24 // 480
+    DOG_BURN_FEES_PERCENT = 1
 
     @observable
     dogBalance: BigNumber | null = null

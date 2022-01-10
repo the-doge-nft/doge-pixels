@@ -81,7 +81,9 @@ class BurnPixelsDialogStore extends Navigable<BurnPixelsModalView, Constructor>(
 
   @computed
   get selectedPixelsDogValue() {
-    return ethers.utils.formatEther(AppStore.web3.DOG_TO_PIXEL_SATOSHIS.mul(this.selectedPixels.length))
+    const dogReturnedWithoutFees = Number(ethers.utils.formatEther(AppStore.web3.DOG_TO_PIXEL_SATOSHIS.mul(this.selectedPixels.length)))
+    const dogFees = dogReturnedWithoutFees * (AppStore.web3.DOG_BURN_FEES_PERCENT / 100)
+    return (dogReturnedWithoutFees - dogFees).toFixed(4)
   }
 
   @computed
@@ -109,7 +111,8 @@ class BurnPixelsDialogStore extends Navigable<BurnPixelsModalView, Constructor>(
     switch (this.currentView) {
       case BurnPixelsModalView.Select:
         if (this.isUserPixelOwner) {
-          return "Be sure to be careful with which pixels you select. You’ll most likely never see them again."
+          return "Be sure to be careful with which pixels you select. You’ll most likely never see them again. A 1% fee in $DOG" +
+              " is taken upon burning your pixels."
         } else {
           return "No pixels found - try minting first!"
         }

@@ -3,7 +3,7 @@ import {paneDropOffset} from "../Pane/Pane.styles";
 
 
 const ModalStyle = {
-  parts: ["container", "body", "title", "drop"],
+  parts: ["container", "body", "title", "drop", "description"],
   baseStyle: ({colorMode}: {colorMode: colorModeType}) => ({
     container: {
       width: "100%",
@@ -28,6 +28,9 @@ const ModalStyle = {
       zIndex: -1,
       border: lightOrDark(colorMode, "1px solid black", "1px solid white"),
       bg: lightOrDark(colorMode, "black", "purple.700"),
+    },
+    description: {
+      mt: 2
     }
   }),
   sizes: {
@@ -49,7 +52,6 @@ const ModalStyle = {
       },
       title: {
         mt: 8,
-        mb: 2
       }
     },
     md: {
@@ -62,7 +64,6 @@ const ModalStyle = {
       },
       title: {
         mt: 8,
-        mb: 2
       }
     },
     lg: {
@@ -78,7 +79,6 @@ const ModalStyle = {
       },
       title: {
         mt: 8,
-        mb: 6
       }
     },
   }

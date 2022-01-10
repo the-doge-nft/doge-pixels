@@ -15,6 +15,7 @@ export interface ModalProps extends ReactModal.Props {
   title?: string;
   name?: string;
   defaultPosition?: any;
+  description?: string;
 }
 
 let styleOverrides: {overlay: object, content: object} = {
@@ -48,7 +49,8 @@ const Modal = ({
         size = "md",
         title,
         name,
-         defaultPosition,
+        description,
+        defaultPosition,
         ...rest
 }: ModalProps) => {
   const chakraStyles = useMultiStyleConfig("Modal", {size: size})
@@ -107,6 +109,11 @@ const Modal = ({
                   <Typography variant={TVariant.PresStart20}>
                     {title}
                   </Typography>
+              </Box>}
+              {description && <Box __css={chakraStyles.description}>
+                <Typography variant={TVariant.ComicSans18}>
+                  {description}
+                </Typography>
               </Box>}
               {children}
             </Box>
