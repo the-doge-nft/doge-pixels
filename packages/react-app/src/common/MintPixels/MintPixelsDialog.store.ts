@@ -152,7 +152,7 @@ class MintPixelsDialogStore extends Reactionable((Navigable<MintModalView, Const
   get description() {
     switch (this.currentView) {
       case MintModalView.Mint:
-        return "Trade $DOG for pixels. Each pixel is worth 55,240 $DOG."
+        return "Trade $DOG for pixels. Each pixel is randomly selected from all 307,200 pixels."
       default:
         return undefined
     }

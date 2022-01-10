@@ -53,7 +53,7 @@ const Drawer = ({isOpen, onClose, title, children, footer, description}: DrawerP
         </Typography>
         </Box>}
         {description && <Box>
-            <Typography variant={TVariant.ComicSans18}>{description}</Typography>
+            <Typography variant={TVariant.ComicSans16}>{description}</Typography>
         </Box>}
       </DrawerHeader>
       <DrawerBody>
