@@ -217,7 +217,7 @@ class Web3Store extends Web3providerStore {
     }
 
     burnPupper(pupper: number) {
-        return this.pxContract!.burnPupper(pupper)
+        return this.pxContract!.burnPuppers([pupper])
     }
 
     burnPuppers(puppers: number[]) {
