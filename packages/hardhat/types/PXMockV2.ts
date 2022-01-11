@@ -36,11 +36,9 @@ export interface PXMockV2Interface extends ethers.utils.Interface {
     "__PX_init(string,string,address,string,uint256,uint256,address)": FunctionFragment;
     "approve(address,uint256)": FunctionFragment;
     "balanceOf(address)": FunctionFragment;
-    "burnPupper(uint256)": FunctionFragment;
     "burnPuppers(uint256[])": FunctionFragment;
     "getApproved(uint256)": FunctionFragment;
     "isApprovedForAll(address,address)": FunctionFragment;
-    "mintPupper()": FunctionFragment;
     "mintPuppers(uint256)": FunctionFragment;
     "name()": FunctionFragment;
     "owner()": FunctionFragment;
@@ -98,10 +96,6 @@ export interface PXMockV2Interface extends ethers.utils.Interface {
   ): string;
   encodeFunctionData(functionFragment: "balanceOf", values: [string]): string;
   encodeFunctionData(
-    functionFragment: "burnPupper",
-    values: [BigNumberish]
-  ): string;
-  encodeFunctionData(
     functionFragment: "burnPuppers",
     values: [BigNumberish[]]
   ): string;
@@ -112,10 +106,6 @@ export interface PXMockV2Interface extends ethers.utils.Interface {
   encodeFunctionData(
     functionFragment: "isApprovedForAll",
     values: [string, string]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "mintPupper",
-    values?: undefined
   ): string;
   encodeFunctionData(
     functionFragment: "mintPuppers",
@@ -208,7 +198,6 @@ export interface PXMockV2Interface extends ethers.utils.Interface {
   decodeFunctionResult(functionFragment: "__PX_init", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "approve", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "balanceOf", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "burnPupper", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "burnPuppers",
     data: BytesLike
@@ -221,7 +210,6 @@ export interface PXMockV2Interface extends ethers.utils.Interface {
     functionFragment: "isApprovedForAll",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(functionFragment: "mintPupper", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "mintPuppers",
     data: BytesLike
@@ -390,11 +378,6 @@ export interface PXMockV2 extends BaseContract {
 
     balanceOf(owner: string, overrides?: CallOverrides): Promise<[BigNumber]>;
 
-    burnPupper(
-      pupper: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
-
     burnPuppers(
       puppers: BigNumberish[],
       overrides?: Overrides & { from?: string | Promise<string> }
@@ -410,10 +393,6 @@ export interface PXMockV2 extends BaseContract {
       operator: string,
       overrides?: CallOverrides
     ): Promise<[boolean]>;
-
-    mintPupper(
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
 
     mintPuppers(
       qty: BigNumberish,
@@ -554,11 +533,6 @@ export interface PXMockV2 extends BaseContract {
 
   balanceOf(owner: string, overrides?: CallOverrides): Promise<BigNumber>;
 
-  burnPupper(
-    pupper: BigNumberish,
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
-
   burnPuppers(
     puppers: BigNumberish[],
     overrides?: Overrides & { from?: string | Promise<string> }
@@ -574,10 +548,6 @@ export interface PXMockV2 extends BaseContract {
     operator: string,
     overrides?: CallOverrides
   ): Promise<boolean>;
-
-  mintPupper(
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
 
   mintPuppers(
     qty: BigNumberish,
@@ -710,8 +680,6 @@ export interface PXMockV2 extends BaseContract {
 
     balanceOf(owner: string, overrides?: CallOverrides): Promise<BigNumber>;
 
-    burnPupper(pupper: BigNumberish, overrides?: CallOverrides): Promise<void>;
-
     burnPuppers(
       puppers: BigNumberish[],
       overrides?: CallOverrides
@@ -727,8 +695,6 @@ export interface PXMockV2 extends BaseContract {
       operator: string,
       overrides?: CallOverrides
     ): Promise<boolean>;
-
-    mintPupper(overrides?: CallOverrides): Promise<void>;
 
     mintPuppers(qty: BigNumberish, overrides?: CallOverrides): Promise<void>;
 
@@ -899,11 +865,6 @@ export interface PXMockV2 extends BaseContract {
 
     balanceOf(owner: string, overrides?: CallOverrides): Promise<BigNumber>;
 
-    burnPupper(
-      pupper: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
-
     burnPuppers(
       puppers: BigNumberish[],
       overrides?: Overrides & { from?: string | Promise<string> }
@@ -918,10 +879,6 @@ export interface PXMockV2 extends BaseContract {
       owner: string,
       operator: string,
       overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    mintPupper(
-      overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
     mintPuppers(
@@ -1067,11 +1024,6 @@ export interface PXMockV2 extends BaseContract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    burnPupper(
-      pupper: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
-
     burnPuppers(
       puppers: BigNumberish[],
       overrides?: Overrides & { from?: string | Promise<string> }
@@ -1086,10 +1038,6 @@ export interface PXMockV2 extends BaseContract {
       owner: string,
       operator: string,
       overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    mintPupper(
-      overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
     mintPuppers(
