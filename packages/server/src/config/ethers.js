@@ -20,10 +20,12 @@ class EthersHandler {
       network = "localhost"
       pxContractInfo = testABI["31337"][network]["contracts"]["PX"]
       dogContractInfo = testABI["31337"][network]["contracts"]["DOG20"]
-    } else {
+    } else if (app_env === "development") {
       network = "rinkeby"
       pxContractInfo = ABI["4"][network]["contracts"]["PX"]
       dogContractInfo = ABI["4"][network]["contracts"]["DOG20"]
+    } else {
+      throw Error("App environment not recognized")
     }
     this.network = network
     this.pxContractInfo = pxContractInfo

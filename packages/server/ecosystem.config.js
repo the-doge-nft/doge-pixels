@@ -3,16 +3,6 @@ module.exports = {
     name   : "dog_server",
     script : "./src/index.js",
     watch: ["src"],
-    // there are other env vars that must be set.
-    // check .env.test
-    env_development: {
-      NODE_ENV: 'production',
-      APP_ENV: 'development'
-    },
-    env_production: {
-      NODE_ENV: 'production',
-      APP_ENV: 'production'
-    }
   }],
   deploy: {
     development: {
