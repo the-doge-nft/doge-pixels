@@ -1,6 +1,6 @@
 const productionEnv = {
   api: {
-    baseURL: "https://dev.gainormather.xyz",
+    baseURL: "https://pixels.gainormather.xyz",
     // proxyURL: "http://localhost:3000"
   },
   redirectAfterLogoutURL: "/",
