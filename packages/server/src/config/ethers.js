@@ -1,9 +1,8 @@
 const ethers = require('ethers')
-const { app_env } = require('./vars')
+const { app_env, infura_ws_endpoint } = require('./vars')
 const ABI = require('../contracts/hardhat_contracts.json')
 const testABI = require('../../test/contracts/hardhat_contracts.json')
 const logger = require("./config");
-const vars = require("./vars");
 const {keepAlive} = require("./helpers");
 const {getAddressToOwnershipMap} = require("../api/web3/px");
 const {sentryClient} = require("../services/Sentry");
@@ -16,14 +15,16 @@ class EthersHandler {
       network = "rinkeby"
       pxContractInfo = ABI["4"][network]["contracts"]["PX"]
       dogContractInfo = ABI["4"][network]["contracts"]["DOG20"]
+    } else if (app_env === "development") {
+      network = "rinkeby"
+      pxContractInfo = ABI["4"][network]["contracts"]["PX"]
+      dogContractInfo = ABI["4"][network]["contracts"]["DOG20"]
     } else if (app_env === "test") {
       network = "localhost"
       pxContractInfo = testABI["31337"][network]["contracts"]["PX"]
       dogContractInfo = testABI["31337"][network]["contracts"]["DOG20"]
     } else {
-      network = "rinkeby"
-      pxContractInfo = ABI["4"][network]["contracts"]["PX"]
-      dogContractInfo = ABI["4"][network]["contracts"]["DOG20"]
+      throw Error("App environment not recognized")
     }
     this.network = network
     this.pxContractInfo = pxContractInfo
@@ -38,7 +39,7 @@ class EthersHandler {
     if (app_env === "test") {
       this.provider = new ethers.providers.WebSocketProvider(`ws://127.0.0.1:8545`);
     } else {
-      this.provider = new ethers.providers.WebSocketProvider(vars.infura_ws_endpoint, this.network);
+      this.provider = new ethers.providers.WebSocketProvider(infura_ws_endpoint, this.network);
     }
 
     this.PXContract = new ethers.Contract(this.pxContractInfo["address"], this.pxContractInfo["abi"], this.provider)
