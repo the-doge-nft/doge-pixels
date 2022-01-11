@@ -1,0 +1,90 @@
+{
+  "name": "@dog/react-app",
+  "version": "1.0.0",
+  "homepage": ".",
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "dependencies": {
+    "@chakra-ui/react": "^1.6.10",
+    "@emotion/react": "^11.5.0",
+    "@emotion/style": "^0.8.0",
+    "@emotion/styled": "^11.3.0",
+    "@lingui/react": "^3.12.1",
+    "@portis/web3": "^4.0.5",
+    "@react-three/fiber": "^7.0.17",
+    "@sentry/react": "^6.16.1",
+    "@sentry/tracing": "^6.16.1",
+    "@testing-library/jest-dom": "^5.11.4",
+    "@testing-library/react": "^11.1.0",
+    "@testing-library/user-event": "^12.1.8",
+    "@types/react-modal": "^3.13.1",
+    "@walletconnect/web3-provider": "^1.5.2",
+    "amator": "^1.1.0",
+    "arb-ts": "^0.0.18",
+    "axios": "^0.21.4",
+    "dotenv": "^8.2.0",
+    "ethers": "^5.4.1",
+    "final-form": "^4.20.4",
+    "fortmatic": "^2.2.1",
+    "framer-motion": "^5.0.0",
+    "mobx": "^6.3.2",
+    "mobx-react-lite": "^3.2.0",
+    "ngraph.events": "^1.2.1",
+    "node-watch": "^0.7.1",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
+    "react-draggable": "^4.4.4",
+    "react-final-form": "^6.5.7",
+    "react-icons": "^4.3.1",
+    "react-modal": "^3.14.4",
+    "react-router-dom": "^5.3.0",
+    "react-scripts": "4.0.3",
+    "source-map-explorer": "^2.5.2",
+    "three": "^0.134.0",
+    "typescript": "^4.4.4",
+    "walletlink": "^2.1.5",
+    "web3modal": "^1.9.1",
+    "wheel": "^1.0.0"
+  },
+  "devDependencies": {
+    "@lingui/cli": "^3.12.1",
+    "@lingui/macro": "^3.12.1",
+    "@testing-library/dom": "^6.12.2",
+    "@types/react": "^16.9.19",
+    "@types/react-dom": "^17.0.10",
+    "@types/react-router-dom": "^5.3.2",
+    "@types/three": "^0.133.1",
+    "customize-cra": "^1.0.0",
+    "react-app-rewired": "^2.1.8",
+    "surge": "^0.21.5"
+  },
+  "eslintConfig": {
+    "extends": "react-app"
+  },
+  "scripts": {
+    "analyze": "source-map-explorer 'build/static/js/*.js'",
+    "build": "react-app-rewired build",
+    "start": "cross-env PORT=3001 TSC_WATCHFILE=UseFsEventsWithFallbackDynamicPolling react-app-rewired start",
+    "_surge": "cp build/index.html build/200.html && surge ./build squeamish-side.surge.sh",
+    "_aws_dev_deploy": "aws s3 sync ./build s3://dev.dog",
+    "_aws_prod_deploy": "aws s3 sync ./build s3://pixels.thedao.ge",
+    "_aws_prod_invalidate_cloudfront": "aws cloudfront create-invalidation --distribution-id ERSKXV74XPGYQ --paths '/*'",
+    "_staging_build": "yarn prestart && CI=false REACT_APP_DOG_ENV=surge_staging react-app-rewired build",
+    "_prod_build": "yarn prestart && CI=false REACT_APP_DOG_ENV=aws_production react-app-rewired build",
+    "deploy:surge_dev": "yarn _staging_build && yarn _surge",
+    "deploy:aws_dev": "yarn _staging_build && yarn _aws_dev_deploy",
+    "deploy:aws_prod": "yarn _prod_build && yarn _aws_prod_deploy && yarn _aws_prod_invalidate_cloudfront",
+    "prestart": "node ./scripts/create_contracts.js",
+    "test": "react-app-rewired test"
+  }
+}

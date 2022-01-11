@@ -1,0 +1,17 @@
+/*eslint-disable*/ module.exports = {
+  messages: {
+    "2FA Code": "2FA Code",
+    "400 Received": "400 Received",
+    Cancel: "Cancel",
+    Debug: "Debug",
+    Error: "Error",
+    "Must be a number": "Must be a number",
+    "Must be greater than {min}": ["Must be greater than ", ["min"]],
+    "Must be less than {max}": ["Must be less than ", ["max"]],
+    "Must be {length} characters long": ["Must be ", ["length"], " characters long"],
+    Password: "Password",
+    Required: "Required",
+    Submit: "Submit",
+    Success: "Success",
+  },
+};
