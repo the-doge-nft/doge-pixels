@@ -578,19 +578,6 @@
             {
               "inputs": [
                 {
-                  "internalType": "uint256",
-                  "name": "pupper",
-                  "type": "uint256"
-                }
-              ],
-              "name": "burnPupper",
-              "outputs": [],
-              "stateMutability": "nonpayable",
-              "type": "function"
-            },
-            {
-              "inputs": [
-                {
                   "internalType": "uint256[]",
                   "name": "puppers",
                   "type": "uint256[]"
@@ -642,13 +629,6 @@
                 }
               ],
               "stateMutability": "view",
-              "type": "function"
-            },
-            {
-              "inputs": [],
-              "name": "mintPupper",
-              "outputs": [],
-              "stateMutability": "nonpayable",
               "type": "function"
             },
             {
