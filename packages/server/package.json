@@ -1,0 +1,39 @@
+{
+  "name": "@dog/server",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "dependencies": {
+    "@sentry/node": "^6.15.0",
+    "@sentry/tracing": "^6.15.0",
+    "body-parser": "^1.19.0",
+    "cors": "^2.8.5",
+    "cross-env": "^7.0.3",
+    "dotenv-safe": "^8.2.0",
+    "ethers": "^5.5.1",
+    "express": "^4.17.1",
+    "morgan": "^1.10.0",
+    "nodemon": "^2.0.15",
+    "pm2": "^5.1.2",
+    "redis": "^4.0.0",
+    "winston": "^3.3.3"
+  },
+  "scripts": {
+    "dev:deploy": "pm2 deploy development",
+    "dev": "yarn prestart && pm2 start ecosystem.config.js --env development",
+    "dev:start": "yarn prestart && pm2 start ecosystem.config.js --env development --time",
+    "prestart": "node ./scripts/create_contracts.js",
+    "stop": "pm2 stop ecosystem.config.js",
+    "logs": "pm2 logs",
+    "status": "pm2 status",
+    "test": "./test/test.sh"
+  },
+  "devDependencies": {
+    "@nomiclabs/hardhat-ethers": "^2.0.2",
+    "@nomiclabs/hardhat-waffle": "^2.0.1",
+    "hardhat": "^2.7.0",
+    "jest": "^27.3.1",
+    "redis-mock": "^0.56.3",
+    "supertest": "^6.1.6"
+  }
+}
