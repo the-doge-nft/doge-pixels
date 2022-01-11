@@ -7,6 +7,7 @@ require('dotenv-safe').config({
 
 module.exports = {
   env: process.env.NODE_ENV,
+  app_env: process.env.APP_ENV,
   port: process.env.PORT,
   logs: process.env.NODE_ENV === 'production' ? 'combined' : 'dev',
   infura_project_id: process.env.INFURA_PROJECT_ID,

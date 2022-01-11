@@ -1,5 +1,5 @@
 const ethers = require('ethers')
-const { env } = require('./vars')
+const { app_env } = require('./vars')
 const ABI = require('../contracts/hardhat_contracts.json')
 const testABI = require('../../test/contracts/hardhat_contracts.json')
 const logger = require("./config");
@@ -12,11 +12,11 @@ const {sentryClient} = require("../services/Sentry");
 class EthersHandler {
   constructor() {
     let network, pxContractInfo, dogContractInfo
-    if (env === "production") {
+    if (app_env === "production") {
       network = "rinkeby"
       pxContractInfo = ABI["4"][network]["contracts"]["PX"]
       dogContractInfo = ABI["4"][network]["contracts"]["DOG20"]
-    } else if (env === "test") {
+    } else if (app_env === "test") {
       network = "localhost"
       pxContractInfo = testABI["31337"][network]["contracts"]["PX"]
       dogContractInfo = testABI["31337"][network]["contracts"]["DOG20"]
@@ -35,7 +35,7 @@ class EthersHandler {
     const connectingMessage = `Creating WS provider on network: ${this.network}`
     logger.info(connectingMessage)
     sentryClient.captureMessage(connectingMessage)
-    if (env === "test") {
+    if (app_env === "test") {
       this.provider = new ethers.providers.WebSocketProvider(`ws://127.0.0.1:8545`);
     } else {
       this.provider = new ethers.providers.WebSocketProvider(vars.infura_ws_endpoint, this.network);
@@ -54,7 +54,7 @@ class EthersHandler {
       getAddressToOwnershipMap(this)
     })
 
-    if (env !== "test") {
+    if (app_env !== "test") {
       keepAlive({
         provider: this.provider,
         onDisconnect: (err) => {
