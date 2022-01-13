@@ -45,8 +45,10 @@ contract PX is ERC721CustomUpgradeable, OwnableUpgradeable {
     uint256 public SHIBA_HEIGHT;
     string public BASE_URI;
 
-    address DOG20_FEES_ADDRESS;
-    uint256 DOG20_FEES_PERCENT;
+    address DOG20_FEES_ADDRESS_DEV;
+    address DOG20_FEES_ADDRESS_PLEASR;
+    uint256 DOG20_FEES_AMOUNT_DEV;
+    uint256 DOG20_FEES_AMOUNT_PLEASR;
 
     function __PX_init(
         string memory name_,
@@ -55,7 +57,8 @@ contract PX is ERC721CustomUpgradeable, OwnableUpgradeable {
         string memory ipfsUri_,
         uint256 width_,
         uint256 height_,
-        address DOG20_FEES_ADDRESS_
+        address DOG20_FEES_ADDRESS_DEV_,
+        address DOG20_FEES_ADDRESS_PLEASR_
     ) public initializer {
         __ERC721Custom_init(name_, symbol_);
         require(DOG20Address != address(0));
@@ -74,8 +77,10 @@ contract PX is ERC721CustomUpgradeable, OwnableUpgradeable {
 
         BASE_URI = ipfsUri_;
 
-        DOG20_FEES_ADDRESS = DOG20_FEES_ADDRESS_;
-        DOG20_FEES_PERCENT = 20;
+        DOG20_FEES_ADDRESS_DEV = DOG20_FEES_ADDRESS_DEV_;
+        DOG20_FEES_ADDRESS_PLEASR = DOG20_FEES_ADDRESS_PLEASR_;
+        DOG20_FEES_AMOUNT_DEV = 40;
+        DOG20_FEES_AMOUNT_PLEASR = 60;
     }
 
     /**
@@ -226,9 +231,12 @@ contract PX is ERC721CustomUpgradeable, OwnableUpgradeable {
 
     function processCollateralAfterBurn(uint256 totalAmount) internal {
         // transfer collateral to the burner
-        uint256 feesAmount = totalAmount * DOG20_FEES_PERCENT / 100;
-        uint256 burnerAmount = totalAmount - feesAmount;
-        DOG20.transfer(DOG20_FEES_ADDRESS, feesAmount);
+        // 1% is taken for fees, from that FEES_AMOUNT_DEV AND FEES_AMOUNT_PLEASR are distributed between developers and PleasrDAO
+        uint256 feesAmount1 = totalAmount * DOG20_FEES_AMOUNT_DEV / 100 / 100;
+        uint256 feesAmount2 = totalAmount * DOG20_FEES_AMOUNT_PLEASR / 100 / 100;
+        uint256 burnerAmount = totalAmount - feesAmount1 - feesAmount2;
+        DOG20.transfer(DOG20_FEES_ADDRESS_DEV, feesAmount1);
+        DOG20.transfer(DOG20_FEES_ADDRESS_PLEASR, feesAmount2);
         DOG20.transfer(_msgSender(), burnerAmount);
     }
 
@@ -275,7 +283,7 @@ contract PX is ERC721CustomUpgradeable, OwnableUpgradeable {
 
         string memory baseURI = _baseURI();
         // todo: modifier
-        uint256[2] memory coords = pupperToPixelCoords(tokenId);
-        return bytes(baseURI).length > 0 ? string(abi.encodePacked(baseURI, "metadata", "/", "metadata-", Strings.toString(coords[0]), "_", Strings.toString(coords[1]), ".json")) : "";
+//        uint256[2] memory coords = pupperToPixelCoords(tokenId);
+        return bytes(baseURI).length > 0 ? string(abi.encodePacked(baseURI, "metadata", "/", "pixel-", Strings.toString(tokenId) , ".json")) : "";
     }
 }

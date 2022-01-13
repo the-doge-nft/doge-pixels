@@ -19,8 +19,10 @@ const runTests = (withUpgrade) => {
     const MOCK_SUPPLY = MOCK_WIDTH * MOCK_HEIGHT;
     const MOCK_URI = "ipfs://dog-repo/";
     const DOG_TO_PIXEL_SATOSHIS = ethers.BigNumber.from('5523989899').mul(10 ** 13);
-    const BURN_FEES_PERCENT = 20;
-    let FEES_ACCOUNT;
+    const BURN_FEES_PERCENT_DEV = 40;
+    const BURN_FEES_PERCENT_PLEASR = 60;
+    let FEES_ACCOUNT_DEV,
+        FEES_ACCOUNT_PLEASR;
 
     const INDEX_OFFSET = 1000000;
 
@@ -43,7 +45,8 @@ const runTests = (withUpgrade) => {
       signers = await ethers.getSigners();
       [owner, addr1, addr2, addr3] = signers
 
-      FEES_ACCOUNT = signers[4]
+      FEES_ACCOUNT_DEV = signers[10]
+      FEES_ACCOUNT_PLEASR = signers[11]
 
       let factory;
 
@@ -62,7 +65,8 @@ const runTests = (withUpgrade) => {
         MOCK_URI,
         MOCK_WIDTH,
         MOCK_HEIGHT,
-        FEES_ACCOUNT.address
+        FEES_ACCOUNT_DEV.address,
+        FEES_ACCOUNT_PLEASR.address,
       );
 
       await Promise.all([
@@ -115,10 +119,8 @@ const runTests = (withUpgrade) => {
         }
       }
       if (tokenId) {
-        const index = tokenId.toNumber() - INDEX_OFFSET;
-        const x = index % MOCK_WIDTH;
-        const y = Math.floor(index / MOCK_WIDTH);
-        expect(await PX.tokenURI(tokenId)).to.equal(`${MOCK_URI}metadata/metadata-${x}_${y}.json`);
+        const idWithOffset = tokenId.toNumber();
+        expect(await PX.tokenURI(tokenId)).to.equal(`${MOCK_URI}metadata/pixel-${idWithOffset}.json`);
         return tokenId;
       } else {
         throw new Error("Transfer event was not fired");
@@ -137,7 +139,8 @@ const runTests = (withUpgrade) => {
       // console.log("minting for " + addr.address);
       const addrDog20BalanceBefore = await DOG20.balanceOf(signer.address);
       const pxDog20BalanceBefore = await DOG20.balanceOf(PX.address);
-      const feesDog20BalanceBefore = await DOG20.balanceOf(FEES_ACCOUNT.address);
+      const feesDevDog20BalanceBefore = await DOG20.balanceOf(FEES_ACCOUNT_DEV.address);
+      const feesPleasrDog20BalanceBefore = await DOG20.balanceOf(FEES_ACCOUNT_PLEASR.address);
       const addrPXBalanceBefore = await PX.balanceOf(signer.address);
       const supplyPXBalanceBefore = await PX.puppersRemaining();
       let tx;
@@ -150,17 +153,16 @@ const runTests = (withUpgrade) => {
       }
 
       expect(await DOG20.balanceOf(PX.address)).to.equal(pxDog20BalanceBefore.sub(DOG_TO_PIXEL_SATOSHIS))
-      expect(await DOG20.balanceOf(signer.address)).to.equal(addrDog20BalanceBefore.add(DOG_TO_PIXEL_SATOSHIS.mul(100 - BURN_FEES_PERCENT).div(
-        100)))
-      expect(await DOG20.balanceOf(FEES_ACCOUNT.address)).to.equal(feesDog20BalanceBefore.add(DOG_TO_PIXEL_SATOSHIS.mul(
-        BURN_FEES_PERCENT).div(100)))
+      expect(await DOG20.balanceOf(signer.address)).to.equal(addrDog20BalanceBefore.add(DOG_TO_PIXEL_SATOSHIS.mul(99).div(100)))
+      expect(await DOG20.balanceOf(FEES_ACCOUNT_DEV.address)).to.equal(feesDevDog20BalanceBefore.add(DOG_TO_PIXEL_SATOSHIS.mul(BURN_FEES_PERCENT_DEV).div(100).div(100)))
+      expect(await DOG20.balanceOf(FEES_ACCOUNT_PLEASR.address)).to.equal(feesPleasrDog20BalanceBefore.add(DOG_TO_PIXEL_SATOSHIS.mul(BURN_FEES_PERCENT_PLEASR).div(100).div(100)));
 
       expect(await PX.balanceOf(signer.address)).to.equal(addrPXBalanceBefore.sub(1))
       expect(await PX.puppersRemaining()).to.equal(supplyPXBalanceBefore.add(1));
       //
       // let receipt = await tx.wait();
       // for (let i = 0; i < receipt.events.length; ++i) {
-      //   const event = receipt.events[i];
+      //   const event = receipt.events[i];§
       //   if (event.event === 'Transfer') {
       //     const tokenId = event.args.tokenId;
       //     console.log(`minted ${tokenId.toNumber()} for ${addr.address}`);
@@ -217,6 +219,8 @@ const runTests = (withUpgrade) => {
       // })
       it('try to mint with sender having no $DOG balance', async function () {
         signers = await ethers.getSigners()
+        // console.log(signers.length);
+        // process.exit(0);
         const [owner, , , , signer4] = signers
         const balance = await DOG20.balanceOf(signer4.address);
         if (!balance.isZero()) {
@@ -302,10 +306,10 @@ const runTests = (withUpgrade) => {
           }
           if (Math.floor(Math.random() * 100000) % divider) {
             if (remaining === 0) {
-              await mintPupperWithValidation(randFromArray(signers), ERROR_NO_PX_REMAINING);
+              await mintPupperWithValidation(randFromArray(signers.slice(0, 2)), ERROR_NO_PX_REMAINING);
             }
           } else {
-            const signer = randFromArray(signers);
+            const signer = randFromArray(signers.slice(0, 2));
             const tokenId = randFromArray(range(MOCK_SUPPLY)) + INDEX_OFFSET;
             let shouldRevert = true;
             let isOwnerOf;
