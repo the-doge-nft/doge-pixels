@@ -5,7 +5,8 @@ const commandLineArgs = require('command-line-args');
 const cliProgress = require('cli-progress');
 const optionDefinitions = [
     // {name: 'deploy_id', type: String},
-    {name: 'tile_size', type: Number, defaultValue: 1},
+    {name: 'tile_size', type: Number, defaultValue: -1},
+    {name: 'deploy_id', type: String, defaultValue: 'n-a'},
     {name: 'deploy_dir', type: String},
     {name: 'ipns_dir', type: String},
     {
@@ -20,12 +21,25 @@ const OUT_PATH = path.resolve(options.deploy_dir);//__dirname, 'deploy', options
 const PIXELS_PATH = path.join(OUT_PATH, 'pixels');
 const METADATA_PATH = path.join(OUT_PATH, 'metadata');
 const IPNS_DIR = options.ipns_dir;
+const INDEX_OFFSET = 1000000;
 
 // create a new progress bar instance and use shades_classic theme
 const bar1 = new cliProgress.SingleBar(
     {
         format: 'progress [{bar}] {percentage}% | {duration_formatted} | {value}/{total} | ETA: {eta}s '
     }, cliProgress.Presets.shades_classic);
+
+function getFormattedDateTime() {
+    const today = new Date();
+    const y = (today.getFullYear() + '').padStart(4, '0');
+    // JavaScript months are 0-based.
+    const m = (today.getMonth() + 1 + '').padStart(2, '0');
+    const d = (today.getDate() + '').padStart(2, '0');
+    const h = (today.getHours() + '').padStart(2, '0');
+    const mm = (today.getMinutes() + '').padStart(2, '0');
+    const s = (today.getSeconds() + '').padStart(2, '0');
+    return y + "_" + m + "_" + d + "_" + h + "_" + mm + "_" + s;
+}
 
 function hexIntToRgba(num) {
     num >>>= 0;
@@ -40,6 +54,10 @@ function rgbToHex(r, g, b) {
     return "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
 }
 
+function pixelIdentifier(x, y, indexWithOffset) {
+    return `${indexWithOffset}`;
+}
+
 function hexIntToStr(hex) {
     const rgba = Jimp.intToRGBA(hex);
     const r = rgba.r.toString(16).padStart(2, 0);
@@ -51,12 +69,6 @@ function hexIntToStr(hex) {
     return `#${r}${g}${b}`
 }
 
-
-function pixelUrl(x, y) {
-    // return `ipfs://ipns/${IPNS_DIR}/pixels/${x}_${y}.png`;
-    return `https://gateway.ipfs.io/ipns/${IPNS_DIR}/pixels/${x}_${y}.png`;
-}
-
 function createTile(x, y, hexInt, RUN_CONFIG) {
     let SIZE = 'sm';
     let size, prefix;
@@ -64,52 +76,66 @@ function createTile(x, y, hexInt, RUN_CONFIG) {
     size = options.tile_size;
     prefix = '';//`pixels_${size}x${size}`
     return new Promise((resolve) => {
-        let image = new Jimp(size, size, function (err, image) {
-            if (err) throw err;
+        // If size passed, generate pixels
+        const WRITE_PIXEL = size > 0;
+        const index = y * RUN_CONFIG.width + x;
+        const idWithOffset = x + y * RUN_CONFIG.width + INDEX_OFFSET;
+        const writeMetadata = () => {
+            const metadata = {
+                name: `Doge Pixel (${x}, ${y})`,
+                description: `Pixel from The Doge NFT at location (${x}, ${y})`,
+                external_url: `https://pixels.thedao.ge/px/${pixelIdentifier(x, y, idWithOffset)}`,
+                image: `http://143.198.55.229/ipns/${IPNS_DIR}/pixels/${pixelIdentifier(x, y, idWithOffset)}.png`,
+                hex: `${hex}`,
+                attributes: [
+                    // {
+                    //     trait_type: "ID",
+                    //     value: idWithOffset
+                    // },
+                    {
+                        trait_type: "Index",
+                        value: index
+                    },
+                    {
+                        trait_type: "X Coordinate",
+                        value: x
+                    },
+                    {
+                        trait_type: "Y Coordinate",
+                        value: y
+                    },
+                    {
+                        trait_type: "Hex",
+                        value: `${hex}`
+                    },
+                ]
+            };
+            // console.log(`[${x}][${y}]: ${hex}; ${hexIntToRgba(hexInt)}`)
+            fs.writeFileSync(
+                path.join(METADATA_PATH, `pixel-${pixelIdentifier(x, y, idWithOffset)}.json`),
+                JSON.stringify(metadata, null, 2)
+            )
 
-            for (let w = 0; w < size; ++w) {
-                for (let h = 0; h < size; ++h) {
-                    image.setPixelColor(hexInt, w, h);
-                }
-            }
-
-            image.write(path.join(PIXELS_PATH, `${x}_${y}.png`), (err) => {
+            bar1.update(y * RUN_CONFIG.width + x);
+            resolve();
+        }
+        if (WRITE_PIXEL) {
+            let image = new Jimp(size, size, function (err, image) {
                 if (err) throw err;
-                // console.log(`saved ${x}_${y}.png`);
-                const index = y * RUN_CONFIG.width + x;
-                const metadata = {
-                    name: `$DOG[${x}][${y}]`,
-                    description: `Hi I'm $DOG[${x}][${y}]`,
-                    // external_url: `https://squeamish-side.surge.sh/${index}/${index}/${index}/${index}/${index}/${index}/${index}/${index}`,
-                    image: pixelUrl(x, y),
-                    hex: `${hex}`,
-                    // background_color: '#fff',//todo: select contrast
-                    attributes: [
-                        {
-                            trait_type: "XCOORD",
-                            value: x
-                        },
-                        {
-                            trait_type: "YCOORD",
-                            value: y
-                        },
-                        {
-                            trait_type: "INDEX",
-                            value: index
-                        },
-                        {
-                            trait_type: "HEX",
-                            value: `${hex}`
-                        },
-                    ]
-                };
-                // console.log(`[${x}][${y}]: ${hex}; ${hexIntToRgba(hexInt)}`)
-                fs.writeFileSync(path.join(METADATA_PATH, `metadata-${x}_${y}.json`), JSON.stringify(metadata, null, 2))
 
-                bar1.update(y * RUN_CONFIG.width + x);
-                resolve();
+                for (let w = 0; w < size; ++w) {
+                    for (let h = 0; h < size; ++h) {
+                        image.setPixelColor(hexInt, w, h);
+                    }
+                }
+                image.write(path.join(PIXELS_PATH, `${pixelIdentifier(x, y, idWithOffset)}.png`), (err) => {
+                    if (err) throw err;
+                    writeMetadata();
+                });
             });
-        });
+        } else {
+            writeMetadata();
+        }
     })
     // let image = new Jimp(size, size, function (err, image) {
     //     if (err) throw err;
@@ -193,7 +219,7 @@ async function deploy() {
                 bar1.stop();
                 console.log("Finished");
 
-                image.write('test.png', (err) => {
+                image.write(`test-${options.deploy_id}-${getFormattedDateTime()}.png`, (err) => {
                     if (err) throw err;
                 });
             });

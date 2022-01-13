@@ -32,8 +32,8 @@ export interface PXMockInterface extends ethers.utils.Interface {
     "MAGIC_NULL()": FunctionFragment;
     "SHIBA_HEIGHT()": FunctionFragment;
     "SHIBA_WIDTH()": FunctionFragment;
-    "__PXMock_init(string,string,address,string,uint256,uint256,address)": FunctionFragment;
-    "__PX_init(string,string,address,string,uint256,uint256,address)": FunctionFragment;
+    "__PXMock_init(string,string,address,string,uint256,uint256,address,address)": FunctionFragment;
+    "__PX_init(string,string,address,string,uint256,uint256,address,address)": FunctionFragment;
     "approve(address,uint256)": FunctionFragment;
     "balanceOf(address)": FunctionFragment;
     "burnPuppers(uint256[])": FunctionFragment;
@@ -83,11 +83,29 @@ export interface PXMockInterface extends ethers.utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "__PXMock_init",
-    values: [string, string, string, string, BigNumberish, BigNumberish, string]
+    values: [
+      string,
+      string,
+      string,
+      string,
+      BigNumberish,
+      BigNumberish,
+      string,
+      string
+    ]
   ): string;
   encodeFunctionData(
     functionFragment: "__PX_init",
-    values: [string, string, string, string, BigNumberish, BigNumberish, string]
+    values: [
+      string,
+      string,
+      string,
+      string,
+      BigNumberish,
+      BigNumberish,
+      string,
+      string
+    ]
   ): string;
   encodeFunctionData(
     functionFragment: "approve",
@@ -352,7 +370,8 @@ export interface PXMock extends BaseContract {
       ipfsUri_: string,
       width_: BigNumberish,
       height_: BigNumberish,
-      DOG20_FEES_ADDRESS_: string,
+      DOG20_FEES_ADDRESS_DEV_: string,
+      DOG20_FEES_ADDRESS_PLEASR_: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
@@ -363,7 +382,8 @@ export interface PXMock extends BaseContract {
       ipfsUri_: string,
       width_: BigNumberish,
       height_: BigNumberish,
-      DOG20_FEES_ADDRESS_: string,
+      DOG20_FEES_ADDRESS_DEV_: string,
+      DOG20_FEES_ADDRESS_PLEASR_: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
@@ -503,7 +523,8 @@ export interface PXMock extends BaseContract {
     ipfsUri_: string,
     width_: BigNumberish,
     height_: BigNumberish,
-    DOG20_FEES_ADDRESS_: string,
+    DOG20_FEES_ADDRESS_DEV_: string,
+    DOG20_FEES_ADDRESS_PLEASR_: string,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
@@ -514,7 +535,8 @@ export interface PXMock extends BaseContract {
     ipfsUri_: string,
     width_: BigNumberish,
     height_: BigNumberish,
-    DOG20_FEES_ADDRESS_: string,
+    DOG20_FEES_ADDRESS_DEV_: string,
+    DOG20_FEES_ADDRESS_PLEASR_: string,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
@@ -646,7 +668,8 @@ export interface PXMock extends BaseContract {
       ipfsUri_: string,
       width_: BigNumberish,
       height_: BigNumberish,
-      DOG20_FEES_ADDRESS_: string,
+      DOG20_FEES_ADDRESS_DEV_: string,
+      DOG20_FEES_ADDRESS_PLEASR_: string,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -657,7 +680,8 @@ export interface PXMock extends BaseContract {
       ipfsUri_: string,
       width_: BigNumberish,
       height_: BigNumberish,
-      DOG20_FEES_ADDRESS_: string,
+      DOG20_FEES_ADDRESS_DEV_: string,
+      DOG20_FEES_ADDRESS_PLEASR_: string,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -829,7 +853,8 @@ export interface PXMock extends BaseContract {
       ipfsUri_: string,
       width_: BigNumberish,
       height_: BigNumberish,
-      DOG20_FEES_ADDRESS_: string,
+      DOG20_FEES_ADDRESS_DEV_: string,
+      DOG20_FEES_ADDRESS_PLEASR_: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
@@ -840,7 +865,8 @@ export interface PXMock extends BaseContract {
       ipfsUri_: string,
       width_: BigNumberish,
       height_: BigNumberish,
-      DOG20_FEES_ADDRESS_: string,
+      DOG20_FEES_ADDRESS_DEV_: string,
+      DOG20_FEES_ADDRESS_PLEASR_: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
@@ -981,7 +1007,8 @@ export interface PXMock extends BaseContract {
       ipfsUri_: string,
       width_: BigNumberish,
       height_: BigNumberish,
-      DOG20_FEES_ADDRESS_: string,
+      DOG20_FEES_ADDRESS_DEV_: string,
+      DOG20_FEES_ADDRESS_PLEASR_: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
@@ -992,7 +1019,8 @@ export interface PXMock extends BaseContract {
       ipfsUri_: string,
       width_: BigNumberish,
       height_: BigNumberish,
-      DOG20_FEES_ADDRESS_: string,
+      DOG20_FEES_ADDRESS_DEV_: string,
+      DOG20_FEES_ADDRESS_PLEASR_: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 

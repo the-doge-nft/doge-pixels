@@ -106,6 +106,10 @@ class Web3Store extends Web3providerStore {
               signerOrProvider
             ) as unknown
             this.dogContract = dog as DOG20
+            //@ts-ignore
+            window.__PX__ = px;
+            //@ts-ignore
+            window.__DOG20__ = dog;
         } else {
             throw Error("Shouldn't hit")
         }

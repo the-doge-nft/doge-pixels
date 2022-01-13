@@ -9,7 +9,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "cli-progress": "^3.9.1",
+    "cli-progress": "^3.10.0",
     "command-line-args": "^5.2.0",
     "jimp": "^0.16.1"
   }
