@@ -17,7 +17,8 @@ contract PXMock is PX {
         string memory ipfsUri_,
         uint256 width_,
         uint256 height_,
-        address DOG20_FEES_ADDRESS_
+        address DOG20_FEES_ADDRESS_DEV_,
+        address DOG20_FEES_ADDRESS_PLEASR_
     ) public initializer {
         __PX_init(
             name_,
@@ -26,7 +27,8 @@ contract PXMock is PX {
             ipfsUri_,
             width_,
             height_,
-            DOG20_FEES_ADDRESS_
+            DOG20_FEES_ADDRESS_DEV_,
+            DOG20_FEES_ADDRESS_PLEASR_
         );
     }
 

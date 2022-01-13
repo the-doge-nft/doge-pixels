@@ -5,7 +5,7 @@
       "chainId": "4",
       "contracts": {
         "DOG20": {
-          "address": "0xC02a65d34D3a202929f033E0Eef3aA4eF20b5565",
+          "address": "0x57D1385D8F6A51451D6A1623033f83a436bBdB51",
           "abi": [
             {
               "inputs": [],
@@ -321,7 +321,7 @@
           ]
         },
         "PX": {
-          "address": "0x0BB1248dD73a592987977Fe84E0B5c1450763531",
+          "address": "0x7C97d7F175506544826a48D57E8e39244988D546",
           "abi": [
             {
               "anonymous": false,
@@ -526,6 +526,16 @@
                   "internalType": "uint256",
                   "name": "height_",
                   "type": "uint256"
+                },
+                {
+                  "internalType": "address",
+                  "name": "DOG20_FEES_ADDRESS_DEV_",
+                  "type": "address"
+                },
+                {
+                  "internalType": "address",
+                  "name": "DOG20_FEES_ADDRESS_PLEASR_",
+                  "type": "address"
                 }
               ],
               "name": "__PX_init",
@@ -568,19 +578,6 @@
                 }
               ],
               "stateMutability": "view",
-              "type": "function"
-            },
-            {
-              "inputs": [
-                {
-                  "internalType": "uint256",
-                  "name": "pupper",
-                  "type": "uint256"
-                }
-              ],
-              "name": "burnPupper",
-              "outputs": [],
-              "stateMutability": "nonpayable",
               "type": "function"
             },
             {
@@ -637,13 +634,6 @@
                 }
               ],
               "stateMutability": "view",
-              "type": "function"
-            },
-            {
-              "inputs": [],
-              "name": "mintPupper",
-              "outputs": [],
-              "stateMutability": "nonpayable",
               "type": "function"
             },
             {

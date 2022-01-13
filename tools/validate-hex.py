@@ -5,6 +5,7 @@ pixels = img.load()
 width, height = img.size
 
 DEPLOY_ID='2021-12-01_16_55_09'
+DEPLOY_ID='2022-final'
 
 for x in range(width):
     for y in range(height):

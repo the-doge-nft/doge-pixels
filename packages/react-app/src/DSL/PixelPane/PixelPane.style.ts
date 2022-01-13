@@ -39,8 +39,8 @@ const PixelPaneStyle = {
   sizes: {
     sm: {
       swatch: {
-        w: "80px",
-        h: "80px"
+        w: "90px",
+        h: "90px"
       },
       textContainer: {
         py: 0,
