@@ -25,8 +25,8 @@ class Web3Store extends Web3providerStore {
     D20_PRECISION = BigNumber.from("1000000000000000000")
     DOG_TO_PIXEL_SATOSHIS = BigNumber.from("55239898990000000000000")
     PIXEL_TO_ID_OFFSET = 1000000
-    WIDTH = 32 // 640
-    HEIGHT = 24 // 480
+    WIDTH = 640
+    HEIGHT = 480
     DOG_BURN_FEES_PERCENT = 1
 
     @observable
