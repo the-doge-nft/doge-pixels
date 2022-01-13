@@ -4,19 +4,20 @@ const {ethers} = require("hardhat");
 const prompts = require('prompts');
 module.exports = async (args) => {
   const {getNamedAccounts, deployments, getChainId, ContractFactory} = args
+  let DOG20Address;
 
   // console.log(args.network);
   if (args.network.name !== 'localhost' && args.network.name !== 'hardhat') {
-    const response = await prompts({
-                                     type: 'confirm',
-                                     name: 'value',
-                                     message: 'Are you sure?',
-                                     initial: false
-                                   });
-    if (!response.value) {
-      console.log("aborting");
-      process.exit(42069);
-    }
+    // const response = await prompts({
+    //                                  type: 'confirm',
+    //                                  name: 'value',
+    //                                  message: 'Are you sure?',
+    //                                  initial: false
+    //                                });
+    // if (!response.value) {
+    //   console.log("aborting");
+    //   process.exit(42069);
+    // }
   }
   if(!process.env.DOG_IPFS_DEPLOY_BASE_URI){
     console.error("[ERROR] Invalid usage, must set DOG_IPFS_DEPLOY_BASE_URI");
@@ -30,27 +31,39 @@ module.exports = async (args) => {
     console.error("[ERROR] Invalid usage, must set DOG_IMG_HEIGHT");
     process.exit(42070);
   }
-  if(!process.env.DOG_FEES_ADDRESS){
-    console.error("[ERROR] Invalid usage, must set DOG_FEES_ADDRESS");
+  if(!process.env.DOG_FEES_ADDRESS_DEV){
+    console.error("[ERROR] Invalid usage, must set DOG_FEES_ADDRESS_DEV");
     process.exit(42070);
+  }
+  if(!process.env.DOG_FEES_ADDRESS_PLEASR){
+    console.error("[ERROR] Invalid usage, must set DOG_FEES_ADDRESS_PLEASR");
+    process.exit(42070);
+  }
+  if(process.env.DOG20_ADDRESS){
+    console.info(`[INFO] Got DOG20_ADDRESS, using ${process.env.DOG20_ADDRESS} as DOG ERC20 contract address`);
+    DOG20Address = process.env.DOG20_ADDRESS;
   }
   console.log(`============= config =============`)
   console.log(`DOG_IPFS_DEPLOY_BASE_URI=${process.env.DOG_IPFS_DEPLOY_BASE_URI}`)
   console.log(`DOG_IMG_WIDTH=${process.env.DOG_IMG_WIDTH}`)
   console.log(`DOG_IMG_HEIGHT=${process.env.DOG_IMG_HEIGHT}`)
   console.log(`==================================`)
+  console.log(process.env);
+  console.log(`==================================`)
 
   const {deploy} = deployments;
   const {deployer} = await getNamedAccounts();
+  let deployed;
   // const chainId = await getChainId();
-
-  let deployed = await deploy("DOG20", {
-    from: deployer,
-    // args: [[deployer,]],
-    log: true,
-  });
-  const DOG20Address = deployed.address
-  const DOG20 = await ethers.getContractAt("DOG20", deployed.address);
+  if(!DOG20Address) {
+    deployed = await deploy("DOG20", {
+      from: deployer,
+      // args: [[deployer,]],
+      log: true,
+    });
+    DOG20Address = deployed.address
+    const DOG20 = await ethers.getContractAt("DOG20", deployed.address);
+  }
   deployed = await deploy("PX", {
     from: deployer,
     // args: [
@@ -58,6 +71,7 @@ module.exports = async (args) => {
     // ],
     log: true,
   });
+  console.log("DEPLOYED");
   const PX = await ethers.getContractAt("PX", deployed.address);
   await PX.__PX_init(
     "LONG LIVE D O G",
@@ -66,7 +80,10 @@ module.exports = async (args) => {
     process.env.DOG_IPFS_DEPLOY_BASE_URI,
     process.env.DOG_IMG_WIDTH,
     process.env.DOG_IMG_HEIGHT,
-    process.env.DOG_FEES_ADDRESS,
+    process.env.DOG_FEES_ADDRESS_DEV,
+    process.env.DOG_FEES_ADDRESS_PLEASR,
   )
+  console.log("INITIALIZED");
+  console.log("FINISHED ALL");
 };
 module.exports.tags = ["PX"];
