@@ -12,7 +12,7 @@ module.exports = {
       path: "/home/nodejs/dog",
       repo: "git@github.com:calebcarithers/dog.git",
       ref: "origin/dev",
-      "post-deploy": "cd /home/nodejs/dog/current/packages/server && yarn install --production --frozen-lockfile && yarn dev:start",
+      "post-deploy": "cd /home/nodejs/dog/current/packages/server && yarn install --production --frozen-lockfile && yarn prestart && yarn dev:start",
     },
     production: {
       key: "deploy.key",
@@ -21,7 +21,7 @@ module.exports = {
       path: "/home/nodejs/dog",
       repo: "git@github.com:calebcarithers/dog.git",
       ref: "origin/master",
-      "post-deploy": "cd /home/nodejs/dog/current/packages/server && yarn install --production --frozen-lockfile && yarn prod:start",
+      "post-deploy": "cd /home/nodejs/dog/current/packages/server && yarn install --production --frozen-lockfile && yarn prestart && yarn prod:start",
     }
   }
 }
