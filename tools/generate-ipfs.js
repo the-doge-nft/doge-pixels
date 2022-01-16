@@ -218,8 +218,12 @@ async function deploy() {
                 q = [];
                 bar1.stop();
                 console.log("Finished");
-
-                image.write(`test-${options.deploy_id}-${getFormattedDateTime()}.png`, (err) => {
+                // save in root `deploy` directory
+                image.write(path.join(OUT_PATH, '..', `combined-${options.deploy_id}-${getFormattedDateTime()}.png`), (err) => {
+                    if (err) throw err;
+                });
+                //save in this deployment root directory
+                image.write(path.join(OUT_PATH, `combined-${getFormattedDateTime()}.png`), (err) => {
                     if (err) throw err;
                 });
             });

@@ -27,6 +27,6 @@ mkdir output || true
 #seq 10 | echo "abc"
 #seq 10 | xargs parallel mycurl--
 #cat test.txt | parallel -j 10 mycurl
-cat urls.txt | parallel -j 10 mycurl
+cat urls.txt | parallel -j 100 mycurl
 #parallel mycurl2
 #echo "end"
