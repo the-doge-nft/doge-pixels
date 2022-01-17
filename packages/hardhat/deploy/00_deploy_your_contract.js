@@ -2,6 +2,10 @@
 
 const {ethers} = require("hardhat");
 const prompts = require('prompts');
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
 module.exports = async (args) => {
   const {getNamedAccounts, deployments, getChainId, ContractFactory} = args
   let DOG20Address;
@@ -19,27 +23,27 @@ module.exports = async (args) => {
     //   process.exit(42069);
     // }
   }
-  if(!process.env.DOG_IPFS_DEPLOY_BASE_URI){
+  if (!process.env.DOG_IPFS_DEPLOY_BASE_URI) {
     console.error("[ERROR] Invalid usage, must set DOG_IPFS_DEPLOY_BASE_URI");
     process.exit(42070);
   }
-  if(!process.env.DOG_IMG_WIDTH){
+  if (!process.env.DOG_IMG_WIDTH) {
     console.error("[ERROR] Invalid usage, must set DOG_IMG_WIDTH");
     process.exit(42070);
   }
-  if(!process.env.DOG_IMG_HEIGHT){
+  if (!process.env.DOG_IMG_HEIGHT) {
     console.error("[ERROR] Invalid usage, must set DOG_IMG_HEIGHT");
     process.exit(42070);
   }
-  if(!process.env.DOG_FEES_ADDRESS_DEV){
+  if (!process.env.DOG_FEES_ADDRESS_DEV) {
     console.error("[ERROR] Invalid usage, must set DOG_FEES_ADDRESS_DEV");
     process.exit(42070);
   }
-  if(!process.env.DOG_FEES_ADDRESS_PLEASR){
+  if (!process.env.DOG_FEES_ADDRESS_PLEASR) {
     console.error("[ERROR] Invalid usage, must set DOG_FEES_ADDRESS_PLEASR");
     process.exit(42070);
   }
-  if(process.env.DOG20_ADDRESS){
+  if (process.env.DOG20_ADDRESS) {
     console.info(`[INFO] Got DOG20_ADDRESS, using ${process.env.DOG20_ADDRESS} as DOG ERC20 contract address`);
     DOG20Address = process.env.DOG20_ADDRESS;
   }
@@ -55,7 +59,7 @@ module.exports = async (args) => {
   const {deployer} = await getNamedAccounts();
   let deployed;
   // const chainId = await getChainId();
-  if(!DOG20Address) {
+  if (!DOG20Address) {
     deployed = await deploy("DOG20", {
       from: deployer,
       // args: [[deployer,]],
@@ -71,18 +75,25 @@ module.exports = async (args) => {
     // ],
     log: true,
   });
-  console.log("DEPLOYED");
-  const PX = await ethers.getContractAt("PX", deployed.address);
-  await PX.__PX_init(
-    "LONG LIVE D O G",
-    "PX",
+  const initArgs = [
+    "The Doge NFT",
+    "DOG721",
     DOG20Address,
     process.env.DOG_IPFS_DEPLOY_BASE_URI,
-    process.env.DOG_IMG_WIDTH,
-    process.env.DOG_IMG_HEIGHT,
+    parseInt(process.env.DOG_IMG_WIDTH),
+    parseInt(process.env.DOG_IMG_HEIGHT),
     process.env.DOG_FEES_ADDRESS_DEV,
-    process.env.DOG_FEES_ADDRESS_PLEASR,
-  )
+    process.env.DOG_FEES_ADDRESS_PLEASR
+  ];
+  console.log("DEPLOYED");
+  console.log("INITIALIZING WITH PARAMS: ");
+  console.log(initArgs);
+  // sometimes __PX_init fails silently, to make our chances higher
+  await sleep(500);
+  const PX = await ethers.getContractAt("PX", deployed.address);
+  const res = await PX.__PX_init.apply(PX, initArgs);
+  console.log("__PX__init result:");
+  console.log(res);
   console.log("INITIALIZED");
   console.log("FINISHED ALL");
 };
