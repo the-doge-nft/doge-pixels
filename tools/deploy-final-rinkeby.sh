@@ -8,7 +8,8 @@
 set -eu
 export SCRIPTPATH="$( cd "$(dirname "$0")" >/dev/null 2>&1 ; pwd -P )"
 export HARDHATPATH="$SCRIPTPATH/../packages/hardhat"
-export DOG_IPFS_DEPLOY_BASE_URI='http://143.198.55.229/ipns/k51qzi5uqu5di5wb62lm8ix9tev70ugcj8a8ikn3np2n33qnezaumg1phfzexi/'
+export CID_METADATA="QmSjRs4dH5q2wV5mqY4ujpXNQByYyvf2A8pk6sUXgCA3QQ"
+export DOG_IPFS_DEPLOY_BASE_URI="https://therealdoge.mypinata.cloud/ipfs/$CID_METADATA/"
 export DOG_IMG_WIDTH=$(( 640 * 100 / 100 ))
 export DOG_IMG_HEIGHT=$(( 480 * 100 / 100 ))
 # DOG_FEES_RINKEBY_DEV // METAMASK
