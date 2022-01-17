@@ -282,8 +282,7 @@ contract PX is ERC721CustomUpgradeable, OwnableUpgradeable {
         require(_exists(tokenId), "ERC721Metadata: URI query for nonexistent token");
 
         string memory baseURI = _baseURI();
-        // todo: modifier
-//        uint256[2] memory coords = pupperToPixelCoords(tokenId);
-        return bytes(baseURI).length > 0 ? string(abi.encodePacked(baseURI, "metadata", "/", "pixel-", Strings.toString(tokenId) , ".json")) : "";
+        uint256 shard = 1 + (tokenId - INDEX_OFFSET) / 5000;
+        return bytes(baseURI).length > 0 ? string(abi.encodePacked(baseURI, "metadata-sh", Strings.toString(shard), "/", "metadata-", Strings.toString(tokenId) , ".json")) : "";
     }
 }
