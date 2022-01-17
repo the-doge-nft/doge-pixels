@@ -66,21 +66,11 @@ pushd "$SCRIPTPATH"
 
 #  node ./generate-ipfs.js --deploy_dir="$SCRIPTPATH/deploy/2022-final-350" --deploy_id="2022-final-350" --ipns_dir="$CID_PIXELS" --crop="$CROP" --tile_size=350
   # node ./generate-ipfs.js --deploy_dir="$DEPLOY_DIR" --deploy_id="$DEPLOY_ID" --ipns_dir="$CID_PIXELS" --crop="$CROP"
-  # pushd "./deploy/2022-final/pixels"
-  #   for x in {1..639}
-  #   do
-  #     for y in {0..479}
-  #     do
-  #       index_with_offset=$(( 1000000 + $x + $y * 640 ))
-  #       echo "moving ${x}_$y.png ---> $index_with_offset.png"
-  #       mv "${x}_$y.png" "$index_with_offset.png"
-  #     done
-  #   done
-  # popd
-  # pushd deploy
-  #   zip -r "$DEPLOY_ID".zip ./"$DEPLOY_ID"
-  # popd
-  rsync -e 'ssh -p 3311' -rvh --progress ./deploy/"$DEPLOY_ID".zip deploy@143.198.55.229:/home/deploy
+  # exit 0
+  pushd "./deploy/"
+    zip -r "$DEPLOY_ID"-pixels-350x350.zip ./2022-final/pixels
+  popd
+  rsync  -e 'ssh -p 3311'  -rvh --progress ./deploy/"$DEPLOY_ID"-pixels-350x350.zip deploy@143.198.55.229:/home/deploy
   exit 0
 
   ssh deploy@143.198.55.229 << EOF

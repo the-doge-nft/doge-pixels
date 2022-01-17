@@ -25,6 +25,7 @@ const runTests = (withUpgrade) => {
         FEES_ACCOUNT_PLEASR;
 
     const INDEX_OFFSET = 1000000;
+    const SHARD_SIZE = 5000;
 
     let PX, DOG20;
     let owner;
@@ -35,6 +36,11 @@ const runTests = (withUpgrade) => {
 
     const mintLog = [];
 
+    function getShardIndex(indexWithOffset) {
+      // shards count start from 1
+      const shard = 1 + Math.floor((indexWithOffset - INDEX_OFFSET) / SHARD_SIZE);
+      return shard;
+    }
     // quick fix to let gas reporter fetch data from gas station & coinmarketcap
     before((done) => {
       done();
@@ -120,7 +126,7 @@ const runTests = (withUpgrade) => {
       }
       if (tokenId) {
         const idWithOffset = tokenId.toNumber();
-        expect(await PX.tokenURI(tokenId)).to.equal(`${MOCK_URI}metadata/pixel-${idWithOffset}.json`);
+        expect(await PX.tokenURI(tokenId)).to.equal(`${MOCK_URI}metadata-sh${getShardIndex(idWithOffset)}/metadata-${idWithOffset}.json`);
         return tokenId;
       } else {
         throw new Error("Transfer event was not fired");
