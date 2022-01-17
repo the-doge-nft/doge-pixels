@@ -8,7 +8,7 @@ const optionDefinitions = [
     {name: 'tile_size', type: Number, defaultValue: -1},
     {name: 'deploy_id', type: String, defaultValue: 'n-a'},
     {name: 'deploy_dir', type: String},
-    {name: 'ipns_dir', type: String},
+    {name: 'cid_pixels', type: String},
     {
         name: 'crop',
         type: Number,
@@ -20,8 +20,9 @@ const options = commandLineArgs(optionDefinitions);
 const OUT_PATH = path.resolve(options.deploy_dir);//__dirname, 'deploy', options.deploy_id);
 const PIXELS_PATH = path.join(OUT_PATH, 'pixels');
 const METADATA_PATH = path.join(OUT_PATH, 'metadata');
-const IPNS_DIR = options.ipns_dir;
+const CID_PIXELS = options.cid_pixels;
 const INDEX_OFFSET = 1000000;
+const SHARD_SIZE = 5000;
 
 // create a new progress bar instance and use shades_classic theme
 const bar1 = new cliProgress.SingleBar(
@@ -52,6 +53,12 @@ function hexIntToRgba(num) {
 
 function rgbToHex(r, g, b) {
     return "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
+}
+
+function getShardIndex(x, y, indexWithOffset) {
+    // shards count start from 1
+    const shard = 1 + Math.floor((indexWithOffset - INDEX_OFFSET) / SHARD_SIZE);
+    return shard;
 }
 
 function pixelIdentifier(x, y, indexWithOffset) {
@@ -85,7 +92,11 @@ function createTile(x, y, hexInt, RUN_CONFIG) {
                 name: `Doge Pixel (${x}, ${y})`,
                 description: `Pixel from The Doge NFT at location (${x}, ${y})`,
                 external_url: `https://pixels.thedao.ge/px/${pixelIdentifier(x, y, idWithOffset)}`,
-                image: `http://143.198.55.229/ipns/${IPNS_DIR}/pixels/${pixelIdentifier(x, y, idWithOffset)}.png`,
+                image: `https://ipfs.pixels.thedao.ge/ipfs/${CID_PIXELS}/pixels-sh${getShardIndex(
+                    x,
+                    y,
+                    idWithOffset
+                )}/${pixelIdentifier(x, y, idWithOffset)}.png`,
                 hex: `${hex}`,
                 attributes: [
                     // {
@@ -94,15 +105,15 @@ function createTile(x, y, hexInt, RUN_CONFIG) {
                     // },
                     {
                         trait_type: "Index",
-                        value: index
+                        value: index + ""
                     },
                     {
                         trait_type: "X Coordinate",
-                        value: x
+                        value: x + ""
                     },
                     {
                         trait_type: "Y Coordinate",
-                        value: y
+                        value: y + ""
                     },
                     {
                         trait_type: "Hex",
@@ -111,8 +122,17 @@ function createTile(x, y, hexInt, RUN_CONFIG) {
                 ]
             };
             // console.log(`[${x}][${y}]: ${hex}; ${hexIntToRgba(hexInt)}`)
+            mkdir(
+                path.join(
+                    METADATA_PATH,
+                    `metadata-sh${getShardIndex(x, y, idWithOffset)}`
+                ));
             fs.writeFileSync(
-                path.join(METADATA_PATH, `pixel-${pixelIdentifier(x, y, idWithOffset)}.json`),
+                path.join(
+                    METADATA_PATH,
+                    `metadata-sh${getShardIndex(x, y, idWithOffset)}`,
+                    `metadata-${pixelIdentifier(x, y, idWithOffset)}.json`
+                ),
                 JSON.stringify(metadata, null, 2)
             )
 
@@ -219,9 +239,12 @@ async function deploy() {
                 bar1.stop();
                 console.log("Finished");
                 // save in root `deploy` directory
-                image.write(path.join(OUT_PATH, '..', `combined-${options.deploy_id}-${getFormattedDateTime()}.png`), (err) => {
-                    if (err) throw err;
-                });
+                image.write(
+                    path.join(OUT_PATH, '..', `combined-${options.deploy_id}-${getFormattedDateTime()}.png`),
+                    (err) => {
+                        if (err) throw err;
+                    }
+                );
                 //save in this deployment root directory
                 image.write(path.join(OUT_PATH, `combined-${getFormattedDateTime()}.png`), (err) => {
                     if (err) throw err;

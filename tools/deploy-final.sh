@@ -19,7 +19,7 @@ CONTINUE=yes
 if [ "$CONTINUE" == "yes" ]; then
   export DEPLOY_ID=2022-final
 #  export DOG_IPFS_KEY="dog-ipfs-release"
-  export IPNS_DIR="k51qzi5uqu5di5wb62lm8ix9tev70ugcj8a8ikn3np2n33qnezaumg1phfzexi"
+  export CID_PIXELS="k51qzi5uqu5di5wb62lm8ix9tev70ugcj8a8ikn3np2n33qnezaumg1phfzexi"
 fi
 export CROP=
 export DEPLOY_DIR="$SCRIPTPATH/deploy/$DEPLOY_ID"
@@ -49,7 +49,7 @@ pushd "$SCRIPTPATH"
   echo ""
   printf "%-20s %s\n" "CROP" "$CROP"
   printf "%-20s %s\n" "DEPLOY_ID" "$DEPLOY_ID"
-  printf "%-20s %s\n" "IPNS_DIR" "$IPNS_DIR"
+  printf "%-20s %s\n" "CID_PIXELS" "$CID_PIXELS"
 #  printf "%-20s %s\n" "DOG_IPFS_KEY" "$DOG_IPFS_KEY"
   echo ""
   # confirm
@@ -64,8 +64,8 @@ pushd "$SCRIPTPATH"
   # 6. get root CID
   # 7. deploy contracts with embeded metadata root CID
 
-#  node ./generate-ipfs.js --deploy_dir="$SCRIPTPATH/deploy/2022-final-350" --deploy_id="2022-final-350" --ipns_dir="$IPNS_DIR" --crop="$CROP" --tile_size=350
-  # node ./generate-ipfs.js --deploy_dir="$DEPLOY_DIR" --deploy_id="$DEPLOY_ID" --ipns_dir="$IPNS_DIR" --crop="$CROP"
+#  node ./generate-ipfs.js --deploy_dir="$SCRIPTPATH/deploy/2022-final-350" --deploy_id="2022-final-350" --ipns_dir="$CID_PIXELS" --crop="$CROP" --tile_size=350
+  # node ./generate-ipfs.js --deploy_dir="$DEPLOY_DIR" --deploy_id="$DEPLOY_ID" --ipns_dir="$CID_PIXELS" --crop="$CROP"
   # pushd "./deploy/2022-final/pixels"
   #   for x in {1..639}
   #   do
@@ -94,7 +94,7 @@ EOF
   # 3. insert ipfs prefix to contract
   # 4. deploy conntract to rinkeby
   pushd "$ROOTPATH/packages/hardhat"
-    export DOG_IPFS_DEPLOY_BASE_URI="https://ipfs.io/ipns/$IPNS_DIR/"
+    export DOG_IPFS_DEPLOY_BASE_URI="https://ipfs.io/ipns/$CID_PIXELS/"
     export DOG_IMG_WIDTH=`cat "$DEPLOY_DIR/config.json" | jq -r '.width'`
     export DOG_IMG_HEIGHT=`cat "$DEPLOY_DIR/config.json" | jq -r '.height'`
     # todo: change to actual fees address

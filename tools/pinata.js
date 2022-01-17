@@ -68,7 +68,6 @@ const pinFromSDKFS = (pinataName, path) => {
             console.log(result);
             console.log("");
             resolve()
-
         }).catch((err) => {
             //handle error here
             console.log(err);
@@ -83,7 +82,7 @@ const pinFromSDKFS = (pinataName, path) => {
     // };
     // pinata.pinList(filters).then((result) => {
     //     //handle results here
-    //     // console.log(JSON.stringify(result, null, 2));
+    //     // console.log   (JSON.stringify(result, null, 2));
     // }).catch((err) => {
     //     //handle error here
     //     console.log(err);
@@ -92,9 +91,14 @@ const pinFromSDKFS = (pinataName, path) => {
 (async () => {
     const qty = parseInt(process.env.PINATA_SHARD_QTY);
     const root = process.env.PINATA_SHARD_ROOT
+    // for (let i = 1; i <= qty; ++i) {
+    //     // pinDirectoryToIPFS('0fd2a01cd5932b1bb9b8', '202f988efc3c0e8866db1ce3c2b2b2956798e60898198cd00ef2e32636d2cd92');
+    //     await pinFromSDKFS(`dog-pixelz-api-sh${i}_${qty}`, `${root}pixels-sh${i}`);
+    //     console.log("next " + i);
+    // }
     for (let i = 1; i <= qty; ++i) {
         // pinDirectoryToIPFS('0fd2a01cd5932b1bb9b8', '202f988efc3c0e8866db1ce3c2b2b2956798e60898198cd00ef2e32636d2cd92');
-        await pinFromSDKFS(`dog-pixelz-api-sh${i}_${qty}`, `${root}pixels-sh${i}`);
+        await pinFromSDKFS(`dog-metadata-api-sh${i}_${qty}`, `${root}metadata-sh${i}`);
         console.log("next " + i);
     }
 
