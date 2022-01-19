@@ -11,6 +11,7 @@ import BigText from "../DSL/BigText/BigText";
 import UserMenu from "./UserMenu";
 import Typography, {TVariant} from "../DSL/Typography/Typography";
 import {Type} from "../DSL/Fonts/Fonts";
+import { motion } from "framer-motion";
 
 interface AppLayoutProps {
   children?: any;
@@ -19,6 +20,7 @@ interface AppLayoutProps {
 const AppLayout = observer(function AppLayout({children}: AppLayoutProps) {
   return (
     <>
+      <DevBanner/>
       <Flex
         w={"100vw"}
         h={"100vh"}
@@ -212,7 +214,20 @@ const Title = () => {
   </Box>
 }
 
-
+const DevBanner = () => {
+  return <Box w={"100%"} bg={"black"} whiteSpace={"nowrap"} overflowX={"hidden"}>
+    <motion.div
+        animate={{x: ["100%", "-100%"], display: "flex", alignItems: "center", padding: "3px 0px"}}
+        transition={{x: {duration: 60, repeat: Infinity, ease: "linear", repeatType: "loop"}}}
+    >
+      {new Array(10).fill(undefined).map((item, index) => <Typography
+          key={`dev-banner-${index}`}
+          variant={TVariant.PresStart10}
+          color={"white"}
+          mx={5}>/////// ✨✨✨ rinkeby ✨✨✨ ///////</Typography>)}
+    </motion.div>
+  </Box>
+}
 export default AppLayout;
 
 

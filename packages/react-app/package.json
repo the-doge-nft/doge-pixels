@@ -84,7 +84,9 @@
     "deploy:surge_dev": "yarn _staging_build && yarn _surge",
     "deploy:aws_dev": "yarn _staging_build && yarn _aws_dev_deploy",
     "deploy:aws_prod": "yarn _prod_build && yarn _aws_prod_deploy && yarn _aws_prod_invalidate_cloudfront",
-    "prestart": "node ./scripts/create_contracts.js",
+    "prestart": "yarn create-contracts && yarn write-build-number",
+    "create-contracts": "node ./scripts/create_contracts.js",
+    "write-build-number": "node ./scripts/write-build-number.js",
     "test": "react-app-rewired test"
   }
 }
