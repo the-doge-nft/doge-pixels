@@ -112,10 +112,16 @@ router.get(
 )
 
 router.get(
-  '/ws/disconnect',
+  '/contract/addresses',
   async (req, res, next) => {
-    EthersClient.provider._websocket.terminate();
-    res.send({success: true})
+    try {
+      res.send({
+        dog: EthersClient.DOGContract.address,
+        pixel: EthersClient.PXContract.address
+      })
+    } catch (e) {
+      next(e)
+    }
   }
 )
 
