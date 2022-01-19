@@ -1,6 +1,6 @@
 import React from "react";
 import {observer} from "mobx-react-lite";
-import {Box, Flex, VStack} from "@chakra-ui/react";
+import {Box, Flex, Image, VStack} from "@chakra-ui/react";
 import Typography, {TVariant} from "../../../DSL/Typography/Typography";
 import ViewerStore from "../Viewer.store";
 import Button, {ButtonVariant} from "../../../DSL/Button/Button";
@@ -9,6 +9,9 @@ import {SELECT_PIXEL} from "../../../services/mixins/eventable";
 import {useHistory} from "react-router-dom";
 import Icon from "../../../DSL/Icon/Icon";
 import AppStore from "../../../store/App.store";
+import jsonify from "../../../helpers/jsonify";
+import Dev from "../../../common/Dev";
+import {isDevModeEnabled} from "../../../environment/helpers";
 
 const SelectedPixelPane = observer(function SelectedPixelPane({store}: {store: ViewerStore}) {
   const history = useHistory()
@@ -16,14 +19,24 @@ const SelectedPixelPane = observer(function SelectedPixelPane({store}: {store: V
     <Box>
       <Box mt={4}>
         {store.selectedPupper && <PixelPane
-                size={"lg"}
-                pupper={store.selectedPupper}
-                color={store.selectedPupperHEX}
-                pupperIndex={store.selectedPupperIndex}
-                variant={"shadow"}
-                onClick={() => store.publish(SELECT_PIXEL, [store.selectedPixelX, store.selectedPixelY])}
-              />}
+              size={"lg"}
+              pupper={store.selectedPupper}
+              color={store.selectedPupperHEX}
+              pupperIndex={store.selectedPupperIndex}
+              variant={"shadow"}
+              onClick={() => store.publish(SELECT_PIXEL, [store.selectedPixelX, store.selectedPixelY])}
+            />}
       </Box>
+
+      {store.metaData && <Dev>
+        <Box mt={10} border={"1px dashed black"} p={3}>
+          <Typography block variant={TVariant.ComicSans12}>{store.metaData.name}</Typography>
+          <Typography block variant={TVariant.ComicSans12}>{store.metaData.description}</Typography>
+          {store.metaData.attributes.map(item => <Typography block variant={TVariant.ComicSans12}>{item.trait_type}: {item.value}</Typography>)}
+          <Image src={store.metaData.image} height={25} widht={25}/>
+        </Box>
+      </Dev>}
+
       <Box mt={8}>
         <Box>
           <Typography variant={TVariant.ComicSans18} mr={2}>
@@ -65,15 +78,21 @@ const SelectedPixelPane = observer(function SelectedPixelPane({store}: {store: V
               </Typography>
             </Button>}
           </Flex>
-        </Box>}
 
-        {store.openSeaLink && <Flex justifyContent={"center"} mt={6}>
-          <Button variant={ButtonVariant.Text} onClick={() => window.open(`https://opensea.com`, "_blank")}>
-            <Typography block variant={TVariant.PresStart18} mt={2}>
-              View on Opensea
-            </Typography>
-          </Button>
-        </Flex>}
+          <Flex justifyContent={"center"} mt={6}>
+            <Button variant={ButtonVariant.Text} onClick={() => {
+              let url = `https://opensea.io/assets/${AppStore.web3.pxContractAddress}/${store.selectedPupper}`
+              if (isDevModeEnabled()) {
+                url = `https://testnets.opensea.io/assets/${AppStore.web3.pxContractAddress}/${store.selectedPupper}`
+              }
+              window.open(url, "_blank")
+            }}>
+              <Typography block variant={TVariant.PresStart18} mt={2}>
+                View on Opensea
+              </Typography>
+            </Button>
+          </Flex>
+        </Box>}
       </Box>
     </Box>
     {store.isSelectedPupperOwned && !AppStore.rwd.isMobile &&
