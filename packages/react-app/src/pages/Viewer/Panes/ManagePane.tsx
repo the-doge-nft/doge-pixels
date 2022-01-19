@@ -34,7 +34,7 @@ const ManagePane = observer(function ManagePane({store}: {store: ViewerStore}) {
               <PixelPane
                 isNew={store.getIsPupperNew(px)}
                 size={"sm"}
-                onClick={async () => store.onManagePixelClick(px)}
+                onClick={() => store.onManagePixelClick(px)}
                 pupper={px}
                 color={AppStore.web3.pupperToHexLocal(px)}
                 pupperIndex={AppStore.web3.pupperToIndexLocal(px)}

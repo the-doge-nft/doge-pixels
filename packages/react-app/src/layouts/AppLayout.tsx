@@ -224,6 +224,7 @@ const DevBanner = () => {
           key={`dev-banner-${index}`}
           variant={TVariant.PresStart10}
           color={"white"}
+          // eslint-disable-next-line
           mx={5}>/////// ✨✨✨ rinkeby ✨✨✨ ///////</Typography>)}
     </motion.div>
   </Box>
