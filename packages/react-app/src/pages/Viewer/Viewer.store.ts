@@ -9,6 +9,7 @@ import {abbreviate} from "../../helpers/strings";
 import ModalsStore from "../../store/Modals.store";
 import axios from "axios";
 import * as Sentry from "@sentry/react";
+import {NamedRoutes, route, SELECTED_PIXEL_PARAM} from "../../App.routes";
 
 export enum ViewerView {
   Index = "index",
@@ -165,6 +166,7 @@ class ViewerStore extends (Eventable(Reactionable(Navigable<ViewerView, Construc
       throw Error(`X,Y from contract and local do not agree. Local: ${x1} ${y1}. Remote: ${x} ${y}`)
     }
     this.publish(SELECT_PIXEL, [x1, y1])
+    window.history.pushState({}, "", route(NamedRoutes.PIXELS, {[SELECTED_PIXEL_PARAM]: pupper}))
   }
 
   @computed
