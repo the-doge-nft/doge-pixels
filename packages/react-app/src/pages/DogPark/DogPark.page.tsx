@@ -108,7 +108,10 @@ const DogParkPage = observer(function DogParkPage() {
                             pupper={px}
                             color={hex}
                             pupperIndex={index}
-                            onClick={(px) => store.selectedPupper = px}
+                            onClick={(px) => {
+                              store.selectedPupper = px
+                              window.history.pushState({}, "", route(NamedRoutes.DOG_PARK, {address: store.selectedAddress, tokenID: store.selectedPupper}))
+                            }}
                           />
                         </Box>
                       })}
