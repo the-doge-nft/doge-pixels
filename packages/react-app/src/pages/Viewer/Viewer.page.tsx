@@ -17,7 +17,7 @@ import Typography, {TVariant} from "../../DSL/Typography/Typography";
 import MemeModal from "./MemeModal";
 import Drawer from "../../DSL/Drawer/Drawer";
 import {useLocation, useParams} from "react-router-dom";
-import {SELECTED_PIXEL_PARAM} from "../../App.routes";
+import {NamedRoutes, route, SELECTED_PIXEL_PARAM} from "../../App.routes";
 
 /*
   Hack to reload page even if we are already on the route that renders this page
@@ -55,6 +55,8 @@ const ViewerPage = observer(function ViewerPage() {
 
   const onPixelSelect: onPixelSelectType = useCallback((x: number, y: number) => {
     store.selectedPupper = AppStore.web3.coordinateToPupperLocal(x, y);
+    window.history.pushState({}, "", route(NamedRoutes.PIXELS, {[SELECTED_PIXEL_PARAM]: store.selectedPupper}))
+
     if (store.currentView !== ViewerView.Selected) {
       store.pushNavigation(ViewerView.Selected)
     }

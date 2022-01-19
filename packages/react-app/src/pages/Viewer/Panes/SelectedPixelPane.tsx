@@ -9,9 +9,7 @@ import {SELECT_PIXEL} from "../../../services/mixins/eventable";
 import {useHistory} from "react-router-dom";
 import Icon from "../../../DSL/Icon/Icon";
 import AppStore from "../../../store/App.store";
-import jsonify from "../../../helpers/jsonify";
 import Dev from "../../../common/Dev";
-import {isDevModeEnabled} from "../../../environment/helpers";
 
 const SelectedPixelPane = observer(function SelectedPixelPane({store}: {store: ViewerStore}) {
   const history = useHistory()

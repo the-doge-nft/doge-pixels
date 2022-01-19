@@ -3,10 +3,10 @@
 *************************************************************************************************/
   
 const buildInfo = {
-  "branchName": "dev",
-  "lastHash": "7dd2ee96ad242e93e928deec60037278b0c71563",
-  "buildNumber": "#001158",
-  "buildTime": "2022-01-19T05:04:24.499Z"
+  "branchName": "master",
+  "lastHash": "aa3a3127568cabf131e88aa30d907cdda4a6d957",
+  "buildNumber": "#001170",
+  "buildTime": "2022-01-19T05:22:09.781Z"
 }
 export default buildInfo;
   
