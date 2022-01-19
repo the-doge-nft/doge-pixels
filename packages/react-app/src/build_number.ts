@@ -4,9 +4,9 @@
   
 const buildInfo = {
   "branchName": "dev",
-  "lastHash": "b8bdb15b16fee75e0bf6a89aa3a6495a729af087",
-  "buildNumber": "#001157",
-  "buildTime": "2022-01-19T04:23:21.858Z"
+  "lastHash": "7dd2ee96ad242e93e928deec60037278b0c71563",
+  "buildNumber": "#001158",
+  "buildTime": "2022-01-19T05:04:24.499Z"
 }
 export default buildInfo;
   
