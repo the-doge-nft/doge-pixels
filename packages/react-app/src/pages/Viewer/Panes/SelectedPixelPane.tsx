@@ -81,10 +81,11 @@ const SelectedPixelPane = observer(function SelectedPixelPane({store}: {store: V
 
           <Flex justifyContent={"center"} mt={6}>
             <Button variant={ButtonVariant.Text} onClick={() => {
-              let url = `https://opensea.io/assets/${AppStore.web3.pxContractAddress}/${store.selectedPupper}`
-              if (isDevModeEnabled()) {
-                url = `https://testnets.opensea.io/assets/${AppStore.web3.pxContractAddress}/${store.selectedPupper}`
-              }
+              // let url = `https://opensea.io/assets/${AppStore.web3.pxContractAddress}/${store.selectedPupper}`
+              // if (isDevModeEnabled()) {
+              //   url = `https://testnets.opensea.io/assets/${AppStore.web3.pxContractAddress}/${store.selectedPupper}`
+              // }
+              const url = `https://testnets.opensea.io/assets/${AppStore.web3.pxContractAddress}/${store.selectedPupper}`
               window.open(url, "_blank")
             }}>
               <Typography block variant={TVariant.PresStart18} mt={2}>
