@@ -22,6 +22,7 @@ packages/server/combined.log
 packages/server/error.log
 packages/server/dump.rdb
 packages/server/deploy.key
+packages/react-app/src/build_number.ts
 
 # ts
 packages/hardhat-ts/cache

@@ -7,11 +7,21 @@ import {Reactionable} from "../../services/mixins/reactionable";
 import LocalStorage from "../../services/local-storage";
 import {abbreviate} from "../../helpers/strings";
 import ModalsStore from "../../store/Modals.store";
+import axios from "axios";
+import * as Sentry from "@sentry/react";
 
 export enum ViewerView {
   Index = "index",
   Manage = "manage",
   Selected = "selected"
+}
+
+export interface Metadata {
+  attributes: {trait_type: string, value: string}[];
+  description: string;
+  external_url: string;
+  image: string;
+  name: string
 }
 
 export const VIEWED_PIXELS_LS_KEY = "viewed_pixels_by_id"
@@ -32,6 +42,9 @@ class ViewerStore extends (Eventable(Reactionable(Navigable<ViewerView, Construc
 
   @observable
   openSeaLink: string | null = null
+
+  @observable
+  metaData: Metadata | null = null
 
   @observable
   isSelectedDrawerOpen = false
@@ -62,6 +75,7 @@ class ViewerStore extends (Eventable(Reactionable(Navigable<ViewerView, Construc
   init() {
     this.modals.init()
     this.react(() => this.selectedPupper, async () => {
+      console.log("debug:: new selected pixel", this.selectedPupper)
       if (this.selectedPupper) {
         this.getTokenOwner(this.selectedPupper)
         this.getTokenMetadata(this.selectedPupper)
@@ -90,16 +104,13 @@ class ViewerStore extends (Eventable(Reactionable(Navigable<ViewerView, Construc
 
   async getTokenMetadata(tokenID: number) {
     try {
-      // const tokenURI = await AppStore.web3.pxContract!.tokenURI(this.selectedPupper!)
-      // https://ipfs.io/ipns/k51qzi5uqu5djqiqaht7oyvstxe24g4zk4lgt4nf92q7b4t9x3xjoqzkvmha1w/metadata/metadata-22_2.json
-      this.selectedURI = {
-        imgUrl: "",
-        description: {
-          pupperLocation: "Pupper"
-        }
-      }
+      const tokenURI = await AppStore.web3.pxContract!.tokenURI(this.selectedPupper!)
+      const res = await axios.get(tokenURI)
+      this.metaData = res.data
     } catch (e) {
-      console.log("debug:: token URI not found for token that is owned - THIS IS BAAD")
+      this.metaData = null
+      console.log("could not get token metadata", e)
+      Sentry.captureException(e)
     }
   }
 

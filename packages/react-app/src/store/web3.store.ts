@@ -110,9 +110,25 @@ class Web3Store extends Web3providerStore {
             window.__PX__ = px;
             //@ts-ignore
             window.__DOG20__ = dog;
+            this.debugContractAddresses()
         } else {
             throw Error("Shouldn't hit")
         }
+    }
+
+    async debugContractAddresses() {
+        const res = await Http.get("/v1/contract/addresses")
+        const {dog: dogAddress, pixel: pixelAddress} = res.data
+
+        if (dogAddress !== this.dogContractAddress || pixelAddress !== this.pxContractAddress) {
+            throw Error("Front-end and API contract addresses do not match")
+        }
+
+        console.log(`api connected to pixel contract: ${pixelAddress}`)
+        console.log(`frontend connected to pixel contract: ${this.pxContractAddress}`)
+
+        console.log(`api connected to $DOG contract: ${dogAddress}`)
+        console.log(`frontend connected to $DOG contract: ${this.dogContractAddress}`)
     }
 
     async errorGuardContracts() {
