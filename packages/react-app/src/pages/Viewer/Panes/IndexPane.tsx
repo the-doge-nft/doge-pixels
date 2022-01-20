@@ -15,7 +15,15 @@ const IndexPane = observer(function IndexPane({store}: {store: ViewerStore}) {
       <Box overflowY={"auto"} flexGrow={1} h={"full"} mt={4}>
         <Box maxHeight={"300px"}>
           <Typography variant={TVariant.ComicSans18} block>
-            Welcome to the doge pixel portal - your gateway to ownership of the doge NFT.
+            Welcome to the Doge Pixel Portal - your gateway to fractionalized ownership of <Link
+              size={"lg"}
+              variant={Type.ComicSans}
+              href={"https://fractional.art/vaults/0xbaac2b4491727d78d2b78815144570b9f2fe8899"}
+              isExternal
+              fontWeight={"bold"}
+          >
+            The Doge NFT
+          </Link>.
           </Typography>
           <Typography variant={TVariant.ComicSans18} block mt={6}>
             This site has two main functions.
@@ -28,7 +36,7 @@ const IndexPane = observer(function IndexPane({store}: {store: ViewerStore}) {
             </GridItem>
             <GridItem>
               <Typography variant={TVariant.ComicSans18} block>
-                Lock $DOG to mint pixels.
+                Lock $DOG to mint Doge Pixels (PX).
               </Typography>
             </GridItem>
             <GridItem>
@@ -38,24 +46,24 @@ const IndexPane = observer(function IndexPane({store}: {store: ViewerStore}) {
             </GridItem>
             <GridItem>
               <Typography variant={TVariant.ComicSans18} block>
-                Burn pixels to redeem their fair value in DOG (minus 1% fee for future development of pixel portal)
+                Burn PX to redeem their fair value in DOG (minus 1% fee for future development)
               </Typography>
             </GridItem>
           </Grid>
 
           <Typography variant={TVariant.ComicSans18} block mt={6}>
-            Surely you've heard by now - $DOG is backed. 55,239.9 $DOG = 1 Pixel.
+            $DOG is backed. 55,240 $DOG = 1 PX. Here's the math on that calculation:
           </Typography>
 
           <Box mt={6}>
             <Typography variant={TVariant.ComicSans18} block>
-              Total $DOG  = 16,969,696,969
+              Total supply of $DOG  = 16,969,696,969
             </Typography>
             <Typography variant={TVariant.ComicSans18} block>
-              Total pixels =  307,200
+              Total supply of PX =  307,200
             </Typography>
             <Typography variant={TVariant.ComicSans18} block>
-              DOG / pixel = 55,239.89899
+              $DOG / PX = 55,239.89899
             </Typography>
           </Box>
 
