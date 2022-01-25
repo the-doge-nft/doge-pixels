@@ -155,9 +155,11 @@ module.exports = async (args) => {
   );
   fs.writeFileSync(
     path.join(__dirname, '..', '.openzeppelin', 'px_logic_address_' + chainId),
-    PXLogic.interface.fragments,
-    null,
-    2
+    JSON.stringify(
+      PXLogic.interface.fragments,
+      null,
+      2
+    )
   );
   fs.writeFileSync(
     path.join(__dirname, '..', '.openzeppelin', 'px_logic_abi_' + chainId),
