@@ -1,7 +1,8 @@
 // deploy/00_deploy_your_contract.js
 
-const {ethers} = require("hardhat");
+const {ethers, upgrades} = require("hardhat");
 const prompts = require('prompts');
+
 function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
@@ -10,6 +11,9 @@ module.exports = async (args) => {
   const {getNamedAccounts, deployments, getChainId, ContractFactory} = args
   let DOG20Address;
 
+  const signers = await ethers.getSigners();
+  // console.log(signers);
+  // process.exit(0);
   // console.log(args.network);
   if (args.network.name !== 'localhost' && args.network.name !== 'hardhat') {
     // const response = await prompts({
@@ -68,13 +72,13 @@ module.exports = async (args) => {
     DOG20Address = deployed.address
     const DOG20 = await ethers.getContractAt("DOG20", deployed.address);
   }
-  deployed = await deploy("PX", {
-    from: deployer,
-    // args: [
-    //   "LONG LIVE D O G", "PX", DOG20.address
-    // ],
-    log: true,
-  });
+  // deployed = await deploy("PX", {
+  //   from: deployer,
+  //   // args: [
+  //   //   "LONG LIVE D O G", "PX", DOG20.address
+  //   // ],
+  //   log: true,
+  // });
   const initArgs = [
     "The Doge NFT",
     "DOG721",
@@ -85,16 +89,61 @@ module.exports = async (args) => {
     process.env.DOG_FEES_ADDRESS_DEV,
     process.env.DOG_FEES_ADDRESS_PLEASR
   ];
-  console.log("DEPLOYED");
-  console.log("INITIALIZING WITH PARAMS: ");
+  if (0) {
+    const proxyAdmin = await ethers.getNamedSigner("proxyAdmin");
+    const proxyPublisher = await ethers.getNamedSigner("proxyPublisher");
+
+    await deploy("PX", {
+      // Learn more about args here: https://www.npmjs.com/package/hardhat-deploy#deploymentsdeploy
+      from: proxyAdmin.address,
+      proxy: {
+        //owner: accountHashtagAdmin,
+        proxyContract: "OptimizedTransparentUpgradeableProxy",
+        viaAdminContract: "DefaultProxyAdmin",
+        execute: {
+          init: {
+            //make sure constructor is called on logic contract
+            methodName: "initialize", // Function to call when deployed first time.
+          },
+          onUpgrade: {
+            methodName: "postUpgrade", // method to be executed when the proxy is upgraded (not first deployment)
+            args: ["hello"],
+          },
+        },
+      },
+      log: true,
+    });
+    return;
+  }
+  console.log("Deploying PX Proxy");
+  const PXFactory = await ethers.getContractFactory("PX");
+  const PXProxy = await upgrades.deployProxy(PXFactory);
+  await PXProxy.deployed();
+  console.log("PX Proxy deployed to:", PXProxy.address);
+  console.log("https://rinkeby.etherscan.io/address/" + PXProxy.address);
+  // https://github.com/OpenZeppelin/openzeppelin-upgrades/issues/313
+  const currentImplAddress = await upgrades.erc1967.getImplementationAddress(PXProxy.address);
+  const PXLogic = await ethers.getContractAt("PX", currentImplAddress);
+  await sleep(1500)
+
+  console.log("Calling __PX_init on " + PXLogic.address + ", with: ");
   console.log(initArgs);
-  // sometimes __PX_init fails silently, to make our chances higher
-  await sleep(500);
-  const PX = await ethers.getContractAt("PX", deployed.address);
-  const res = await PX.__PX_init.apply(PX, initArgs);
-  console.log("__PX__init result:");
+  let res = await PXProxy.__PX_init.apply(PXProxy, initArgs);
   console.log(res);
-  console.log("INITIALIZED");
+  await sleep(1500)
+  // console.log("Calling 2nd time __PX_init, should fail");
+  // res = await PXLogic.__PX_init.apply(PXLogic, initArgs);
+  // console.log(res);
+  await sleep(10000)
+  console.log("====== ====== ====== ====== ====== ======");
+  console.log("======      verify deployment      ======");
+  console.log("====== ====== ====== ====== ====== ======");
+  console.log("BASE_URI= " + await PXProxy.BASE_URI());
+  console.log("puppersRemaining= " + await PXProxy.puppersRemaining());
+  console.log("PROXY ADDR: " + PXProxy.address);
+  console.log("IMPL ADDR: " + PXLogic.address);
+  console.log("https://rinkeby.etherscan.io/address/" + PXProxy.address);
+  console.log("https://rinkeby.etherscan.io/address/" + PXLogic.address);
   console.log("FINISHED ALL");
 };
-module.exports.tags = ["PX"];
+module.exports.tags = ["PXWPROXY"];
