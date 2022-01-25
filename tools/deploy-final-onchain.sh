@@ -43,7 +43,7 @@ pushd "$HARDHATPATH"
   fi
   npx hardhat deploy --network $dd --tags PXWPROXY --export-all "$DOG_ABI_EXPORT_PATH"
 #  npx hardhat deploy --network $dd --tags _PX_FIX_ABI --write false
-  npx hardhat deploy --network rinkeby --tags PXV3 --export-all "$DOG_ABI_EXPORT_PATH"
+#  npx hardhat deploy --network rinkeby --tags PXV3 --export-all "$DOG_ABI_EXPORT_PATH"
     npx hardhat deploy --network $dd --tags _PX_FIX_ABI --write false
 
   cp "$DOG_ABI_EXPORT_PATH" "$HARDHATPATH/../react-app/src/contracts/hardhat_contracts.json"
