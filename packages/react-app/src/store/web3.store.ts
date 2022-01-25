@@ -3,6 +3,7 @@ import {web3Modal} from "../services/web3Modal";
 import {BigNumber, Contract} from "ethers";
 import {showErrorToast} from "../DSL/Toast/Toast";
 import deployedContracts from "../contracts/hardhat_contracts.json"
+import erc20ABI from "../contracts/erc20.json"
 import {Signer} from "@ethersproject/abstract-signer";
 import {Provider} from "@ethersproject/abstract-provider";
 import {isDevModeEnabled, isProduction, isStaging} from "../environment/helpers";
@@ -28,6 +29,8 @@ class Web3Store extends Web3providerStore {
     WIDTH = 640
     HEIGHT = 480
     DOG_BURN_FEES_PERCENT = 1
+    DEV_D20_ADDRESS = "0x1f676947d1391b5BF89e85DF34f92163F8A08853"
+    PROD_D20_ADDRESS = ""
 
     @observable
     dogBalance: BigNumber | null = null
@@ -57,11 +60,13 @@ class Web3Store extends Web3providerStore {
 
         if (isDevModeEnabled()) {
             this.pxContractAddress = deployedContracts["4"]["rinkeby"]["contracts"]["PX"]["address"]
-            this.dogContractAddress = deployedContracts["4"]["rinkeby"]["contracts"]["DOG20"]["address"]
+            this.dogContractAddress = this.DEV_D20_ADDRESS
+            // this.dogContractAddress = deployedContracts["4"]["rinkeby"]["contracts"]["DOG20"]["address"]
         } else {
             // @TODO: prod deployment
             this.pxContractAddress = deployedContracts["4"]["rinkeby"]["contracts"]["PX"]["address"]
-            this.dogContractAddress = deployedContracts["4"]["rinkeby"]["contracts"]["DOG20"]["address"]
+            this.dogContractAddress = this.DEV_D20_ADDRESS
+            // this.dogContractAddress = deployedContracts["4"]["rinkeby"]["contracts"]["DOG20"]["address"]
         }
     }
 
@@ -102,7 +107,8 @@ class Web3Store extends Web3providerStore {
 
             const dog = new Contract(
               this.dogContractAddress,
-              deployedContracts["4"]["rinkeby"]["contracts"]["DOG20"].abi,
+              erc20ABI,
+              // deployedContracts["4"]["rinkeby"]["contracts"]["DOG20"].abi,
               signerOrProvider
             ) as unknown
             this.dogContract = dog as DOG20
@@ -120,9 +126,14 @@ class Web3Store extends Web3providerStore {
         const res = await Http.get("/v1/contract/addresses")
         const {dog: dogAddress, pixel: pixelAddress} = res.data
 
-        if (dogAddress !== this.dogContractAddress || pixelAddress !== this.pxContractAddress) {
-            throw Error("Front-end and API contract addresses do not match")
+        if (dogAddress !== this.dogContractAddress) {
+            throw Error(`Frontend (${this.dogContractAddress}) and API (${dogAddress}) $DOG addresses do not match`)
         }
+
+        if (pixelAddress !== this.pxContractAddress) {
+            throw Error(`Frontend (${this.pxContractAddress}) and API (${pixelAddress}) PIXEL addresses do not match`)
+        }
+
 
         console.log(`api connected to pixel contract: ${pixelAddress}`)
         console.log(`frontend connected to pixel contract: ${this.pxContractAddress}`)
