@@ -2,19 +2,18 @@
 
 const {ethers, upgrades} = require("hardhat");
 const prompts = require('prompts');
+const fs = require("fs");
+const path = require("path");
+const {shouldShowTransactionTypeForHardfork} = require("hardhat/internal/hardhat-network/provider/output");
 
 function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
 
 module.exports = async (args) => {
-  const {getNamedAccounts, deployments, getChainId, ContractFactory} = args
+  const {getNamedAccounts, deployments, getChainId, ContractFactory, network} = args
   let DOG20Address;
-
-  const signers = await ethers.getSigners();
-  // console.log(signers);
-  // process.exit(0);
-  // console.log(args.network);
+  const chainId = await getChainId();
   if (args.network.name !== 'localhost' && args.network.name !== 'hardhat') {
     // const response = await prompts({
     //                                  type: 'confirm',
@@ -122,8 +121,11 @@ module.exports = async (args) => {
   console.log("Got the deployProxy instance");
   await PXProxy.deployed();
   console.log("PX Proxy deployed to:", PXProxy.address);
+  // console.log(JSON.stringify(PXProxy.interface.fragments, null, 2));
+  // process.exit(0);
   console.log("https://rinkeby.etherscan.io/address/" + PXProxy.address);
   // https://github.com/OpenZeppelin/openzeppelin-upgrades/issues/313
+  await sleep(500);
   const currentImplAddress = await upgrades.erc1967.getImplementationAddress(PXProxy.address);
   const PXLogic = await ethers.getContractAt("PX", currentImplAddress);
   await sleep(1500)
@@ -146,6 +148,21 @@ module.exports = async (args) => {
   console.log("IMPL ADDR: " + PXLogic.address);
   console.log("https://rinkeby.etherscan.io/address/" + PXProxy.address);
   console.log("https://rinkeby.etherscan.io/address/" + PXLogic.address);
-  console.log("FINISHED ALL");
+  fs.writeFileSync(path.join(__dirname, '..', '.openzeppelin', 'px_proxy_address_' + chainId), PXProxy.address);
+  fs.writeFileSync(
+    path.join(__dirname, '..', '.openzeppelin', 'px_proxy_abi_' + chainId),
+    JSON.stringify(PXProxy.interface.fragments, null, 2)
+  );
+  fs.writeFileSync(
+    path.join(__dirname, '..', '.openzeppelin', 'px_logic_address_' + chainId),
+    PXLogic.interface.fragments,
+    null,
+    2
+  );
+  fs.writeFileSync(
+    path.join(__dirname, '..', '.openzeppelin', 'px_logic_abi_' + chainId),
+    JSON.stringify(PXLogic.interface.fragments, null, 2)
+  );
+  console.log(`FINISHED ALL`);
 };
 module.exports.tags = ["PXWPROXY"];
