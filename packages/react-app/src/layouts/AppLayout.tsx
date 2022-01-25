@@ -12,6 +12,7 @@ import UserMenu from "./UserMenu";
 import Typography, {TVariant} from "../DSL/Typography/Typography";
 import {Type} from "../DSL/Fonts/Fonts";
 import { motion } from "framer-motion";
+import {isDevModeEnabled} from "../environment/helpers";
 
 interface AppLayoutProps {
   children?: any;
@@ -20,7 +21,7 @@ interface AppLayoutProps {
 const AppLayout = observer(function AppLayout({children}: AppLayoutProps) {
   return (
     <>
-      <DevBanner/>
+      {isDevModeEnabled() && <DevBanner/>}
       <Flex
         w={"100vw"}
         h={"100vh"}
