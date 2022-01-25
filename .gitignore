@@ -55,7 +55,7 @@ build
 
 # Hardhat files
 cache
-artifacts
+#artifacts
 
 # misc
 .DS_Store
