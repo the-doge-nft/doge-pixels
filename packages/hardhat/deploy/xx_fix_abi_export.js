@@ -40,10 +40,20 @@ module.exports = async (args) => {
     "utf8"
   );
 
-  const pxVersion = 'PXMOCK_V3';
+  const pxVersion = 'PX';
   if (Object.keys(hardhatContracts).length !== 1) {
     throw new Error("Aborting, invalid hardhat_contracts.json...");
   }
+  if (network.name === "mainnet") {
+    hardhatContracts[chainId + ""][network.name]["contracts"]["DOG20"] = {
+      "address": "0xBAac2B4491727D78D2b78815144570b9f2Fe8899",
+      "abi": JSON.parse(fs.readFileSync(
+        path.join(__dirname, 'erc20.json'),
+        "utf8"
+      ))
+    }
+  }
+
   hardhatContracts[chainId + ""][network.name]["contracts"]["PX"] = {
     "address": pxProxyAddress,
     "abi": JSON.parse(fs.readFileSync(
@@ -51,6 +61,7 @@ module.exports = async (args) => {
       "utf8"
     ))["abi"]
   }
+
   console.log("after" + JSON.stringify(hardhatContracts, null, 2));
 
   fs.writeFileSync(hardhatContractsPath, JSON.stringify(hardhatContracts, null, 2));
