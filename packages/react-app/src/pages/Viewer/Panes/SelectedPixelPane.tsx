@@ -10,6 +10,7 @@ import {useHistory} from "react-router-dom";
 import Icon from "../../../DSL/Icon/Icon";
 import AppStore from "../../../store/App.store";
 import Dev from "../../../common/Dev";
+import {isDevModeEnabled, isProduction} from "../../../environment/helpers";
 
 const SelectedPixelPane = observer(function SelectedPixelPane({store}: {store: ViewerStore}) {
   const history = useHistory()
@@ -79,11 +80,14 @@ const SelectedPixelPane = observer(function SelectedPixelPane({store}: {store: V
 
           <Flex justifyContent={"center"} mt={6}>
             <Button variant={ButtonVariant.Text} onClick={() => {
-              // let url = `https://opensea.io/assets/${AppStore.web3.pxContractAddress}/${store.selectedPupper}`
-              // if (isDevModeEnabled()) {
-              //   url = `https://testnets.opensea.io/assets/${AppStore.web3.pxContractAddress}/${store.selectedPupper}`
-              // }
-              const url = `https://testnets.opensea.io/assets/${AppStore.web3.pxContractAddress}/${store.selectedPupper}`
+              let url
+              if (isDevModeEnabled()) {
+                url = `https://testnets.opensea.io/assets/${AppStore.web3.pxContractAddress}/${store.selectedPupper}`
+              } else if (isProduction()) {
+                url = `https://opensea.io/assets/${AppStore.web3.pxContractAddress}/${store.selectedPupper}`
+              } else {
+                throw Error("Unknown environment")
+              }
               window.open(url, "_blank")
             }}>
               <Typography block variant={TVariant.PresStart18} mt={2}>
