@@ -16,25 +16,29 @@ module.exports = async (args) => {
   const chainId = await getChainId();
 
   console.log("writing the hardhat_contracqts.json");
-  const hardhatContractsPath = path.join(__dirname, '..', 'hardhat_contracts.json');
+
+  const hardhatContractsPath = process.env.DOG_ABI_EXPORT_PATH;
   const hardhatContracts = JSON.parse(fs.readFileSync(hardhatContractsPath, 'utf8'));
   console.log("before" + JSON.stringify(hardhatContracts, null, 2));
 // hardhatContracts[chainId + ""][network.name]["contracts"]["PX"] = {
 //   "address": PXProxy.address,
 //   "abi": JSON.parse(JSON.stringify(PXProxy.interface.fragments, null, 2))
 // }
-  const pxProxyAddress = fs.readFileSync(path.join(__dirname, '..', '.openzeppelin', 'px_proxy_address_' + chainId));
+  const pxProxyAddress = fs.readFileSync(
+    path.join(__dirname, '..', '.openzeppelin', 'px_proxy_address_' + chainId),
+    "utf8"
+  );
 
   hardhatContracts[chainId + ""][network.name]["contracts"]["PX"] = {
     "address": pxProxyAddress,
     "abi": JSON.parse(fs.readFileSync(
-      path.join(__dirname, '..', 'artifacts', 'contracts', 'token', 'PX', 'PX.sol', 'PX.json')
+      path.join(__dirname, '..', 'artifacts', 'contracts', 'token', 'PX', 'PX.sol', 'PX.json'),
+      "utf8"
     ))["abi"]
   }
   console.log("after" + JSON.stringify(hardhatContracts, null, 2));
 
   fs.writeFileSync(hardhatContractsPath, JSON.stringify(hardhatContracts, null, 2));
   console.log(`FINISHED ALL: ${hardhatContractsPath}`);
-  console.log(`FINISHED ALL`);
 };
 module.exports.tags = ["_PX_FIX_ABI"];
