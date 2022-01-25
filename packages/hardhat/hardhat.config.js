@@ -34,7 +34,7 @@ const {isAddress, getAddress, formatUnits, parseUnits} = utils;
 //
 const defaultNetwork = "localhost";
 
-const mainnetGwei = 21;
+const mainnetGwei = 102;
 
 function mnemonic() {
   try {
@@ -91,7 +91,7 @@ module.exports = {
 
     mainnet: {
       url: `https://eth-mainnet.alchemyapi.io/v2/${process.env.ALCHEMY_MAINNET_KEY}`,
-      // gasPrice: mainnetGwei * 1000000000,
+      gasPrice: mainnetGwei * 1000000000,
       accounts: [
         process.env.MAINNET_PRV_KEY
       ]
