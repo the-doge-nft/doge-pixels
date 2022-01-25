@@ -13,13 +13,13 @@ class EthersHandler {
   constructor() {
     let network, pxContractInfo, dogContractInfo
     if (app_env === "production") {
-      network = "rinkeby"
-      pxContractInfo = ABI["4"][network]["contracts"]["PX"]
-      dogContractInfo = {address: "0xBAac2B4491727D78D2b78815144570b9f2Fe8899", abi: erc20ABI}
+      network = "mainnet"
+      pxContractInfo = ABI["1"][network]["contracts"]["PX"]
+      dogContractInfo = ABI["1"][network]["contracts"]["DOG20"]
     } else if (app_env === "development") {
       network = "rinkeby"
       pxContractInfo = ABI["4"][network]["contracts"]["PX"]
-      dogContractInfo = {address: "0x1f676947d1391b5BF89e85DF34f92163F8A08853", abi: erc20ABI}
+      dogContractInfo = ABI["4"][network]["contracts"]["DOG20"]
     } else if (app_env === "test") {
       network = "localhost"
       pxContractInfo = testABI["31337"][network]["contracts"]["PX"]
