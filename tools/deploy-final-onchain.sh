@@ -29,11 +29,13 @@ fi
 export DOG_ABI_EXPORT_PATH="$HARDHATPATH/hardhat_contracts.json"
 pushd "$HARDHATPATH"
   # deployed contract cannot be reused, __init() will fail
-  dd=localhost
-  dd=rinkeby
+
+  dd="$network"
+  # set to "yes" to remove abi/cache/artifacts
+  RESET_ARTIFACTS=no
   # reset all previous deployment
 #  if false ; then
-  if false ; then
+  if [ "$RESET_ARTIFACTS" = "yes" ]; then
     echo "removing previous deployment
     rm -rf ./artifacts/
     rm -rf ./cache
