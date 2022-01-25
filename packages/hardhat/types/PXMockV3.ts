@@ -390,7 +390,10 @@ export interface PXMockV3 extends BaseContract {
       overrides?: CallOverrides
     ): Promise<[boolean]>;
 
-    mintPuppers(qty: BigNumberish, overrides?: CallOverrides): Promise<[void]>;
+    mintPuppers(
+      qty: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
 
     name(overrides?: CallOverrides): Promise<[string]>;
 
@@ -533,7 +536,10 @@ export interface PXMockV3 extends BaseContract {
     overrides?: CallOverrides
   ): Promise<boolean>;
 
-  mintPuppers(qty: BigNumberish, overrides?: CallOverrides): Promise<void>;
+  mintPuppers(
+    qty: BigNumberish,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
 
   name(overrides?: CallOverrides): Promise<string>;
 
@@ -841,7 +847,7 @@ export interface PXMockV3 extends BaseContract {
 
     mintPuppers(
       qty: BigNumberish,
-      overrides?: CallOverrides
+      overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
     name(overrides?: CallOverrides): Promise<BigNumber>;
@@ -991,7 +997,7 @@ export interface PXMockV3 extends BaseContract {
 
     mintPuppers(
       qty: BigNumberish,
-      overrides?: CallOverrides
+      overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
     name(overrides?: CallOverrides): Promise<PopulatedTransaction>;
