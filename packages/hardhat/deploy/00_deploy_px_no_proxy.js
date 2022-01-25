@@ -77,7 +77,7 @@ module.exports = async (args) => {
   });
   const initArgs = [
     "Pixels of The Doge NFT",
-    "DOGPIXEL",
+    "DOGEPIXEL",
     DOG20Address,
     process.env.DOG_IPFS_DEPLOY_BASE_URI,
     parseInt(process.env.DOG_IMG_WIDTH),
