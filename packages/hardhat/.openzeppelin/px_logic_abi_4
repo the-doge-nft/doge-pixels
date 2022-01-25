@@ -1,0 +1,1017 @@
+[
+  {
+    "name": null,
+    "type": "constructor",
+    "inputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "gas": null,
+    "_isFragment": true
+  },
+  {
+    "name": "Approval",
+    "anonymous": false,
+    "inputs": [
+      {
+        "name": "owner",
+        "type": "address",
+        "indexed": true,
+        "components": null,
+        "arrayLength": null,
+        "arrayChildren": null,
+        "baseType": "address",
+        "_isParamType": true
+      },
+      {
+        "name": "approved",
+        "type": "address",
+        "indexed": true,
+        "components": null,
+        "arrayLength": null,
+        "arrayChildren": null,
+        "baseType": "address",
+        "_isParamType": true
+      },
+      {
+        "name": "tokenId",
+        "type": "uint256",
+        "indexed": true,
+        "components": null,
+        "arrayLength": null,
+        "arrayChildren": null,
+        "baseType": "uint256",
+        "_isParamType": true
+      }
+    ],
+    "type": "event",
+    "_isFragment": true
+  },
+  {
+    "name": "ApprovalForAll",
+    "anonymous": false,
+    "inputs": [
+      {
+        "name": "owner",
+        "type": "address",
+        "indexed": true,
+        "components": null,
+        "arrayLength": null,
+        "arrayChildren": null,
+        "baseType": "address",
+        "_isParamType": true
+      },
+      {
+        "name": "operator",
+        "type": "address",
+        "indexed": true,
+        "components": null,
+        "arrayLength": null,
+        "arrayChildren": null,
+        "baseType": "address",
+        "_isParamType": true
+      },
+      {
+        "name": "approved",
+        "type": "bool",
+        "indexed": false,
+        "components": null,
+        "arrayLength": null,
+        "arrayChildren": null,
+        "baseType": "bool",
+        "_isParamType": true
+      }
+    ],
+    "type": "event",
+    "_isFragment": true
+  },
+  {
+    "name": "Transfer",
+    "anonymous": false,
+    "inputs": [
+      {
+        "name": "from",
+        "type": "address",
+        "indexed": true,
+        "components": null,
+        "arrayLength": null,
+        "arrayChildren": null,
+        "baseType": "address",
+        "_isParamType": true
+      },
+      {
+        "name": "to",
+        "type": "address",
+        "indexed": true,
+        "components": null,
+        "arrayLength": null,
+        "arrayChildren": null,
+        "baseType": "address",
+        "_isParamType": true
+      },
+      {
+        "name": "tokenId",
+        "type": "uint256",
+        "indexed": true,
+        "components": null,
+        "arrayLength": null,
+        "arrayChildren": null,
+        "baseType": "uint256",
+        "_isParamType": true
+      }
+    ],
+    "type": "event",
+    "_isFragment": true
+  },
+  {
+    "type": "function",
+    "name": "BASE_URI",
+    "constant": true,
+    "inputs": [],
+    "outputs": [
+      {
+        "name": null,
+        "type": "string",
+        "indexed": null,
+        "components": null,
+        "arrayLength": null,
+        "arrayChildren": null,
+        "baseType": "string",
+        "_isParamType": true
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "gas": null,
+    "_isFragment": true
+  },
+  {
+    "type": "function",
+    "name": "DOG20",
+    "constant": true,
+    "inputs": [],
+    "outputs": [
+      {
+        "name": null,
+        "type": "address",
+        "indexed": null,
+        "components": null,
+        "arrayLength": null,
+        "arrayChildren": null,
+        "baseType": "address",
+        "_isParamType": true
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "gas": null,
+    "_isFragment": true
+  },
+  {
+    "type": "function",
+    "name": "DOG_TO_PIXEL_SATOSHIS",
+    "constant": true,
+    "inputs": [],
+    "outputs": [
+      {
+        "name": null,
+        "type": "uint256",
+        "indexed": null,
+        "components": null,
+        "arrayLength": null,
+        "arrayChildren": null,
+        "baseType": "uint256",
+        "_isParamType": true
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "gas": null,
+    "_isFragment": true
+  },
+  {
+    "type": "function",
+    "name": "INDEX_OFFSET",
+    "constant": true,
+    "inputs": [],
+    "outputs": [
+      {
+        "name": null,
+        "type": "uint256",
+        "indexed": null,
+        "components": null,
+        "arrayLength": null,
+        "arrayChildren": null,
+        "baseType": "uint256",
+        "_isParamType": true
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "gas": null,
+    "_isFragment": true
+  },
+  {
+    "type": "function",
+    "name": "MAGIC_NULL",
+    "constant": true,
+    "inputs": [],
+    "outputs": [
+      {
+        "name": null,
+        "type": "uint256",
+        "indexed": null,
+        "components": null,
+        "arrayLength": null,
+        "arrayChildren": null,
+        "baseType": "uint256",
+        "_isParamType": true
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "gas": null,
+    "_isFragment": true
+  },
+  {
+    "type": "function",
+    "name": "SHIBA_HEIGHT",
+    "constant": true,
+    "inputs": [],
+    "outputs": [
+      {
+        "name": null,
+        "type": "uint256",
+        "indexed": null,
+        "components": null,
+        "arrayLength": null,
+        "arrayChildren": null,
+        "baseType": "uint256",
+        "_isParamType": true
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "gas": null,
+    "_isFragment": true
+  },
+  {
+    "type": "function",
+    "name": "SHIBA_WIDTH",
+    "constant": true,
+    "inputs": [],
+    "outputs": [
+      {
+        "name": null,
+        "type": "uint256",
+        "indexed": null,
+        "components": null,
+        "arrayLength": null,
+        "arrayChildren": null,
+        "baseType": "uint256",
+        "_isParamType": true
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "gas": null,
+    "_isFragment": true
+  },
+  {
+    "type": "function",
+    "name": "__PX_init",
+    "constant": false,
+    "inputs": [
+      {
+        "name": "name_",
+        "type": "string",
+        "indexed": null,
+        "components": null,
+        "arrayLength": null,
+        "arrayChildren": null,
+        "baseType": "string",
+        "_isParamType": true
+      },
+      {
+        "name": "symbol_",
+        "type": "string",
+        "indexed": null,
+        "components": null,
+        "arrayLength": null,
+        "arrayChildren": null,
+        "baseType": "string",
+        "_isParamType": true
+      },
+      {
+        "name": "DOG20Address",
+        "type": "address",
+        "indexed": null,
+        "components": null,
+        "arrayLength": null,
+        "arrayChildren": null,
+        "baseType": "address",
+        "_isParamType": true
+      },
+      {
+        "name": "ipfsUri_",
+        "type": "string",
+        "indexed": null,
+        "components": null,
+        "arrayLength": null,
+        "arrayChildren": null,
+        "baseType": "string",
+        "_isParamType": true
+      },
+      {
+        "name": "width_",
+        "type": "uint256",
+        "indexed": null,
+        "components": null,
+        "arrayLength": null,
+        "arrayChildren": null,
+        "baseType": "uint256",
+        "_isParamType": true
+      },
+      {
+        "name": "height_",
+        "type": "uint256",
+        "indexed": null,
+        "components": null,
+        "arrayLength": null,
+        "arrayChildren": null,
+        "baseType": "uint256",
+        "_isParamType": true
+      },
+      {
+        "name": "DOG20_FEES_ADDRESS_DEV_",
+        "type": "address",
+        "indexed": null,
+        "components": null,
+        "arrayLength": null,
+        "arrayChildren": null,
+        "baseType": "address",
+        "_isParamType": true
+      },
+      {
+        "name": "DOG20_FEES_ADDRESS_PLEASR_",
+        "type": "address",
+        "indexed": null,
+        "components": null,
+        "arrayLength": null,
+        "arrayChildren": null,
+        "baseType": "address",
+        "_isParamType": true
+      }
+    ],
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "gas": null,
+    "_isFragment": true
+  },
+  {
+    "type": "function",
+    "name": "approve",
+    "constant": false,
+    "inputs": [
+      {
+        "name": "to",
+        "type": "address",
+        "indexed": null,
+        "components": null,
+        "arrayLength": null,
+        "arrayChildren": null,
+        "baseType": "address",
+        "_isParamType": true
+      },
+      {
+        "name": "tokenId",
+        "type": "uint256",
+        "indexed": null,
+        "components": null,
+        "arrayLength": null,
+        "arrayChildren": null,
+        "baseType": "uint256",
+        "_isParamType": true
+      }
+    ],
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "gas": null,
+    "_isFragment": true
+  },
+  {
+    "type": "function",
+    "name": "balanceOf",
+    "constant": true,
+    "inputs": [
+      {
+        "name": "owner",
+        "type": "address",
+        "indexed": null,
+        "components": null,
+        "arrayLength": null,
+        "arrayChildren": null,
+        "baseType": "address",
+        "_isParamType": true
+      }
+    ],
+    "outputs": [
+      {
+        "name": null,
+        "type": "uint256",
+        "indexed": null,
+        "components": null,
+        "arrayLength": null,
+        "arrayChildren": null,
+        "baseType": "uint256",
+        "_isParamType": true
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "gas": null,
+    "_isFragment": true
+  },
+  {
+    "type": "function",
+    "name": "burnPuppers",
+    "constant": false,
+    "inputs": [
+      {
+        "name": "puppers",
+        "type": "uint256[]",
+        "indexed": null,
+        "components": null,
+        "arrayLength": -1,
+        "arrayChildren": {
+          "name": null,
+          "type": "uint256",
+          "indexed": null,
+          "components": null,
+          "arrayLength": null,
+          "arrayChildren": null,
+          "baseType": "uint256",
+          "_isParamType": true
+        },
+        "baseType": "array",
+        "_isParamType": true
+      }
+    ],
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "gas": null,
+    "_isFragment": true
+  },
+  {
+    "type": "function",
+    "name": "getApproved",
+    "constant": true,
+    "inputs": [
+      {
+        "name": "tokenId",
+        "type": "uint256",
+        "indexed": null,
+        "components": null,
+        "arrayLength": null,
+        "arrayChildren": null,
+        "baseType": "uint256",
+        "_isParamType": true
+      }
+    ],
+    "outputs": [
+      {
+        "name": null,
+        "type": "address",
+        "indexed": null,
+        "components": null,
+        "arrayLength": null,
+        "arrayChildren": null,
+        "baseType": "address",
+        "_isParamType": true
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "gas": null,
+    "_isFragment": true
+  },
+  {
+    "type": "function",
+    "name": "isApprovedForAll",
+    "constant": true,
+    "inputs": [
+      {
+        "name": "owner",
+        "type": "address",
+        "indexed": null,
+        "components": null,
+        "arrayLength": null,
+        "arrayChildren": null,
+        "baseType": "address",
+        "_isParamType": true
+      },
+      {
+        "name": "operator",
+        "type": "address",
+        "indexed": null,
+        "components": null,
+        "arrayLength": null,
+        "arrayChildren": null,
+        "baseType": "address",
+        "_isParamType": true
+      }
+    ],
+    "outputs": [
+      {
+        "name": null,
+        "type": "bool",
+        "indexed": null,
+        "components": null,
+        "arrayLength": null,
+        "arrayChildren": null,
+        "baseType": "bool",
+        "_isParamType": true
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "gas": null,
+    "_isFragment": true
+  },
+  {
+    "type": "function",
+    "name": "mintPuppers",
+    "constant": false,
+    "inputs": [
+      {
+        "name": "qty",
+        "type": "uint256",
+        "indexed": null,
+        "components": null,
+        "arrayLength": null,
+        "arrayChildren": null,
+        "baseType": "uint256",
+        "_isParamType": true
+      }
+    ],
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "gas": null,
+    "_isFragment": true
+  },
+  {
+    "type": "function",
+    "name": "name",
+    "constant": true,
+    "inputs": [],
+    "outputs": [
+      {
+        "name": null,
+        "type": "string",
+        "indexed": null,
+        "components": null,
+        "arrayLength": null,
+        "arrayChildren": null,
+        "baseType": "string",
+        "_isParamType": true
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "gas": null,
+    "_isFragment": true
+  },
+  {
+    "type": "function",
+    "name": "ownerOf",
+    "constant": true,
+    "inputs": [
+      {
+        "name": "tokenId",
+        "type": "uint256",
+        "indexed": null,
+        "components": null,
+        "arrayLength": null,
+        "arrayChildren": null,
+        "baseType": "uint256",
+        "_isParamType": true
+      }
+    ],
+    "outputs": [
+      {
+        "name": null,
+        "type": "address",
+        "indexed": null,
+        "components": null,
+        "arrayLength": null,
+        "arrayChildren": null,
+        "baseType": "address",
+        "_isParamType": true
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "gas": null,
+    "_isFragment": true
+  },
+  {
+    "type": "function",
+    "name": "pupperToPixel",
+    "constant": true,
+    "inputs": [
+      {
+        "name": "pupper",
+        "type": "uint256",
+        "indexed": null,
+        "components": null,
+        "arrayLength": null,
+        "arrayChildren": null,
+        "baseType": "uint256",
+        "_isParamType": true
+      }
+    ],
+    "outputs": [
+      {
+        "name": null,
+        "type": "uint256",
+        "indexed": null,
+        "components": null,
+        "arrayLength": null,
+        "arrayChildren": null,
+        "baseType": "uint256",
+        "_isParamType": true
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "gas": null,
+    "_isFragment": true
+  },
+  {
+    "type": "function",
+    "name": "pupperToPixelCoords",
+    "constant": true,
+    "inputs": [
+      {
+        "name": "pupper",
+        "type": "uint256",
+        "indexed": null,
+        "components": null,
+        "arrayLength": null,
+        "arrayChildren": null,
+        "baseType": "uint256",
+        "_isParamType": true
+      }
+    ],
+    "outputs": [
+      {
+        "name": null,
+        "type": "uint256[2]",
+        "indexed": null,
+        "components": null,
+        "arrayLength": 2,
+        "arrayChildren": {
+          "name": null,
+          "type": "uint256",
+          "indexed": null,
+          "components": null,
+          "arrayLength": null,
+          "arrayChildren": null,
+          "baseType": "uint256",
+          "_isParamType": true
+        },
+        "baseType": "array",
+        "_isParamType": true
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "gas": null,
+    "_isFragment": true
+  },
+  {
+    "type": "function",
+    "name": "puppersRemaining",
+    "constant": true,
+    "inputs": [],
+    "outputs": [
+      {
+        "name": null,
+        "type": "uint256",
+        "indexed": null,
+        "components": null,
+        "arrayLength": null,
+        "arrayChildren": null,
+        "baseType": "uint256",
+        "_isParamType": true
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "gas": null,
+    "_isFragment": true
+  },
+  {
+    "type": "function",
+    "name": "randYish",
+    "constant": true,
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "ret",
+        "type": "uint256",
+        "indexed": null,
+        "components": null,
+        "arrayLength": null,
+        "arrayChildren": null,
+        "baseType": "uint256",
+        "_isParamType": true
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "gas": null,
+    "_isFragment": true
+  },
+  {
+    "type": "function",
+    "name": "safeTransferFrom",
+    "constant": false,
+    "inputs": [
+      {
+        "name": "from",
+        "type": "address",
+        "indexed": null,
+        "components": null,
+        "arrayLength": null,
+        "arrayChildren": null,
+        "baseType": "address",
+        "_isParamType": true
+      },
+      {
+        "name": "to",
+        "type": "address",
+        "indexed": null,
+        "components": null,
+        "arrayLength": null,
+        "arrayChildren": null,
+        "baseType": "address",
+        "_isParamType": true
+      },
+      {
+        "name": "tokenId",
+        "type": "uint256",
+        "indexed": null,
+        "components": null,
+        "arrayLength": null,
+        "arrayChildren": null,
+        "baseType": "uint256",
+        "_isParamType": true
+      }
+    ],
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "gas": null,
+    "_isFragment": true
+  },
+  {
+    "type": "function",
+    "name": "safeTransferFrom",
+    "constant": false,
+    "inputs": [
+      {
+        "name": "from",
+        "type": "address",
+        "indexed": null,
+        "components": null,
+        "arrayLength": null,
+        "arrayChildren": null,
+        "baseType": "address",
+        "_isParamType": true
+      },
+      {
+        "name": "to",
+        "type": "address",
+        "indexed": null,
+        "components": null,
+        "arrayLength": null,
+        "arrayChildren": null,
+        "baseType": "address",
+        "_isParamType": true
+      },
+      {
+        "name": "tokenId",
+        "type": "uint256",
+        "indexed": null,
+        "components": null,
+        "arrayLength": null,
+        "arrayChildren": null,
+        "baseType": "uint256",
+        "_isParamType": true
+      },
+      {
+        "name": "_data",
+        "type": "bytes",
+        "indexed": null,
+        "components": null,
+        "arrayLength": null,
+        "arrayChildren": null,
+        "baseType": "bytes",
+        "_isParamType": true
+      }
+    ],
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "gas": null,
+    "_isFragment": true
+  },
+  {
+    "type": "function",
+    "name": "setApprovalForAll",
+    "constant": false,
+    "inputs": [
+      {
+        "name": "operator",
+        "type": "address",
+        "indexed": null,
+        "components": null,
+        "arrayLength": null,
+        "arrayChildren": null,
+        "baseType": "address",
+        "_isParamType": true
+      },
+      {
+        "name": "approved",
+        "type": "bool",
+        "indexed": null,
+        "components": null,
+        "arrayLength": null,
+        "arrayChildren": null,
+        "baseType": "bool",
+        "_isParamType": true
+      }
+    ],
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "gas": null,
+    "_isFragment": true
+  },
+  {
+    "type": "function",
+    "name": "supportsInterface",
+    "constant": true,
+    "inputs": [
+      {
+        "name": "interfaceId",
+        "type": "bytes4",
+        "indexed": null,
+        "components": null,
+        "arrayLength": null,
+        "arrayChildren": null,
+        "baseType": "bytes4",
+        "_isParamType": true
+      }
+    ],
+    "outputs": [
+      {
+        "name": null,
+        "type": "bool",
+        "indexed": null,
+        "components": null,
+        "arrayLength": null,
+        "arrayChildren": null,
+        "baseType": "bool",
+        "_isParamType": true
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "gas": null,
+    "_isFragment": true
+  },
+  {
+    "type": "function",
+    "name": "symbol",
+    "constant": true,
+    "inputs": [],
+    "outputs": [
+      {
+        "name": null,
+        "type": "string",
+        "indexed": null,
+        "components": null,
+        "arrayLength": null,
+        "arrayChildren": null,
+        "baseType": "string",
+        "_isParamType": true
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "gas": null,
+    "_isFragment": true
+  },
+  {
+    "type": "function",
+    "name": "tokenURI",
+    "constant": true,
+    "inputs": [
+      {
+        "name": "tokenId",
+        "type": "uint256",
+        "indexed": null,
+        "components": null,
+        "arrayLength": null,
+        "arrayChildren": null,
+        "baseType": "uint256",
+        "_isParamType": true
+      }
+    ],
+    "outputs": [
+      {
+        "name": null,
+        "type": "string",
+        "indexed": null,
+        "components": null,
+        "arrayLength": null,
+        "arrayChildren": null,
+        "baseType": "string",
+        "_isParamType": true
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "gas": null,
+    "_isFragment": true
+  },
+  {
+    "type": "function",
+    "name": "totalSupply",
+    "constant": true,
+    "inputs": [],
+    "outputs": [
+      {
+        "name": null,
+        "type": "uint256",
+        "indexed": null,
+        "components": null,
+        "arrayLength": null,
+        "arrayChildren": null,
+        "baseType": "uint256",
+        "_isParamType": true
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "gas": null,
+    "_isFragment": true
+  },
+  {
+    "type": "function",
+    "name": "transferFrom",
+    "constant": false,
+    "inputs": [
+      {
+        "name": "from",
+        "type": "address",
+        "indexed": null,
+        "components": null,
+        "arrayLength": null,
+        "arrayChildren": null,
+        "baseType": "address",
+        "_isParamType": true
+      },
+      {
+        "name": "to",
+        "type": "address",
+        "indexed": null,
+        "components": null,
+        "arrayLength": null,
+        "arrayChildren": null,
+        "baseType": "address",
+        "_isParamType": true
+      },
+      {
+        "name": "tokenId",
+        "type": "uint256",
+        "indexed": null,
+        "components": null,
+        "arrayLength": null,
+        "arrayChildren": null,
+        "baseType": "uint256",
+        "_isParamType": true
+      }
+    ],
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "gas": null,
+    "_isFragment": true
+  }
+]
