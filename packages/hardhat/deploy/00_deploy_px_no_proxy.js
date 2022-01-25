@@ -1,6 +1,6 @@
 // deploy/00_deploy_your_contract.js
 
-const {ethers, upgrades} = require("hardhat");
+const {ethers} = require("hardhat");
 const prompts = require('prompts');
 function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
@@ -68,13 +68,13 @@ module.exports = async (args) => {
     DOG20Address = deployed.address
     const DOG20 = await ethers.getContractAt("DOG20", deployed.address);
   }
-  // deployed = await deploy("PX", {
-  //   from: deployer,
-  //   // args: [
-  //   //   "LONG LIVE D O G", "PX", DOG20.address
-  //   // ],
-  //   log: true,
-  // });
+  deployed = await deploy("PX", {
+    from: deployer,
+    // args: [
+    //   "LONG LIVE D O G", "PX", DOG20.address
+    // ],
+    log: true,
+  });
   const initArgs = [
     "The Doge NFT",
     "DOG721",
@@ -85,32 +85,16 @@ module.exports = async (args) => {
     process.env.DOG_FEES_ADDRESS_DEV,
     process.env.DOG_FEES_ADDRESS_PLEASR
   ];
-  // console.log("DEPLOYED");
+  console.log("DEPLOYED");
   console.log("INITIALIZING WITH PARAMS: ");
   console.log(initArgs);
   // sometimes __PX_init fails silently, to make our chances higher
-  // await sleep(500);
-
-  const factory = await ethers.getContractFactory("PX");
-  const PX = await upgrades.deployProxy(factory);
-  await PX.deployed();
+  await sleep(500);
+  const PX = await ethers.getContractAt("PX", deployed.address);
   const res = await PX.__PX_init.apply(PX, initArgs);
-
-  // const deployResult = await deploy('PX', {
-  //   from: deployer,
-  //   proxy: {
-  //     proxyContract: 'OpenZeppelinTransparentProxy',
-  //     execute: {
-  //       methodName: "__PX_init",
-  //       args: []
-  //     }
-  //   }
-  // });
-  // const PX = await ethers.getContractAt("PX", deployed.address);
-  // const res = await PX.__PX_init.apply(PX, initArgs);
   console.log("__PX__init result:");
   console.log(res);
   console.log("INITIALIZED");
   console.log("FINISHED ALL");
 };
-module.exports.tags = ["PXWPROXY"];
+module.exports.tags = ["PX_NO_PROXY"];

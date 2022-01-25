@@ -24,7 +24,7 @@ import type {
   OnEvent,
 } from "./common";
 
-export interface PXMockInterface extends ethers.utils.Interface {
+export interface PXMockV3Interface extends ethers.utils.Interface {
   functions: {
     "BASE_URI()": FunctionFragment;
     "DOG20()": FunctionFragment;
@@ -296,12 +296,12 @@ export type TransferEvent = TypedEvent<
 
 export type TransferEventFilter = TypedEventFilter<TransferEvent>;
 
-export interface PXMock extends BaseContract {
+export interface PXMockV3 extends BaseContract {
   connect(signerOrProvider: Signer | Provider | string): this;
   attach(addressOrName: string): this;
   deployed(): Promise<this>;
 
-  interface: PXMockInterface;
+  interface: PXMockV3Interface;
 
   queryFilter<TEvent extends TypedEvent>(
     event: TypedEventFilter<TEvent>,

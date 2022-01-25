@@ -20,10 +20,19 @@ EXPORT_PATH="$HARDHATPATH/hardhat_contracts.json"
 #export DOG20_ADDRESS="0x6aFB2ba8d536223f2a78a58BdC82cB71C1a2B204"
 pushd "$HARDHATPATH"
   # deployed contract cannot be reused, __init() will fail
-#  rm -rf ./deployments/rinkeby
-#  npx hardhat deploy --network rinkeby --export-all "$EXPORT_PATH"
-#  npx hardhat deploy --network rinkeby --tags PXWPROXY --export-all "$EXPORT_PATH"
-  npx hardhat deploy --network rinkeby --tags PX_V3 --export-all "$EXPORT_PATH"
+  dd=localhost
+  dd=rinkeby
+  # reset all previous deployment
+  if true ; then
+    echo "removing previous deployment"
+    rm -rf ./deployments/
+    rm -rf ./artifacts/
+    rm -rf ./cache
+    rm -r ./hardhat_contracts.json || true
+    rm -rf ./.openzeppelin
+  fi
+  npx hardhat deploy --network $dd --tags PXWPROXY --export-all "$EXPORT_PATH"
+#  npx hardhat deploy --network rinkeby --tags PXV3 --export-all "$EXPORT_PATH"
   cp "$EXPORT_PATH" "$HARDHATPATH/../react-app/src/contracts/hardhat_contracts.json"
   cp "$EXPORT_PATH" "$HARDHATPATH/../server/src/contracts/hardhat_contracts.json"
 popd

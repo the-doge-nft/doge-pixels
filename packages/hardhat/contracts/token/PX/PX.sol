@@ -9,12 +9,13 @@ import "../../access/OwnableUpgradeable.sol";
 import "hardhat/console.sol";
 import "./ERC721CustomUpgradeable.sol";
 
+import "../../proxy/utils/Initializable.sol";
 import "../../utils/Strings.sol";
 
-contract PX is ERC721CustomUpgradeable, OwnableUpgradeable {
+contract PX is Initializable, ERC721CustomUpgradeable {
     //    using ERC721Custom for ERC721;
     // Fractional.art ERC20 contract holding $DOG tokens
-    IERC20 private DOG20;
+    IERC20 public DOG20;
 
     //
     // puppersRemaining
@@ -49,6 +50,9 @@ contract PX is ERC721CustomUpgradeable, OwnableUpgradeable {
     address DOG20_FEES_ADDRESS_PLEASR;
     uint256 DOG20_FEES_AMOUNT_DEV;
     uint256 DOG20_FEES_AMOUNT_PLEASR;
+
+    /// @custom:oz-upgrades-unsafe-allow constructor
+    constructor() initializer {}
 
     function __PX_init(
         string memory name_,

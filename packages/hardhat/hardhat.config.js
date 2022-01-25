@@ -14,7 +14,7 @@ require("@nomiclabs/hardhat-ethers");
 
 require('@typechain/hardhat');
 require('@openzeppelin/hardhat-upgrades');
-
+require("@nomiclabs/hardhat-etherscan");
 const { isAddress, getAddress, formatUnits, parseUnits } = utils;
 
 /*
@@ -174,6 +174,9 @@ module.exports = {
       default: 0, // here this will by default take the first account as deployer
     },
   },
+  etherscan: {
+    apiKey: 'G8RCXJHC9VW4J2G3X7DK1R6G5YNYR5CEJ8'
+  }
 };
 
 const DEBUG = false;
