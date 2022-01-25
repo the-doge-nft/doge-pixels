@@ -30,7 +30,7 @@ class Web3Store extends Web3providerStore {
     HEIGHT = 480
     DOG_BURN_FEES_PERCENT = 1
     DEV_D20_ADDRESS = "0x1f676947d1391b5BF89e85DF34f92163F8A08853"
-    PROD_D20_ADDRESS = ""
+    PROD_D20_ADDRESS = "0xBAac2B4491727D78D2b78815144570b9f2Fe8899"
 
     @observable
     dogBalance: BigNumber | null = null
