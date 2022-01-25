@@ -5,7 +5,7 @@
       "chainId": "4",
       "contracts": {
         "DOG20": {
-          "address": "0xB384684b66d357cf9d5DFf77B2710d6917b3612F",
+          "address": "0x1f676947d1391b5BF89e85DF34f92163F8A08853",
           "abi": [
             {
               "inputs": [],
@@ -321,7 +321,7 @@
           ]
         },
         "PX": {
-          "address": "0x0258ca8b6614D12712D710B3a1d50C44a2045aBf",
+          "address": "0xA26461Fcf53f3E21cde8c902CA6e8e6ba9Def62f",
           "abi": [
             {
               "anonymous": false,
