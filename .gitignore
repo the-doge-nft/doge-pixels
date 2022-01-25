@@ -10,12 +10,10 @@ packages/hardhat/*.txt
 packages/hardhat/artifacts*
 packages/hardhat/deployments/*
 !packages/hardhat/deployments/.gitkeep
-packages/react-app/src/contracts/*
 !packages/react-app/src/contracts/external_contracts.js
 packages/hardhat/cache*
 packages/**/data
 !packages/react-app/src/contracts/contracts.js
-packages/server/src/contracts/hardhat_contracts.json
 packages/hardhat/.env
 packages/server/src/.env
 packages/server/combined.log
