@@ -190,7 +190,7 @@ contract PX is Initializable, ERC721CustomUpgradeable {
     // Specify amount of pixels you wish to receive. Your ETH address must entrust our contract of handling your
     // $DOG balance beforehand. You can open your $DOG balance for us with calling `approve` on the $DOG token contract.
     //
-    function mintPuppers(uint256 qty) public {
+    function mintPuppers(uint256 qty) public virtual {
         require(qty > 0, "Non positive quantity");
         require(qty <= puppersRemaining, "No puppers remaining");
         for (uint256 i = 0; i < qty; ++i) {
@@ -224,7 +224,7 @@ contract PX is Initializable, ERC721CustomUpgradeable {
     // Trade your pixel for $DOG token. Price is the original `DOG_TO_PIXEL_SATOSHIS` paid for original minting of
     // the pixel.
     //
-    function burnPuppers(uint256[] memory puppers) public {
+    function burnPuppers(uint256[] memory puppers) public virtual {
         require(puppers.length > 0, "Empty puppers");
         for (uint256 i = 0; i < puppers.length; ++i) {
             _burn(puppers[i]);

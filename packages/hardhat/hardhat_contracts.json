@@ -324,11 +324,6 @@
           "address": "0x0258ca8b6614D12712D710B3a1d50C44a2045aBf",
           "abi": [
             {
-              "inputs": [],
-              "stateMutability": "nonpayable",
-              "type": "constructor"
-            },
-            {
               "anonymous": false,
               "inputs": [
                 {
@@ -495,6 +490,67 @@
               "type": "function"
             },
             {
+              "inputs": [],
+              "name": "V3",
+              "outputs": [
+                {
+                  "internalType": "string",
+                  "name": "",
+                  "type": "string"
+                }
+              ],
+              "stateMutability": "view",
+              "type": "function"
+            },
+            {
+              "inputs": [
+                {
+                  "internalType": "string",
+                  "name": "name_",
+                  "type": "string"
+                },
+                {
+                  "internalType": "string",
+                  "name": "symbol_",
+                  "type": "string"
+                },
+                {
+                  "internalType": "address",
+                  "name": "DOG20Address",
+                  "type": "address"
+                },
+                {
+                  "internalType": "string",
+                  "name": "ipfsUri_",
+                  "type": "string"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "width_",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "height_",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "address",
+                  "name": "DOG20_FEES_ADDRESS_DEV_",
+                  "type": "address"
+                },
+                {
+                  "internalType": "address",
+                  "name": "DOG20_FEES_ADDRESS_PLEASR_",
+                  "type": "address"
+                }
+              ],
+              "name": "__PXMock_init",
+              "outputs": [],
+              "stateMutability": "nonpayable",
+              "type": "function"
+            },
+            {
               "inputs": [
                 {
                   "internalType": "string",
@@ -645,7 +701,7 @@
               ],
               "name": "mintPuppers",
               "outputs": [],
-              "stateMutability": "nonpayable",
+              "stateMutability": "view",
               "type": "function"
             },
             {
@@ -809,6 +865,37 @@
                 }
               ],
               "name": "setApprovalForAll",
+              "outputs": [],
+              "stateMutability": "nonpayable",
+              "type": "function"
+            },
+            {
+              "inputs": [
+                {
+                  "internalType": "uint256",
+                  "name": "amount",
+                  "type": "uint256"
+                }
+              ],
+              "name": "setDOG_TO_PIXEL_SATOSHIS",
+              "outputs": [],
+              "stateMutability": "nonpayable",
+              "type": "function"
+            },
+            {
+              "inputs": [
+                {
+                  "internalType": "uint256",
+                  "name": "width",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "height",
+                  "type": "uint256"
+                }
+              ],
+              "name": "setSupply",
               "outputs": [],
               "stateMutability": "nonpayable",
               "type": "function"
