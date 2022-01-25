@@ -3,7 +3,6 @@ import {web3Modal} from "../services/web3Modal";
 import {BigNumber, Contract} from "ethers";
 import {showErrorToast} from "../DSL/Toast/Toast";
 import deployedContracts from "../contracts/hardhat_contracts.json"
-import erc20ABI from "../contracts/erc20.json"
 import {Signer} from "@ethersproject/abstract-signer";
 import {Provider} from "@ethersproject/abstract-provider";
 import {isDevModeEnabled, isProduction, isStaging} from "../environment/helpers";
@@ -12,7 +11,7 @@ import KobosuJson from "../images/kobosu.json"
 import {Http} from "../services";
 import Web3providerStore, {EthersContractError, Web3ProviderConnectionError} from "./web3provider.store";
 import * as Sentry from "@sentry/react";
-
+import {ContractInterface} from "@ethersproject/contracts/src.ts/index";
 
 
 interface AddressToPuppers {
@@ -29,8 +28,6 @@ class Web3Store extends Web3providerStore {
     WIDTH = 640
     HEIGHT = 480
     DOG_BURN_FEES_PERCENT = 1
-    DEV_D20_ADDRESS = "0x1f676947d1391b5BF89e85DF34f92163F8A08853"
-    PROD_D20_ADDRESS = "0xBAac2B4491727D78D2b78815144570b9f2Fe8899"
 
     @observable
     dogBalance: BigNumber | null = null
@@ -60,13 +57,12 @@ class Web3Store extends Web3providerStore {
 
         if (isDevModeEnabled()) {
             this.pxContractAddress = deployedContracts["4"]["rinkeby"]["contracts"]["PX"]["address"]
-            this.dogContractAddress = this.DEV_D20_ADDRESS
-            // this.dogContractAddress = deployedContracts["4"]["rinkeby"]["contracts"]["DOG20"]["address"]
+            this.dogContractAddress = deployedContracts["4"]["rinkeby"]["contracts"]["DOG20"]["address"]
+        } else if (isProduction()) {
+            this.pxContractAddress = deployedContracts["1"]["mainnet"]["contracts"]["PX"]["address"]
+            this.dogContractAddress = deployedContracts["1"]["mainnet"]["contracts"]["DOG20"]["address"]
         } else {
-            // @TODO: prod deployment
-            this.pxContractAddress = deployedContracts["4"]["rinkeby"]["contracts"]["PX"]["address"]
-            this.dogContractAddress = this.DEV_D20_ADDRESS
-            // this.dogContractAddress = deployedContracts["4"]["rinkeby"]["contracts"]["DOG20"]["address"]
+            throw Error("Unknown environment")
         }
     }
 
@@ -97,29 +93,38 @@ class Web3Store extends Web3providerStore {
     }
 
     connectToContracts(signerOrProvider?: Signer | Provider) {
-        if (isProduction() || isStaging() || this.network?.name === "rinkeby") {
-            const px = new Contract(
-              this.pxContractAddress,
-              deployedContracts["4"]["rinkeby"]["contracts"]["PX"].abi,
-              signerOrProvider
-            ) as unknown
-            this.pxContract = px as PX
+        let pxABI: ContractInterface
+        let dogABI: ContractInterface
 
-            const dog = new Contract(
-              this.dogContractAddress,
-              erc20ABI,
-              // deployedContracts["4"]["rinkeby"]["contracts"]["DOG20"].abi,
-              signerOrProvider
-            ) as unknown
-            this.dogContract = dog as DOG20
-            //@ts-ignore
-            window.__PX__ = px;
-            //@ts-ignore
-            window.__DOG20__ = dog;
-            this.debugContractAddresses()
+        if (isDevModeEnabled()) {
+            pxABI = deployedContracts["4"]["rinkeby"]["contracts"]["PX"].abi
+            dogABI = deployedContracts["4"]["rinkeby"]["contracts"]["DOG20"].abi
+        } else if (isProduction()) {
+            pxABI = deployedContracts["1"]["mainnet"]["contracts"]["PX"].abi
+            dogABI = deployedContracts["1"]["mainnet"]["contracts"]["DOG20"].abi
         } else {
-            throw Error("Shouldn't hit")
+            throw Error("Uknown environment found when connecting to contracts")
         }
+
+        const px = new Contract(
+            this.pxContractAddress,
+            pxABI,
+            signerOrProvider
+        ) as unknown
+        this.pxContract = px as PX
+
+        const dog = new Contract(
+            this.dogContractAddress,
+            dogABI,
+            signerOrProvider
+        ) as unknown
+        this.dogContract = dog as DOG20
+
+        //@ts-ignore
+        window.__PX__ = px;
+        //@ts-ignore
+        window.__DOG20__ = dog;
+        this.debugContractAddresses()
     }
 
     async debugContractAddresses() {
@@ -133,7 +138,6 @@ class Web3Store extends Web3providerStore {
         if (pixelAddress !== this.pxContractAddress) {
             throw Error(`Frontend (${this.pxContractAddress}) and API (${pixelAddress}) PIXEL addresses do not match`)
         }
-
 
         console.log(`api connected to pixel contract: ${pixelAddress}`)
         console.log(`frontend connected to pixel contract: ${this.pxContractAddress}`)
