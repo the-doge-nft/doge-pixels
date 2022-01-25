@@ -117,7 +117,9 @@ module.exports = async (args) => {
   }
   console.log("Deploying PX Proxy");
   const PXFactory = await ethers.getContractFactory("PX");
+  console.log("Got the PX Factory");
   const PXProxy = await upgrades.deployProxy(PXFactory);
+  console.log("Got the deployProxy instance");
   await PXProxy.deployed();
   console.log("PX Proxy deployed to:", PXProxy.address);
   console.log("https://rinkeby.etherscan.io/address/" + PXProxy.address);
