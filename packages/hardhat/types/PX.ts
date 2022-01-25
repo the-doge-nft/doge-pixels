@@ -27,6 +27,7 @@ import type {
 export interface PXInterface extends ethers.utils.Interface {
   functions: {
     "BASE_URI()": FunctionFragment;
+    "DOG20()": FunctionFragment;
     "DOG_TO_PIXEL_SATOSHIS()": FunctionFragment;
     "INDEX_OFFSET()": FunctionFragment;
     "MAGIC_NULL()": FunctionFragment;
@@ -40,13 +41,11 @@ export interface PXInterface extends ethers.utils.Interface {
     "isApprovedForAll(address,address)": FunctionFragment;
     "mintPuppers(uint256)": FunctionFragment;
     "name()": FunctionFragment;
-    "owner()": FunctionFragment;
     "ownerOf(uint256)": FunctionFragment;
     "pupperToPixel(uint256)": FunctionFragment;
     "pupperToPixelCoords(uint256)": FunctionFragment;
     "puppersRemaining()": FunctionFragment;
     "randYish()": FunctionFragment;
-    "renounceOwnership()": FunctionFragment;
     "safeTransferFrom(address,address,uint256)": FunctionFragment;
     "setApprovalForAll(address,bool)": FunctionFragment;
     "supportsInterface(bytes4)": FunctionFragment;
@@ -54,10 +53,10 @@ export interface PXInterface extends ethers.utils.Interface {
     "tokenURI(uint256)": FunctionFragment;
     "totalSupply()": FunctionFragment;
     "transferFrom(address,address,uint256)": FunctionFragment;
-    "transferOwnership(address)": FunctionFragment;
   };
 
   encodeFunctionData(functionFragment: "BASE_URI", values?: undefined): string;
+  encodeFunctionData(functionFragment: "DOG20", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "DOG_TO_PIXEL_SATOSHIS",
     values?: undefined
@@ -113,7 +112,6 @@ export interface PXInterface extends ethers.utils.Interface {
     values: [BigNumberish]
   ): string;
   encodeFunctionData(functionFragment: "name", values?: undefined): string;
-  encodeFunctionData(functionFragment: "owner", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "ownerOf",
     values: [BigNumberish]
@@ -131,10 +129,6 @@ export interface PXInterface extends ethers.utils.Interface {
     values?: undefined
   ): string;
   encodeFunctionData(functionFragment: "randYish", values?: undefined): string;
-  encodeFunctionData(
-    functionFragment: "renounceOwnership",
-    values?: undefined
-  ): string;
   encodeFunctionData(
     functionFragment: "safeTransferFrom",
     values: [string, string, BigNumberish]
@@ -160,12 +154,9 @@ export interface PXInterface extends ethers.utils.Interface {
     functionFragment: "transferFrom",
     values: [string, string, BigNumberish]
   ): string;
-  encodeFunctionData(
-    functionFragment: "transferOwnership",
-    values: [string]
-  ): string;
 
   decodeFunctionResult(functionFragment: "BASE_URI", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "DOG20", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "DOG_TO_PIXEL_SATOSHIS",
     data: BytesLike
@@ -203,7 +194,6 @@ export interface PXInterface extends ethers.utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "name", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "owner", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "ownerOf", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "pupperToPixel",
@@ -218,10 +208,6 @@ export interface PXInterface extends ethers.utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "randYish", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "renounceOwnership",
-    data: BytesLike
-  ): Result;
   decodeFunctionResult(
     functionFragment: "safeTransferFrom",
     data: BytesLike
@@ -244,21 +230,15 @@ export interface PXInterface extends ethers.utils.Interface {
     functionFragment: "transferFrom",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(
-    functionFragment: "transferOwnership",
-    data: BytesLike
-  ): Result;
 
   events: {
     "Approval(address,address,uint256)": EventFragment;
     "ApprovalForAll(address,address,bool)": EventFragment;
-    "OwnershipTransferred(address,address)": EventFragment;
     "Transfer(address,address,uint256)": EventFragment;
   };
 
   getEvent(nameOrSignatureOrTopic: "Approval"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "ApprovalForAll"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "OwnershipTransferred"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "Transfer"): EventFragment;
 }
 
@@ -275,14 +255,6 @@ export type ApprovalForAllEvent = TypedEvent<
 >;
 
 export type ApprovalForAllEventFilter = TypedEventFilter<ApprovalForAllEvent>;
-
-export type OwnershipTransferredEvent = TypedEvent<
-  [string, string],
-  { previousOwner: string; newOwner: string }
->;
-
-export type OwnershipTransferredEventFilter =
-  TypedEventFilter<OwnershipTransferredEvent>;
 
 export type TransferEvent = TypedEvent<
   [string, string, BigNumber],
@@ -319,6 +291,8 @@ export interface PX extends BaseContract {
 
   functions: {
     BASE_URI(overrides?: CallOverrides): Promise<[string]>;
+
+    DOG20(overrides?: CallOverrides): Promise<[string]>;
 
     DOG_TO_PIXEL_SATOSHIS(overrides?: CallOverrides): Promise<[BigNumber]>;
 
@@ -373,8 +347,6 @@ export interface PX extends BaseContract {
 
     name(overrides?: CallOverrides): Promise<[string]>;
 
-    owner(overrides?: CallOverrides): Promise<[string]>;
-
     ownerOf(
       tokenId: BigNumberish,
       overrides?: CallOverrides
@@ -395,10 +367,6 @@ export interface PX extends BaseContract {
     randYish(
       overrides?: CallOverrides
     ): Promise<[BigNumber] & { ret: BigNumber }>;
-
-    renounceOwnership(
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
 
     "safeTransferFrom(address,address,uint256)"(
       from: string,
@@ -441,14 +409,11 @@ export interface PX extends BaseContract {
       tokenId: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
-
-    transferOwnership(
-      newOwner: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
   };
 
   BASE_URI(overrides?: CallOverrides): Promise<string>;
+
+  DOG20(overrides?: CallOverrides): Promise<string>;
 
   DOG_TO_PIXEL_SATOSHIS(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -503,8 +468,6 @@ export interface PX extends BaseContract {
 
   name(overrides?: CallOverrides): Promise<string>;
 
-  owner(overrides?: CallOverrides): Promise<string>;
-
   ownerOf(tokenId: BigNumberish, overrides?: CallOverrides): Promise<string>;
 
   pupperToPixel(
@@ -520,10 +483,6 @@ export interface PX extends BaseContract {
   puppersRemaining(overrides?: CallOverrides): Promise<BigNumber>;
 
   randYish(overrides?: CallOverrides): Promise<BigNumber>;
-
-  renounceOwnership(
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
 
   "safeTransferFrom(address,address,uint256)"(
     from: string,
@@ -564,13 +523,10 @@ export interface PX extends BaseContract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
-  transferOwnership(
-    newOwner: string,
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
-
   callStatic: {
     BASE_URI(overrides?: CallOverrides): Promise<string>;
+
+    DOG20(overrides?: CallOverrides): Promise<string>;
 
     DOG_TO_PIXEL_SATOSHIS(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -622,8 +578,6 @@ export interface PX extends BaseContract {
 
     name(overrides?: CallOverrides): Promise<string>;
 
-    owner(overrides?: CallOverrides): Promise<string>;
-
     ownerOf(tokenId: BigNumberish, overrides?: CallOverrides): Promise<string>;
 
     pupperToPixel(
@@ -639,8 +593,6 @@ export interface PX extends BaseContract {
     puppersRemaining(overrides?: CallOverrides): Promise<BigNumber>;
 
     randYish(overrides?: CallOverrides): Promise<BigNumber>;
-
-    renounceOwnership(overrides?: CallOverrides): Promise<void>;
 
     "safeTransferFrom(address,address,uint256)"(
       from: string,
@@ -680,11 +632,6 @@ export interface PX extends BaseContract {
       tokenId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
-
-    transferOwnership(
-      newOwner: string,
-      overrides?: CallOverrides
-    ): Promise<void>;
   };
 
   filters: {
@@ -710,15 +657,6 @@ export interface PX extends BaseContract {
       approved?: null
     ): ApprovalForAllEventFilter;
 
-    "OwnershipTransferred(address,address)"(
-      previousOwner?: string | null,
-      newOwner?: string | null
-    ): OwnershipTransferredEventFilter;
-    OwnershipTransferred(
-      previousOwner?: string | null,
-      newOwner?: string | null
-    ): OwnershipTransferredEventFilter;
-
     "Transfer(address,address,uint256)"(
       from?: string | null,
       to?: string | null,
@@ -733,6 +671,8 @@ export interface PX extends BaseContract {
 
   estimateGas: {
     BASE_URI(overrides?: CallOverrides): Promise<BigNumber>;
+
+    DOG20(overrides?: CallOverrides): Promise<BigNumber>;
 
     DOG_TO_PIXEL_SATOSHIS(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -787,8 +727,6 @@ export interface PX extends BaseContract {
 
     name(overrides?: CallOverrides): Promise<BigNumber>;
 
-    owner(overrides?: CallOverrides): Promise<BigNumber>;
-
     ownerOf(
       tokenId: BigNumberish,
       overrides?: CallOverrides
@@ -807,10 +745,6 @@ export interface PX extends BaseContract {
     puppersRemaining(overrides?: CallOverrides): Promise<BigNumber>;
 
     randYish(overrides?: CallOverrides): Promise<BigNumber>;
-
-    renounceOwnership(
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
 
     "safeTransferFrom(address,address,uint256)"(
       from: string,
@@ -853,15 +787,12 @@ export interface PX extends BaseContract {
       tokenId: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
-
-    transferOwnership(
-      newOwner: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
   };
 
   populateTransaction: {
     BASE_URI(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    DOG20(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     DOG_TO_PIXEL_SATOSHIS(
       overrides?: CallOverrides
@@ -921,8 +852,6 @@ export interface PX extends BaseContract {
 
     name(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    owner(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
     ownerOf(
       tokenId: BigNumberish,
       overrides?: CallOverrides
@@ -941,10 +870,6 @@ export interface PX extends BaseContract {
     puppersRemaining(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     randYish(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    renounceOwnership(
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
 
     "safeTransferFrom(address,address,uint256)"(
       from: string,
@@ -985,11 +910,6 @@ export interface PX extends BaseContract {
       from: string,
       to: string,
       tokenId: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
-
-    transferOwnership(
-      newOwner: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
   };

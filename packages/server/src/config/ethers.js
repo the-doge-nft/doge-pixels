@@ -1,6 +1,7 @@
 const ethers = require('ethers')
 const { app_env, infura_ws_endpoint } = require('./vars')
 const ABI = require('../contracts/hardhat_contracts.json')
+const erc20ABI = require('../contracts/erc20.json')
 const testABI = require('../../test/contracts/hardhat_contracts.json')
 const logger = require("./config");
 const {keepAlive} = require("./helpers");
@@ -12,9 +13,9 @@ class EthersHandler {
   constructor() {
     let network, pxContractInfo, dogContractInfo
     if (app_env === "production") {
-      network = "rinkeby"
-      pxContractInfo = ABI["4"][network]["contracts"]["PX"]
-      dogContractInfo = ABI["4"][network]["contracts"]["DOG20"]
+      network = "mainnet"
+      pxContractInfo = ABI["1"][network]["contracts"]["PX"]
+      dogContractInfo = ABI["1"][network]["contracts"]["DOG20"]
     } else if (app_env === "development") {
       network = "rinkeby"
       pxContractInfo = ABI["4"][network]["contracts"]["PX"]
