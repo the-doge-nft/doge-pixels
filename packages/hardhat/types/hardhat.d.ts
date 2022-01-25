@@ -309,6 +309,10 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.PXMockV2__factory>;
     getContractFactory(
+      name: "PXMockV3",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.PXMockV3__factory>;
+    getContractFactory(
       name: "PXMock",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.PXMock__factory>;
@@ -731,6 +735,11 @@ declare module "hardhat/types/runtime" {
       address: string,
       signer?: ethers.Signer
     ): Promise<Contracts.PXMockV2>;
+    getContractAt(
+      name: "PXMockV3",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.PXMockV3>;
     getContractAt(
       name: "PXMock",
       address: string,

@@ -1,6 +1,9 @@
-require("dotenv").config();
-const { utils } = require("ethers");
-const fs = require("fs");
+const path = require("path");
+require("dotenv").config({
+                           path: path.resolve(__dirname, '..', '..', '.env')
+
+                         });
+const {utils} = require("ethers");
 const chalk = require("chalk");
 
 require("@nomiclabs/hardhat-waffle");
@@ -14,8 +17,8 @@ require("@nomiclabs/hardhat-ethers");
 
 require('@typechain/hardhat');
 require('@openzeppelin/hardhat-upgrades');
-
-const { isAddress, getAddress, formatUnits, parseUnits } = utils;
+require("@nomiclabs/hardhat-etherscan");
+const {isAddress, getAddress, formatUnits, parseUnits} = utils;
 
 /*
       📡 This is where you configure your deploy configuration for 🏗 scaffold-eth
@@ -31,7 +34,7 @@ const { isAddress, getAddress, formatUnits, parseUnits } = utils;
 //
 const defaultNetwork = "localhost";
 
-const mainnetGwei = 21;
+const mainnetGwei = 102;
 
 function mnemonic() {
   try {
@@ -56,14 +59,17 @@ module.exports = {
    */
   gasReporter: {
     currency: "USD",
-    coinmarketcap: process.env.COINMARKETCAP || null,
+    enabled: true,
+    coinmarketcap: process.env.COINMARKETCAP_API_KEY || null,
+    maxMethodDiff: 10,
   },
 
   typechain: {
     outDir: "types",
-    target: "ethers-v5",
-    alwaysGenerateOverloads: false,
-    // externalArtifacts: []
+    target: "ethers-v5"
+  },
+  mocha: {
+    timeout: 0,
   },
 
   // if you want to deploy to a testnet, mainnet, or xdai, you will need to configure:
@@ -83,56 +89,19 @@ module.exports = {
       */
     },
 
-    // rinkeby: {
-    //   url: `https://rinkeby.infura.io/v3/${process.env.RINKEBY_INFURA_KEY}`,
-    //   accounts: [`${process.env.RINKEBY_DEPLOYER_PRIV_KEY}`],
-    // },
-    // kovan: {
-    //   url: `https://rinkeby.infura.io/v3/${process.env.KOVAN_INFURA_KEY}`,
-    //   accounts: [`${process.env.KOVAN_DEPLOYER_PRIV_KEY}`],
-    // },
-    // mainnet: {
-    //   url: `https://mainnet.infura.io/v3/${process.env.MAINNET_INFURA_KEY}`,
-    //   accounts: [`${process.env.MAINNET_DEPLOYER_PRIV_KEY}`],
-    // },
-    // ropsten: {
-    //   url: `https://ropsten.infura.io/v3/${process.env.ROPSTEN_INFURA_KEY}`,
-    //   accounts: [`${process.env.ROPSTEN_DEPLOYER_PRIV_KEY}`],
-    // },
-    // goerli: {
-    //   url: `https://goerli.infura.io/v3/${process.env.GOERLI_INFURA_KEY}`,
-    //   accounts: [`${process.env.GOERLI_DEPLOYER_PRIV_KEY}`],
-    // },
-    // xdai: {
-    //   url: 'https://dai.poa.network',
-    //   gasPrice: 1000000000,
-    //   accounts: [`${process.env.XDAI_DEPLOYER_PRIV_KEY}`],
-    // },
+    mainnet: {
+      url: `https://eth-mainnet.alchemyapi.io/v2/${process.env.ALCHEMY_MAINNET_KEY}`,
+      gasPrice: mainnetGwei * 1000000000,
+      accounts: [
+        process.env.MAINNET_PRV_KEY
+      ]
+    },
 
     rinkeby: {
-      url: `https://eth-rinkeby.alchemyapi.io/v2/${process.env.ALCHEMY_API_KEY}`,
+      url: `https://eth-rinkeby.alchemyapi.io/v2/${process.env.ALCHEMY_RINKEBY_KEY}`,
       accounts: [
         process.env.RINKEBY_PRV_KEY
       ]
-    },
-    kovan: {
-      url: "https://kovan.infura.io/v3/460f40a260564ac4a4f4b3fffb032dad", // <---- YOUR INFURA ID! (or it won't work)
-
-      //    url: "https://speedy-nodes-nyc.moralis.io/XXXXXXXXXXXXXXXXXXXXXXX/eth/kovan", // <---- YOUR MORALIS ID! (not limited to infura)
-
-      accounts: {
-        mnemonic: mnemonic(),
-      },
-    },
-    mainnet: {
-      url: "https://mainnet.infura.io/v3/460f40a260564ac4a4f4b3fffb032dad", // <---- YOUR INFURA ID! (or it won't work)
-
-      //      url: "https://speedy-nodes-nyc.moralis.io/XXXXXXXXXXXXXXXXXXXXXXXXX/eth/mainnet", // <---- YOUR MORALIS ID! (not limited to infura)
-
-      gasPrice: mainnetGwei * 1000000000,
-      accounts: {
-        mnemonic: mnemonic(),
-      },
     },
     ropsten: {
       url: "https://ropsten.infura.io/v3/460f40a260564ac4a4f4b3fffb032dad", // <---- YOUR INFURA ID! (or it won't work)
@@ -147,16 +116,7 @@ module.exports = {
   solidity: {
     compilers: [
       {
-        version: "0.8.4",
-        settings: {
-          optimizer: {
-            enabled: true,
-            runs: 200,
-          },
-        },
-      },
-      {
-        version: "0.6.7",
+        version: "0.8.3",
         settings: {
           optimizer: {
             enabled: true,
@@ -166,14 +126,18 @@ module.exports = {
       },
     ],
   },
-  ovm: {
-    solcVersion: "0.7.6",
-  },
   namedAccounts: {
     deployer: {
       default: 0, // here this will by default take the first account as deployer
     },
   },
+  etherscan: {
+    apiKey: 'G8RCXJHC9VW4J2G3X7DK1R6G5YNYR5CEJ8'
+  },
+  tenderly: {
+    project: 'DOG_DEPLOY',
+    username: process.env.TENDERLY_USERNAME
+  }
 };
 
 const DEBUG = false;
@@ -184,7 +148,7 @@ function debug(text) {
   }
 }
 
-task("wallet", "Create a wallet (pk) link", async (_, { ethers }) => {
+task("wallet", "Create a wallet (pk) link", async (_, {ethers}) => {
   const randomWallet = ethers.Wallet.createRandom();
   const privateKey = randomWallet._signingKey().privateKey;
   console.log("🔐 WALLET Generated as " + randomWallet.address + "");
@@ -197,7 +161,7 @@ task("fundedwallet", "Create a wallet (pk) link and fund it with deployer?")
     "Amount of ETH to send to wallet after generating"
   )
   .addOptionalParam("url", "URL to add pk to")
-  .setAction(async (taskArgs, { network, ethers }) => {
+  .setAction(async (taskArgs, {network, ethers}) => {
     const randomWallet = ethers.Wallet.createRandom();
     const privateKey = randomWallet._signingKey().privateKey;
     console.log("🔐 WALLET Generated as " + randomWallet.address + "");
@@ -226,10 +190,10 @@ task("fundedwallet", "Create a wallet (pk) link and fund it with deployer?")
       deployerWallet = deployerWallet.connect(ethers.provider);
       console.log(
         "💵 Sending " +
-          amount +
-          " ETH to " +
-          randomWallet.address +
-          " using deployer account"
+        amount +
+        " ETH to " +
+        randomWallet.address +
+        " using deployer account"
       );
       let sendresult = await deployerWallet.sendTransaction(tx);
       console.log("\n" + url + "/pk#" + privateKey + "\n");
@@ -237,10 +201,10 @@ task("fundedwallet", "Create a wallet (pk) link and fund it with deployer?")
     } else {
       console.log(
         "💵 Sending " +
-          amount +
-          " ETH to " +
-          randomWallet.address +
-          " using local node"
+        amount +
+        " ETH to " +
+        randomWallet.address +
+        " using local node"
       );
       console.log("\n" + url + "/pk#" + privateKey + "\n");
       return send(ethers.provider.getSigner(), tx);
@@ -250,7 +214,7 @@ task("fundedwallet", "Create a wallet (pk) link and fund it with deployer?")
 task(
   "generate",
   "Create a mnemonic for builder deploys",
-  async (_, { ethers }) => {
+  async (_, {ethers}) => {
     const bip39 = require("bip39");
     const hdkey = require("ethereumjs-wallet/hdkey");
     const mnemonic = bip39.generateMnemonic();
@@ -270,8 +234,8 @@ task(
       "0x" + EthUtil.privateToAddress(wallet._privKey).toString("hex");
     console.log(
       "🔐 Account Generated as " +
-        address +
-        " and set as mnemonic in packages/hardhat"
+      address +
+      " and set as mnemonic in packages/hardhat"
     );
     console.log(
       "💬 Use 'yarn run account' to get more information about the deployment account."
@@ -287,7 +251,7 @@ task(
   "Looks for a deployer account that will give leading zeros"
 )
   .addParam("searchFor", "String to search for")
-  .setAction(async (taskArgs, { network, ethers }) => {
+  .setAction(async (taskArgs, {network, ethers}) => {
     let contract_address = "";
     let address;
 
@@ -330,12 +294,12 @@ task(
 
     console.log(
       "⛏  Account Mined as " +
-        address +
-        " and set as mnemonic in packages/hardhat"
+      address +
+      " and set as mnemonic in packages/hardhat"
     );
     console.log(
       "📜 This will create the first contract: " +
-        chalk.magenta("0x" + contract_address)
+      chalk.magenta("0x" + contract_address)
     );
     console.log(
       "💬 Use 'yarn run account' to get more information about the deployment account."
@@ -351,7 +315,7 @@ task(
 task(
   "account",
   "Get balance informations for the deployment account.",
-  async (_, { ethers }) => {
+  async (_, {ethers}) => {
     const hdkey = require("ethereumjs-wallet/hdkey");
     const bip39 = require("bip39");
     let mnemonic = fs.readFileSync("./mnemonic.txt").toString().trim();
@@ -405,19 +369,19 @@ async function addr(ethers, addr) {
   throw `Could not normalize address: ${addr}`;
 }
 
-task("accounts", "Prints the list of accounts", async (_, { ethers }) => {
+task("accounts", "Prints the list of accounts", async (_, {ethers}) => {
   const accounts = await ethers.provider.listAccounts();
   accounts.forEach((account) => console.log(account));
 });
 
-task("blockNumber", "Prints the block number", async (_, { ethers }) => {
+task("blockNumber", "Prints the block number", async (_, {ethers}) => {
   const blockNumber = await ethers.provider.getBlockNumber();
   console.log(blockNumber);
 });
 
 task("balance", "Prints an account's balance")
   .addPositionalParam("account", "The account's address")
-  .setAction(async (taskArgs, { ethers }) => {
+  .setAction(async (taskArgs, {ethers}) => {
     const balance = await ethers.provider.getBalance(
       await addr(ethers, taskArgs.account)
     );
@@ -442,7 +406,7 @@ task("send", "Send ETH")
   .addOptionalParam("gasPrice", "Price you are willing to pay in gwei")
   .addOptionalParam("gasLimit", "Limit of how much gas to spend")
 
-  .setAction(async (taskArgs, { network, ethers }) => {
+  .setAction(async (taskArgs, {network, ethers}) => {
     const from = await addr(ethers, taskArgs.from);
     debug(`Normalized from address: ${from}`);
     const fromSigner = await ethers.provider.getSigner(from);
