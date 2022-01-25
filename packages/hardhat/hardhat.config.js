@@ -1,6 +1,9 @@
-require("dotenv").config();
+const path = require("path");
+require("dotenv").config({
+                           path: path.resolve(__dirname, '..', '..', '.env')
+
+                         });
 const {utils} = require("ethers");
-const fs = require("fs");
 const chalk = require("chalk");
 
 require("@nomiclabs/hardhat-waffle");
@@ -87,8 +90,8 @@ module.exports = {
     },
 
     mainnet: {
-      url: `https://eth-mainnet.alchemyapi.io/v2/process.env.ALCHEMY_MAINNET_KEY`,
-      gasPrice: mainnetGwei * 1000000000,
+      url: `https://eth-mainnet.alchemyapi.io/v2/${process.env.ALCHEMY_MAINNET_KEY}`,
+      // gasPrice: mainnetGwei * 1000000000,
       accounts: [
         process.env.MAINNET_PRV_KEY
       ]

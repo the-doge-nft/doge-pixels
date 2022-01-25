@@ -1,6 +1,7 @@
 // deploy/00_deploy_your_contract.js
 
-const {ethers, upgrades} = require("hardhat");
+const {ethers, upgrades, tenderly} = require("hardhat");
+
 const prompts = require('prompts');
 const fs = require("fs");
 const path = require("path");
@@ -153,11 +154,23 @@ module.exports = async (args) => {
     path.join(__dirname, '..', '.openzeppelin', 'px_proxy_abi_' + chainId),
     JSON.stringify(PXProxy.interface.fragments, null, 2)
   );
-  fs.writeFileSync(path.join(__dirname, '..', '.openzeppelin', 'px_logic_address_' + chainId),PXLogic.address);
+  fs.writeFileSync(path.join(__dirname, '..', '.openzeppelin', 'px_logic_address_' + chainId), PXLogic.address);
   fs.writeFileSync(
     path.join(__dirname, '..', '.openzeppelin', 'px_logic_abi_' + chainId),
     JSON.stringify(PXLogic.interface.fragments, null, 2)
   );
   console.log(`FINISHED ALL`);
+  //
+  // await tenderly.persistArtifacts({
+  //                                       name: "PXPROXY",
+  //                                       address: PXProxy.address
+  //                                     });
+  //
+  // const tRes = await tenderly.persistArtifacts({
+  //                                       name: "PXLogic",
+  //                                       address: PXLogic.address
+  //                                     });
+  // console.log(`FINISHED ALL: TENDERLY`);
+  // console.log(tRes);
 };
 module.exports.tags = ["PXWPROXY"];

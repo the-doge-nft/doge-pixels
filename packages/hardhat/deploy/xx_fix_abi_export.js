@@ -15,10 +15,21 @@ module.exports = async (args) => {
   let DOG20Address;
   const chainId = await getChainId();
 
-  console.log("writing the hardhat_contracqts.json");
+  console.log("writing the hardhat_contracts.json");
 
   const hardhatContractsPath = process.env.DOG_ABI_EXPORT_PATH;
-  const hardhatContracts = JSON.parse(fs.readFileSync(hardhatContractsPath, 'utf8'));
+  let hardhatContracts = {}
+  try {
+    hardhatContracts = JSON.parse(fs.readFileSync(hardhatContractsPath, 'utf8'));
+  } catch (e) {
+    hardhatContracts = {
+      [chainId + ""]: {
+        [network.name]: {
+          contracts: {}
+        }
+      }
+    }
+  }
   console.log("before" + JSON.stringify(hardhatContracts, null, 2));
 // hardhatContracts[chainId + ""][network.name]["contracts"]["PX"] = {
 //   "address": PXProxy.address,
@@ -30,6 +41,9 @@ module.exports = async (args) => {
   );
 
   const pxVersion = 'PXMOCK_V3';
+  if (Object.keys(hardhatContracts).length !== 1) {
+    throw new Error("Aborting, invalid hardhat_contracts.json...");
+  }
   hardhatContracts[chainId + ""][network.name]["contracts"]["PX"] = {
     "address": pxProxyAddress,
     "abi": JSON.parse(fs.readFileSync(
