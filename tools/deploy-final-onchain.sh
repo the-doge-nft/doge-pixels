@@ -12,41 +12,45 @@ export CID_METADATA="QmSjRs4dH5q2wV5mqY4ujpXNQByYyvf2A8pk6sUXgCA3QQ"
 export DOG_IPFS_DEPLOY_BASE_URI="https://therealdoge.mypinata.cloud/ipfs/$CID_METADATA/"
 export DOG_IMG_WIDTH=$(( 640 * 100 / 100 ))
 export DOG_IMG_HEIGHT=$(( 480 * 100 / 100 ))
-network="$1"
-if [ "$network" = "MAINNET" ]; then
+export DOG_ABI_EXPORT_PATH="$HARDHATPATH/hardhat_contracts.json"
+
+# set to "yes" to remove abi/cache/artifacts
+RESET_ARTIFACTS=yes
+
+NETWORK="$1"
+dd=$(echo $NETWORK | tr "[:upper:]" "[:lower:]")
+
+
+if [ "$NETWORK" = "MAINNET" ]; then
+  export DOG20_ADDRESS="0xBAac2B4491727D78D2b78815144570b9f2Fe8899"
   export DOG_FEES_ADDRESS_DEV="0xAF838Fe6196A08f4575dB0FA7f1904137112ab3f"
   export DOG_FEES_ADDRESS_PLEASR="0xcb20a54c4ed357bf7e28d1966e3f0f5215e25b37"
-elif [ "$network" = "RINKEBY" ]; then
-  # DOG_FEES_RINKEBY_DEV // METAMASK
+elif [ "$NETWORK" = "RINKEBY" ]; then
+  export DOG20_ADDRESS=
   export DOG_FEES_ADDRESS_DEV="0x1598a4e1B57E9C1DDdEC110e45FFfE52981D117F"
-  # DOG_FEES_RINKEBY_PLEASR // METAMASK
   export DOG_FEES_ADDRESS_PLEASR="0xcb20a54c4ed357bf7e28d1966e3f0f5215e25b37"
-  #export DOG20_ADDRESS="0x6aFB2ba8d536223f2a78a58BdC82cB71C1a2B204"
 else
-  echo "Unknown network $network, abort..."
+  echo "Unknown network $NETWORK, abort..."
   exit 420
 fi
-export DOG_ABI_EXPORT_PATH="$HARDHATPATH/hardhat_contracts.json"
-pushd "$HARDHATPATH"
-  # deployed contract cannot be reused, __init() will fail
 
-  dd="$network"
-  # set to "yes" to remove abi/cache/artifacts
-  RESET_ARTIFACTS=no
-  # reset all previous deployment
-#  if false ; then
+pushd "$HARDHATPATH"
   if [ "$RESET_ARTIFACTS" = "yes" ]; then
-    echo "removing previous deployment
+    echo "removing previous deployment"
     rm -rf ./artifacts/
     rm -rf ./cache
     rm -r ./hardhat_contracts.json || true
-    rm -rf ./.openzeppelin"
+    rm -rf ./.openzeppelin
     rm -rf ./deployments/
   fi
+#  exit 1
+
+  echo "Deploying $dd"
+  echo "Deploying $dd"
   npx hardhat deploy --network $dd --tags PXWPROXY --export-all "$DOG_ABI_EXPORT_PATH"
-#  npx hardhat deploy --network $dd --tags _PX_FIX_ABI --write false
-#  npx hardhat deploy --network rinkeby --tags PXV3 --export-all "$DOG_ABI_EXPORT_PATH"
-    npx hardhat deploy --network $dd --tags _PX_FIX_ABI --write false
+  #  npx hardhat deploy --network $dd --tags _PX_FIX_ABI --write false
+  #  npx hardhat deploy --network rinkeby --tags PXV3 --export-all "$DOG_ABI_EXPORT_PATH"
+  npx hardhat deploy --network $dd --tags _PX_FIX_ABI --write false
 
   cp "$DOG_ABI_EXPORT_PATH" "$HARDHATPATH/../react-app/src/contracts/hardhat_contracts.json"
   cp "$DOG_ABI_EXPORT_PATH" "$HARDHATPATH/../server/src/contracts/hardhat_contracts.json"

@@ -190,7 +190,7 @@ contract PX is Initializable, ERC721CustomUpgradeable {
     // Specify amount of pixels you wish to receive. Your ETH address must entrust our contract of handling your
     // $DOG balance beforehand. You can open your $DOG balance for us with calling `approve` on the $DOG token contract.
     //
-    function mintPuppers(uint256 qty) public virtual {
+    function mintPuppers(uint256 qty) public {
         require(qty > 0, "Non positive quantity");
         require(qty <= puppersRemaining, "No puppers remaining");
         for (uint256 i = 0; i < qty; ++i) {
