@@ -29,10 +29,11 @@ module.exports = async (args) => {
     "utf8"
   );
 
+  const pxVersion = 'PXMOCK_V3';
   hardhatContracts[chainId + ""][network.name]["contracts"]["PX"] = {
     "address": pxProxyAddress,
     "abi": JSON.parse(fs.readFileSync(
-      path.join(__dirname, '..', 'artifacts', 'contracts', 'token', 'PX', 'PX.sol', 'PX.json'),
+      path.join(__dirname, '..', 'artifacts', 'contracts', 'token', 'PX', pxVersion + '.sol', pxVersion + '.json'),
       "utf8"
     ))["abi"]
   }

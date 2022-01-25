@@ -33,6 +33,7 @@ export interface PXMockV3Interface extends ethers.utils.Interface {
     "MAGIC_NULL()": FunctionFragment;
     "SHIBA_HEIGHT()": FunctionFragment;
     "SHIBA_WIDTH()": FunctionFragment;
+    "V3()": FunctionFragment;
     "__PXMock_init(string,string,address,string,uint256,uint256,address,address)": FunctionFragment;
     "__PX_init(string,string,address,string,uint256,uint256,address,address)": FunctionFragment;
     "approve(address,uint256)": FunctionFragment;
@@ -80,6 +81,7 @@ export interface PXMockV3Interface extends ethers.utils.Interface {
     functionFragment: "SHIBA_WIDTH",
     values?: undefined
   ): string;
+  encodeFunctionData(functionFragment: "V3", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "__PXMock_init",
     values: [
@@ -198,6 +200,7 @@ export interface PXMockV3Interface extends ethers.utils.Interface {
     functionFragment: "SHIBA_WIDTH",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: "V3", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "__PXMock_init",
     data: BytesLike
@@ -337,6 +340,8 @@ export interface PXMockV3 extends BaseContract {
 
     SHIBA_WIDTH(overrides?: CallOverrides): Promise<[BigNumber]>;
 
+    V3(overrides?: CallOverrides): Promise<[string]>;
+
     __PXMock_init(
       name_: string,
       symbol_: string,
@@ -385,10 +390,7 @@ export interface PXMockV3 extends BaseContract {
       overrides?: CallOverrides
     ): Promise<[boolean]>;
 
-    mintPuppers(
-      qty: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
+    mintPuppers(qty: BigNumberish, overrides?: CallOverrides): Promise<[void]>;
 
     name(overrides?: CallOverrides): Promise<[string]>;
 
@@ -481,6 +483,8 @@ export interface PXMockV3 extends BaseContract {
 
   SHIBA_WIDTH(overrides?: CallOverrides): Promise<BigNumber>;
 
+  V3(overrides?: CallOverrides): Promise<string>;
+
   __PXMock_init(
     name_: string,
     symbol_: string,
@@ -529,10 +533,7 @@ export interface PXMockV3 extends BaseContract {
     overrides?: CallOverrides
   ): Promise<boolean>;
 
-  mintPuppers(
-    qty: BigNumberish,
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
+  mintPuppers(qty: BigNumberish, overrides?: CallOverrides): Promise<void>;
 
   name(overrides?: CallOverrides): Promise<string>;
 
@@ -616,6 +617,8 @@ export interface PXMockV3 extends BaseContract {
     SHIBA_HEIGHT(overrides?: CallOverrides): Promise<BigNumber>;
 
     SHIBA_WIDTH(overrides?: CallOverrides): Promise<BigNumber>;
+
+    V3(overrides?: CallOverrides): Promise<string>;
 
     __PXMock_init(
       name_: string,
@@ -786,6 +789,8 @@ export interface PXMockV3 extends BaseContract {
 
     SHIBA_WIDTH(overrides?: CallOverrides): Promise<BigNumber>;
 
+    V3(overrides?: CallOverrides): Promise<BigNumber>;
+
     __PXMock_init(
       name_: string,
       symbol_: string,
@@ -836,7 +841,7 @@ export interface PXMockV3 extends BaseContract {
 
     mintPuppers(
       qty: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      overrides?: CallOverrides
     ): Promise<BigNumber>;
 
     name(overrides?: CallOverrides): Promise<BigNumber>;
@@ -931,6 +936,8 @@ export interface PXMockV3 extends BaseContract {
 
     SHIBA_WIDTH(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
+    V3(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
     __PXMock_init(
       name_: string,
       symbol_: string,
@@ -984,7 +991,7 @@ export interface PXMockV3 extends BaseContract {
 
     mintPuppers(
       qty: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     name(overrides?: CallOverrides): Promise<PopulatedTransaction>;
