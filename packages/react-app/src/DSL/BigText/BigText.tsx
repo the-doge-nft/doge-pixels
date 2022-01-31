@@ -35,7 +35,7 @@ const BigText = ({children, label, size = "sm"}: BigTextProps) => {
       </Typography>
     </Box>
 
-    {label && <Box position={"relative"} zIndex={1} ml={8} w={"100%"}>
+    {label && <Box position={"relative"} zIndex={1} ml={4} w={"100%"}>
       <Typography
         variant={sizeToTypeMap[size]}
         sx={styles.label}
