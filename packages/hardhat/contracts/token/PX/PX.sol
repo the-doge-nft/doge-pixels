@@ -13,7 +13,6 @@ import "../../proxy/utils/Initializable.sol";
 import "../../utils/Strings.sol";
 
 contract PX is Initializable, ERC721CustomUpgradeable {
-    //    using ERC721Custom for ERC721;
     // Fractional.art ERC20 contract holding $DOG tokens
     IERC20 public DOG20;
 
@@ -27,7 +26,6 @@ contract PX is Initializable, ERC721CustomUpgradeable {
     //
     uint256 public puppersRemaining;
 
-    //  PROD:  uint256 public immutable totalSupply;
     uint256 public totalSupply;
 
     // index => pupper; needed for keeping track of available puppers pool
@@ -35,7 +33,6 @@ contract PX is Initializable, ERC721CustomUpgradeable {
     // pupper => index; needed for burning functionality and returning pupper to available pool
     mapping(uint256 => uint256) pupperToIndex;
 
-    // PROD: uint256 immutable DOG_TO_PIXEL_SATOSHIS = 5523989899;
     uint256 public DOG_TO_PIXEL_SATOSHIS;
     // ALL ids & indexes are offset by 1, to be able to use default uint256 value - zero - as null/not initialized flag
     uint256 public INDEX_OFFSET;
@@ -250,7 +247,6 @@ contract PX is Initializable, ERC721CustomUpgradeable {
     // Description:
     // Returns pixel index on .png from tokenId
     //
-    // todo: return modifier
     function pupperToPixel(uint256 pupper) view public returns (uint256){
         return pupper - INDEX_OFFSET;
     }

@@ -14,8 +14,7 @@ contract DOG721 is ERC721 {
     /**
      * @dev Initializes the contract by setting a `name` and a `symbol` to the token collection.
      */
-    constructor() ERC721("DOG721", "D721") {
-    }
+    constructor() ERC721("DOG721", "D721") {}
 
     function initMock(address[] memory holders) public {
         for (uint i = 0; i < holders.length; i++) {
