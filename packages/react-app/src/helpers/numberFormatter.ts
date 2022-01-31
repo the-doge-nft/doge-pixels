@@ -68,7 +68,7 @@ export function bytesToHumanReadable(bytes: number, decimals = 2) {
 export function convertToAbbreviation(val: number) {
 
   // thousands, millions, billions etc..
-  var s = ["", "M", "MM", "B", "T"];
+  var s = ["", "K", "M", "B", "T"];
 
   // dividing the value by 3.
   var sNum = Math.floor(("" + val).length / 3);

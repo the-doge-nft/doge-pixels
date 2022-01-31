@@ -5,7 +5,7 @@ import {showErrorToast} from "../DSL/Toast/Toast";
 import deployedContracts from "../contracts/hardhat_contracts.json"
 import {Signer} from "@ethersproject/abstract-signer";
 import {Provider} from "@ethersproject/abstract-provider";
-import {isDevModeEnabled, isProduction, isStaging} from "../environment/helpers";
+import {isDevModeEnabled, isProduction} from "../environment/helpers";
 import {DOG20, PX} from "../../../hardhat/types";
 import KobosuJson from "../images/kobosu.json"
 import {Http} from "../services";
