@@ -52,8 +52,10 @@ async function addRemoveAddresses(source, from, to, tokenID) {
 
   if (isMint) {
     debugString = "🍵 mint: "
+    await redisClient.del(redisClient.getTokenMetadataKey(tokenID))
   } else if (isBurn) {
     debugString = "🔥 burn: "
+    await redisClient.del(redisClient.getTokenMetadataKey(tokenID))
   } else {
     debugString = "🚡 user transfer: "
   }
