@@ -95,7 +95,7 @@ async function getAddressToOwnershipMap(EthersClient) {
   /*
     Builds address -> [tokenIDs..] object for all of PX contract's history
    */
-  logger.info(`Building initial address to token ID map ⚒️`)
+  logger.info(`Building address to token ID map ⚒️`)
 
   // refresh ENS names
   await redisClient.del(redisClient.keys.ENS_LOOKUP)

@@ -112,7 +112,7 @@ router.get(
         await redisClient.set(redisKey, JSON.stringify(metadata))
 
         console.log(`returning fresh metadata: ${tokenID}`)
-        res.send({metadata})
+        res.send(metadata)
       }
     } catch (e) {
       if (e instanceof TokenNotMintedError) {
