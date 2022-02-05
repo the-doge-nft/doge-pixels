@@ -7,9 +7,8 @@ import {Reactionable} from "../../services/mixins/reactionable";
 import LocalStorage from "../../services/local-storage";
 import {abbreviate} from "../../helpers/strings";
 import ModalsStore from "../../store/Modals.store";
-import axios from "axios";
-import * as Sentry from "@sentry/react";
 import {NamedRoutes, route, SELECTED_PIXEL_PARAM} from "../../App.routes";
+import {Http} from "../../services";
 
 export enum ViewerView {
   Index = "index",
@@ -76,7 +75,6 @@ class ViewerStore extends (Eventable(Reactionable(Navigable<ViewerView, Construc
   init() {
     this.modals.init()
     this.react(() => this.selectedPupper, async () => {
-      console.log("debug:: new selected pixel", this.selectedPupper)
       if (this.selectedPupper) {
         this.getTokenOwner(this.selectedPupper)
         this.getTokenMetadata(this.selectedPupper)
@@ -86,9 +84,8 @@ class ViewerStore extends (Eventable(Reactionable(Navigable<ViewerView, Construc
 
   async getTokenOwner(tokenID: number) {
     try {
-      this.tokenOwner = await AppStore.web3.getPxOwnerByTokenId(this.selectedPupper!)
+      this.tokenOwner = await AppStore.web3.getPxOwnerByTokenId(tokenID)
     } catch (e) {
-      console.log("debug:: token does not have an owner")
       this.tokenOwner = null
     }
 
@@ -105,13 +102,10 @@ class ViewerStore extends (Eventable(Reactionable(Navigable<ViewerView, Construc
 
   async getTokenMetadata(tokenID: number) {
     try {
-      const tokenURI = await AppStore.web3.pxContract!.tokenURI(this.selectedPupper!)
-      const res = await axios.get(tokenURI)
+      const res = await Http.get(`/v1/px/metadata/${tokenID}`)
       this.metaData = res.data
     } catch (e) {
       this.metaData = null
-      console.log("could not get token metadata", e)
-      Sentry.captureException(e)
     }
   }
 
