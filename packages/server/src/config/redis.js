@@ -7,6 +7,7 @@ class RedisKeys {
     this.ADDRESS_TO_TOKENID = "ADDRESS_TO_TOKEN_ID"
     this.SHIBA_DIMENSIONS = "SHIBA_DIMENSIONS"
     this.ENS_LOOKUP = "ENS:LOOKUP"
+    this.TOKEN_METADATA = "METATDATA:"
   }
 }
 
@@ -17,6 +18,10 @@ class RedisClient {
     this.client.on('error', err => logger.error(err))
     this.client.connect()
     this.keys = new RedisKeys()
+  }
+
+  getTokenMetadataKey(tokenID) {
+    return this.keys.TOKEN_METADATA + tokenID
   }
 
   get(key) {
