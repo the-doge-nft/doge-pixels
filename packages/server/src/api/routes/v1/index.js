@@ -4,12 +4,14 @@ const {PXContract, provider, DOGContract, getProvider, getDOGContract, EthersCli
 const logger = require("../../../config/config");
 const {getAddressToOwnershipMap} = require("../../web3/px");
 const {ethers} = require("ethers");
+const axios = require("axios");
+const TokenNotMintedError = require("../../errors/TokenNotMintedError");
 
 const router = express.Router()
 
 router.get(
   '/status',
-  (req, res) => res.send('A-OKAY')
+  (req, res) => res.send('much wow')
 )
 
 router.get(
@@ -64,7 +66,7 @@ router.get(
   '/px/owner/:tokenID',
   async (req, res, next) => {
     const { tokenID } = req.params
-    logger.info(`querying token ID ${tokenID}`)
+    logger.info(`querying token ID owner: ${tokenID}`)
     try {
       const data = await redisClient.get(redisClient.keys.ADDRESS_TO_TOKENID)
       if (data) {
@@ -81,6 +83,58 @@ router.get(
       throw Error()
     } catch (e) {
       e.message = "No address found"
+      next(e)
+    }
+  }
+)
+
+router.get(
+  '/px/metadata/:tokenID',
+  async (req, res, next) => {
+    const { tokenID } = req.params
+    logger.info(`querying token ID metatdata: ${tokenID}`)
+
+    const redisKey = redisClient.getTokenMetadataKey(tokenID)
+    const tokenNotMintedMessage = "NOT_MINTED"
+
+    try {
+      const cache = await redisClient.get(redisKey)
+      if (cache) {
+        if (cache === tokenNotMintedMessage) {
+          throw new TokenNotMintedError()
+        }
+        logger.info(`returning cached metadata for: ${tokenID}`)
+        res.send(JSON.parse(cache))
+      } else {
+        const tokenURI = await EthersClient.PXContract.tokenURI(tokenID)
+        const uri = await axios.get(tokenURI)
+        const metadata = uri.data
+        await redisClient.set(redisKey, JSON.stringify(metadata))
+
+        logger.info(`returning fresh metadata: ${tokenID}`)
+        res.send(metadata)
+      }
+    } catch (e) {
+      if (e instanceof TokenNotMintedError) {
+        logger.info("known non-minted token, continuing")
+      } else {
+
+        try {
+          // difficult to extract exact reason from the chain
+          // https://github.com/ethers-io/ethers.js/issues/368
+          const tokenNotMintedErrorString = "execution reverted: ERC721Metadata: URI query for nonexistent token"
+          const errorMessage = JSON.parse(e.error.response).error.message
+          const isTokenNotMinted = errorMessage === tokenNotMintedErrorString
+          if (isTokenNotMinted) {
+            logger.info("non minted token hit. setting cache to not-minted")
+            await redisClient.set(redisKey, tokenNotMintedMessage)
+          }
+        } catch (e) {
+          logger.error(e)
+        }
+      }
+
+      e.message = "Could not get metadata, token may not exist"
       next(e)
     }
   }

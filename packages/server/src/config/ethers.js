@@ -1,13 +1,12 @@
 const ethers = require('ethers')
 const { app_env, infura_ws_endpoint } = require('./vars')
 const ABI = require('../contracts/hardhat_contracts.json')
-const erc20ABI = require('../contracts/erc20.json')
 const testABI = require('../../test/contracts/hardhat_contracts.json')
 const logger = require("./config");
 const {keepAlive} = require("./helpers");
 const {getAddressToOwnershipMap} = require("../api/web3/px");
 const {sentryClient} = require("../services/Sentry");
-
+const debounce = require("lodash.debounce")
 
 class EthersHandler {
   constructor() {
@@ -33,6 +32,12 @@ class EthersHandler {
     this.initWS()
   }
 
+  getAddressMapDebounced(from, to, tokenID) {
+    logger.info("PX transfer event detected")
+    logger.info(`${from}:${to}:${tokenID}`)
+    return debounce(() => getAddressToOwnershipMap(this), 500, {maxWait: 10 * 1000})
+  }
+
   initWS() {
     const connectingMessage = `Creating WS provider on network: ${this.network}`
     logger.info(connectingMessage)
@@ -46,15 +51,15 @@ class EthersHandler {
     this.PXContract = new ethers.Contract(this.pxContractInfo["address"], this.pxContractInfo["abi"], this.provider)
     this.DOGContract = new ethers.Contract(this.dogContractInfo["address"], this.dogContractInfo["abi"], this.provider)
 
+
+    // build initial map
     getAddressToOwnershipMap(this)
 
     const listenDebugString = `Listening to PX contract: ${this.PXContract.address} 👂`
     logger.info(listenDebugString)
     sentryClient.captureMessage(listenDebugString)
-    this.PXContract.on('Transfer(address,address,uint256)', async (from, to, _tokenID) => {
-      logger.info("PX transfer detected - rebuilding address to token ID map")
-      getAddressToOwnershipMap(this)
-    })
+
+    this.PXContract.on('Transfer(address,address,uint256)', this.getAddressMapDebounced)
 
     if (app_env !== "test") {
       keepAlive({

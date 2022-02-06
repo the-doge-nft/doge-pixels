@@ -45,7 +45,6 @@ contract PXMock_V2 is PX {
     }
 
     function v2Test() public returns (uint256 ret){
-//        ret = 42;
         ret = puppersRemaining;
     }
 }
