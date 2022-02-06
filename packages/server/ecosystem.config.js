@@ -6,7 +6,7 @@ module.exports = {
   }],
   deploy: {
     development: {
-      // key: "deploy.key",
+      key: "deploy.key",
       user: "nodejs",
       host: "167.172.252.56",
       path: "/home/nodejs/dog",
