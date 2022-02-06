@@ -52,8 +52,10 @@ async function addRemoveAddresses(source, from, to, tokenID) {
 
   if (isMint) {
     debugString = "🍵 mint: "
+    await redisClient.del(redisClient.getTokenMetadataKey(tokenID))
   } else if (isBurn) {
     debugString = "🔥 burn: "
+    await redisClient.del(redisClient.getTokenMetadataKey(tokenID))
   } else {
     debugString = "🚡 user transfer: "
   }
@@ -93,7 +95,7 @@ async function getAddressToOwnershipMap(EthersClient) {
   /*
     Builds address -> [tokenIDs..] object for all of PX contract's history
    */
-  logger.info(`Building initial address to token ID map ⚒️`)
+  logger.info(`Building address to token ID map ⚒️`)
 
   // refresh ENS names
   await redisClient.del(redisClient.keys.ENS_LOOKUP)

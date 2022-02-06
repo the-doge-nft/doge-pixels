@@ -47,39 +47,4 @@ contract PXMock_V3 is PX {
     function V3() view public returns (string memory){
         return "Hello V3!";
     }
-
-//
-//    //
-//    // mintPuppers
-//    //
-//    // Description:
-//    // GET SOME PIXELS!
-//    // Specify amount of pixels you wish to receive. Your ETH address must entrust our contract of handling your
-//    // $DOG balance beforehand. You can open your $DOG balance for us with calling `approve` on the $DOG token contract.
-//    //
-//    function mintPuppers(uint256 qty) view public override {
-//        require(qty > 255, "V3 mintPuppers");
-//    }
-//
-//    /**
-//     * @dev Base URI for computing {tokenURI}. If set, the resulting URI for each
-//     * token will be the concatenation of the `baseURI` and the `tokenId`. Empty
-//     * by default, can be overriden in child contracts.
-//     */
-//    function _baseURI() internal view virtual override returns (string memory){
-//        return "https://test-v3-base-uri/";
-//    }
-//
-//    //
-//    // tokenURI
-//    //
-//    // Description:
-//    // TokenUri as x_y
-//    function tokenURI(uint256 tokenId) public view virtual override returns (string memory) {
-//        require(_exists(tokenId), "ERC721Metadata: URI query for nonexistent token");
-//
-//        string memory baseURI = _baseURI();
-//        uint256 shard = 1 + (tokenId - INDEX_OFFSET) / 5000;
-//        return bytes(baseURI).length > 0 ? string(abi.encodePacked(baseURI, "test-new-uri-v3-sh", Strings.toString(shard), "/", "metadata-", Strings.toString(tokenId), ".json")) : "";
-//    }
 }

@@ -58,9 +58,9 @@ contract ERC721CustomUpgradeable is Initializable, ContextUpgradeable, ERC165Upg
      */
     function supportsInterface(bytes4 interfaceId) public view virtual override(ERC165Upgradeable, IERC165Upgradeable) returns (bool) {
         return
-            interfaceId == type(IERC721Upgradeable).interfaceId ||
-            interfaceId == type(IERC721MetadataUpgradeable).interfaceId ||
-            super.supportsInterface(interfaceId);
+        interfaceId == type(IERC721Upgradeable).interfaceId ||
+        interfaceId == type(IERC721MetadataUpgradeable).interfaceId ||
+        super.supportsInterface(interfaceId);
     }
 
     /**
@@ -428,5 +428,6 @@ contract ERC721CustomUpgradeable is Initializable, ContextUpgradeable, ERC165Upg
         address to,
         uint256 tokenId
     ) internal virtual {}
+
     uint256[44] private __gap;
 }

@@ -29,9 +29,10 @@ const SelectedPixelPane = observer(function SelectedPixelPane({store}: {store: V
 
       {store.metaData && <Dev>
         <Box mt={10} border={"1px dashed black"} p={3}>
+          <Typography variant={TVariant.ComicSans12} fontWeight={"bold"} mb={2} block>DEBUG METADATA</Typography>
           <Typography block variant={TVariant.ComicSans12}>{store.metaData.name}</Typography>
           <Typography block variant={TVariant.ComicSans12}>{store.metaData.description}</Typography>
-          {store.metaData.attributes.map(item => <Typography block variant={TVariant.ComicSans12}>{item.trait_type}: {item.value}</Typography>)}
+          {store.metaData.attributes?.map(item => <Typography block variant={TVariant.ComicSans12}>{item.trait_type}: {item.value}</Typography>)}
           <Image src={store.metaData.image} height={25} widht={25}/>
         </Box>
       </Dev>}
