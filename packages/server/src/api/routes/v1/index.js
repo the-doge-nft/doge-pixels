@@ -11,7 +11,7 @@ const router = express.Router()
 
 router.get(
   '/status',
-  (req, res) => res.send('feeling')
+  (req, res) => res.send('much wow')
 )
 
 router.get(
@@ -103,7 +103,7 @@ router.get(
         if (cache === tokenNotMintedMessage) {
           throw new TokenNotMintedError()
         }
-        console.log(`returning cached metadata for: ${tokenID}`)
+        logger.info(`returning cached metadata for: ${tokenID}`)
         res.send(JSON.parse(cache))
       } else {
         const tokenURI = await EthersClient.PXContract.tokenURI(tokenID)
@@ -111,23 +111,29 @@ router.get(
         const metadata = uri.data
         await redisClient.set(redisKey, JSON.stringify(metadata))
 
-        console.log(`returning fresh metadata: ${tokenID}`)
+        logger.info(`returning fresh metadata: ${tokenID}`)
         res.send(metadata)
       }
     } catch (e) {
       if (e instanceof TokenNotMintedError) {
-        console.log("known non-minted token, continuing")
+        logger.info("known non-minted token, continuing")
       } else {
-        // difficult to extract exact reason from the chain
-        // https://github.com/ethers-io/ethers.js/issues/368
-        const tokenNotMintedErrorString = "execution reverted: ERC721Metadata: URI query for nonexistent token"
-        const errorMessage = JSON.parse(e.error.response).error.message
-        const isTokenNotMinted = errorMessage === tokenNotMintedErrorString
-        if (isTokenNotMinted) {
-          console.log("non minted token hit. setting cache to not-minted")
-          await redisClient.set(redisKey, tokenNotMintedMessage)
+
+        try {
+          // difficult to extract exact reason from the chain
+          // https://github.com/ethers-io/ethers.js/issues/368
+          const tokenNotMintedErrorString = "execution reverted: ERC721Metadata: URI query for nonexistent token"
+          const errorMessage = JSON.parse(e.error.response).error.message
+          const isTokenNotMinted = errorMessage === tokenNotMintedErrorString
+          if (isTokenNotMinted) {
+            logger.info("non minted token hit. setting cache to not-minted")
+            await redisClient.set(redisKey, tokenNotMintedMessage)
+          }
+        } catch (e) {
+          logger.error(e)
         }
       }
+
       e.message = "Could not get metadata, token may not exist"
       next(e)
     }
