@@ -21,6 +21,8 @@ module.exports = {
       path: "/home/nodejs/dog",
       repo: "git@github.com:calebcarithers/dog.git",
       ref: "origin/master",
+      // TODO: dev and prod server setup is different. prod has git files in the ~/dog repo where the actual node_modules are pulled from
+      // dev server does not have this. last deploy we added new packages & deploy failed due to the packages being installed in the wrong location
       "post-deploy": "cd /home/nodejs/dog/current/packages/server && yarn install --production --frozen-lockfile && yarn prod:start",
     }
   }
