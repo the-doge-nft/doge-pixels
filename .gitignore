@@ -78,3 +78,5 @@ partyka-tools/scratchpad
 packages/validation-tool
 
 **/.env
+
+tools/
