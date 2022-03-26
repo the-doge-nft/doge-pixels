@@ -210,7 +210,7 @@ const Title = () => {
     userSelect={"none"}
   >
     <BigText size={"sm"}>
-      DOGE PIXEL PORTAL
+      MONA PIXEL PORTAL
     </BigText>
   </Box>
 }
