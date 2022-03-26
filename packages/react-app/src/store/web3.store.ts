@@ -7,7 +7,7 @@ import {Signer} from "@ethersproject/abstract-signer";
 import {Provider} from "@ethersproject/abstract-provider";
 import {isDevModeEnabled, isProduction} from "../environment/helpers";
 import {DOG20, PX} from "../../../hardhat/types";
-import KobosuJson from "../images/kobosu.json"
+import MonaJson from "../images/mona.json"
 import {Http} from "../services";
 import Web3providerStore, {EthersContractError, Web3ProviderConnectionError} from "./web3provider.store";
 import * as Sentry from "@sentry/react";
@@ -270,8 +270,7 @@ class Web3Store extends Web3providerStore {
 
     pupperToHexLocal(pupper: number) {
         const [x, y] = this.pupperToPixelCoordsLocal(pupper)
-        //@ts-ignore
-        return KobosuJson[y][x]
+        return MonaJson[y][x]
     }
 
     coordinateToPupperLocal(x: number, y: number) {
