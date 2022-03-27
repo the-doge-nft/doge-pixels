@@ -2,8 +2,7 @@ import React, {useEffect, useRef, useState} from "react";
 import * as THREE from "three";
 import {Object3D} from "three";
 import {Canvas, useLoader} from "@react-three/fiber";
-import Kobosu from "../../images/THE_ACTUAL_NFT_IMAGE.png";
-import KobosuJson from "../../images/kobosu.json"
+import Mona from '../../images/mona.png'
 import {Box, useColorMode} from "@chakra-ui/react";
 import {createCanvasPixelSelectionSetter, getWorldPixelCoordinate, resizeCanvas} from "./helpers";
 import {onPixelSelectType} from "./Viewer.page";
@@ -44,7 +43,7 @@ const ThreeScene = observer(({onPixelSelect, store}: ThreeSceneProps) => {
   const tooltipRef = useRef<HTMLDivElement | null>(null);
 
   // Load texture & init some vars
-  const texture = useLoader(THREE.TextureLoader, Kobosu);
+  const texture = useLoader(THREE.TextureLoader, Mona);
   texture.magFilter = THREE.NearestFilter;
   // avoid texture resizing to power of 2
   // https://stackoverflow.com/questions/55175351/remove-texture-has-been-resized-console-logs-in-three-js
@@ -187,9 +186,8 @@ const ThreeScene = observer(({onPixelSelect, store}: ThreeSceneProps) => {
               const indexX = Math.floor(pixelX + overlayLength);
               const indexY = -1*Math.floor(pixelY + overlayLength);
 
-              //@ts-ignore
-              const hex = KobosuJson[indexY][indexX]
-              firstGrandchild.style.background = hex
+              const pixelHexColor = AppStore.web3.pupperToHexLocal(AppStore.web3.coordinateToPupperLocal(indexX, indexY))
+              firstGrandchild.style.background = pixelHexColor
               firstGreatGrandChild.innerText = `(${indexX},${indexY})`
             }
           }}
