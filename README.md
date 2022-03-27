@@ -3,8 +3,12 @@
 
 > fungies 🤝 non-fungies
 
-# 🏃️ Run-it
+# Deployments
+[dev](https://squeamish-side.surge.sh/) 
 
+[prod](https://pixels.thedao.ge/)
+
+# 🏃️ Run-it
 Prerequisites: [Node](https://nodejs.org/en/download/) plus [Yarn](https://classic.yarnpkg.com/en/docs/install/) and [Git](https://git-scm.com/downloads)
 
 > clone it like u own it:
