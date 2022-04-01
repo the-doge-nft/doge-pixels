@@ -7,8 +7,11 @@ import {observer} from "mobx-react-lite";
 import MemeModal from "../../pages/Viewer/MemeModal";
 
 const MonaModal = observer(() => {
+  const windowWidth = window.innerWidth
+  const windowHeight = window.innerHeight
   return <>
     <Modal
+      defaultPosition={AppStore.rwd.isMobile ? {x: -1*windowWidth/12 + 30, y: -windowHeight/4} : undefined}
       title={"April Fools :)"}
       onClose={() => AppStore.isAprilFoolsModalOpen = false}
       isOpen={AppStore.isAprilFoolsModalOpen}>
@@ -19,8 +22,9 @@ const MonaModal = observer(() => {
       </Box>
     </Modal>
     <MemeModal
-      isOpen={AppStore.isAprilFoolsModalOpen}
-      onClose={() => AppStore.isAprilFoolsModalOpen = false}
+      defaultPosition={AppStore.rwd.isMobile ? {x: -1 * windowWidth / 12 + 30, y: windowHeight / 8 + 10} : undefined}
+      isOpen={AppStore.isAprilFoolsMemeModalOpen}
+      onClose={() => AppStore.isAprilFoolsMemeModalOpen = false}
       type={"mona"}/>
   </>
 })
@@ -31,7 +35,10 @@ const MonaButton = () => {
     fontWeight={"bold"}
     _hover={{textDecoration: "underline", cursor: "pointer"}}
     _active={{transform: "translate(2px, 2px)"}}
-    onClick={() => AppStore.isAprilFoolsModalOpen = true}>
+    onClick={() => {
+      AppStore.isAprilFoolsModalOpen = true
+      AppStore.isAprilFoolsMemeModalOpen = true
+    }}>
     Mona??
   </Typography>
 }
