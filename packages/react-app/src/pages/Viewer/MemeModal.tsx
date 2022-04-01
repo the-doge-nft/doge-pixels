@@ -19,7 +19,8 @@ type MemeType = "burn" | "mint" | "mona"
 interface MemeModalProps {
   isOpen: boolean;
   onClose: () => void;
-  type: MemeType
+  type: MemeType;
+  defaultPosition?: {x: number, y: number}
 }
 const BurnMemes = [
   GrassFadeDoge,
@@ -65,7 +66,7 @@ const getImageByType = (type: "burn" | "mint" | "mona", index: number) => {
   }
 }
 
-const MemeModal = ({isOpen, onClose, type}: MemeModalProps) => {
+const MemeModal = ({isOpen, onClose, type, defaultPosition}: MemeModalProps) => {
   const [index, setIndex] = useState(getRandomMemeIndex(type))
   useEffect(() => {
     if (isOpen) {
@@ -76,7 +77,7 @@ const MemeModal = ({isOpen, onClose, type}: MemeModalProps) => {
   const windowWidth = window.innerWidth;
   const windowHeight = window.innerHeight;
   return <Modal
-    defaultPosition={{x: -1 * windowWidth / 4, y: windowHeight / 4}}
+    defaultPosition={defaultPosition ? defaultPosition : {x: -1 * windowWidth / 4, y: windowHeight / 4}}
     name={"meme_modal"}
     size={"xs"}
     isOpen={isOpen}
