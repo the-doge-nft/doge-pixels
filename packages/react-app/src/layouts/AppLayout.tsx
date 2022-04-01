@@ -11,8 +11,9 @@ import BigText from "../DSL/BigText/BigText";
 import UserMenu from "./UserMenu";
 import Typography, {TVariant} from "../DSL/Typography/Typography";
 import {Type} from "../DSL/Fonts/Fonts";
-import { motion } from "framer-motion";
+import {motion} from "framer-motion";
 import {isDevModeEnabled} from "../environment/helpers";
+import {MonaButton, MonaModal} from "../common/Mona/Mona";
 
 interface AppLayoutProps {
   children?: any;
@@ -74,7 +75,7 @@ const AppLayout = observer(function AppLayout({children}: AppLayoutProps) {
   );
 });
 
-const Footer = () => {
+const Footer = observer(() => {
   const contributers: { name: string, socialLink: string }[] = [
     {name: "coldplunge", socialLink: "https://twitter.com/xcoldplunge"},
     {name: "gainormather", socialLink: "https://twitter.com/gainormather"},
@@ -82,42 +83,55 @@ const Footer = () => {
     {name: "nemochips", socialLink: "https://twitter.com/nemo__chips"}
   ]
   return <Box w={"full"} mt={5}>
-    <Box>
-      <Typography variant={TVariant.ComicSans12}>
-        Built by
-        {contributers.map((person, index, arr) => <Link
-          key={`${person.name}`}
-          fontWeight={"bold"}
-          variant={Type.ComicSans}
-          mx={1}
-          href={person.socialLink}
-          isExternal>
-          {person.name}
-          {index === arr.length - 1 ? "" : ","}
-        </Link>)}
-        with support from
-        <Link fontWeight={"bold"} variant={Type.ComicSans} mx={1} href={"https://twitter.com/ownthedoge"} isExternal>
-          The Doge NFT
-        </Link>
-      </Typography>
-    </Box>
+    <Flex justifyContent={"space-between"}>
+      <Box>
+        <Typography variant={TVariant.ComicSans12}>
+          Built by
+          {contributers.map((person, index, arr) => <Link
+            key={`${person.name}`}
+            fontWeight={"bold"}
+            variant={Type.ComicSans}
+            mx={1}
+            href={person.socialLink}
+            isExternal>
+            {person.name}
+            {index === arr.length - 1 ? "" : ","}
+          </Link>)}
+          with support from
+          <Link fontWeight={"bold"} variant={Type.ComicSans} mx={1} href={"https://twitter.com/ownthedoge"} isExternal>
+            The Doge NFT
+          </Link>
+        </Typography>
+      </Box>
+      <Box>
+        <MonaButton/>
+      </Box>
+    </Flex>
+    <MonaModal/>
   </Box>
-}
+})
 
 const MobileNav = observer(() => {
   const {colorMode} = useColorMode()
   return <Flex
+    flexDirection={"column"}
     bottom={0}
     zIndex={3}
     height={"100px"}
     borderTopStyle={"solid"}
     borderTopWidth={"1px"}
-    alignItems={"center"}
-    justifyContent={"space-around"}
+    justifyContent={"center"}
+    alignItems={"space-around"}
     bg={colorMode === "light" ? "yellow.50" : "purple.700"}
     borderTopColor={colorMode === "light" ? "black" : "white"}
   >
-    <Links isMobile/>
+    <Flex justifyContent={"space-around"}>
+      <Links isMobile/>
+    </Flex>
+    <Flex justifyContent={"center"}>
+      <MonaButton/>
+    </Flex>
+    <MonaModal/>
   </Flex>
 })
 
@@ -210,7 +224,7 @@ const Title = () => {
     userSelect={"none"}
   >
     <BigText size={"sm"}>
-      DOGE PIXEL PORTAL
+      MONA PIXEL PORTAL
     </BigText>
   </Box>
 }
