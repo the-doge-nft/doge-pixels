@@ -2,7 +2,7 @@ import React, {useEffect, useRef, useState} from "react";
 import * as THREE from "three";
 import {Object3D} from "three";
 import {Canvas, useLoader} from "@react-three/fiber";
-import Mona from '../../images/mona.png'
+import Kobosu from "../../images/THE_ACTUAL_NFT_IMAGE.png"
 import {Box, useColorMode} from "@chakra-ui/react";
 import {createCanvasPixelSelectionSetter, getWorldPixelCoordinate, resizeCanvas} from "./helpers";
 import {onPixelSelectType} from "./Viewer.page";
@@ -43,7 +43,7 @@ const ThreeScene = observer(({onPixelSelect, store}: ThreeSceneProps) => {
   const tooltipRef = useRef<HTMLDivElement | null>(null);
 
   // Load texture & init some vars
-  const texture = useLoader(THREE.TextureLoader, Mona);
+  const texture = useLoader(THREE.TextureLoader, Kobosu);
   texture.magFilter = THREE.NearestFilter;
   // avoid texture resizing to power of 2
   // https://stackoverflow.com/questions/55175351/remove-texture-has-been-resized-console-logs-in-three-js

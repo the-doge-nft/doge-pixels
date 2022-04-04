@@ -13,9 +13,8 @@ import ThisIsFineDoge from "../../images/meme/burn/thisisfine.jpg"
 import AtTheTableDoge from "../../images/meme/burn/atthetable.gif";
 import DisasterDoge from "../../images/meme/burn/dogedisaster.png"
 
-import MonaDoge from "../../images/meme/pam_meme.png"
 
-type MemeType = "burn" | "mint" | "mona"
+type MemeType = "burn" | "mint"
 interface MemeModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -38,18 +37,14 @@ const MintMemes = [
   SchoolOfDoge
 ]
 
-const MonaMeme = [
-  MonaDoge
-]
-
-const getRandomMemeIndex = (type: "burn" | "mint" | "mona") => {
+const getRandomMemeIndex = (type: "burn" | "mint") => {
   let length: number
   if (type === "burn") {
     length = BurnMemes.length
   } else if (type === "mint") {
     length = MintMemes.length
   } else {
-    length = MonaMeme.length
+    throw new Error("Unknown meme type")
   }
   return Math.floor(Math.random()*length)
 }
@@ -59,8 +54,6 @@ const getImageByType = (type: "burn" | "mint" | "mona", index: number) => {
     return BurnMemes[index]
   } else if (type === "mint") {
     return MintMemes[index]
-  } else if (type === "mona") {
-    return MonaMeme[index]
   } else {
     throw new Error("Unknown modal type")
   }
