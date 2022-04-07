@@ -11,3 +11,6 @@ typechain
 #Hardhat files
 cache
 artifacts
+
+.env.production
+.env.development
