@@ -13,11 +13,14 @@ import ThisIsFineDoge from "../../images/meme/burn/thisisfine.jpg"
 import AtTheTableDoge from "../../images/meme/burn/atthetable.gif";
 import DisasterDoge from "../../images/meme/burn/dogedisaster.png"
 
-type MemeType = "burn" | "mint"
+import MonaDoge from "../../images/meme/pam_meme.png"
+
+type MemeType = "burn" | "mint" | "mona"
 interface MemeModalProps {
   isOpen: boolean;
   onClose: () => void;
-  type: MemeType
+  type: MemeType;
+  defaultPosition?: {x: number, y: number}
 }
 const BurnMemes = [
   GrassFadeDoge,
@@ -35,25 +38,35 @@ const MintMemes = [
   SchoolOfDoge
 ]
 
-const getRandomMemeIndex = (type: "burn" | "mint") => {
+const MonaMeme = [
+  MonaDoge
+]
+
+const getRandomMemeIndex = (type: "burn" | "mint" | "mona") => {
   let length: number
   if (type === "burn") {
     length = BurnMemes.length
-  } else {
+  } else if (type === "mint") {
     length = MintMemes.length
+  } else {
+    length = MonaMeme.length
   }
   return Math.floor(Math.random()*length)
 }
 
-const getImageByType = (type: "burn" | "mint", index: number) => {
+const getImageByType = (type: "burn" | "mint" | "mona", index: number) => {
   if (type === "burn") {
     return BurnMemes[index]
-  } else {
+  } else if (type === "mint") {
     return MintMemes[index]
+  } else if (type === "mona") {
+    return MonaMeme[index]
+  } else {
+    throw new Error("Unknown modal type")
   }
 }
 
-const MemeModal = ({isOpen, onClose, type}: MemeModalProps) => {
+const MemeModal = ({isOpen, onClose, type, defaultPosition}: MemeModalProps) => {
   const [index, setIndex] = useState(getRandomMemeIndex(type))
   useEffect(() => {
     if (isOpen) {
@@ -64,7 +77,7 @@ const MemeModal = ({isOpen, onClose, type}: MemeModalProps) => {
   const windowWidth = window.innerWidth;
   const windowHeight = window.innerHeight;
   return <Modal
-    defaultPosition={{x: -1 * windowWidth / 4, y: windowHeight / 4}}
+    defaultPosition={defaultPosition ? defaultPosition : {x: -1 * windowWidth / 4, y: windowHeight / 4}}
     name={"meme_modal"}
     size={"xs"}
     isOpen={isOpen}
