@@ -80,3 +80,6 @@ packages/validation-tool
 **/.env
 
 tools/
+
+# ignore all workflows for now
+.github
