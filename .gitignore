@@ -83,3 +83,5 @@ tools/
 
 # ignore all workflows for now
 .github
+calebtools
+
