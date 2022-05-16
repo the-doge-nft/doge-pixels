@@ -132,7 +132,7 @@ module.exports = {
     },
   },
   etherscan: {
-    apiKey: 'G8RCXJHC9VW4J2G3X7DK1R6G5YNYR5CEJ8'
+    apiKey: process.env.ETHERSCAN_API_KEY
   },
   tenderly: {
     project: 'DOG_DEPLOY',

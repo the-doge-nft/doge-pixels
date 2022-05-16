@@ -13,7 +13,6 @@ import Typography, {TVariant} from "../DSL/Typography/Typography";
 import {Type} from "../DSL/Fonts/Fonts";
 import {motion} from "framer-motion";
 import {isDevModeEnabled} from "../environment/helpers";
-import {MonaButton, MonaModal} from "../common/Mona/Mona";
 
 interface AppLayoutProps {
   children?: any;
@@ -103,11 +102,7 @@ const Footer = observer(() => {
           </Link>
         </Typography>
       </Box>
-      <Box>
-        <MonaButton/>
-      </Box>
     </Flex>
-    <MonaModal/>
   </Box>
 })
 
@@ -128,10 +123,6 @@ const MobileNav = observer(() => {
     <Flex justifyContent={"space-around"}>
       <Links isMobile/>
     </Flex>
-    <Flex justifyContent={"center"}>
-      <MonaButton/>
-    </Flex>
-    <MonaModal/>
   </Flex>
 })
 
@@ -224,7 +215,7 @@ const Title = () => {
     userSelect={"none"}
   >
     <BigText size={"sm"}>
-      MONA PIXEL PORTAL
+      DOGE PIXEL PORTAL
     </BigText>
   </Box>
 }
