@@ -1,7 +1,7 @@
 const developmentEnv = {
   api: {
     baseURL: "https://dev.gainormather.xyz",
-    // proxyURL: "http://localhost:3000"
+    // proxyURL: "http://localhost:3003"
   },
   redirectAfterLogoutURL: "/",
 };

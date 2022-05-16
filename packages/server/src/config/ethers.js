@@ -32,10 +32,8 @@ class EthersHandler {
     this.initWS()
   }
 
-  getAddressMapDebounced(from, to, tokenID) {
-    logger.info("PX transfer event detected")
-    logger.info(`${from}:${to}:${tokenID}`)
-    return debounce(() => getAddressToOwnershipMap(this), 500, {maxWait: 10 * 1000})
+  getAddressMap() {
+    return getAddressToOwnershipMap(this)
   }
 
   initWS() {
@@ -51,15 +49,15 @@ class EthersHandler {
     this.PXContract = new ethers.Contract(this.pxContractInfo["address"], this.pxContractInfo["abi"], this.provider)
     this.DOGContract = new ethers.Contract(this.dogContractInfo["address"], this.dogContractInfo["abi"], this.provider)
 
-
     // build initial map
-    getAddressToOwnershipMap(this)
+    this.getAddressMap()
 
     const listenDebugString = `Listening to PX contract: ${this.PXContract.address} 👂`
     logger.info(listenDebugString)
     sentryClient.captureMessage(listenDebugString)
 
-    this.PXContract.on('Transfer(address,address,uint256)', this.getAddressMapDebounced)
+    // update the address map on transfer
+    this.PXContract.on('Transfer(address,address,uint256)', debounce(this.getAddressMap.bind(this), 500, {maxWait: 2 * 1000}))
 
     if (app_env !== "test") {
       keepAlive({
