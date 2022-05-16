@@ -3,6 +3,7 @@ module.exports = {
     name   : "dog_server",
     script : "./src/index.js",
     watch: ["src"],
+    ignore_watch: ["./combined.log"]
   }],
   deploy: {
     development: {

@@ -93,7 +93,7 @@ const routes: AppRouteInterface[] = [
     layout: AppLayout,
     component: ViewerPage,
     desktopName: "Portal",
-    mobileName: "MONA",
+    mobileName: "DOGE",
     showOnMobile: true,
     showOnDesktop: true,
     order: 0
