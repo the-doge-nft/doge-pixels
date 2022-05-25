@@ -2,6 +2,7 @@ const ethers = require("ethers")
 const {redisClient} = require("../../config/redis")
 const logger = require("../../config/config");
 const {env} = require("../../config/vars");
+const vars = require("../../config/vars");
 
 
 function removeZeroAddress(source) {
@@ -102,7 +103,19 @@ async function getAddressToOwnershipMap(EthersClient) {
 
   let addressToPuppers = {}
   const filter = EthersClient.PXContract.filters.Transfer(null, null)
-  const logs = await EthersClient.PXContract.queryFilter(filter)
+  const fromBlock = Number(vars.contract_block_number_deployment)
+  const toBlock = (await EthersClient.provider.getBlock()).number
+
+  // infura limits the response to 10k items per response. we grab them in chunks here
+  // https://docs.infura.io/infura/networks/ethereum/json-rpc-methods/eth_getlogs
+  let logs = []
+  const step = 50000
+  logger.info(`beginning to process block range: ${fromBlock} -> ${toBlock}`)
+  for (let i = fromBlock; i <= toBlock; i += step + 1) {
+    logger.info(`processing from: ${i} to ${i + step}`)
+    const _logs = await EthersClient.PXContract.queryFilter(filter, i, i+step)
+    logs.push(..._logs)
+  }
 
   for (const tx of logs) {
     const {from, to} = tx.args

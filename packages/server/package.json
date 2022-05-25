@@ -21,7 +21,7 @@
     "winston": "^3.3.3"
   },
   "scripts": {
-    "dev": "yarn prestart && pm2 start ecosystem.config.js --env development --watch",
+    "dev": "yarn prestart && pm2 start ecosystem.config.js --env development --watch --time",
     "dev:start": "yarn prestart && pm2 start ecosystem.config.js --env development --time",
     "prod:start": "yarn prestart && pm2 start ecosystem.config.js --env production --time",
     "dev:deploy": "pm2 deploy development",

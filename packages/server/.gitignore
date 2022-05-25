@@ -12,5 +12,5 @@ typechain
 cache
 artifacts
 
-.env.production
-.env.development
+src/.env.production
+src/.env

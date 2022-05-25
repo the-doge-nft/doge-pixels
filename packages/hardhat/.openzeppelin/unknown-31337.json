@@ -7,7 +7,7 @@
       "hash": "0xd5d6b277aefee59de04bd60597ca05b8bea8b677c1ff91c0fbdcb02b2615fb57",
       "type": 2,
       "accessList": [],
-      "blockHash": "0x1c32ab69e7ba60805aa5c9014a12d741bea203561f31e4691e2aeed4d47a17a0",
+      "blockHash": "0x13b92d34971bf4add7b6f668419c00d3f2caa58b718092c16f21d532b733bb2c",
       "blockNumber": 2,
       "transactionIndex": 0,
       "confirmations": 1,
@@ -44,6 +44,16 @@
   },
   "proxies": [
     {
+      "address": "0x8A791620dd6260079BF849Dc5567aDC3F2FdC318",
+      "txHash": "0xc6b65eebbdb653f731a705329f3fc105009babe6b4008bc2918ad81685a5230c",
+      "kind": "transparent"
+    },
+    {
+      "address": "0xB7f8BC63BbcaD18155201308C8f3540b07f84F5e",
+      "txHash": "0xae31b3554f8d430c15cebb7903137293961d018d3f3da656cb6621fc05c0ff61",
+      "kind": "transparent"
+    },
+    {
       "address": "0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0",
       "txHash": "0xa5ea55447852ec186785167482aa8ab4051332202e7c64755f905c5d3678c083",
       "kind": "transparent"
@@ -52,12 +62,22 @@
       "address": "0x5FC8d32690cc91D4c39d9d3abcBD16989F875707",
       "txHash": "0x4787e7e90bfc6784b6d872ce5ebd8214ea746ae50177c69aea27c8eb32c045f6",
       "kind": "transparent"
+    },
+    {
+      "address": "0x09635F643e140090A9A8Dcd712eD6285858ceBef",
+      "txHash": "0x7864d181fc805417a44ccfb2fd0570c9f111057955f7702820b4d8502f430b4f",
+      "kind": "transparent"
+    },
+    {
+      "address": "0x67d269191c92Caf3cD7723F116c85e6E9bf55933",
+      "txHash": "0x4e84c9b9309f7a3d1a0da4adf16d6f644188c9ff7b8e4e4650ca784246338d7f",
+      "kind": "transparent"
     }
   ],
   "impls": {
     "81c7b4839cc880b2c5fedfe7c7ebc63c32033b9fb885d387d83afa85228847de": {
       "address": "0x5FbDB2315678afecb367f032d93F642f64180aa3",
-      "txHash": "0xc64f57cf128eba2345a347f3a21658919a9d5f689a40f1fa0c3da77bfc8baf63",
+      "txHash": "0x332a8c5a31826660a539f5bdf88166bbfd2fc43bc2d89d9b2a63574940a2fc1d",
       "layout": {
         "storage": [
           {
@@ -145,7 +165,7 @@
     },
     "92acba745a3940eb336f1aea917bfcfe98b3e0a2cb1dd632fa6e84ece798ae1d": {
       "address": "0xDc64a140Aa3E981100a9becA4E685f962f0cF6C9",
-      "txHash": "0x4b8be8d1d4b9b7514f0be11340e31549eb4f3b030541a2c0103038f350845c5a",
+      "txHash": "0x48f0522a3a02aff8e79a8df08bed242d482e59c2e60a3b28e09c8ea936924e84",
       "layout": {
         "storage": [
           {
@@ -212,97 +232,299 @@
             "contract": "ERC721CustomUpgradeable",
             "label": "__gap",
             "type": "t_array(t_uint256)44_storage",
-            "src": "contracts/token/PX/ERC721CustomUpgradeable.sol:431"
+            "src": "contracts/token/PX/ERC721CustomUpgradeable.sol:432"
           },
           {
             "contract": "PX",
             "label": "DOG20",
             "type": "t_contract(IERC20)4708",
-            "src": "contracts/token/PX/PX.sol:18"
+            "src": "contracts/token/PX/PX.sol:17"
           },
           {
             "contract": "PX",
             "label": "puppersRemaining",
             "type": "t_uint256",
-            "src": "contracts/token/PX/PX.sol:28"
+            "src": "contracts/token/PX/PX.sol:27"
           },
           {
             "contract": "PX",
             "label": "totalSupply",
             "type": "t_uint256",
-            "src": "contracts/token/PX/PX.sol:31"
+            "src": "contracts/token/PX/PX.sol:29"
           },
           {
             "contract": "PX",
             "label": "indexToPupper",
             "type": "t_mapping(t_uint256,t_uint256)",
-            "src": "contracts/token/PX/PX.sol:34"
+            "src": "contracts/token/PX/PX.sol:32"
           },
           {
             "contract": "PX",
             "label": "pupperToIndex",
             "type": "t_mapping(t_uint256,t_uint256)",
-            "src": "contracts/token/PX/PX.sol:36"
+            "src": "contracts/token/PX/PX.sol:34"
           },
           {
             "contract": "PX",
             "label": "DOG_TO_PIXEL_SATOSHIS",
             "type": "t_uint256",
-            "src": "contracts/token/PX/PX.sol:39"
+            "src": "contracts/token/PX/PX.sol:36"
           },
           {
             "contract": "PX",
             "label": "INDEX_OFFSET",
             "type": "t_uint256",
-            "src": "contracts/token/PX/PX.sol:41"
+            "src": "contracts/token/PX/PX.sol:38"
           },
           {
             "contract": "PX",
             "label": "MAGIC_NULL",
             "type": "t_uint256",
-            "src": "contracts/token/PX/PX.sol:43"
+            "src": "contracts/token/PX/PX.sol:40"
           },
           {
             "contract": "PX",
             "label": "SHIBA_WIDTH",
             "type": "t_uint256",
-            "src": "contracts/token/PX/PX.sol:45"
+            "src": "contracts/token/PX/PX.sol:42"
           },
           {
             "contract": "PX",
             "label": "SHIBA_HEIGHT",
             "type": "t_uint256",
-            "src": "contracts/token/PX/PX.sol:46"
+            "src": "contracts/token/PX/PX.sol:43"
           },
           {
             "contract": "PX",
             "label": "BASE_URI",
             "type": "t_string_storage",
-            "src": "contracts/token/PX/PX.sol:47"
+            "src": "contracts/token/PX/PX.sol:44"
           },
           {
             "contract": "PX",
             "label": "DOG20_FEES_ADDRESS_DEV",
             "type": "t_address",
-            "src": "contracts/token/PX/PX.sol:49"
+            "src": "contracts/token/PX/PX.sol:46"
           },
           {
             "contract": "PX",
             "label": "DOG20_FEES_ADDRESS_PLEASR",
             "type": "t_address",
-            "src": "contracts/token/PX/PX.sol:50"
+            "src": "contracts/token/PX/PX.sol:47"
           },
           {
             "contract": "PX",
             "label": "DOG20_FEES_AMOUNT_DEV",
             "type": "t_uint256",
-            "src": "contracts/token/PX/PX.sol:51"
+            "src": "contracts/token/PX/PX.sol:48"
           },
           {
             "contract": "PX",
             "label": "DOG20_FEES_AMOUNT_PLEASR",
             "type": "t_uint256",
-            "src": "contracts/token/PX/PX.sol:52"
+            "src": "contracts/token/PX/PX.sol:49"
+          }
+        ],
+        "types": {
+          "t_contract(IERC20)4708": {
+            "label": "contract IERC20"
+          },
+          "t_uint256": {
+            "label": "uint256"
+          },
+          "t_mapping(t_uint256,t_uint256)": {
+            "label": "mapping(uint256 => uint256)"
+          },
+          "t_string_storage": {
+            "label": "string"
+          },
+          "t_address": {
+            "label": "address"
+          },
+          "t_mapping(t_uint256,t_address)": {
+            "label": "mapping(uint256 => address)"
+          },
+          "t_mapping(t_address,t_uint256)": {
+            "label": "mapping(address => uint256)"
+          },
+          "t_mapping(t_address,t_mapping(t_address,t_bool))": {
+            "label": "mapping(address => mapping(address => bool))"
+          },
+          "t_mapping(t_address,t_bool)": {
+            "label": "mapping(address => bool)"
+          },
+          "t_bool": {
+            "label": "bool"
+          },
+          "t_array(t_uint256)44_storage": {
+            "label": "uint256[44]"
+          },
+          "t_array(t_uint256)50_storage": {
+            "label": "uint256[50]"
+          }
+        }
+      }
+    },
+    "3ec9fcd00b2a0be58a137545d8a19f07470d5c5a2f2b7a503e646e877174a969": {
+      "address": "0x84eA74d481Ee0A5332c457a4d796187F6Ba67fEB",
+      "txHash": "0xcb7a496b70363c625ccf20ebd45c44f1ae1318c674e8810fb39a86ee0fe953a1",
+      "layout": {
+        "storage": [
+          {
+            "contract": "Initializable",
+            "label": "_initialized",
+            "type": "t_bool",
+            "src": "contracts/proxy/utils/Initializable.sol:37"
+          },
+          {
+            "contract": "Initializable",
+            "label": "_initializing",
+            "type": "t_bool",
+            "src": "contracts/proxy/utils/Initializable.sol:42"
+          },
+          {
+            "contract": "ContextUpgradeable",
+            "label": "__gap",
+            "type": "t_array(t_uint256)50_storage",
+            "src": "contracts/utils/ContextUpgradeable.sol:31"
+          },
+          {
+            "contract": "ERC165Upgradeable",
+            "label": "__gap",
+            "type": "t_array(t_uint256)50_storage",
+            "src": "contracts/utils/introspection/ERC165Upgradeable.sol:36"
+          },
+          {
+            "contract": "ERC721CustomUpgradeable",
+            "label": "_name",
+            "type": "t_string_storage",
+            "src": "contracts/token/PX/ERC721CustomUpgradeable.sol:25"
+          },
+          {
+            "contract": "ERC721CustomUpgradeable",
+            "label": "_symbol",
+            "type": "t_string_storage",
+            "src": "contracts/token/PX/ERC721CustomUpgradeable.sol:28"
+          },
+          {
+            "contract": "ERC721CustomUpgradeable",
+            "label": "_owners",
+            "type": "t_mapping(t_uint256,t_address)",
+            "src": "contracts/token/PX/ERC721CustomUpgradeable.sol:31"
+          },
+          {
+            "contract": "ERC721CustomUpgradeable",
+            "label": "_balances",
+            "type": "t_mapping(t_address,t_uint256)",
+            "src": "contracts/token/PX/ERC721CustomUpgradeable.sol:34"
+          },
+          {
+            "contract": "ERC721CustomUpgradeable",
+            "label": "_tokenApprovals",
+            "type": "t_mapping(t_uint256,t_address)",
+            "src": "contracts/token/PX/ERC721CustomUpgradeable.sol:37"
+          },
+          {
+            "contract": "ERC721CustomUpgradeable",
+            "label": "_operatorApprovals",
+            "type": "t_mapping(t_address,t_mapping(t_address,t_bool))",
+            "src": "contracts/token/PX/ERC721CustomUpgradeable.sol:40"
+          },
+          {
+            "contract": "ERC721CustomUpgradeable",
+            "label": "__gap",
+            "type": "t_array(t_uint256)44_storage",
+            "src": "contracts/token/PX/ERC721CustomUpgradeable.sol:432"
+          },
+          {
+            "contract": "PX",
+            "label": "DOG20",
+            "type": "t_contract(IERC20)4708",
+            "src": "contracts/token/PX/PX.sol:17"
+          },
+          {
+            "contract": "PX",
+            "label": "puppersRemaining",
+            "type": "t_uint256",
+            "src": "contracts/token/PX/PX.sol:27"
+          },
+          {
+            "contract": "PX",
+            "label": "totalSupply",
+            "type": "t_uint256",
+            "src": "contracts/token/PX/PX.sol:29"
+          },
+          {
+            "contract": "PX",
+            "label": "indexToPupper",
+            "type": "t_mapping(t_uint256,t_uint256)",
+            "src": "contracts/token/PX/PX.sol:32"
+          },
+          {
+            "contract": "PX",
+            "label": "pupperToIndex",
+            "type": "t_mapping(t_uint256,t_uint256)",
+            "src": "contracts/token/PX/PX.sol:34"
+          },
+          {
+            "contract": "PX",
+            "label": "DOG_TO_PIXEL_SATOSHIS",
+            "type": "t_uint256",
+            "src": "contracts/token/PX/PX.sol:36"
+          },
+          {
+            "contract": "PX",
+            "label": "INDEX_OFFSET",
+            "type": "t_uint256",
+            "src": "contracts/token/PX/PX.sol:38"
+          },
+          {
+            "contract": "PX",
+            "label": "MAGIC_NULL",
+            "type": "t_uint256",
+            "src": "contracts/token/PX/PX.sol:40"
+          },
+          {
+            "contract": "PX",
+            "label": "SHIBA_WIDTH",
+            "type": "t_uint256",
+            "src": "contracts/token/PX/PX.sol:42"
+          },
+          {
+            "contract": "PX",
+            "label": "SHIBA_HEIGHT",
+            "type": "t_uint256",
+            "src": "contracts/token/PX/PX.sol:43"
+          },
+          {
+            "contract": "PX",
+            "label": "BASE_URI",
+            "type": "t_string_storage",
+            "src": "contracts/token/PX/PX.sol:44"
+          },
+          {
+            "contract": "PX",
+            "label": "DOG20_FEES_ADDRESS_DEV",
+            "type": "t_address",
+            "src": "contracts/token/PX/PX.sol:46"
+          },
+          {
+            "contract": "PX",
+            "label": "DOG20_FEES_ADDRESS_PLEASR",
+            "type": "t_address",
+            "src": "contracts/token/PX/PX.sol:47"
+          },
+          {
+            "contract": "PX",
+            "label": "DOG20_FEES_AMOUNT_DEV",
+            "type": "t_uint256",
+            "src": "contracts/token/PX/PX.sol:48"
+          },
+          {
+            "contract": "PX",
+            "label": "DOG20_FEES_AMOUNT_PLEASR",
+            "type": "t_uint256",
+            "src": "contracts/token/PX/PX.sol:49"
           }
         ],
         "types": {
