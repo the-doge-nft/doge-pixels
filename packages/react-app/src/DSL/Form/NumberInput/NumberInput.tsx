@@ -58,7 +58,7 @@ const NumberInput = observer(({
         isDisabled={isDisabled}
         isRequired={isRequired}
       >
-        <Box position={"relative"} mx={3}>
+        <Box position={"relative"} mx={3} overflow={"hidden"} overflowWrap={"anywhere"}>
           <NumberInputField
             {...restInput}
             {...rest}
@@ -67,7 +67,7 @@ const NumberInput = observer(({
             placeholder={placeholder}
           />
           {showBigInputDrop && <Typography
-            sx={{...styles.drop, top: "4px", right: "4px", left: "auto"}}
+            sx={{...styles.drop, top: "4px", right: "4px", overflowWrap: "inherit", left: "auto"}}
             variant={TVariant.PresStart95}
             block
           >
