@@ -237,23 +237,6 @@ const DevBanner = () => {
                     mx={5}>/////// ✨✨✨ rinkeby ✨✨✨ ///////</Typography>)}
             </motion.div>
         </Box>
-        <a href={"https://www.coingecko.com/en/coins/the-doge-nft#markets"} target={"_blank"}>
-            <Box py={1} bg={"black"} color={"white"} _hover={{bg: "yellow.700", color: "black"}} whiteSpace={"nowrap"} overflowX={"hidden"}>
-                <motion.div
-                    animate={{x: ["100%", "-100%"], display: "flex", alignItems: "center", padding: "3px 0px"}}
-                    transition={{x: {duration:40, repeat: Infinity, ease: "linear", repeatType: "loop"}}}
-                >
-                    {new Array(10).fill(undefined).map((item, index) => <Typography
-                        key={`dev-banner-${index}`}
-                        variant={TVariant.PresStart12}
-                        display={"flex"}
-                        alignItems={"center"}
-                        color={"inherit"}
-                        // eslint-disable-next-line
-                        mx={5}>✨✨✨ Don't have $DOG? Click here to buy ✨✨✨</Typography>)}
-                </motion.div>
-            </Box>
-        </a>
     </>
 }
 export default AppLayout;
