@@ -10,12 +10,6 @@ class _AppStore {
     @observable
     rwd: RWDStore
 
-    @observable
-    isAprilFoolsModalOpen = false
-
-    @observable
-    isAprilFoolsMemeModalOpen = false
-
     constructor() {
         makeObservable(this)
         this.web3 = new Web3Store()
