@@ -195,7 +195,7 @@ const TopDogs = observer(({store}: {store: DogParkPageStore}) => {
       <Typography variant={TVariant.PresStart20} block height={"max-content"}>Top Dogs</Typography>
       <Typography variant={TVariant.PresStart24} ml={3} height={"max-content"} block>🚀</Typography>
     </Flex>
-    <Box overflowY={"scroll"} flexGrow={1} mt={4}>
+    <Box overflowY={"auto"} flexGrow={1} mt={4}>
       <Flex flexWrap={"wrap"} maxHeight={"300px"}>
         {store.topDogs.map((dog) => <UserCard key={`top-dog-${dog.address}`} store={store} dog={dog}/>)}
       </Flex>

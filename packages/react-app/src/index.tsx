@@ -47,7 +47,7 @@ const BuyHereBanner = () => {
             py={1}
             bg={colorMode === "light" ? "black" : darkModeGradient}
             color={"white"}
-            _hover={{bg: colorMode === "light" ? "yellow.700" : "magenta.50", color: "black"}}
+            _hover={{bg: colorMode === "light" ? "yellow.700" : "magenta.50", color: colorMode === "light" ? "black" : "white"}}
              whiteSpace={"nowrap"} overflowX={"hidden"}>
             <motion.div
                 animate={{x: ["100%", "-100%"], display: "flex", alignItems: "center", padding: "3px 0px"}}
