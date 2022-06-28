@@ -14,7 +14,6 @@ import PixelPane from "../../DSL/PixelPane/PixelPane";
 import AppStore from "../../store/App.store";
 import {observer} from "mobx-react-lite";
 import Colors from "../../DSL/Colors/Colors";
-import jsonify from "../../helpers/jsonify";
 
 interface ThreeSceneProps {
     onPixelSelect: onPixelSelectType;
