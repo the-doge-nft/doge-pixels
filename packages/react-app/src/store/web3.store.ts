@@ -12,6 +12,9 @@ import {Http} from "../services";
 import Web3providerStore, {EthersContractError, Web3ProviderConnectionError} from "./web3provider.store";
 import * as Sentry from "@sentry/react";
 import {ContractInterface} from "@ethersproject/contracts/src.ts/index";
+import {SupportedChainId} from "@cowprotocol/cow-sdk/dist/constants/chains";
+import {CowSdk, OrderKind} from "@cowprotocol/cow-sdk";
+import AppStore from "./App.store";
 
 
 interface AddressToPuppers {
@@ -50,6 +53,9 @@ class Web3Store extends Web3providerStore {
     @observable
     dogContractAddress: string
 
+    @observable
+    cowClient?: CowSdk<SupportedChainId.MAINNET>
+
     constructor() {
         super()
         makeObservable(this)
@@ -77,8 +83,9 @@ class Web3Store extends Web3providerStore {
     async connect() {
         try {
             await super.connect()
-            this.connectToContracts(this.signer!)
-            await this.errorGuardContracts()
+            // this.connectToContracts(this.signer!)
+            // await this.errorGuardContracts()
+            this.getCowClient()
             this.refreshDogBalance()
             this.refreshPupperBalance()
         } catch (e) {
@@ -90,6 +97,11 @@ class Web3Store extends Web3providerStore {
             showErrorToast("Error connecting")
           }
         }
+    }
+
+    getCowClient() {
+        //@ts-ignore
+        this.cowClient = new CowSdk(1, {signer: this.signer})
     }
 
     connectToContracts(signerOrProvider?: Signer | Provider) {
@@ -284,6 +296,20 @@ class Web3Store extends Web3providerStore {
             return false
         }
         return true
+    }
+
+    async getUSDCDogQuote() {
+        const usdcMainAddress = "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48"
+        const dogMainAddress = "0xBAac2B4491727D78D2b78815144570b9f2Fe8899"
+        const quote = await this.cowClient?.cowApi.getQuote({
+            kind: OrderKind.BUY,
+            sellToken: usdcMainAddress,
+            buyToken: dogMainAddress,
+            amount: "55239898990000000000000",
+            userAddress: AppStore.web3.address,
+            validTo: 2524608000
+        })
+        return quote
     }
 }
 

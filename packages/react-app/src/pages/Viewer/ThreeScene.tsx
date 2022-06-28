@@ -273,7 +273,7 @@ const ThreeScene = observer(({onPixelSelect, store}: ThreeSceneProps) => {
                 <Button size={"sm"}
                         variant={ButtonVariant.Text}
                         onClick={() => camera.position.z = CameraPositionZ.close + 50}>+++</Button>
-                <Button size={"sm"} variant={ButtonVariant.Text} onClick={() => setShowOwned(!showOwned)}>show owned</Button>
+                <Button size={"sm"} variant={ButtonVariant.Text} onClick={() => setShowOwned(!showOwned)}>{showOwned ? "hide" : "show"} owned</Button>
             </Box>
         </Box>
     );
