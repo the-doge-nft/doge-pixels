@@ -249,7 +249,7 @@ const ThreeScene = observer(({onPixelSelect, store}: ThreeSceneProps) => {
                         return tokens?.map(token => {
                             const [x, y] = AppStore.web3.pupperToPixelCoordsLocal(token)
                             const xPos = x - (overlayLength / 2)
-                            const yPos = -1*y - (overlayLength / 2)
+                            const yPos = -1 * y - (overlayLength / 2)
                             return <mesh position={[xPos, yPos, 0.0001]} visible={true}>
                                 <planeGeometry attach={"geometry"} args={[overlayLength, overlayLength]}/>
                                 <meshBasicMaterial attach={"material"} color={ownedPixelColor} opacity={0.8}
@@ -273,7 +273,8 @@ const ThreeScene = observer(({onPixelSelect, store}: ThreeSceneProps) => {
                 <Button size={"sm"}
                         variant={ButtonVariant.Text}
                         onClick={() => camera.position.z = CameraPositionZ.close + 50}>+++</Button>
-                <Button size={"sm"} variant={ButtonVariant.Text} onClick={() => setShowOwned(!showOwned)}>{showOwned ? "hide" : "show"} owned</Button>
+                <Button size={"sm"} variant={ButtonVariant.Text}
+                        onClick={() => setShowOwned(!showOwned)}>{showOwned ? "hide" : "show"} owned</Button>
             </Box>
         </Box>
     );

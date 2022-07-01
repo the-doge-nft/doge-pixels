@@ -83,8 +83,8 @@ class Web3Store extends Web3providerStore {
     async connect() {
         try {
             await super.connect()
-            // this.connectToContracts(this.signer!)
-            // await this.errorGuardContracts()
+            this.connectToContracts(this.signer!)
+            await this.errorGuardContracts()
             this.getCowClient()
             this.refreshDogBalance()
             this.refreshPupperBalance()
@@ -108,15 +108,15 @@ class Web3Store extends Web3providerStore {
         let pxABI: ContractInterface
         let dogABI: ContractInterface
 
-        if (isDevModeEnabled()) {
-            pxABI = deployedContracts["4"]["rinkeby"]["contracts"]["PX"].abi
-            dogABI = deployedContracts["4"]["rinkeby"]["contracts"]["DOG20"].abi
-        } else if (isProduction()) {
+        // if (isDevModeEnabled()) {
+        //     pxABI = deployedContracts["4"]["rinkeby"]["contracts"]["PX"].abi
+        //     dogABI = deployedContracts["4"]["rinkeby"]["contracts"]["DOG20"].abi
+        // } else if (isProduction()) {
             pxABI = deployedContracts["1"]["mainnet"]["contracts"]["PX"].abi
             dogABI = deployedContracts["1"]["mainnet"]["contracts"]["DOG20"].abi
-        } else {
-            throw Error("Uknown environment found when connecting to contracts")
-        }
+        // } else {
+        //     throw Error("Uknown environment found when connecting to contracts")
+        // }
 
         const px = new Contract(
             this.pxContractAddress,
