@@ -60,18 +60,22 @@ class Web3providerStore {
       throw new Web3ProviderConnectionError()
     }
 
-    // await this.validateNetwork()
+    await this.validateNetwork()
   }
 
   async validateNetwork() {
       if (this.network?.name) {
           if (isDevModeEnabled()) {
-              if (this.network.name !== "rinkeby") {
-                  showErrorToast("Please connect to Rinkeby.")
-                  await this.disconnect()
+              // if (this.network.name !== "rinkeby") {
+              //     showErrorToast("Please connect to Rinkeby.")
+              //     await this.disconnect()
+              // }
+
+              if (this.network.name !== "homestead") {
+                showErrorToast("Please connect to Mainnet.")
+                await this.disconnect()
               }
           } else if (isProduction()) {
-              // @TODO change to homestead
               if (this.network.name !== "homestead") {
                   showErrorToast("Please connect to Mainnet.")
                   await this.disconnect()

@@ -16,7 +16,6 @@ import {SupportedChainId} from "@cowprotocol/cow-sdk/dist/constants/chains";
 import {CowSdk, OrderKind} from "@cowprotocol/cow-sdk";
 import AppStore from "./App.store";
 
-
 interface AddressToPuppers {
     [k: string]: {
         tokenIDs: number[],
@@ -62,8 +61,12 @@ class Web3Store extends Web3providerStore {
         this.addressToPuppers = {}
 
         if (isDevModeEnabled()) {
-            this.pxContractAddress = deployedContracts["4"]["rinkeby"]["contracts"]["PX"]["address"]
-            this.dogContractAddress = deployedContracts["4"]["rinkeby"]["contracts"]["DOG20"]["address"]
+            // this.pxContractAddress = deployedContracts["4"]["rinkeby"]["contracts"]["PX"]["address"]
+            // this.dogContractAddress = deployedContracts["4"]["rinkeby"]["contracts"]["DOG20"]["address"]
+
+            // todo -- remove this
+            this.pxContractAddress = deployedContracts["1"]["mainnet"]["contracts"]["PX"]["address"]
+            this.dogContractAddress = deployedContracts["1"]["mainnet"]["contracts"]["DOG20"]["address"]
         } else if (isProduction()) {
             this.pxContractAddress = deployedContracts["1"]["mainnet"]["contracts"]["PX"]["address"]
             this.dogContractAddress = deployedContracts["1"]["mainnet"]["contracts"]["DOG20"]["address"]
@@ -89,34 +92,36 @@ class Web3Store extends Web3providerStore {
             this.refreshDogBalance()
             this.refreshPupperBalance()
         } catch (e) {
-          if (e instanceof Web3ProviderConnectionError) {
-            // pass
-          } else {
-            console.error(e)
-            Sentry.captureException(e)
-            showErrorToast("Error connecting")
-          }
+            if (e instanceof Web3ProviderConnectionError) {
+                // pass
+            } else {
+                console.error(e)
+                Sentry.captureException(e)
+                showErrorToast("Error connecting")
+            }
         }
     }
 
     getCowClient() {
-        //@ts-ignore
-        this.cowClient = new CowSdk(1, {signer: this.signer})
+        if (this.signer) {
+            //@ts-ignore
+            this.cowClient = new CowSdk(1, {signer: this.signer})
+        }
     }
 
     connectToContracts(signerOrProvider?: Signer | Provider) {
         let pxABI: ContractInterface
         let dogABI: ContractInterface
 
-        // if (isDevModeEnabled()) {
-        //     pxABI = deployedContracts["4"]["rinkeby"]["contracts"]["PX"].abi
-        //     dogABI = deployedContracts["4"]["rinkeby"]["contracts"]["DOG20"].abi
-        // } else if (isProduction()) {
+        if (isDevModeEnabled()) {
+            pxABI = deployedContracts["4"]["rinkeby"]["contracts"]["PX"].abi
+            dogABI = deployedContracts["4"]["rinkeby"]["contracts"]["DOG20"].abi
+        } else if (isProduction()) {
             pxABI = deployedContracts["1"]["mainnet"]["contracts"]["PX"].abi
             dogABI = deployedContracts["1"]["mainnet"]["contracts"]["DOG20"].abi
-        // } else {
-        //     throw Error("Uknown environment found when connecting to contracts")
-        // }
+        } else {
+            throw Error("Uknown environment found when connecting to contracts")
+        }
 
         const px = new Contract(
             this.pxContractAddress,
@@ -173,11 +178,11 @@ class Web3Store extends Web3providerStore {
     }
 
     getPupperOwnershipMap() {
-        return Http.get("/v1/config").then(({ data }) => this.addressToPuppers = data)
+        return Http.get("/v1/config").then(({data}) => this.addressToPuppers = data)
     }
 
     refreshPupperOwnershipMap() {
-        return Http.get("/v1/config/refresh").then(({ data }) => this.addressToPuppers = data)
+        return Http.get("/v1/config/refresh").then(({data}) => this.addressToPuppers = data)
     }
 
     getShibaDimensions() {
@@ -298,16 +303,19 @@ class Web3Store extends Web3providerStore {
         return true
     }
 
-    async getUSDCDogQuote() {
-        const usdcMainAddress = "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48"
-        const dogMainAddress = "0xBAac2B4491727D78D2b78815144570b9f2Fe8899"
+    async getQuoteForPixels({sellAddress, amountPixels}: {sellAddress: string, amountPixels: string | number}) {
+        const tomorrow = new Date()
+        tomorrow.setHours(tomorrow.getHours() + 1)
+        const validTo = Math.floor(tomorrow.getTime() / 1000)
+        const DOGAddress = this.dogContractAddress
+        const amount = this.DOG_TO_PIXEL_SATOSHIS.mul(amountPixels).toString()
         const quote = await this.cowClient?.cowApi.getQuote({
             kind: OrderKind.BUY,
-            sellToken: usdcMainAddress,
-            buyToken: dogMainAddress,
-            amount: "55239898990000000000000",
             userAddress: AppStore.web3.address,
-            validTo: 2524608000
+            buyToken: DOGAddress,
+            sellToken: sellAddress,
+            amount,
+            validTo,
         })
         return quote
     }

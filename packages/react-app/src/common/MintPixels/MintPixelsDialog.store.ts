@@ -7,7 +7,9 @@ import AppStore from "../../store/App.store";
 import {showDebugToast, showErrorToast} from "../../DSL/Toast/Toast";
 import {formatWithThousandsSeparators} from "../../helpers/numberFormatter";
 import * as Sentry from "@sentry/react";
-import {CowSdk, OrderKind} from "@cowprotocol/cow-sdk";
+import {SimpleGetQuoteResponse} from "@cowprotocol/cow-sdk/dist/api/cow/types";
+import env from "../../environment";
+import {debounce} from "lodash";
 
 
 export enum MintModalView {
@@ -37,6 +39,23 @@ class MintPixelsDialogStore extends Reactionable((Navigable<MintModalView, Const
     @observable
     txHash: string | null = null
 
+    @observable
+    selectedToken = "DOG"
+
+    @observable
+    quote?: SimpleGetQuoteResponse | null = null
+
+    @observable
+    recentQuote: {
+        currency: string,
+        amount: string,
+        fee: string,
+        dogAmount: string
+    } | null = null
+
+    @observable
+    isLoading = true
+
     constructor() {
         super();
         makeObservable(this);
@@ -45,12 +64,38 @@ class MintPixelsDialogStore extends Reactionable((Navigable<MintModalView, Const
     init() {
         this.pushNavigation(MintModalView.Mint);
         this.refreshAllowance()
-        this.testCow()
+        this.react(() => [this.selectedToken, this.pixel_count], () => {
+            console.log("debug:: trigger")
+            this.getQuoteDebouced()
+        })
     }
 
-    async testCow() {
-        const quote = await AppStore.web3.getUSDCDogQuote()
-        console.log("debug:: again client", quote)
+    getQuoteDebouced() {
+        console.log("debug:: hit")
+        debounce(this.getQuote.bind(this), 500)
+    }
+
+    async getQuote() {
+        console.log("debug:: change", this.selectedToken, this.pixel_count)
+        const sellAddress = env.app.availableTokens[this.selectedToken].contractAddress
+        const quote = await AppStore.web3.getQuoteForPixels({
+            sellAddress,
+            amountPixels: this.pixel_count,
+        })
+
+        const formattedAmount = this.formatToDecimals(quote!.quote.sellAmount, this.selectedToken)
+        const feeFormatted = this.formatToDecimals(quote!.quote.feeAmount, this.selectedToken)
+        this.recentQuote = {
+            currency: this.selectedToken,
+            amount: formattedAmount,
+            fee: feeFormatted,
+            dogAmount: ethers.utils.formatEther(quote!.quote.buyAmount)
+        }
+    }
+
+    formatToDecimals(amount: string, currency: string) {
+        return formatWithThousandsSeparators(BigNumber.from(amount)
+            .div((BigNumber.from(10).pow(env.app.availableTokens[currency].decimals))).toString())
     }
 
     async refreshAllowance() {
@@ -163,6 +208,14 @@ class MintPixelsDialogStore extends Reactionable((Navigable<MintModalView, Const
             default:
                 return undefined
         }
+    }
+
+    @computed
+    get selectItems() {
+        const availableTokens = env.app.availableTokens
+        const baseItems = Object.keys(availableTokens).map(token => ({id: token, name: token}))
+        baseItems.push({id: "DOG", name: "DOG"})
+        return baseItems
     }
 }
 
