@@ -24,7 +24,7 @@ async function tweet() {
                 const tokenURI = await EthersClient.PXContract.tokenURI(tokenId);
                 //0xA26461Fcf53f3E21cde8c902CA6e8e6ba9Def62f
                 const media = await uploadClient.post('media/upload', { media_data: base64image })
-                let x, y;    
+                const [x, y] = await EthersClient.PXContract.pupperToPixelCoords(tokenId);    
                 let content = `Doge Pixel(${x}, ${y}) ${initiator} by ${to}`
                 content += `<br/> <a href="pixels.ownthedoge.com/px/${tokenId}" target="_blank" />`
                 await client.post('statuses/update', 
