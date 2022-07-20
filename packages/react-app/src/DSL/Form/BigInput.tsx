@@ -45,7 +45,7 @@ function BigInput({
                         validate={validate}
                         {...model(store, storeKey)}
                         showBigInputDrop
-                        isDisabled
+                        // isDisabled
                     />
                 </GridItem>
                 {label && <GridItem

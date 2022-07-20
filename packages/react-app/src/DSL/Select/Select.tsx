@@ -1,6 +1,6 @@
 import {Box, Select as ChakraSelect} from "@chakra-ui/react";
-import Icon from "../Icon/Icon";
 import React from "react";
+import Icon from "../Icon/Icon";
 
 
 interface SelectProps {

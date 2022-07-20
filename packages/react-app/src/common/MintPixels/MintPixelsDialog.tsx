@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from "react";
 import {observer} from "mobx-react-lite";
-import {Box, Flex} from "@chakra-ui/react";
+import {Box, Flex, Spinner} from "@chakra-ui/react";
 import MintPixelsModalStore from "../../pages/Viewer/MintPixelsModal/MintPixelsModal.store";
 import Typography, {TVariant} from "../../DSL/Typography/Typography";
 import Form from "../../DSL/Form/Form";
@@ -18,6 +18,7 @@ import {getEtherscanURL} from "../../helpers/links";
 import MintPixelsDialogStore, {MintModalView} from "./MintPixelsDialog.store";
 import AppStore from "../../store/App.store";
 import Select from "../../DSL/Select/Select";
+import Icon from "../../DSL/Icon/Icon";
 
 interface MintPixelsDialogProps {
     store: MintPixelsDialogStore;
@@ -47,7 +48,7 @@ const MintPixelsDialog = observer(({store, onSuccess, onGoToPixelsClick}: MintPi
         {store.currentView === MintModalView.LoadingApproval && <LoadingApproval store={store}/>}
         {store.currentView === MintModalView.LoadingPixels && <LoadingPixels store={store}/>}
         {store.currentView === MintModalView.Complete &&
-          <Complete onSuccess={onGoToPixelsClick} txHash={store.txHash}/>}
+        <Complete onSuccess={onGoToPixelsClick} txHash={store.txHash}/>}
     </>
 })
 
@@ -55,12 +56,12 @@ const MintForm = observer(({store}: { store: MintPixelsModalStore }) => {
     const [showLabel, setShowLabel] = useState(true)
 
     useEffect(() => {
-        if (Number(store.pixel_count) >= 100) {
+        if (Number(store.pixelCount) >= 100) {
             setShowLabel(false)
-        } else if (Number(store.pixel_count && !showLabel) < 100) {
+        } else if (Number(store.pixelCount && !showLabel) < 100) {
             setShowLabel(true)
         }
-    }, [store.pixel_count])
+    }, [store.pixelCount])
 
     return (
         <>
@@ -68,12 +69,12 @@ const MintForm = observer(({store}: { store: MintPixelsModalStore }) => {
                 <Box mt={5}>
                     <BigInput
                         store={store}
-                        storeKey={"pixel_count"}
+                        storeKey={"pixelCount"}
                         label={showLabel ? "PX" : undefined}
                         validate={[
                             required("1 pixel minimum"),
                             minValue(1, "Must mint at least 1 pixel"),
-                            maxValue(store.maxPixelsToPurchase, `Not enough $DOG`)
+                            maxValue(store.maxPixelsToPurchase, `Not enough ${store.srcCurrency}`)
                         ]}
                         renderLeftOfValidation={() => {
                             return <Box>
@@ -86,34 +87,61 @@ const MintForm = observer(({store}: { store: MintPixelsModalStore }) => {
                                 <Typography variant={TVariant.PresStart12}>Mint for currency</Typography>
                                 <Box maxW="75%" mt={1}>
                                     <Select
-                                        items={store.selectItems}
-                                        value={store.selectedToken}
+                                        items={store.srcCurrencySelectItems}
+                                        value={store.srcCurrency}
                                         onChange={(val) => {
-                                            store.selectedToken = val
+                                            store.srcCurrency = val
                                         }}/>
                                 </Box>
                             </Box>
                         }}
                     />
                 </Box>
-                <Box mt={8} display="flex" justifyContent="space-between">
-                    <Box display="flex" justifyContent="center">
+
+                <Box my={6}>
+                    {store.isLoading && <Box display={"flex"} justifyContent={"center"}>
+                      <Spinner color={'yellow.700'}/>
+                    </Box>}
+                    {!store.isLoading && store.recentQuote && <>
+                      <Typography variant={TVariant.ComicSans16}>Router</Typography>
+                      <Box display={"flex"} justifyContent={"space-between"}>
+                        <Box display={"flex"} flexDirection={"column"}>
+                          <Typography variant={TVariant.ComicSans12}>
+                            Cost: {store.recentQuote.amount} {store.recentQuote.currency}
+                          </Typography>
+                          <Typography variant={TVariant.ComicSans12}>
+                            Fee: {store.recentQuote.fee} {store.recentQuote.currency}
+                          </Typography>
+                          <Typography variant={TVariant.ComicSans12}>
+                            Total: {Number(store.recentQuote.fee) + Number(store.recentQuote.amount)} {store.recentQuote.currency}
+                          </Typography>
+                        </Box>
+                        <Box>
+                          <Icon icon={'arrow-right'} boxSize={6}/>
+                        </Box>
+                        <Box>
+                          <Typography variant={TVariant.ComicSans12}>
+                            DOG: {store.recentQuote.dogAmount}
+                          </Typography>
+                        </Box>
+                        <Box>
+                          <Icon icon={'arrow-right'} boxSize={6}/>
+                        </Box>
+                        <Box>
+                          <Typography variant={TVariant.ComicSans12}>
+                            Pixels: {store.recentQuote.computedPixelCount}
+                          </Typography>
+                        </Box>
+                      </Box>
+                    </>}
+                </Box>
+                <Box>
+                    <Box display="flex" justifyContent="center" alignItems={"center"}>
                         <Button onClick={() => store.getQuote()}>Get Quote</Button>
                     </Box>
-                    {store.recentQuote && <Box display="flex" flexDirection="column">
-                      <Typography variant={TVariant.ComicSans12}>
-                          {store.recentQuote.currency}: {store.recentQuote.amount}
-                      </Typography>
-                      <Typography variant={TVariant.ComicSans12}>
-                        DOG: {store.recentQuote.dogAmount}
-                      </Typography>
-                      <Typography variant={TVariant.ComicSans12}>
-                        Fee: {store.recentQuote.fee} {store.recentQuote.currency}
-                      </Typography>
-                    </Box>}
                 </Box>
                 <Flex justifyContent={"center"}>
-                    <Submit label={"Mint"} mt={10}/>
+                    <Submit label={"Mint"} mt={10} isDisabled={!store.isLoading}/>
                 </Flex>
             </Form>
         </>
@@ -174,7 +202,7 @@ const LoadingApproval = observer(({store}: { store: MintPixelsModalStore }) => {
 
 const LoadingPixels = observer(({store}: { store: MintPixelsModalStore }) => {
     useEffect(() => {
-        store.mintPixels(Number(store.pixel_count!))
+        store.mintPixels(Number(store.pixelCount!))
         // eslint-disable-next-line
     }, [])
     return (
