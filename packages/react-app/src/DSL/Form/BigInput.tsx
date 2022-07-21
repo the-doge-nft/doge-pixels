@@ -14,7 +14,7 @@ interface BigInputProps {
     store: any;
     storeKey: any;
     validate?: BaseInputValidators;
-    renderLeftOfValidation?: () => any
+    renderLeftOfValidation?: () => any;
 }
 
 export const BigInputContext = createContext({showEmblem: false, isDisabled: false});
@@ -24,7 +24,7 @@ function BigInput({
                       store,
                       storeKey,
                       validate,
-                      renderLeftOfValidation
+                      renderLeftOfValidation,
                   }: BigInputProps) {
     const formState = useFormState()
     const errors = formState.errors as object

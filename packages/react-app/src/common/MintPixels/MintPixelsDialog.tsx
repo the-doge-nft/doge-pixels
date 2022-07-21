@@ -1,11 +1,9 @@
-import React, {useEffect, useState} from "react";
+import React, {useEffect} from "react";
 import {observer} from "mobx-react-lite";
 import {Box, Flex, Spinner} from "@chakra-ui/react";
 import MintPixelsModalStore from "../../pages/Viewer/MintPixelsModal/MintPixelsModal.store";
 import Typography, {TVariant} from "../../DSL/Typography/Typography";
 import Form from "../../DSL/Form/Form";
-import BigInput from "../../DSL/Form/BigInput";
-import {maxValue, minValue, required} from "../../DSL/Form/validation";
 import {formatWithThousandsSeparators} from "../../helpers/numberFormatter";
 import Submit from "../../DSL/Form/Submit";
 import {ethers} from "ethers";
@@ -17,9 +15,9 @@ import Link from "../../DSL/Link/Link";
 import {getEtherscanURL} from "../../helpers/links";
 import MintPixelsDialogStore, {MintModalView} from "./MintPixelsDialog.store";
 import AppStore from "../../store/App.store";
-import Select from "../../DSL/Select/Select";
 import Icon from "../../DSL/Icon/Icon";
 import Dev from "../Dev";
+import {MintPixelsInput} from "./MintPixelsInput";
 
 interface MintPixelsDialogProps {
     store: MintPixelsDialogStore;
@@ -54,60 +52,12 @@ const MintPixelsDialog = observer(({store, onSuccess, onGoToPixelsClick}: MintPi
 })
 
 const MintForm = observer(({store}: { store: MintPixelsModalStore }) => {
-    const [showLabel, setShowLabel] = useState(true)
-
-    useEffect(() => {
-        if (Number(store.pixelCount) >= 100) {
-            setShowLabel(false)
-        } else if (Number(store.pixelCount && !showLabel) < 100) {
-            setShowLabel(true)
-        }
-    }, [store.pixelCount])
-
-
     return (
         <>
-            <Form onSubmit={async (data) => store.handleMintSubmit(data.pixel_count)}>
+            <Form onSubmit={async (data) => store.handleMintSubmit(data.pixelCount)}>
                 <Box mt={5}>
-                    <BigInput
-                        store={store}
-                        storeKey={"pixelCount"}
-                        label={showLabel ? "PX" : undefined}
-                        validate={[
-                            required("1 pixel minimum"),
-                            minValue(1, "Must mint at least 1 pixel"),
-                            maxValue(store.recentQuote?.maxPixelAmount, `Not enough ${store.srcCurrency}`)
-                        ]}
-                        renderLeftOfValidation={() => {
-                            return <Box>
-                                <Box>
-                                    <Typography variant={TVariant.PresStart12}>Mint for currency</Typography>
-                                    <Box mt={1}>
-                                        <Select
-                                            items={store.srcCurrencySelectItems}
-                                            value={store.srcCurrency}
-                                            onChange={(val) => {
-                                                store.srcCurrency = val
-                                            }}/>
-                                    </Box>
-                                </Box>
-                                {store.isLoading && <Box display={"flex"} justifyContent={"center"}><Spinner mt={4} color={"yellow.700"}/></Box>}
-                                {store.recentQuote && !store.isLoading && <Box mt={4} display={"flex"} flexDirection={"column"}>
-                                  <Typography variant={TVariant.ComicSans14}>
-                                      {store.recentQuote.computedPixelCount} Pixel{store.pixelCount === 1 ? '' : 's'} = {formatWithThousandsSeparators(store.recentQuote.srcCurrencyTotal)} {store.recentQuote.srcCurrency}
-                                  </Typography>
-                                  <Typography variant={TVariant.ComicSans14} mt={3}>
-                                    Max you can mint: {store.recentQuote.maxPixelAmount}
-                                  </Typography>
-                                  <Typography variant={TVariant.ComicSans12}>
-                                    Your balance: {store.srcCurrencyBalance} {store.srcCurrency}
-                                  </Typography>
-                                </Box>}
-                            </Box>
-                        }}
-                    />
+                    <MintPixelsInput store={store}/>
                 </Box>
-
                 <Box my={6}>
                     {store.isLoading && <Box display={"flex"} justifyContent={"center"}>
                       <Spinner color={'yellow.700'}/>

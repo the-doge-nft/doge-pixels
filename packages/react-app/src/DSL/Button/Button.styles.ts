@@ -93,6 +93,9 @@ const ButtonStyle = {
         },
         _focus: {
           boxShadow: "none"
+        },
+        _disabled: {
+          color: lightOrDark(colorMode, "#d6ceb6", "#482e84")
         }
       },
       drop: {

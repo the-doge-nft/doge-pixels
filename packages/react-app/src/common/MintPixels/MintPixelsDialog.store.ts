@@ -13,6 +13,7 @@ import {debounce} from "lodash";
 import erc20 from "../../contracts/erc20.json"
 import {formatUnits} from "ethers/lib/utils";
 
+export const GPv2VaultRelayerAddress = "0xC92E8bdf79f0507f65a392b0ab4667716BFE0110"
 
 export enum MintModalView {
     Mint = "mint",
