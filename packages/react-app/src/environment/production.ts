@@ -11,7 +11,6 @@ const productionEnv = {
             SHIB: {decimals: 18, contractAddress: "0x95aD61b0a150d79219dCF64E1E6Cc01f0B64C4cE"},
             WBTC: {decimals: 8, contractAddress: "0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599"},
             DOG: {decimals: 18, contractAddress:  "0xBAac2B4491727D78D2b78815144570b9f2Fe8899"},
-            FLOKI: {decimals: 8, contractAddress: "0xcf0C122c6b73ff809C693DB761e7BaeBe62b6a2E"}
         }
     }
 };

@@ -52,18 +52,21 @@ class MintPixelsDialogStore extends Reactionable((Navigable<MintModalView, Const
 
     @observable
     recentQuote: {
-        currency: string,
-        amount: string,
-        fee: string,
-        dogAmount: string,
-        computedPixelCount: string
+        srcCurrency: string,
+        srcCurrencyAmount: number,
+        srcCurrencyFee: number,
+        srcCurrencyTotal: number,
+        effectiveRate: number,
+        dogAmount: number,
+        computedPixelCount: string,
+        maxPixelAmount: number
     } | null = null
 
     @observable
     srcCurrencyBalance: number | null = null
 
     @observable
-    isLoading = true
+    isLoading = false
 
     constructor() {
         super();
@@ -75,17 +78,17 @@ class MintPixelsDialogStore extends Reactionable((Navigable<MintModalView, Const
         this.refreshAllowance()
         this.react(() => [this.srcCurrency, this.pixelCount], async () => {
             console.log("debug:: trigger")
-            if (this.srcCurrency !== "DOG") {
+            if (this.srcCurrency !== "DOG" && Number(this.pixelCount) > 0) {
                 this.getQuote()
+                this.srcCurrencyContract = new ethers.Contract(this.srcCurrencyDetails.contractAddress, erc20, AppStore.web3.signer!)
+                const balance = await this.srcCurrencyContract.balanceOf(AppStore.web3.address!)
+                const formattedBalance = balance.div(BigNumber.from(10).pow(this.srcCurrencyDetails.decimals))
+                this.srcCurrencyBalance = formattedBalance.toNumber()
+                console.log("debug:: src currency balance", balance.div(BigNumber.from(10).pow(this.srcCurrencyDetails.decimals)).toString())
             } else {
-                console.log("debug:: src currency is dog, we don't need to trade")
+                this.isLoading = false
+                console.log("debug:: skipping")
             }
-            this.srcCurrencyContract = new ethers.Contract(this.srcCurrencyDetails.contractAddress, erc20, AppStore.web3.signer!)
-            const balance = await this.srcCurrencyContract.balanceOf(AppStore.web3.address!)
-            const formattedBalance = balance.div(BigNumber.from(10).pow(this.srcCurrencyDetails.decimals))
-            this.srcCurrencyBalance = formattedBalance.toNumber()
-            console.log("debug:: src currency balance", balance.div(BigNumber.from(10).pow(this.srcCurrencyDetails.decimals)).toString())
-
         })
     }
 
@@ -96,15 +99,19 @@ class MintPixelsDialogStore extends Reactionable((Navigable<MintModalView, Const
             amountPixels: this.pixelCount,
         })
 
-        const formattedAmount = formatWithThousandsSeparators(this.formatToDecimals(this.quote!.quote.sellAmount, this.srcCurrency))
-        const feeFormatted = formatWithThousandsSeparators(this.formatToDecimals(this.quote!.quote.feeAmount, this.srcCurrency))
-        const dogFormatted = formatWithThousandsSeparators(this.formatToDecimals(this.quote!.quote.buyAmount, "DOG"))
+        const formattedAmount = Number(this.formatToDecimals(this.quote!.quote.sellAmount, this.srcCurrency))
+        const feeFormatted = Number(this.formatToDecimals(this.quote!.quote.feeAmount, this.srcCurrency))
+        const dogFormatted = Number(this.formatToDecimals(this.quote!.quote.buyAmount, "DOG"))
+        const total = formattedAmount + feeFormatted
         this.recentQuote = {
-            currency: this.srcCurrency,
-            amount: formattedAmount,
-            fee: feeFormatted,
+            srcCurrency: this.srcCurrency,
+            srcCurrencyAmount: Number(formattedAmount),
+            srcCurrencyFee: Number(feeFormatted),
+            srcCurrencyTotal: total,
+            effectiveRate: total / dogFormatted,
             dogAmount: dogFormatted,
-            computedPixelCount: BigNumber.from(this.quote!.quote.buyAmount).div(AppStore.web3.DOG_TO_PIXEL_SATOSHIS).toString()
+            computedPixelCount: BigNumber.from(this.quote!.quote.buyAmount).div(AppStore.web3.DOG_TO_PIXEL_SATOSHIS).toString(),
+            maxPixelAmount: this.srcCurrencyBalance ? Math.floor(this.srcCurrencyBalance / ((total / dogFormatted) * Number(ethers.utils.formatUnits(AppStore.web3.DOG_TO_PIXEL_SATOSHIS, 18)))) : 0
         }
         this.isLoading = false
     }
@@ -129,14 +136,6 @@ class MintPixelsDialogStore extends Reactionable((Navigable<MintModalView, Const
     @computed
     get stepperItems() {
         return [];
-    }
-
-    @computed
-    get maxPixelsToPurchase() {
-        if (AppStore.web3.dogBalance) {
-            // num & denom in ether
-            return AppStore.web3.dogBalance.div(AppStore.web3.DOG_TO_PIXEL_SATOSHIS).toNumber()
-        } else return 0
     }
 
     handleMintSubmit(pixel_amount: number) {

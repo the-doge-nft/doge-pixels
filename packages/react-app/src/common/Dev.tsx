@@ -1,11 +1,8 @@
 import React from "react";
 import { isDevModeEnabled } from "../environment/helpers";
 
-interface DevProps {
-  children?: JSX.Element;
-}
 
-const Dev = ({ children }: DevProps) => {
+const Dev: React.FC<any> = ({ children }) => {
   if (isDevModeEnabled()) {
     return <>{children && children}</>;
   } else {
