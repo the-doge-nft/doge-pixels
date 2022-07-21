@@ -19,7 +19,7 @@ app.use('/v1', routes)
 
 app.use(errorLogger)
 app.use(errorResponder)
-console.log("start");
+
 tweet();
 if (sentryClient.isActive) {
   app.use(Sentry.Handlers.requestHandler())
