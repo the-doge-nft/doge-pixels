@@ -33,26 +33,28 @@ function pupperToHexLocal(pupper) {
     return KobosuJson[y][x]
 }
 
-function generateImageObject(color) {
+function generatePixelImage(color) {
     const hex = color.replace('#','');
     const num = parseInt(hex + 'ff', 16);
     const blackNum = parseInt('000000' + 'ff', 16);
     const whiteNum = parseInt('ffffff' + 'ff', 16);
     let jimp = new Jimp(90, 120);
+    
     for (let x = 0; x < 90; x ++) {
         for (let y = 0; y < 120; y ++) {
             if (x === 0 || x === 89 || y === 0 || y === 89) {
-                jimp.setPixelColor(blackNum, x, y);
+                jimp.setPixelColor(blackNum, x, y); // border
             } else if (y < 90){
-                jimp.setPixelColor(num, x, y);
+                jimp.setPixelColor(num, x, y); // pixel image
             } else {
-                jimp.setPixelColor(whiteNum, x, y);
+                jimp.setPixelColor(whiteNum, x, y); // whiteboard for coordinates
             }
         }
     }
     return jimp
 }
-function drawLine(ctx, x, y, x1, y1, x2,y2) {
+
+function drawPointer(ctx, x, y, x1, y1, x2,y2) {
     ctx.save();
     ctx.beginPath();
     ctx.moveTo(x, y);
@@ -62,10 +64,9 @@ function drawLine(ctx, x, y, x1, y1, x2,y2) {
     ctx.strokeStyle = '#000000';
     ctx.fillStyle = '000000';
     ctx.stroke();
-        ctx.fill();
+    ctx.fill();
 
     ctx.closePath();
-    // ctx.clip();
    
     return ctx; 
 }
@@ -75,14 +76,16 @@ async function uploadImageToTwitter(tokenId, content) {
         const [x, y] = pupperToPixelCoordsLocal(tokenId)
         const color = pupperToHexLocal(tokenId);
 
-        const pointImg = await Jimp.read('src/images/pointer.png');
+        const pointerImg = await Jimp.read('src/images/pointer.png');
         Jimp.read('src/images/background.png', async function(err, image) {
             // merge pixel image with background image
-            const nftImage = generateImageObject(color);
+            const nftImage = generatePixelImage(color);
             image = image.composite(nftImage, 50, 350);
-            image = image.composite(pointImg, 0, 0);
 
-            // add coordinates
+            // merge pointer image with background image
+            image = image.composite(pointerImg, 0, 0);
+
+            // print coordinates
             const font = await Jimp.loadFont(Jimp.FONT_SANS_16_BLACK);
             image.print(font, 61, 445, `(${x}, ${y})`);
             // get base64 image
@@ -129,15 +132,12 @@ function addPointerImage(tokenId, content) {
             x2 = 80;
             y2 = 350;
         }
-        context = drawLine(context, x, y, x1, y1, x2, y2);
+        context = drawPointer(context, x, y, x1, y1, x2, y2);
         
-        // loadImage('src/images/back.png').then(image => {
-            // context.drawImage(image, 0, 0, 640, 640)
-            const buffer = canvas.toBuffer('image/png')
-            fs.writeFile('src/images/pointer.png', buffer, "", function () {
-                uploadImageToTwitter(tokenId, content);
-            })
-        //   })
+        const buffer = canvas.toBuffer('image/png')
+        fs.writeFile('src/images/pointer.png', buffer, "", function () {
+            uploadImageToTwitter(tokenId, content);
+        })
      } catch(error) {
         console.log(error.message)
     }
