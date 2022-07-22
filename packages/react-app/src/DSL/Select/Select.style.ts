@@ -15,17 +15,32 @@ const SelectStyle = {
             },
             fontFamily: Type.PresStart
         },
+        drop: {
+            zIndex: 0,
+            position: "absolute",
+            bottom: "-8px",
+            left: "8px",
+            w: "full",
+            h: "full",
+            borderStyle: "solid",
+            borderWidth: "1px",
+            borderColor: lightOrDark(colorMode, "black", "white")
+        }
     }),
     variants: {
         solid: ({colorMode}: { colorMode: colorModeType }) => ({
             field: {
-                bg: lightOrDark(colorMode, "yellow.50", "black"),
+                bg: lightOrDark(colorMode, "yellow.50", "purple.700"),
                 borderColor: lightOrDark(colorMode, "black", "white"),
                 borderWidth: "1px",
                 borderRadius: "0px",
                 color: lightOrDark(colorMode, "black", "white"),
                 display: "inline-block"
             },
+            drop: {
+                borderImageSlice: "1 1",
+                bg: lightOrDark(colorMode, "black", "none")
+            }
         }),
     },
     sizes: {

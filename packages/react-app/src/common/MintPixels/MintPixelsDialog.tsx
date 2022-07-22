@@ -1,6 +1,6 @@
 import React, {useEffect} from "react";
 import {observer} from "mobx-react-lite";
-import {Box, Flex, Spinner} from "@chakra-ui/react";
+import {Box, Flex, Spinner, VStack} from "@chakra-ui/react";
 import MintPixelsModalStore from "../../pages/Viewer/MintPixelsModal/MintPixelsModal.store";
 import Typography, {TVariant} from "../../DSL/Typography/Typography";
 import Form from "../../DSL/Form/Form";
@@ -28,6 +28,9 @@ interface MintPixelsDialogProps {
 const MintPixelsDialog = observer(({store, onSuccess, onGoToPixelsClick}: MintPixelsDialogProps) => {
     useEffect(() => {
         store.init()
+        return () => {
+            store.disposeReactions()
+        }
         // eslint-disable-next-line
     }, [])
 
@@ -42,10 +45,13 @@ const MintPixelsDialog = observer(({store, onSuccess, onGoToPixelsClick}: MintPi
     }, [store.currentView])
 
     return <>
-        {store.currentView === MintModalView.Mint && <MintForm store={store}/>}
-        {store.currentView === MintModalView.Approval && <Approval store={store}/>}
-        {store.currentView === MintModalView.LoadingApproval && <LoadingApproval store={store}/>}
-        {store.currentView === MintModalView.LoadingPixels && <LoadingPixels store={store}/>}
+        {store.currentView === MintModalView.Form && <MintForm store={store}/>}
+        {store.currentView === MintModalView.VaultApproval && <VaultApproval store={store}/>}
+        {store.currentView === MintModalView.LoadingVaultApproval && <LoadingVaultApproval store={store}/>}
+        {store.currentView === MintModalView.CowSwap && <CowSwap store={store}/>}
+        {store.currentView === MintModalView.DogApproval && <Approval store={store}/>}
+        {store.currentView === MintModalView.LoadingDogApproval && <LoadingApproval store={store}/>}
+        {store.currentView === MintModalView.MintPixels && <MintPixels store={store}/>}
         {store.currentView === MintModalView.Complete &&
         <Complete onSuccess={onGoToPixelsClick} txHash={store.txHash}/>}
     </>
@@ -108,32 +114,82 @@ const MintForm = observer(({store}: { store: MintPixelsModalStore }) => {
     );
 });
 
+const VaultApproval: React.FC<{ store: MintPixelsDialogStore }> = observer(({store}) => {
+    return (
+        <VStack spacing={10}>
+            <Typography variant={TVariant.ComicSans14}>
+                You've selected to mint pixels for {store.srcCurrency}
+            </Typography>
+            <Typography textAlign={"center"} variant={TVariant.ComicSans14}>
+                The Pixel Portal will first trade your {store.srcCurrency} to DOG ({store.recentQuote?.dogAmount}) &
+                then mint - since 55,240 $DOG = 1 Pixel
+            </Typography>
+            <Link target={"_blank"} href={"https://docs.cow.fi/"}>Learn more here</Link>
+
+            <Box>
+                <Box my={6}>
+                    {store.approveInfiniteVault
+                        ? <Flex justifyContent={"center"}>
+                            <Typography display={"block"} variant={TVariant.PresStart45} lineHeight={"normal"}>
+                                &infin;
+                            </Typography>
+                        </Flex>
+                        : <Typography display={"block"} variant={TVariant.PresStart30}>
+                            {store.recentQuote!.srcCurrencyTotal}
+                        </Typography>
+                    }
+                </Box>
+                <Typography block variant={TVariant.ComicSans18} mt={4}>
+                    Please approve {store.srcCurrency} to be spent for pixels.
+                </Typography>
+                <Form onSubmit={async () => store.pushNavigation(MintModalView.LoadingVaultApproval)}>
+                    <Box mt={5}>
+                        <CheckboxInput {...model(store, "approveInfiniteVault")} label={"Approve infinite"}/>
+                    </Box>
+                    <Flex
+                        flexDirection={"column"}
+                        mt={14}
+                        alignItems={"center"}
+                        justifyContent={"center"}
+                    >
+                        <Submit label={"Approve"} flexGrow={0}/>
+                        {store.showGoBack && <Button onClick={() => store.popNavigation()} mt={5}>
+                          Cancel
+                        </Button>}
+                    </Flex>
+                </Form>
+            </Box>
+        </VStack>
+    )
+})
+
 const Approval = observer(({store}: { store: MintPixelsModalStore }) => {
     return (
         <Box>
             <Box my={6}>
-                {store.approveInfinite
+                {store.approveInfiniteDOG
                     ? <Flex justifyContent={"center"}>
                         <Typography display={"block"} variant={TVariant.PresStart45} lineHeight={"normal"}>
                             &infin;
                         </Typography>
                     </Flex>
                     : <Typography display={"block"} variant={TVariant.PresStart30}>
-                        {formatWithThousandsSeparators(ethers.utils.formatEther(store.allowanceToGrant))}
+                        {formatWithThousandsSeparators(ethers.utils.formatEther(store.dogAllowanceToGrant))}
                     </Typography>
                 }
             </Box>
             <Typography block variant={TVariant.ComicSans18} mt={4}>
                 Please approve $DOG to be spent for pixels.
             </Typography>
-            <Form onSubmit={async () => store.pushNavigation(MintModalView.LoadingApproval)}>
+            <Form onSubmit={async () => store.pushNavigation(MintModalView.LoadingDogApproval)}>
                 <Box mt={5}>
-                    <CheckboxInput {...model(store, "approveInfinite")} label={"Approve infinite"}/>
+                    <CheckboxInput {...model(store, "approveInfiniteDOG")} label={"Approve infinite"}/>
                 </Box>
                 <Flex
                     flexDirection={"column"}
                     mt={14}
                     alignItems={"center"}
+                    justifyContent={"center"}
                 >
                     <Submit label={"Approve"} flexGrow={0}/>
                     {store.showGoBack && <Button onClick={() => store.popNavigation()} mt={5}>
@@ -144,6 +200,21 @@ const Approval = observer(({store}: { store: MintPixelsModalStore }) => {
         </Box>
     );
 });
+
+const LoadingVaultApproval: React.FC<{ store: MintPixelsDialogStore }> = observer(({store}) => {
+    useEffect(() => {
+        store.approveVaultSpend()
+    }, [])
+
+    return (
+        <Box>
+            <Loading
+                title={"Approving..."}
+                showSigningHint={!store.hasUserSignedTx}
+            />
+        </Box>
+    )
+})
 
 const LoadingApproval = observer(({store}: { store: MintPixelsModalStore }) => {
     useEffect(() => {
@@ -160,7 +231,7 @@ const LoadingApproval = observer(({store}: { store: MintPixelsModalStore }) => {
     )
 })
 
-const LoadingPixels = observer(({store}: { store: MintPixelsModalStore }) => {
+const MintPixels = observer(({store}: { store: MintPixelsModalStore }) => {
     useEffect(() => {
         store.mintPixels(Number(store.pixelCount!))
         // eslint-disable-next-line
@@ -174,6 +245,14 @@ const LoadingPixels = observer(({store}: { store: MintPixelsModalStore }) => {
         </Box>
     );
 });
+
+const CowSwap: React.FC<{ store: MintPixelsDialogStore }> = observer(({ store }) => {
+    return (
+        <Box>
+            CowSwap trade lets get it
+        </Box>
+    )
+})
 
 const Complete = observer(({onSuccess, txHash}: { onSuccess: () => void, txHash: string | null }) => {
     return <Box>

@@ -42,8 +42,6 @@ export const MintPixelsInput: React.FC<{ store: MintPixelsDialogStore }> = ({sto
                                 }}/>
                         </Box>
                     </Box>
-                    {store.isLoading &&
-                    <Box display={"flex"} justifyContent={"center"}><Spinner mt={4} color={"yellow.700"}/></Box>}
                     {store.recentQuote && !store.isLoading && <Box mt={4} display={"flex"} flexDirection={"column"}>
                       <Typography variant={TVariant.ComicSans14}>
                           {store.recentQuote.computedPixelCount} Pixel{store.pixelCount === 1 ? '' : 's'} = {formatWithThousandsSeparators(store.recentQuote.srcCurrencyTotal)} {store.recentQuote.srcCurrency}

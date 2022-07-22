@@ -27,7 +27,7 @@ const MintPixelsModal = observer(({ isOpen, onClose, onSuccess, goToPixels }: Mi
       onClose={onClose}
       description={store.description}
     >
-      <Box pt={store.currentView === MintModalView.Mint ? 0 : 12} pb={6}>
+      <Box pt={store.currentView === MintModalView.Form ? 0 : 12} pb={6}>
         <MintPixelsDialog
           store={store}
           onSuccess={onSuccess}
