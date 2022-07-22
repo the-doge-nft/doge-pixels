@@ -2,10 +2,10 @@ const ethers = require('ethers')
 const Jimp = require('jimp')
 const Twitter = require('twitter');
 
-const { EthersClient } = require("../config/ethers")
+const { EthersClient } = require('../config/ethers')
 const { consumer_key, consumer_secret, access_token_key, access_token_secret } = require('../config/vars');
 const { sentryClient } = require('./Sentry');
-const KobosuJson = require("../constants/kobosu.json");
+const KobosuJson = require('../constants/kobosu.json');
 
 var client = new Twitter({
 	consumer_key: consumer_key,
@@ -32,22 +32,34 @@ function pupperToHexLocal(pupper) {
 
 function generateImageObject(color) {
     const hex = color.replace('#','');
-    const num = parseInt(hex+"ff", 16);
-    let jimg = new Jimp(90, 90);
-    for (let x=0; x< 90; x++) {
-        for (let y=0; y< 90; y++) {
-            jimg.setPixelColor(num, x, y);
+    const num = parseInt(hex + 'ff', 16);
+    const blackNum = parseInt('000000' + 'ff', 16);
+    let jimp = new Jimp(90, 90);
+    for (let x = 0; x < 90; x ++) {
+        for (let y = 0; y < 90; y ++) {
+            if (x === 0 || x === 89 || y === 0 || y === 89) {
+                jimp.setPixelColor(blackNum, x, y);
+            } else {
+                jimp.setPixelColor(num, x, y);
+            }
         }
     }
-    return jimg
+    return jimp
 }
 
 async function uploadImageToTwitter(tokenId, content) {
     try {
+        const [x, y] = pupperToPixelCoordsLocal(tokenId)
         const color = pupperToHexLocal(tokenId);
-        const jimg = generateImageObject(color);
+        Jimp.read('src/images/background.png', function(err, image) {
 
-        jimg.getBase64("image/png", function(error, base64image) {
+        const nftImage = generateImageObject(color);
+        image = image.composite(nftImage, 50, 350);
+        const font = Jimp.loadFont(Jimp.FONT_SANS_16_BLACK);
+        image.print(font, 50, 450, `(${x}, ${y})`);
+        // image.write('a.png');
+
+        image.getBase64('image/png', function(error, base64image) {
             if (!error) {
                 base64image = base64image.replace('data:image/png;base64,', '');
                 
@@ -64,6 +76,7 @@ async function uploadImageToTwitter(tokenId, content) {
                 console.log(`Failed to get base64Image ${error.message}`);
             }
         });
+    })
     } catch(error) {
         console.log(error.message)
         sentryClient.captureMessage(`Failed to upload image ${error.message}`)
@@ -81,28 +94,28 @@ async function tweetmessage(media_id, content) {
             if (err) {
                 console.log(`Error occured update status\t${err}`);
             } else {
-                console.log("success")
+                console.log('success')
             }
         });
 }
 
 async function tweet() {
-    EthersClient.PXContract.on("Transfer", async (from, to, tokenId, event) => {
+    EthersClient.PXContract.on('Transfer', async (from, to, tokenId, event) => {
         try {
             if (from === ethers.constants.AddressZero || to === ethers.constants.AddressZero) {
                 let initiator;
                 if (from === ethers.constants.AddressZero) {
-                    initiator = "minted";
+                    initiator = 'minted';
                 } else {
-                    initiator = "burned";
+                    initiator = 'burned';
                 }
                 
                 const [x, y] = pupperToPixelCoordsLocal(tokenId);
-                const user = initiator === "minted" ? to : from;    
+                const user = initiator === 'minted' ? to : from;    
                 
                 let content = `Doge Pixel(${x}, ${y}) ${initiator} by ${user}`
                 content += `\n pixels.ownthedoge.com/px/${tokenId}`
-                
+
                 uploadImageToTwitter(tokenId, content);
             }
         } catch (error) {
