@@ -17,6 +17,7 @@ const PIXEL_TEXT_HEIGHT = 30;
 const WIDTH = 640;
 const HEIGHT = 480;
 const PIXEL_TO_ID_OFFSET = 1000000;
+const SHADOW_THICK = 6;
 
 var client = new Twitter({
 	consumer_key: consumer_key,
@@ -45,6 +46,24 @@ function getPixelOffsets(y) {
     } else {
         return [PIXEL_OFFSET_X, TOP_PIXEL_OFFSET_Y];
     }
+}
+
+/**
+ * Generate Pixel image right drop shadow
+ * @param {width of the drop shadow} width 
+ * @param {heigth of the drop shadow} heigth 
+ * @returns Jimp instance
+ */
+ function generateShadow(width, height) {
+    const blackNum = parseInt('000000' + 'ff', 16);
+    let jimp = new Jimp(width, height);
+    
+    for (let x = 0; x < width; x ++) {
+        for (let y = 0; y < height; y ++) {
+            jimp.setPixelColor(blackNum, x, y); // draw border
+        }
+    }
+    return jimp
 }
 
 /**
@@ -123,7 +142,7 @@ function addPointerImage(tokenId, content) {
         context = drawPointer(context, x, y, pixelOffsetX + 20, y1, pixelOffsetX + 45, y1);
         
         const buffer = canvas.toBuffer('image/png')
-        fs.writeFile('src/images/pointer.png', buffer, "", function () {
+        fs.writeFile('src/assets/images/pointer.png', buffer, "", function () {
             uploadImageToTwitter(tokenId, content);
         })
      } catch(error) {
@@ -142,19 +161,35 @@ async function uploadImageToTwitter(tokenId, content) {
         const [x, y] = pupperToPixelCoordsLocal(tokenId)
         const color = pupperToHexLocal(tokenId);
 
-        const pointerImg = await Jimp.read('src/images/pointer.png');
-        Jimp.read('src/images/background.png', async function(err, image) {
+        const pointerImg = await Jimp.read('src/assets/images/pointer.png');
+        let txtImg;
+
+        if (content.includes('minted')) {
+            txtImg = await Jimp.read('src/assets/images/minted.png');
+        } else {
+            txtImg = await Jimp.read('src/assets/images/burned.png'); 
+        }
+        Jimp.read('src/assets/images/background.png', async function(err, image) {
             // merge pixel image with background image
-            const nftImage = generatePixelImage(color);
+            const pixelImage = generatePixelImage(color);
             const [pixelOffsetX, pixelOffsetY] = getPixelOffsets(y);
-            image = image.composite(nftImage, pixelOffsetX, pixelOffsetY);
+            image = image.composite(pixelImage, pixelOffsetX, pixelOffsetY);
+
+            // merge box shadow
+            const rightShadow = generateShadow(SHADOW_THICK, PIXEL_HEIGHT + PIXEL_TEXT_HEIGHT);
+            image = image.composite(rightShadow, pixelOffsetX + PIXEL_WIDTH, pixelOffsetY + SHADOW_THICK)
+            const bottomShadow = generateShadow(PIXEL_WIDTH - SHADOW_THICK, SHADOW_THICK);
+            image = image.composite(bottomShadow, pixelOffsetX + SHADOW_THICK, pixelOffsetY + PIXEL_HEIGHT + PIXEL_TEXT_HEIGHT)
 
             // merge pointer image with background image
             image = image.composite(pointerImg, 0, 0);
+           
+            // merge minted text image with background image
+            image = image.composite(txtImg, 450, 430);
 
             // print coordinates
-            const font = await Jimp.loadFont(Jimp.FONT_SANS_16_BLACK);
-            image.print(font, pixelOffsetX + 10, pixelOffsetY + PIXEL_HEIGHT + 5, `(${x}, ${y})`);
+            const font = await Jimp.loadFont('src/assets/fonts/PressStart2P-Regular.ttf.fnt');
+            image.print(font, pixelOffsetX + 5, pixelOffsetY + PIXEL_HEIGHT + 10, `(${x},${y})`);
             
             // get base64 image
             image.getBase64('image/png', function(error, base64image) {
