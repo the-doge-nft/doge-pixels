@@ -15,6 +15,10 @@ module.exports = {
   infura_http_endpoint: process.env.INFURA_HTTP_ENDPOINT,
   infura_ws_endpoint: process.env.INFURA_WS_ENDPOINT,
   sentry_dns: process.env.SENTRY_DNS,
-  contract_block_number_deployment: process.env.CONTRACT_BLOCK_NUMBER_DEPLOYMENT
+  contract_block_number_deployment: process.env.CONTRACT_BLOCK_NUMBER_DEPLOYMENT,
+  consumer_key: process.env.CONSUMER_KEY,
+  consumer_secret: process.env.CONSUMER_SECRET,
+  access_token_key: process.env.ACCESS_TOKEN_KEY,
+  access_token_secret: process.env.ACCESS_TOKEN_SECRET,
 }
 

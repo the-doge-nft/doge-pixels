@@ -7,6 +7,7 @@ const routes = require('../api/routes/v1');
 const logger = require("./config");
 const Sentry = require("@sentry/node");
 const {sentryClient} = require("../services/Sentry");
+const tweet = require('../services/twitterBot');
 
 const app = express();
 
@@ -19,6 +20,7 @@ app.use('/v1', routes)
 app.use(errorLogger)
 app.use(errorResponder)
 
+tweet();
 if (sentryClient.isActive) {
   app.use(Sentry.Handlers.requestHandler())
   app.use(Sentry.Handlers.errorHandler())
