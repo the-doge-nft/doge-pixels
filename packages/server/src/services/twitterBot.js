@@ -4,7 +4,9 @@ const Twitter = require('twitter');
 const fs = require('fs')
 const { createCanvas } = require('canvas')
 const { EthersClient } = require('../config/ethers')
-const { consumer_key, consumer_secret, access_token_key, access_token_secret } = require('../config/vars');
+const { twitter_consumer_key, twitter_consumer_secret, twitter_access_token_key, twitter_access_token_secret, app_env,
+  isProd
+} = require('../config/vars');
 const { sentryClient } = require('./Sentry');
 const KobosuJson = require('../constants/kobosu.json');
 
@@ -19,12 +21,15 @@ const HEIGHT = 480;
 const PIXEL_TO_ID_OFFSET = 1000000;
 const SHADOW_THICK = 6;
 
+
 var client = new Twitter({
-	consumer_key: consumer_key,
-	consumer_secret: consumer_secret,
-	access_token_key: access_token_key,
-	access_token_secret: access_token_secret
+	consumer_key: twitter_consumer_key,
+	consumer_secret: twitter_consumer_secret,
+	access_token_key: twitter_access_token_key,
+	access_token_secret: twitter_access_token_secret
 });
+
+console.log(twitter_consumer_key, twitter_consumer_secret, twitter_access_token_key, twitter_access_token_secret)
 
 
 function pupperToIndexLocal(pupper) {
@@ -50,14 +55,14 @@ function getPixelOffsets(y) {
 
 /**
  * Generate Pixel image right drop shadow
- * @param {width of the drop shadow} width 
- * @param {heigth of the drop shadow} heigth 
+ * @param {width of the drop shadow} width
+ * @param {heigth of the drop shadow} heigth
  * @returns Jimp instance
  */
  function generateShadow(width, height) {
     const blackNum = parseInt('000000' + 'ff', 16);
     let jimp = new Jimp(width, height);
-    
+
     for (let x = 0; x < width; x ++) {
         for (let y = 0; y < height; y ++) {
             jimp.setPixelColor(blackNum, x, y); // draw border
@@ -68,16 +73,16 @@ function getPixelOffsets(y) {
 
 /**
  * Generate Pixel image with WIDTH and HEIGTH based on the color
- * @param {color of Pixel image} color 
+ * @param {color of Pixel image} color
  * @returns Jimp instance
  */
 function generatePixelImage(color) {
     const hex = color.replace('#','');
     const num = parseInt(hex + 'ff', 16);
     const blackNum = parseInt('000000' + 'ff', 16);
-    const whiteNum = parseInt('ffffff' + 'ff', 16);
+    const whiteNum = parseInt('fffced' + 'ff', 16);
     let jimp = new Jimp(PIXEL_WIDTH, PIXEL_HEIGHT + PIXEL_TEXT_HEIGHT);
-    
+
     for (let x = 0; x < PIXEL_WIDTH; x ++) {
         for (let y = 0; y < PIXEL_HEIGHT + PIXEL_TEXT_HEIGHT; y ++) {
             if (x === 0 || x === PIXEL_WIDTH -1 || y === 0 || y === PIXEL_HEIGHT -1 ) {
@@ -94,13 +99,13 @@ function generatePixelImage(color) {
 
 /**
  * Draw and fill the pointers
- * @param {canvas context} ctx 
- * @param {x of the fist pointer} x 
- * @param {y of the first pointer} y 
- * @param {x of the second pointer} x1 
- * @param {y of the second pointer} y1 
- * @param {x of the third pointer} x2 
- * @param {y of the third pointer} y2 
+ * @param {canvas context} ctx
+ * @param {x of the fist pointer} x
+ * @param {y of the first pointer} y
+ * @param {x of the second pointer} x1
+ * @param {y of the second pointer} y1
+ * @param {x of the third pointer} x2
+ * @param {y of the third pointer} y2
  * @returns canvas context
  */
 function drawPointer(ctx, x, y, x1, y1, x2,y2) {
@@ -116,14 +121,14 @@ function drawPointer(ctx, x, y, x1, y1, x2,y2) {
     ctx.fill();
 
     ctx.closePath();
-   
-    return ctx; 
+
+    return ctx;
 }
 
 /**
  * Draw pointer image and create png file
- * @param {token Id} tokenId 
- * @param {tweet message} content 
+ * @param {token Id} tokenId
+ * @param {tweet message} content
  */
 function addPointerImage(tokenId, content) {
     try {
@@ -132,15 +137,15 @@ function addPointerImage(tokenId, content) {
         const canvas = createCanvas(WIDTH, HEIGHT)
         let context = canvas.getContext('2d')
         let y1;
-        
+
         if (pixelOffsetY === BOTTOM_PIXEL_OFFSET_Y) {
             y1 = BOTTOM_PIXEL_OFFSET_Y;
         } else {
             y1 = TOP_PIXEL_OFFSET_Y + PIXEL_HEIGHT + PIXEL_TEXT_HEIGHT;
         }
-        
+
         context = drawPointer(context, x, y, pixelOffsetX + 20, y1, pixelOffsetX + 45, y1);
-        
+
         const buffer = canvas.toBuffer('image/png')
         fs.writeFile('src/assets/images/pointer.png', buffer, "", function () {
             uploadImageToTwitter(tokenId, content);
@@ -153,8 +158,8 @@ function addPointerImage(tokenId, content) {
 
 /**
  * merge background with pixel image and pointer image, and upload twitter
- * @param {token Id} tokenId 
- * @param {tweet message} content 
+ * @param {token Id} tokenId
+ * @param {tweet message} content
  */
 async function uploadImageToTwitter(tokenId, content) {
     try {
@@ -165,9 +170,9 @@ async function uploadImageToTwitter(tokenId, content) {
         let txtImg;
 
         if (content.includes('minted')) {
-            txtImg = await Jimp.read('src/assets/images/minted.png');
+            txtImg = await Jimp.read('src/assets/images/mint.png');
         } else {
-            txtImg = await Jimp.read('src/assets/images/burned.png'); 
+            txtImg = await Jimp.read('src/assets/images/burn.png');
         }
         Jimp.read('src/assets/images/background.png', async function(err, image) {
             // merge pixel image with background image
@@ -183,19 +188,19 @@ async function uploadImageToTwitter(tokenId, content) {
 
             // merge pointer image with background image
             image = image.composite(pointerImg, 0, 0);
-           
+
             // merge minted text image with background image
-            image = image.composite(txtImg, 450, 430);
+            image = image.composite(txtImg, 400, 430);
 
             // print coordinates
             const font = await Jimp.loadFont('src/assets/fonts/PressStart2P-Regular.ttf.fnt');
             image.print(font, pixelOffsetX + 5, pixelOffsetY + PIXEL_HEIGHT + 10, `(${x},${y})`);
-            
+
             // get base64 image
             image.getBase64('image/png', function(error, base64image) {
                 if (!error) {
                     base64image = base64image.replace('data:image/png;base64,', '');
-                    
+
                     // upload image to twitter
                     client.post('media/upload', { media_data: base64image }, function (err, data, response) {
                         if (!err) {
@@ -203,6 +208,8 @@ async function uploadImageToTwitter(tokenId, content) {
                             tweetmessage(mediaId, content);
                         } else {
                             console.log(`Error occured uploading image\t${err}`);
+                            console.log(err)
+                            console.log(JSON.stringify(err))
                         }
                         });
                 } else {
@@ -219,19 +226,19 @@ async function uploadImageToTwitter(tokenId, content) {
 
 /**
  * Tweet message with the image
- * @param {media id in twitter} media_id 
- * @param {tweet message} content 
+ * @param {media id in twitter} media_id
+ * @param {tweet message} content
  */
 async function tweetmessage(media_id, content) {
-    client.post('statuses/update', 
-        { 
-            status: content, 
+    client.post('statuses/update',
+        {
+            status: content,
             media_ids: media_id
         },
         function (err) {
             if (err) {
-                console.log(`Error occured update status\t${err}`);
-                sentryClient.captureMessage(`Failed to tweet NFT ${error.message}`)
+                console.log(`Error occured update status\t${JSON.stringify(err)}`);
+                sentryClient.captureMessage(`Failed to tweet NFT ${err.message}`)
             } else {
                 console.log('success')
             }
@@ -252,19 +259,19 @@ async function tweet() {
                 } else {
                     initiator = 'burned';
                 }
-                
+
                 const [x, y] = pupperToPixelCoordsLocal(tokenId);
-                const user = initiator === 'minted' ? to : from;    
-                
-                let content = `Doge Pixel(${x}, ${y}) ${initiator} by ${user}`
-                content += `\n pixels.ownthedoge.com/px/${tokenId}`
+                const user = initiator === 'minted' ? to : from;
+
+                let content = `Pixel (${x}, ${y}) ${initiator} by ${user}`
+                content += `\n ${isProd ? 'pixels.ownthedoge.com' : 'dev.pixels.ownthedoge.com'}/px/${tokenId}`
 
                 addPointerImage(tokenId, content);
             }
         } catch (error) {
             console.log(error);
             sentryClient.captureMessage(`Failed to tweet ${error.message}`)
-        }   
+        }
     });
 }
 

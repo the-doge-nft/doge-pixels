@@ -16,9 +16,10 @@ module.exports = {
   infura_ws_endpoint: process.env.INFURA_WS_ENDPOINT,
   sentry_dns: process.env.SENTRY_DNS,
   contract_block_number_deployment: process.env.CONTRACT_BLOCK_NUMBER_DEPLOYMENT,
-  consumer_key: process.env.CONSUMER_KEY,
-  consumer_secret: process.env.CONSUMER_SECRET,
-  access_token_key: process.env.ACCESS_TOKEN_KEY,
-  access_token_secret: process.env.ACCESS_TOKEN_SECRET,
+  twitter_consumer_key: process.env.TWITTER_CONSUMER_KEY,
+  twitter_consumer_secret: process.env.TWITTER_CONSUMER_SECRET,
+  twitter_access_token_key: process.env.TWITTER_ACCESS_TOKEN_KEY,
+  twitter_access_token_secret: process.env.TWITTER_ACCESS_TOKEN_SECRET,
+  isProd: process.env.APP_ENV === "production"
 }
 
