@@ -248,7 +248,7 @@ async function tweetmessage(media_id, content) {
  * Main function
  * Detect mint and burn events and tweet NFT information
  */
-async function tweet(from, to, tokenId, event) {
+async function tweet(from, to, tokenId, provider) {
   logger.info(`Twitter listener triggered on transfer for token id: ${tokenId}`)
   try {
     if (from === ethers.constants.AddressZero || to === ethers.constants.AddressZero) {
@@ -261,8 +261,9 @@ async function tweet(from, to, tokenId, event) {
 
       const [x, y] = pupperToPixelCoordsLocal(tokenId);
       const user = initiator === 'minted' ? to : from;
+      const ens = await provider.lookupAddress(user)
 
-      let content = `Pixel (${x}, ${y}) ${initiator} by ${user}`
+      let content = `Pixel (${x}, ${y}) ${initiator} by ${ens ? ens : user}`
       content += `\n${isProd ? 'pixels.ownthedoge.com' : 'dev.pixels.ownthedoge.com'}/px/${tokenId}`
 
       addPointerImage(tokenId, content);
