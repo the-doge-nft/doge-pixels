@@ -3,12 +3,12 @@ const Jimp = require('jimp')
 const Twitter = require('twitter');
 const fs = require('fs')
 const { createCanvas } = require('canvas')
-const { EthersClient } = require('../config/ethers')
 const { twitter_consumer_key, twitter_consumer_secret, twitter_access_token_key, twitter_access_token_secret, app_env,
   isProd
 } = require('../config/vars');
 const { sentryClient } = require('./Sentry');
 const KobosuJson = require('../constants/kobosu.json');
+const logger = require("../config/config");
 
 const PIXEL_OFFSET_X = 50;
 const TOP_PIXEL_OFFSET_Y = 20;
@@ -28,9 +28,6 @@ var client = new Twitter({
 	access_token_key: twitter_access_token_key,
 	access_token_secret: twitter_access_token_secret
 });
-
-console.log(twitter_consumer_key, twitter_consumer_secret, twitter_access_token_key, twitter_access_token_secret)
-
 
 function pupperToIndexLocal(pupper) {
     return pupper - PIXEL_TO_ID_OFFSET
@@ -151,7 +148,7 @@ function addPointerImage(tokenId, content) {
             uploadImageToTwitter(tokenId, content);
         })
      } catch(error) {
-        console.log(error.message)
+        logger.error(error.message)
         sentryClient.captureMessage(`Failed to add pointer image ${error.message}`)
     }
 }
@@ -207,19 +204,19 @@ async function uploadImageToTwitter(tokenId, content) {
                             let mediaId = data.media_id_string;
                             tweetmessage(mediaId, content);
                         } else {
-                            console.log(`Error occured uploading image\t${err}`);
-                            console.log(err)
-                            console.log(JSON.stringify(err))
+                            logger.error(`Error occured uploading image\t${err}`);
+                            logger.error(err)
+                            logger.error(JSON.stringify(err))
                         }
                         });
                 } else {
                     tweetmessage(0, content);
-                    console.log(`Failed to get base64Image ${error.message}`);
+                    logger.error(`Failed to get base64Image ${error.message}`);
                 }
             });
         })
     } catch(error) {
-        console.log(error.message)
+        logger.error(error.message)
         sentryClient.captureMessage(`Failed to upload image ${error.message}`)
     }
 }
@@ -237,10 +234,10 @@ async function tweetmessage(media_id, content) {
         },
         function (err) {
             if (err) {
-                console.log(`Error occured update status\t${JSON.stringify(err)}`);
+                logger.error(`Error occured update status\t${JSON.stringify(err)}`);
                 sentryClient.captureMessage(`Failed to tweet NFT ${err.message}`)
             } else {
-                console.log('success')
+                logger.info('Twitter message tweeted')
             }
         });
 }
@@ -249,8 +246,10 @@ async function tweetmessage(media_id, content) {
  * Main function
  * Detect mint and burn events and tweet NFT information
  */
-async function tweet() {
-    EthersClient.PXContract.on('Transfer', async (from, to, tokenId, event) => {
+async function tweet(PXContract) {
+    logger.info('Starting tweet listener');
+    PXContract.on('Transfer', async (from, to, tokenId, event) => {
+        logger.info(`Twitter listener triggered on transfer for token id: ${tokenId}`)
         try {
             if (from === ethers.constants.AddressZero || to === ethers.constants.AddressZero) {
                 let initiator;
@@ -264,12 +263,12 @@ async function tweet() {
                 const user = initiator === 'minted' ? to : from;
 
                 let content = `Pixel (${x}, ${y}) ${initiator} by ${user}`
-                content += `\n ${isProd ? 'pixels.ownthedoge.com' : 'dev.pixels.ownthedoge.com'}/px/${tokenId}`
+                content += `\n${isProd ? 'pixels.ownthedoge.com' : 'dev.pixels.ownthedoge.com'}/px/${tokenId}`
 
                 addPointerImage(tokenId, content);
             }
         } catch (error) {
-            console.log(error);
+            logger.error(error);
             sentryClient.captureMessage(`Failed to tweet ${error.message}`)
         }
     });
