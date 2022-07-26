@@ -20,7 +20,6 @@ app.use('/v1', routes)
 app.use(errorLogger)
 app.use(errorResponder)
 
-tweet();
 if (sentryClient.isActive) {
   app.use(Sentry.Handlers.requestHandler())
   app.use(Sentry.Handlers.errorHandler())

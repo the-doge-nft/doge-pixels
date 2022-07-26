@@ -7,6 +7,7 @@ const {keepAlive} = require("./helpers");
 const {getAddressToOwnershipMap} = require("../api/web3/px");
 const {sentryClient} = require("../services/Sentry");
 const debounce = require("lodash.debounce")
+const tweet = require("../services/twitterBot");
 
 class EthersHandler {
   constructor() {
@@ -58,6 +59,8 @@ class EthersHandler {
 
     // update the address map on transfer
     this.PXContract.on('Transfer(address,address,uint256)', debounce(this.getAddressMap.bind(this), 500, {maxWait: 2 * 1000}))
+
+    tweet(this.PXContract);
 
     if (app_env !== "test") {
       keepAlive({
