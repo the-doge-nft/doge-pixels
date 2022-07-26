@@ -4,7 +4,9 @@ module.exports = {
     script : "./src/index.js",
     watch: ["src"],
     ignore_watch: ["./combined.log", './src/assets/images'],
-    max_memory_restart: '750M'
+    max_memory_restart: '750M',
+    env_development: {},
+    env_production: {}
   }],
   deploy: {
     development: {
