@@ -24,6 +24,10 @@ export const MintBurnButtons = observer(({store}: {store: ViewerStore}) => {
         onClick={() => store.pushNavigation(ViewerView.Manage)}>
         View my pixels
     </Button>}
+    {AppStore.web3.puppersOwned.length > 0 && store.currentView === ViewerView.Manage && 
+        <Button  onClick={() => (store.modals.isBurnModalOpen = true)}>
+            Pixel Art Generator
+        </Button>}
   </Flex>
 })
 
