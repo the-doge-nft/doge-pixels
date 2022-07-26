@@ -3,7 +3,10 @@ module.exports = {
     name   : "dog_server",
     script : "./src/index.js",
     watch: ["src"],
-    ignore_watch: ["./combined.log", './src/assets/images']
+    ignore_watch: ["./combined.log", './src/assets/images'],
+    max_memory_restart: '750M',
+    env_development: {},
+    env_production: {}
   }],
   deploy: {
     development: {
