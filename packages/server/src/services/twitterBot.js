@@ -263,7 +263,7 @@ async function tweet(PXContract) {
                 const user = initiator === 'minted' ? to : from;
 
                 let content = `Pixel (${x}, ${y}) ${initiator} by ${user}`
-                content += `\n ${isProd ? 'pixels.ownthedoge.com' : 'dev.pixels.ownthedoge.com'}/px/${tokenId}`
+                content += `\n${isProd ? 'pixels.ownthedoge.com' : 'dev.pixels.ownthedoge.com'}/px/${tokenId}`
 
                 addPointerImage(tokenId, content);
             }
