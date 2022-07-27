@@ -18,6 +18,7 @@ import MemeModal from "./MemeModal";
 import Drawer from "../../DSL/Drawer/Drawer";
 import {useLocation, useParams} from "react-router-dom";
 import {NamedRoutes, route, SELECTED_PIXEL_PARAM} from "../../App.routes";
+import PixelGenerator from "./PixelGeneratorModal/PixelGeneratorModal";
 
 /*
   Hack to reload page even if we are already on the route that renders this page
@@ -143,6 +144,22 @@ const ViewerPage = observer(function ViewerPage() {
           store.modals.isBurnMemeModalOpen = false
         }}
       />}
+
+      {store.modals.isPixelGeneratorModalOpen && 
+      <PixelGenerator
+        defaultPixel={store.selectedPupper}
+        isOpen={store.modals.isPixelGeneratorModalOpen}
+        onClose={() => store.modals.isPixelGeneratorModalOpen = false}
+        onSuccess={() => {
+          store.modals.isPixelGeneratorMemeModalOpen = true
+          // generate
+        }}
+        onCompleteClose={() => {
+          store.modals.isPixelGeneratorModalOpen = false
+          store.modals.isPixelGeneratorMemeModalOpen = false
+        }}
+      />}
+
       {store.modals.isHelperModalOpen && <ScrollHelperModal
         isOpen={store.modals.isHelperModalOpen}
         onClose={() => store.modals.isHelperModalOpen = false}
@@ -156,6 +173,11 @@ const ViewerPage = observer(function ViewerPage() {
         type={"burn"}
         isOpen={store.modals.isBurnMemeModalOpen}
         onClose={() => store.modals.isBurnMemeModalOpen = false}
+      />}
+      {store.modals.isPixelGeneratorMemeModalOpen && <MemeModal
+        type={"burn"}
+        isOpen={store.modals.isPixelGeneratorMemeModalOpen}
+        onClose={() => store.modals.isPixelGeneratorMemeModalOpen = false}
       />}
       {store.isSelectedDrawerOpen &&
       <Drawer

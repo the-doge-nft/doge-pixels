@@ -27,6 +27,12 @@ class ModalsStore {
 
   @observable
   isBurnMemeModalOpen = false;
+  
+  @observable
+  isPixelGeneratorModalOpen = false;
+  
+  @observable
+  isPixelGeneratorMemeModalOpen = false;
 
   constructor() {
     makeObservable(this)
