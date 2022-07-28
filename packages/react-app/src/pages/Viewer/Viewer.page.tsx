@@ -18,7 +18,7 @@ import MemeModal from "./MemeModal";
 import Drawer from "../../DSL/Drawer/Drawer";
 import {useLocation, useParams} from "react-router-dom";
 import {NamedRoutes, route, SELECTED_PIXEL_PARAM} from "../../App.routes";
-import PixelGenerator from "./PixelGeneratorModal/PixelGeneratorModal";
+import PixelGeneratorModal from "./PixelGeneratorModal/PixelGeneratorModal";
 
 /*
   Hack to reload page even if we are already on the route that renders this page
@@ -146,8 +146,7 @@ const ViewerPage = observer(function ViewerPage() {
       />}
 
       {store.modals.isPixelGeneratorModalOpen && 
-      <PixelGenerator
-        defaultPixel={store.selectedPupper}
+      <PixelGeneratorModal
         isOpen={store.modals.isPixelGeneratorModalOpen}
         onClose={() => store.modals.isPixelGeneratorModalOpen = false}
         onSuccess={() => {

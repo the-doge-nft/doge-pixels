@@ -9,21 +9,20 @@ import {PixelGeneratorModalView} from "../../../common/PixelGenerator/PixelGener
 interface PixelGeneratorModalProps {
   isOpen: boolean;
   onClose: () => void;
-  defaultPixel: number | null;
   onSuccess: (burnedPixelIDs: number[]) => void;
   onCompleteClose: () => void;
 }
 
-const PixelGeneratorModal = observer(({isOpen, onClose, defaultPixel, onSuccess, onCompleteClose}: PixelGeneratorModalProps) => {
+const PixelGeneratorModal = observer(({isOpen, onClose, onSuccess, onCompleteClose}: PixelGeneratorModalProps) => {
   // eslint-disable-next-line
-  const store = useMemo(() => new PixelGeneratorModalStore(defaultPixel), [defaultPixel])
+  const store = useMemo(() => new PixelGeneratorModalStore(), [])
 
   return <Modal
     size={"lg"}
     isOpen={isOpen}
     onClose={onClose}
-    title={store.modalTitle}
-    description={store.description}
+    // title={store.modalTitle}
+    // description={store.description}
   >
     <Box pt={store.currentView === PixelGeneratorModalView.Select ? 0 : 12} pb={6}>
       <PixelGeneratorDialog

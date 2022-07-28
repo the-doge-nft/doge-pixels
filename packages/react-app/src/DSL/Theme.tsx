@@ -20,6 +20,7 @@ import LinkStyle from "./Link/Link.style";
 import CheckboxStyle from "./Form/CheckboxInput/Checkbox.style";
 import BigTextStyle from "./BigText/BigText.style";
 import DrawerStyle from "./Drawer/Drawer.style";
+import ColorPaneStyle from "./ColorPane/ColorPane.style";
 
 export const lightModePrimary = "yellow.700";
 export const darkModePrimary = "purple.700";
@@ -90,6 +91,7 @@ const theme = extendTheme({
     Modal: ModalStyle,
     Loading: LoadingStyle,
     PixelPane: PixelPaneStyle,
+    ColorPane: ColorPaneStyle,
     Pill: PillStyle,
     Link: LinkStyle,
     Checkbox: CheckboxStyle,

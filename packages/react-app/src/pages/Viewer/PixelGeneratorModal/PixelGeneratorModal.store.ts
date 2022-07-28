@@ -3,8 +3,8 @@ import PixelGeneratorDialogStore from "../../../common/PixelGenerator/PixelGener
 
 class PixelGeneratorModalStore extends PixelGeneratorDialogStore {
 
- constructor(defaultPixel: number | null) {
-   super(defaultPixel);
+ constructor() {
+   super();
    makeObservable(this)
  }
 
