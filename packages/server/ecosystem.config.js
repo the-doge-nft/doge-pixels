@@ -2,7 +2,7 @@ module.exports = {
   apps : [{
     name   : "dog_server",
     script : "./src/index.js",
-    watch: false,
+    watch: "false",
     ignore_watch: ["./combined.log", './src/assets/images'],
     max_memory_restart: '750M',
     env_development: {
