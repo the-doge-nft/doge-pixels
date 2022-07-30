@@ -22,12 +22,12 @@ interface PixelGeneratorDialogProps {
 }
 
 const PixelGeneratorDialog = observer(({store, onCompleteClose, onSuccess}: PixelGeneratorDialogProps) => {
-  // useEffect(() => {
-  //   if (store.currentView === PixelGeneratorModalView.Complete) {
-  //     AppStore.web3.refreshPupperOwnershipMap()
-  //   }
-  //   // eslint-disable-next-line
-  // }, [store.currentView])
+  useEffect(() => {
+    if (store.currentView === PixelGeneratorModalView.Complete) {
+      AppStore.web3.refreshPupperOwnershipMap()
+    }
+    // eslint-disable-next-line
+  }, [store.currentView])
 
   return <>
     {store.currentView === PixelGeneratorModalView.Select && <SelectColor store={store}/>}
@@ -39,7 +39,12 @@ const PixelGeneratorDialog = observer(({store, onCompleteClose, onSuccess}: Pixe
 const SelectColor = observer(({store}: { store: PixelGeneratorModalStore}) => {
   const {colorMode} = useColorMode()
   return <Flex flexDirection={"column"}>
-    <GridPane colors={store.gridColors} onClick={(index) => store.onPaint(index)} />
+      <Flex margin="auto" flexDirection={"column"}>
+      <GridPane colors={store.gridColors} onClick={(index) => store.onPaint(index)} isGrid={true} />
+      <Flex position={"absolute"} zIndex={-1}>
+        <GridPane colors={store.pngColors} isGrid={false}/>
+      </Flex >
+      </Flex>
     {store.isUserPixelOwner && <>
         <Flex mt={3}>
           <Box
@@ -78,7 +83,7 @@ const SelectColor = observer(({store}: { store: PixelGeneratorModalStore}) => {
 
         <Flex justifyContent={"center"} mt={3} w={"full"}>
             <Box>
-                <Form onSubmit={async () => store.pushNavigation(PixelGeneratorModalView.LoadingGenerate)}>
+                <Form onSubmit={async () => store.generatingPixels()}>
                     <Flex justifyContent={"center"} w={"100%"}>
                         <Submit label={"Generate"} />
                     </Flex>
@@ -91,7 +96,8 @@ const SelectColor = observer(({store}: { store: PixelGeneratorModalStore}) => {
 
 const LoadingGenerate = observer(({store}: {store: PixelGeneratorModalStore}) => {
   useEffect(() => {
-    store.generatingPixels()
+    const node = document.getElementById('my-art');
+    // store.generatingPixels(node)
     // eslint-disable-next-line
   }, [])
   return (
