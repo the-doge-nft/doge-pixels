@@ -1,4 +1,4 @@
-import { useMultiStyleConfig, Grid, GridItem } from "@chakra-ui/react";
+import { Grid, GridItem } from "@chakra-ui/react";
 
 interface GridPaneProps {
     colors: string[],
@@ -7,7 +7,7 @@ interface GridPaneProps {
 }
 
 const ColorPane = ({ colors, onClick, variant = "solid"}: GridPaneProps) => {
-    const styles = useMultiStyleConfig("ColorPane", {variant: variant})
+    // const styles = useMultiStyleConfig("ColorPane", {variant: variant})
     return <Grid
           zIndex={1}
           border="none"
