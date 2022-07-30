@@ -13,7 +13,7 @@ const ColorPane = ({ colors, onClick, variant = "solid"}: GridPaneProps) => {
           border="none"
           width="400px"
           templateColumns={'repeat(20, 1fr)'}   
-
+          id="my-art"
         >
             {
                 colors.map((color, index) => {

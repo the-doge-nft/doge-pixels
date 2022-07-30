@@ -1,4 +1,7 @@
 import {computed, makeObservable, observable} from "mobx";
+import * as htmlToImage from 'html-to-image';
+import { toPng, toJpeg, toBlob, toPixelData, toSvg } from 'html-to-image';
+
 import {Navigable} from "../../services/mixins/navigable";
 import {Constructor, EmptyClass} from "../../helpers/mixins";
 import AppStore from "../../store/App.store";
@@ -55,14 +58,28 @@ class PixelGeneratorDialogStore extends Navigable<PixelGeneratorModalView, Const
   async generatingPixels() {
     let tx
     try {
+      const node = document.getElementById('my-art');
+      if (!node) {
+        throw new Error('No element');
+      }
+      const dataUrl = await htmlToImage.toPng(node);
+      this.download(dataUrl, 'myart.png');
       this.pushNavigation(PixelGeneratorModalView.Complete)
     } catch (e) {
       Sentry.captureException(e)
       console.error(e)
-      showErrorToast("Error burning pixels")
+      showErrorToast("Error generating pixels")
       this.popNavigation()
     }
   }
+
+  download(dataUrl: string, filename: string) {
+    var link = document.createElement('a');
+    link.download = filename;
+    link.href = dataUrl;
+    link.click();
+  }
+  
 
   @computed
   get isUserPixelOwner() {

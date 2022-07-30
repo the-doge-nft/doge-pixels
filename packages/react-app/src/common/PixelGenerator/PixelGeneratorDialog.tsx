@@ -22,12 +22,12 @@ interface PixelGeneratorDialogProps {
 }
 
 const PixelGeneratorDialog = observer(({store, onCompleteClose, onSuccess}: PixelGeneratorDialogProps) => {
-  useEffect(() => {
-    if (store.currentView === PixelGeneratorModalView.Complete) {
-      AppStore.web3.refreshPupperOwnershipMap()
-    }
-    // eslint-disable-next-line
-  }, [store.currentView])
+  // useEffect(() => {
+  //   if (store.currentView === PixelGeneratorModalView.Complete) {
+  //     AppStore.web3.refreshPupperOwnershipMap()
+  //   }
+  //   // eslint-disable-next-line
+  // }, [store.currentView])
 
   return <>
     {store.currentView === PixelGeneratorModalView.Select && <SelectColor store={store}/>}
