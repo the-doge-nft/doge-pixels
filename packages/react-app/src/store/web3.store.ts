@@ -15,6 +15,7 @@ import {ContractInterface} from "@ethersproject/contracts/src.ts/index";
 import {SupportedChainId} from "@cowprotocol/cow-sdk/dist/constants/chains";
 import {CowSdk, OrderKind} from "@cowprotocol/cow-sdk";
 import AppStore from "./App.store";
+import CowStore from "./cow.store";
 
 interface AddressToPuppers {
     [k: string]: {
@@ -53,12 +54,13 @@ class Web3Store extends Web3providerStore {
     dogContractAddress: string
 
     @observable
-    cowClient?: CowSdk<SupportedChainId.MAINNET>
+    cowStore: CowStore
 
     constructor() {
         super()
         makeObservable(this)
         this.addressToPuppers = {}
+        this.cowStore = new CowStore()
 
         if (isDevModeEnabled()) {
             // this.pxContractAddress = deployedContracts["4"]["rinkeby"]["contracts"]["PX"]["address"]
@@ -88,7 +90,7 @@ class Web3Store extends Web3providerStore {
             await super.connect()
             this.connectToContracts(this.signer!)
             await this.errorGuardContracts()
-            this.getCowClient()
+            this.cowStore.connect(this.signer!)
             this.refreshDogBalance()
             this.refreshPupperBalance()
         } catch (e) {
@@ -99,13 +101,6 @@ class Web3Store extends Web3providerStore {
                 Sentry.captureException(e)
                 showErrorToast("Error connecting")
             }
-        }
-    }
-
-    getCowClient() {
-        if (this.signer) {
-            //@ts-ignore
-            this.cowClient = new CowSdk(1, {signer: this.signer})
         }
     }
 
@@ -301,23 +296,6 @@ class Web3Store extends Web3providerStore {
             return false
         }
         return true
-    }
-
-    async getQuoteForPixels({sellAddress, amountPixels}: {sellAddress: string, amountPixels: string | number}) {
-        const tomorrow = new Date()
-        tomorrow.setHours(tomorrow.getHours() + 1)
-        const validTo = Math.floor(tomorrow.getTime() / 1000)
-        const DOGAddress = this.dogContractAddress
-        const amount = this.DOG_TO_PIXEL_SATOSHIS.mul(amountPixels).toString()
-        const quote = await this.cowClient?.cowApi.getQuote({
-            kind: OrderKind.BUY,
-            userAddress: AppStore.web3.address,
-            buyToken: DOGAddress,
-            sellToken: sellAddress,
-            amount,
-            validTo,
-        })
-        return quote
     }
 }
 

@@ -18,6 +18,7 @@ import AppStore from "../../store/App.store";
 import Icon from "../../DSL/Icon/Icon";
 import Dev from "../Dev";
 import {MintPixelsInput} from "./MintPixelsInput";
+import jsonify from "../../helpers/jsonify";
 
 interface MintPixelsDialogProps {
     store: MintPixelsDialogStore;
@@ -246,10 +247,19 @@ const MintPixels = observer(({store}: { store: MintPixelsModalStore }) => {
     );
 });
 
-const CowSwap: React.FC<{ store: MintPixelsDialogStore }> = observer(({ store }) => {
+const CowSwap: React.FC<{ store: MintPixelsDialogStore }> = observer(({store}) => {
     return (
         <Box>
-            CowSwap trade lets get it
+            <Typography variant={TVariant.PresStart15}>
+                Time to place your trade
+            </Typography>
+            <Box>
+                <Typography variant={TVariant.ComicSans14}>
+                    {jsonify(store.cowSimpleQuote)}
+                </Typography>
+            </Box>
+            <Button onClick={() => store.placeCowswapOrder()}>Trade!</Button>
+            <Button onClick={() => store.getCowOrders()}>Get Orders</Button>
         </Box>
     )
 })

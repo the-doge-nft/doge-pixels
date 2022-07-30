@@ -57,7 +57,7 @@ class MintPixelsDialogStore extends Reactionable((Navigable<MintModalView, Const
     srcCurrencyContract: Contract | null = null
 
     @observable
-    private quote?: SimpleGetQuoteResponse | null = null
+    cowSimpleQuote?: SimpleGetQuoteResponse | null = null
 
     @observable
     recentQuote: {
@@ -94,7 +94,13 @@ class MintPixelsDialogStore extends Reactionable((Navigable<MintModalView, Const
             if (Number(this.pixelCount) > 0) {
                 this.setSrcCurrencyContract()
                 await this.getSrcCurrencyBalance()
-                this.getQuote()
+                try {
+                    await this.getQuote()
+                } catch (e) {
+                    this.isLoading = false
+                    console.error('could not get quote')
+                    showErrorToast('Could not get quote')
+                }
             } else {
                 this.isLoading = false
                 this.recentQuote = null
@@ -132,14 +138,15 @@ class MintPixelsDialogStore extends Reactionable((Navigable<MintModalView, Const
                 _dogAmount: AppStore.web3.DOG_TO_PIXEL_SATOSHIS.mul(this.pixelCount)
             }
         } else {
-            this.quote = await AppStore.web3.getQuoteForPixels({
+            this.cowSimpleQuote = await AppStore.web3.cowStore.getQuoteForPixels({
                 sellAddress: this.srcCurrencyDetails.contractAddress,
-                amountPixels: this.pixelCount,
+                pixelCount: this.pixelCount,
+                userAddress: AppStore.web3.address!
             })
 
-            const formattedAmount = Number(this.formatToDecimals(this.quote!.quote.sellAmount, this.srcCurrency))
-            const feeFormatted = Number(this.formatToDecimals(this.quote!.quote.feeAmount, this.srcCurrency))
-            const dogFormatted = Number(this.formatToDecimals(this.quote!.quote.buyAmount, "DOG"))
+            const formattedAmount = Number(this.formatToDecimals(this.cowSimpleQuote!.quote.sellAmount, this.srcCurrency))
+            const feeFormatted = Number(this.formatToDecimals(this.cowSimpleQuote!.quote.feeAmount, this.srcCurrency))
+            const dogFormatted = Number(this.formatToDecimals(this.cowSimpleQuote!.quote.buyAmount, "DOG"))
             const total = formattedAmount + feeFormatted
             this.recentQuote = {
                 srcCurrency: this.srcCurrency,
@@ -148,12 +155,12 @@ class MintPixelsDialogStore extends Reactionable((Navigable<MintModalView, Const
                 srcCurrencyTotal: total,
                 effectiveRate: total / dogFormatted,
                 dogAmount: dogFormatted,
-                computedPixelCount: BigNumber.from(this.quote!.quote.buyAmount).div(AppStore.web3.DOG_TO_PIXEL_SATOSHIS).toString(),
+                computedPixelCount: BigNumber.from(this.cowSimpleQuote!.quote.buyAmount).div(AppStore.web3.DOG_TO_PIXEL_SATOSHIS).toString(),
                 maxPixelAmount: this.srcCurrencyBalance ? Math.floor(this.srcCurrencyBalance / ((total / dogFormatted) * Number(ethers.utils.formatUnits(AppStore.web3.DOG_TO_PIXEL_SATOSHIS, 18)))) : 0,
-                _srcCurrencyAmount: BigNumber.from(this.quote!.quote.sellAmount),
-                _srcCurrencyFee: BigNumber.from(this.quote!.quote.feeAmount),
-                _srcCurrencyTotal: BigNumber.from(this.quote!.quote.sellAmount).add(BigNumber.from(this.quote!.quote.feeAmount)),
-                _dogAmount: BigNumber.from(this.quote!.quote.buyAmount)
+                _srcCurrencyAmount: BigNumber.from(this.cowSimpleQuote!.quote.sellAmount),
+                _srcCurrencyFee: BigNumber.from(this.cowSimpleQuote!.quote.feeAmount),
+                _srcCurrencyTotal: BigNumber.from(this.cowSimpleQuote!.quote.sellAmount).add(BigNumber.from(this.cowSimpleQuote!.quote.feeAmount)),
+                _dogAmount: BigNumber.from(this.cowSimpleQuote!.quote.buyAmount)
             }
         }
         this.isLoading = false
@@ -244,6 +251,22 @@ class MintPixelsDialogStore extends Reactionable((Navigable<MintModalView, Const
         }
     }
 
+    async placeCowswapOrder() {
+        try {
+            const order = await AppStore.web3.cowStore.acceptSimpleQuote(this.cowSimpleQuote!)
+            console.log('debug:: order', order)
+            await this.getCowOrders()
+        } catch (e) {
+            console.error('could not trade')
+            showErrorToast('Could not place cowswap')
+        }
+    }
+
+    async getCowOrders() {
+        const orders = await AppStore.web3.cowStore.getOrders({owner: AppStore.web3.address!})
+        console.log('debug:: orders', orders)
+    }
+
     async approveDogSpend() {
         this.hasUserSignedTx = false
         try {
@@ -296,6 +319,67 @@ class MintPixelsDialogStore extends Reactionable((Navigable<MintModalView, Const
     get stepperItems() {
         return [];
     }
+}
+
+
+const freshOrder = {
+    appData: "0x0000000000000000000000000000000000000000000000000000000000000000",
+    availableBalance: "300265274",
+    buyAmount: "55239898990000000000000",
+    buyToken: "0xbaac2b4491727d78d2b78815144570b9f2fe8899",
+    buyTokenBalance: "erc20",
+    creationDate: "2022-07-30T02:44:56.937289Z",
+    executedBuyAmount: "0",
+    executedFeeAmount: "0",
+    executedSellAmount: "0",
+    executedSellAmountBeforeFees: "0",
+    feeAmount: "5284374",
+    fullFeeAmount: "3715172",
+    invalidated: false,
+    isLiquidityOrder: false,
+    kind: "buy",
+    owner: "0xd801d86c10e2185a8fcbccfb7d7baf0a6c5b6bd5",
+    partiallyFillable: false,
+    receiver: "0xd801d86c10e2185a8fcbccfb7d7baf0a6c5b6bd5",
+    sellAmount: "67764069",
+    sellToken: "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
+    sellTokenBalance: "erc20",
+    settlementContract: "0x9008d19f58aabd9ed0d60971565aa8510560ab41",
+    signature: "0xd894b41dad57f6043a54b4f841f2d4fa3cdadfbd1585580448d177611568d77c0454502adfb96dba7c045eb65a2d0f622a63d4b6645f17643ec9e27f31d35ab41b",
+    signingScheme: "eip712",
+    status: "open",
+    uid: "0x0d1e1f2f7cb1be8a382a64a507f563a225f586eb169450c6efef51349eb43f16d801d86c10e2185a8fcbccfb7d7baf0a6c5b6bd562e4a92f",
+    validTo: 1659152687
+}
+
+const filledOrder = {
+    appData: "0x0000000000000000000000000000000000000000000000000000000000000000",
+    availableBalance: null,
+    buyAmount: "55239898990000000000000",
+    buyToken: "0xbaac2b4491727d78d2b78815144570b9f2fe8899",
+    buyTokenBalance: "erc20",
+    creationDate: "2022-07-30T02:44:56.937289Z",
+    executedBuyAmount: "55239898990000000000000",
+    executedFeeAmount: "5284374",
+    executedSellAmount: "71181709",
+    executedSellAmountBeforeFees: "65897335",
+    feeAmount: "5284374",
+    fullFeeAmount: "3715172",
+    invalidated: false,
+    isLiquidityOrder: false,
+    kind: "buy",
+    owner: "0xd801d86c10e2185a8fcbccfb7d7baf0a6c5b6bd5",
+    partiallyFillable: false,
+    receiver: "0xd801d86c10e2185a8fcbccfb7d7baf0a6c5b6bd5",
+    sellAmount: "67764069",
+    sellToken: "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
+    sellTokenBalance: "erc20",
+    settlementContract: "0x9008d19f58aabd9ed0d60971565aa8510560ab41",
+    signature: "0xd894b41dad57f6043a54b4f841f2d4fa3cdadfbd1585580448d177611568d77c0454502adfb96dba7c045eb65a2d0f622a63d4b6645f17643ec9e27f31d35ab41b",
+    signingScheme: "eip712",
+    status: "fulfilled",
+    uid: "0x0d1e1f2f7cb1be8a382a64a507f563a225f586eb169450c6efef51349eb43f16d801d86c10e2185a8fcbccfb7d7baf0a6c5b6bd562e4a92f",
+    validTo: 1659152687
 }
 
 export default MintPixelsDialogStore;
