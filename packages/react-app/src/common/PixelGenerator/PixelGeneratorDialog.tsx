@@ -14,6 +14,7 @@ import {getEtherscanURL} from "../../helpers/links";
 import ColorPane from "../../DSL/ColorPane/ColorPane";
 import GridPane from "../../DSL/GridPane/GridPane";
 import { useEffect } from "react";
+import PaintTool from "../../DSL/PatinTool/PatinTool";
 
 interface PixelGeneratorDialogProps {
   store: PixelGeneratorDialogStore;
@@ -38,12 +39,18 @@ const PixelGeneratorDialog = observer(({store, onCompleteClose, onSuccess}: Pixe
 
 const SelectColor = observer(({store}: { store: PixelGeneratorModalStore}) => {
   const {colorMode} = useColorMode()
-  return <Flex flexDirection={"column"}>
+  return <Flex flexDirection={"column"} position="relative">
+      <PaintTool 
+        x={store.toolX} 
+        y={store.toolY} 
+        onDrawTool={(type) => store.setDrawType(type)} 
+        onMouseMove={(x, y) => store.setPaintToolCoordinate(x, y)}
+      />
       <Flex margin="auto" flexDirection={"column"}>
-      <GridPane colors={store.gridColors} onClick={(index) => store.onPaint(index)} isGrid={true} />
-      <Flex position={"absolute"} zIndex={-1}>
-        <GridPane colors={store.pngColors} isGrid={false}/>
-      </Flex >
+        <GridPane colors={store.gridColors} onClick={(index) => store.onPaint(index)} isGrid={true} />
+        <Flex position={"absolute"} zIndex={-1}>
+          <GridPane colors={store.pngColors} isGrid={false}/>
+        </Flex >
       </Flex>
     {store.isUserPixelOwner && <>
         <Flex mt={3}>

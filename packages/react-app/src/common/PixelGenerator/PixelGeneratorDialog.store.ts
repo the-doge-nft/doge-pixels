@@ -27,6 +27,19 @@ class PixelGeneratorDialogStore extends Navigable<PixelGeneratorModalView, Const
   @observable
   pngColors: string[] = [];
 
+  // coordinate x of the paint tool
+  @observable
+  toolX: number = 0;
+
+  // coordinate y of the paint tool
+  @observable
+  toolY: number = 0;
+  
+  // type of draw tool
+  @observable
+  drawType: string = 'pencil';
+  
+
   constructor() {
     super();
     makeObservable(this)
@@ -57,13 +70,48 @@ class PixelGeneratorDialogStore extends Navigable<PixelGeneratorModalView, Const
   }
   
   onPaint(index: number) {
+    let color = this.selectedColor;
+    if (this.drawType === 'eraser') {
+      if ((index + Math.floor(index / 20)) % 2  === 0) {
+        color = "white";
+      } else {
+        color = "#180e3012";
+      }
+      if (color === this.gridColors[index]) {
+        return;
+      }
+    }
     let tempGrids = this.gridColors.slice();
-    tempGrids[index] = this.selectedColor;
+    tempGrids[index] = color;
     this.gridColors = tempGrids.slice();
     
     tempGrids = this.pngColors.slice();
-    tempGrids[index] = this.selectedColor;
+    tempGrids[index] = color;
     this.pngColors = tempGrids.slice();
+  }
+  
+  setDrawType(type: string) {
+    this.drawType = type;
+  }
+
+  setPaintToolCoordinate(x: number, y: number) {
+    const newX = this.toolX + x;
+    const newY = this.toolY + y;
+    if (newX < 0) {
+      this.toolX = 0;
+    } else if (newX > 400 - 40) {
+      this.toolX = 400 - 40;
+    } else {
+      this.toolX = newX;
+    }
+
+    if (newY < 0) {
+      this.toolY = 0;
+    } else if (newY > 400 - 40) {
+      this.toolY = 400 - 40;
+    } else {
+      this.toolY = newY;
+    }
   }
 
   async generatingPixels() {

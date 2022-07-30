@@ -7,8 +7,8 @@ interface GridPaneProps {
     variant?: "solid" | "shadow";
 }
 
-const ColorPane = ({ colors, onClick, isGrid, variant = "solid"}: GridPaneProps) => {
-    // const styles = useMultiStyleConfig("ColorPane", {variant: variant})
+const GridPane = ({ colors, onClick, isGrid, variant = "solid"}: GridPaneProps) => {
+    // const styles = useMultiStyleConfig("GridPane", {variant: variant})
     return <Grid
           border="none"
           width="400px"
@@ -33,4 +33,4 @@ const ColorPane = ({ colors, onClick, isGrid, variant = "solid"}: GridPaneProps)
     </Grid>
 }
 
-export default ColorPane;
+export default GridPane;
