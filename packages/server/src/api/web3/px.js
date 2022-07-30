@@ -61,7 +61,7 @@ async function addRemoveAddresses(source, from, to, tokenID) {
     debugString = "🚡 user transfer: "
   }
   debugString += `${tokenID}: ${from} -> ${to}`
-  logger.info(debugString)
+  // logger.info(debugString)
   return copy
 }
 
@@ -110,9 +110,9 @@ async function getAddressToOwnershipMap(EthersClient) {
   // https://docs.infura.io/infura/networks/ethereum/json-rpc-methods/eth_getlogs
   let logs = []
   const step = 50000
-  logger.info(`beginning to process block range: ${fromBlock} -> ${toBlock}`)
+  // logger.info(`beginning to process block range: ${fromBlock} -> ${toBlock}`)
   for (let i = fromBlock; i <= toBlock; i += step + 1) {
-    logger.info(`processing from: ${i} to ${i + step}`)
+    // logger.info(`processing from: ${i} to ${i + step}`)
     const _logs = await EthersClient.PXContract.queryFilter(filter, i, i+step)
     logs.push(..._logs)
   }
@@ -132,6 +132,7 @@ async function getAddressToOwnershipMap(EthersClient) {
   addressToPuppers = sortTokenIDsByAscendingTime(addressToPuppers)
 
   await redisClient.set(redisClient.keys.ADDRESS_TO_TOKENID, JSON.stringify(addressToPuppers))
+  logger.info('Finished building address map')
 }
 
 module.exports = {getAddressToOwnershipMap}

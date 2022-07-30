@@ -7,6 +7,7 @@ const routes = require('../api/routes/v1');
 const logger = require("./config");
 const Sentry = require("@sentry/node");
 const {sentryClient} = require("../services/Sentry");
+const tweet = require('../services/twitterBot');
 
 const app = express();
 
