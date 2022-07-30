@@ -24,6 +24,7 @@ const ColorPane = ({ colors, onClick, variant = "solid"}: GridPaneProps) => {
                             border="none"
                             bg={color} 
                             cursor="pointer"
+                            key={`grid_${index}`}
                             onClick={() => onClick && onClick(index)}
                         />
                     )

@@ -13,6 +13,7 @@ import Link from "../../DSL/Link/Link";
 import {getEtherscanURL} from "../../helpers/links";
 import ColorPane from "../../DSL/ColorPane/ColorPane";
 import GridPane from "../../DSL/GridPane/GridPane";
+import { useEffect } from "react";
 
 interface PixelGeneratorDialogProps {
   store: PixelGeneratorDialogStore;
@@ -21,20 +22,17 @@ interface PixelGeneratorDialogProps {
 }
 
 const PixelGeneratorDialog = observer(({store, onCompleteClose, onSuccess}: PixelGeneratorDialogProps) => {
-  // useEffect(() => {
-  //   if (store.currentView === PixelGeneratorModalView.Complete) {
-  //     onSuccess && onSuccess(store.selectedPixels)
-  //     AppStore.web3.refreshPupperOwnershipMap()
-  //     AppStore.web3.refreshPupperBalance()
-  //     AppStore.web3.refreshDogBalance()
-  //   }
-  //   // eslint-disable-next-line
-  // }, [store.currentView])
+  useEffect(() => {
+    if (store.currentView === PixelGeneratorModalView.Complete) {
+      AppStore.web3.refreshPupperOwnershipMap()
+    }
+    // eslint-disable-next-line
+  }, [store.currentView])
 
   return <>
     {store.currentView === PixelGeneratorModalView.Select && <SelectColor store={store}/>}
     {store.currentView === PixelGeneratorModalView.LoadingGenerate && <LoadingGenerate store={store}/>}
-    {store.currentView === PixelGeneratorModalView.Complete && <Complete onSuccess={onCompleteClose} txHash={store.txHash}/>}
+    {store.currentView === PixelGeneratorModalView.Complete && <Complete onSuccess={onCompleteClose}/>}
   </>
 })
 
@@ -57,13 +55,9 @@ const SelectColor = observer(({store}: { store: PixelGeneratorModalStore}) => {
           <Grid overflow={"auto"} flexGrow={1} h={"full"} justifyContent={"flex-start"} >
               <Box
                   maxHeight={AppStore.rwd.isMobile ? "250px" : "350px"}
-                  // width={"416px"}
-                  
               >
                 {AppStore.web3.puppersOwned.map(px => {
                   const hex = AppStore.web3.pupperToHexLocal(px)
-                  const index = AppStore.web3.pupperToIndexLocal(px)
-                  const isPixelSelected = store.selectedColor
                   return <Box
                               my={1}
                               mx={1}
@@ -96,31 +90,22 @@ const SelectColor = observer(({store}: { store: PixelGeneratorModalStore}) => {
 })
 
 const LoadingGenerate = observer(({store}: {store: PixelGeneratorModalStore}) => {
-  // useEffect(() => {
-  //   store.burnSelectedPixels()
-  //   // eslint-disable-next-line
-  // }, [])
+  useEffect(() => {
+    store.generatingPixels()
+    // eslint-disable-next-line
+  }, [])
   return (
     <Box>
-      <Loading title={"Burning..."} showSigningHint={!store.hasUserSignedTx}/>
+      <Loading title={"Generating..."} showSigningHint={false}/>
     </Box>
   )
 })
 
-const Complete = observer(({onSuccess, txHash}: {onSuccess: () => void, txHash: string | null}) => {
+const Complete = observer(({onSuccess}: {onSuccess: () => void}) => {
   return <Box>
     <Typography variant={TVariant.PresStart28} textAlign={"center"} block>
-      Pixels Burned
+      Pixels Generated
     </Typography>
-    <Typography variant={TVariant.PresStart28} textAlign={"center"} mt={4} block>
-      🔥🔥🔥
-    </Typography>
-    <Flex justifyContent={"center"} mt={12}>
-      <Button onClick={() => onSuccess()}>Close</Button>
-    </Flex>
-    <Flex justifyContent={"center"} mt={10}>
-      {txHash && <Link href={getEtherscanURL(txHash, "tx")} isExternal>View tx</Link>}
-    </Flex>
   </Box>
 })
 

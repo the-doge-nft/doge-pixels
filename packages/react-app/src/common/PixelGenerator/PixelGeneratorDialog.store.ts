@@ -2,6 +2,8 @@ import {computed, makeObservable, observable} from "mobx";
 import {Navigable} from "../../services/mixins/navigable";
 import {Constructor, EmptyClass} from "../../helpers/mixins";
 import AppStore from "../../store/App.store";
+import * as Sentry from "@sentry/react";
+import {showErrorToast} from "../../DSL/Toast/Toast";
 
 export enum PixelGeneratorModalView {
   Select = "select",
@@ -13,12 +15,6 @@ class PixelGeneratorDialogStore extends Navigable<PixelGeneratorModalView, Const
 
   @observable
   selectedColor: string = ''
-
-  @observable
-  hasUserSignedTx: boolean = false
-
-  @observable
-  txHash: string | null = null
   
   @observable
   gridColors: string[] = []
@@ -54,6 +50,18 @@ class PixelGeneratorDialogStore extends Navigable<PixelGeneratorModalView, Const
     const tempGrids = this.gridColors.slice();
     tempGrids[index] = this.selectedColor;
     this.gridColors = tempGrids.slice();
+  }
+
+  async generatingPixels() {
+    let tx
+    try {
+      this.pushNavigation(PixelGeneratorModalView.Complete)
+    } catch (e) {
+      Sentry.captureException(e)
+      console.error(e)
+      showErrorToast("Error burning pixels")
+      this.popNavigation()
+    }
   }
 
   @computed
