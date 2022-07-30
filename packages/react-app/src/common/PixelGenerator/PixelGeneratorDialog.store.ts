@@ -1,10 +1,7 @@
-import {action, computed, makeObservable, observable} from "mobx";
+import {computed, makeObservable, observable} from "mobx";
 import {Navigable} from "../../services/mixins/navigable";
 import {Constructor, EmptyClass} from "../../helpers/mixins";
 import AppStore from "../../store/App.store";
-import {showErrorToast} from "../../DSL/Toast/Toast";
-import {ethers} from "ethers";
-import * as Sentry from "@sentry/react";
 
 export enum PixelGeneratorModalView {
   Select = "select",
@@ -22,11 +19,24 @@ class PixelGeneratorDialogStore extends Navigable<PixelGeneratorModalView, Const
 
   @observable
   txHash: string | null = null
+  
+  @observable
+  gridColors: string[] = []
 
   constructor() {
     super();
     makeObservable(this)
     this.pushNavigation(PixelGeneratorModalView.Select)
+    
+    // Initialize the Grid pane with 20 * 20
+    const initialColors = ["white", "#180e3012"];
+    for (let i = 0; i < 400; i ++) {
+      if ((i + Math.floor(i / 20)) % 2  === 0) {
+        this.gridColors[i] = "white";
+      } else {
+        this.gridColors[i] = "#180e3012";
+      }
+    }
     if (AppStore.web3.puppersOwned.length > 0 ) {
       this.selectedColor = AppStore.web3.pupperToHexLocal(AppStore.web3.puppersOwned[0])
     }
@@ -39,18 +49,12 @@ class PixelGeneratorDialogStore extends Navigable<PixelGeneratorModalView, Const
   handlePixelSelect(color: string) {
     this.selectedColor = color
   }
-
-  // @computed
-  // get selectedColorDogValue() {
-  //   const dogReturnedWithoutFees = Number(ethers.utils.formatEther(AppStore.web3.DOG_TO_PIXEL_SATOSHIS.mul(this.selectedColor.length)))
-  //   const dogFees = dogReturnedWithoutFees * (AppStore.web3.DOG_BURN_FEES_PERCENT / 100)
-  //   return (dogReturnedWithoutFees - dogFees).toFixed(4)
-  // }
-
-  // @computed
-  // get isAllPixelsSelected() {
-  //   return this.selectedColor.length === AppStore.web3.puppersOwned.length
-  // }
+  
+  onPaint(index: number) {
+    const tempGrids = this.gridColors.slice();
+    tempGrids[index] = this.selectedColor;
+    this.gridColors = tempGrids.slice();
+  }
 
   @computed
   get isUserPixelOwner() {

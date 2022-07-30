@@ -21,6 +21,7 @@ import CheckboxStyle from "./Form/CheckboxInput/Checkbox.style";
 import BigTextStyle from "./BigText/BigText.style";
 import DrawerStyle from "./Drawer/Drawer.style";
 import ColorPaneStyle from "./ColorPane/ColorPane.style";
+import GridPaneStyle from "./GridPane/GridPane.style";
 
 export const lightModePrimary = "yellow.700";
 export const darkModePrimary = "purple.700";
@@ -92,6 +93,7 @@ const theme = extendTheme({
     Loading: LoadingStyle,
     PixelPane: PixelPaneStyle,
     ColorPane: ColorPaneStyle,
+    GridPane: GridPaneStyle,
     Pill: PillStyle,
     Link: LinkStyle,
     Checkbox: CheckboxStyle,

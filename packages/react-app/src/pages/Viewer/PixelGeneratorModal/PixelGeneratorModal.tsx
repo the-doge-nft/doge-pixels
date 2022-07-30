@@ -1,5 +1,5 @@
 import {observer} from "mobx-react-lite";
-import React, {useMemo} from "react";
+import {useMemo} from "react";
 import PixelGeneratorDialog from "../../../common/PixelGenerator/PixelGeneratorDialog";
 import Modal from "../../../DSL/Modal/Modal";
 import PixelGeneratorModalStore from "./PixelGeneratorModal.store";
@@ -24,7 +24,7 @@ const PixelGeneratorModal = observer(({isOpen, onClose, onSuccess, onCompleteClo
     // title={store.modalTitle}
     // description={store.description}
   >
-    <Box pt={store.currentView === PixelGeneratorModalView.Select ? 0 : 12} pb={6}>
+    <Box pt={store.currentView === PixelGeneratorModalView.Select ? 0 : 12} pb={0} >
       <PixelGeneratorDialog
         store={store}
         onSuccess={onSuccess}
