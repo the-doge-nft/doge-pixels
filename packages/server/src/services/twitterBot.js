@@ -142,9 +142,14 @@ function addPointerImage(tokenId, content) {
         context = drawPointer(context, x, y, pixelOffsetX + 20, y1, pixelOffsetX + 45, y1);
         
         const buffer = canvas.toBuffer('image/png')
-        fs.writeFile('src/assets/images/pointer.png', buffer, "", function () {
-            uploadImageToTwitter(tokenId, content);
-        })
+
+        return new Promise ((resolve, reject) =>  {
+                fs.writeFile('src/assets/images/pointer.png', buffer, "", async function () {
+                    await uploadImageToTwitter(tokenId, content);
+
+                    resolve("success2");
+            })
+        });
      } catch(error) {
         console.log(error.message)
         sentryClient.captureMessage(`Failed to add pointer image ${error.message}`)
@@ -162,6 +167,7 @@ async function uploadImageToTwitter(tokenId, content) {
         const color = pupperToHexLocal(tokenId);
 
         const pointerImg = await Jimp.read('src/assets/images/pointer.png');
+
         let txtImg;
 
         if (content.includes('minted')) {
@@ -259,7 +265,7 @@ async function tweet() {
                 let content = `Doge Pixel(${x}, ${y}) ${initiator} by ${user}`
                 content += `\n pixels.ownthedoge.com/px/${tokenId}`
 
-                addPointerImage(tokenId, content);
+                await addPointerImage(tokenId, content);
             }
         } catch (error) {
             console.log(error);
