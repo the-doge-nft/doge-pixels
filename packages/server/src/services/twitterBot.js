@@ -149,6 +149,13 @@ function addPointerImage(tokenId, content) {
     fs.writeFile('src/assets/images/pointer.png', buffer, "", function () {
       uploadImageToTwitter(tokenId, content);
     })
+    return new Promise ((resolve, reject) =>  {
+                fs.writeFile('src/assets/images/pointer.png', buffer, "", async function () {
+                    await uploadImageToTwitter(tokenId, content);
+
+                    resolve("success2");
+            })
+        });
   } catch (error) {
     logger.error(error.message)
     sentryClient.captureMessage(`Failed to add pointer image ${error.message}`)
@@ -266,7 +273,7 @@ async function tweet(from, to, tokenId, provider) {
       let content = `Pixel (${x}, ${y}) ${initiator} by ${ens ? ens : user}`
       content += `\n${isProd ? 'pixels.ownthedoge.com' : 'dev.pixels.ownthedoge.com'}/px/${tokenId}`
 
-      addPointerImage(tokenId, content);
+      await addPointerImage(tokenId, content);
     }
   } catch (error) {
     logger.error(error);
