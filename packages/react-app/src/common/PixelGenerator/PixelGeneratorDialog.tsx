@@ -47,7 +47,7 @@ const SelectColor = observer(({store}: { store: PixelGeneratorModalStore}) => {
         onMouseMove={(x, y) => store.setPaintToolCoordinate(x, y)}
       />
       <Flex margin="auto" flexDirection={"column"}>
-        <GridPane colors={store.gridColors} onClick={(index) => store.onPaint(index)} isGrid={true} />
+        <GridPane colors={store.gridColors} type={store.drawType} onClick={(index) => store.onPaint(index)} isGrid={true} />
         <Flex position={"absolute"} zIndex={-1}>
           <GridPane colors={store.pngColors} isGrid={false}/>
         </Flex >
