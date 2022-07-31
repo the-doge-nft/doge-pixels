@@ -153,7 +153,7 @@ function addPointerImage(tokenId, content) {
                 fs.writeFile('src/assets/images/pointer.png', buffer, "", async function () {
                     await uploadImageToTwitter(tokenId, content);
 
-                    resolve("success2");
+                    resolve("success");
             })
         });
   } catch (error) {
