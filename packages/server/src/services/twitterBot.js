@@ -145,11 +145,13 @@ function addPointerImage(tokenId, content) {
 
     context = drawPointer(context, x, y, pixelOffsetX + 20, y1, pixelOffsetX + 45, y1);
     const buffer = canvas.toBuffer('image/png')
+    logger.info(`starting to write file: ${tokenId}`)
     return new Promise ((resolve, reject) =>  {
                 fs.writeFile('src/assets/images/pointer.png', buffer, "", async function () {
-                    await uploadImageToTwitter(tokenId, content);
-
-                    resolve("success");
+                  logger.info(`done writing file: ${tokenId}`)
+                  await uploadImageToTwitter(tokenId, content);
+                  logger.info(`done uploading image: ${tokenId}`)
+                  resolve("success");
             })
         });
   } catch (error) {
@@ -168,6 +170,7 @@ async function uploadImageToTwitter(tokenId, content) {
     const [x, y] = pupperToPixelCoordsLocal(tokenId)
     const color = pupperToHexLocal(tokenId);
 
+    logger.info(`reading image for compilation: ${tokenId}`)
     const pointerImg = await Jimp.read('src/assets/images/pointer.png');
     let txtImg;
 
@@ -188,6 +191,7 @@ async function uploadImageToTwitter(tokenId, content) {
       const bottomShadow = generateShadow(PIXEL_WIDTH - SHADOW_THICK, SHADOW_THICK);
       image = image.composite(bottomShadow, pixelOffsetX + SHADOW_THICK, pixelOffsetY + PIXEL_HEIGHT + PIXEL_TEXT_HEIGHT)
 
+      logger.info(`writing pointer: ${tokenId}`)
       // merge pointer image with background image
       image = image.composite(pointerImg, 0, 0);
 
@@ -203,6 +207,7 @@ async function uploadImageToTwitter(tokenId, content) {
         if (!error) {
           base64image = base64image.replace('data:image/png;base64,', '');
 
+          logger.info(`uploading image: ${tokenId}`)
           // upload image to twitter
           client.post('media/upload', {media_data: base64image}, function (err, data, response) {
             if (!err) {
@@ -268,7 +273,7 @@ async function tweet(from, to, tokenId, provider) {
 
       let content = `Pixel (${x}, ${y}) ${initiator} by ${ens ? ens : user}`
       content += `\n${isProd ? 'pixels.ownthedoge.com' : 'dev.pixels.ownthedoge.com'}/px/${tokenId}`
-
+      logger.info(`staring add pointer: ${tokenId}`)
       await addPointerImage(tokenId, content);
     }
   } catch (error) {
