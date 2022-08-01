@@ -144,11 +144,7 @@ function addPointerImage(tokenId, content) {
     }
 
     context = drawPointer(context, x, y, pixelOffsetX + 20, y1, pixelOffsetX + 45, y1);
-
     const buffer = canvas.toBuffer('image/png')
-    fs.writeFile('src/assets/images/pointer.png', buffer, "", function () {
-      uploadImageToTwitter(tokenId, content);
-    })
     return new Promise ((resolve, reject) =>  {
                 fs.writeFile('src/assets/images/pointer.png', buffer, "", async function () {
                     await uploadImageToTwitter(tokenId, content);
