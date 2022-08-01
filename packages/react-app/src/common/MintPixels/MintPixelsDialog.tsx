@@ -65,9 +65,9 @@ const MintForm = observer(({store}: { store: MintPixelsModalStore }) => {
                     <NewMintPixelsInput store={store}/>
                 </Box>
                 <Box my={6}>
-                    {store.isLoading && <Box display={"flex"} justifyContent={"center"}>
-                      <Spinner color={'yellow.700'}/>
-                    </Box>}
+                    {/*{store.isLoading && <Box display={"flex"} justifyContent={"center"}>*/}
+                    {/*  <Spinner color={'yellow.700'}/>*/}
+                    {/*</Box>}*/}
                     {/*{!store.isLoading && store.recentQuote && <Dev>*/}
                     {/*  <Typography variant={TVariant.ComicSans16}>Router</Typography>*/}
                     {/*  <Box display={"flex"} justifyContent={"space-between"}>*/}

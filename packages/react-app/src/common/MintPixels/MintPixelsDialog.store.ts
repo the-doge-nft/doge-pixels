@@ -119,7 +119,6 @@ class MintPixelsDialogStore extends Reactionable((Navigable<MintModalView, Const
     }
 
     async getQuote() {
-        console.log("degbug:: getting quote")
         this.isLoading = true
         if (this.srcCurrency === "DOG") {
             const dogAmount = Number(ethers.utils.formatUnits(AppStore.web3.DOG_TO_PIXEL_SATOSHIS.mul(this.pixelCount), 18))
