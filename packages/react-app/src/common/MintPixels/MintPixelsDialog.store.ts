@@ -319,6 +319,14 @@ class MintPixelsDialogStore extends Reactionable((Navigable<MintModalView, Const
     get stepperItems() {
         return [];
     }
+
+    incrementPixelCount() {
+        this.pixelCount = Number(this.pixelCount) + 1
+    }
+
+    decrementPixelCount() {
+        this.pixelCount = Number(this.pixelCount) - 1
+    }
 }
 
 

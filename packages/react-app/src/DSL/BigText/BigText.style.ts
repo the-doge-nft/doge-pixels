@@ -15,6 +15,7 @@ const BigTextStyle = {
       WebkitTextFillColor: "transparent",
 
       WebkitTextStroke: lightOrDark(colorMode, "1px black", "1px transparent"),
+      overflowWrap: 'initial'
     },
     label: {
       bg: lightOrDark(colorMode, "yellow.50", darkModeGradient),

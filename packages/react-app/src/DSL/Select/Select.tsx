@@ -12,7 +12,7 @@ interface SelectProps {
 const Select: React.FC<SelectProps> = ({value, onChange, items}) => {
     const { colorMode } = useColorMode()
     const styles = useMultiStyleConfig("Select", {variant: "solid"})
-    return <Box position="relative">
+    return <Box position="relative" w={"full"}>
         <ChakraSelect icon={<Icon
             icon={"chevron-down"}
             boxSize={7}/>} value={value} onChange={(e) => onChange(e.target.value)} zIndex="1">

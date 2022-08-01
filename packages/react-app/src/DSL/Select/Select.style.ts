@@ -13,7 +13,8 @@ const SelectStyle = {
             _hover: {
                 cursor: "pointer",
             },
-            fontFamily: Type.PresStart
+            fontFamily: Type.PresStart,
+            w: "100%"
         },
         drop: {
             zIndex: 0,

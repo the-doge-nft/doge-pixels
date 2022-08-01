@@ -107,6 +107,11 @@ const ButtonStyle = {
     }),
   },
   sizes: {
+    xs: {
+      button: {
+        p: '0px'
+      }
+    },
     sm: {
       button: {
         p: "14px",
