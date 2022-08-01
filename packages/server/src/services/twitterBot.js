@@ -22,6 +22,8 @@ const HEIGHT = 480;
 const PIXEL_TO_ID_OFFSET = 1000000;
 const SHADOW_THICK = 6;
 
+let mintedImage;
+let burnedImage;
 
 var client = new Twitter({
   consumer_key: twitter_consumer_key,
@@ -146,8 +148,9 @@ function addPointerImage(tokenId, content) {
     context = drawPointer(context, x, y, pixelOffsetX + 20, y1, pixelOffsetX + 45, y1);
     const buffer = canvas.toBuffer('image/png')
     logger.info(`starting to write file: ${tokenId}`)
+
     return new Promise ((resolve, reject) =>  {
-                fs.writeFile('src/assets/images/pointer.png', buffer, "", async function () {
+                fs.writeFile(`src/assets/images/pointer${tokenId}.png`, buffer, "", async function () {
                   logger.info(`done writing file: ${tokenId}`)
                   await uploadImageToTwitter(tokenId, content);
                   logger.info(`done uploading image: ${tokenId}`)
@@ -171,16 +174,20 @@ async function uploadImageToTwitter(tokenId, content) {
     const color = pupperToHexLocal(tokenId);
 
     logger.info(`reading image for compilation: ${tokenId}`)
-    const pointerImg = await Jimp.read('src/assets/images/pointer.png');
+    const pointerImg = await Jimp.read(`src/assets/images/pointer${tokenId}.png`);
     let txtImg;
 
     if (content.includes('minted')) {
-      txtImg = await Jimp.read('src/assets/images/mint.png');
+      txtImg = mintedImage;
     } else {
-      txtImg = await Jimp.read('src/assets/images/burn.png');
+      txtImg = burnedImage;
     }
-    Jimp.read('src/assets/images/background.png', async function (err, image) {
-      // merge pixel image with background image
+    backgroundImage = await Jimp.read('src/assets/images/background.png');
+      logger.info(`writing pointer: ${tokenId}`)
+      // merge pointer image with background image
+      let image = backgroundImage.composite(pointerImg, 0, 0);
+
+       // merge pixel image with background image
       const pixelImage = generatePixelImage(color);
       const [pixelOffsetX, pixelOffsetY] = getPixelOffsets(y);
       image = image.composite(pixelImage, pixelOffsetX, pixelOffsetY);
@@ -191,10 +198,6 @@ async function uploadImageToTwitter(tokenId, content) {
       const bottomShadow = generateShadow(PIXEL_WIDTH - SHADOW_THICK, SHADOW_THICK);
       image = image.composite(bottomShadow, pixelOffsetX + SHADOW_THICK, pixelOffsetY + PIXEL_HEIGHT + PIXEL_TEXT_HEIGHT)
 
-      logger.info(`writing pointer: ${tokenId}`)
-      // merge pointer image with background image
-      image = image.composite(pointerImg, 0, 0);
-
       // merge minted text image with background image
       image = image.composite(txtImg, 400, 430);
 
@@ -203,8 +206,8 @@ async function uploadImageToTwitter(tokenId, content) {
       image.print(font, pixelOffsetX + 5, pixelOffsetY + PIXEL_HEIGHT + 10, `(${x},${y})`);
 
       // get base64 image
-      image.getBase64('image/png', function (error, base64image) {
-        if (!error) {
+      let base64image = await image.getBase64Async('image/png');
+        // if (!error) {
           base64image = base64image.replace('data:image/png;base64,', '');
 
           logger.info(`uploading image: ${tokenId}`)
@@ -218,14 +221,9 @@ async function uploadImageToTwitter(tokenId, content) {
               logger.error(err)
               logger.error(JSON.stringify(err))
             }
+            fs.unlinkSync(`src/assets/images/pointer${tokenId}.png`);
           });
-        } else {
-          tweetmessage(0, content);
-          logger.error(`Failed to get base64Image ${error.message}`);
-        }
-      });
-    })
-  } catch (error) {
+   } catch (error) {
     logger.error(error.message)
     sentryClient.captureMessage(`Failed to upload image ${error.message}`)
   }
@@ -257,6 +255,9 @@ async function tweetmessage(media_id, content) {
  * Detect mint and burn events and tweet NFT information
  */
 async function tweet(from, to, tokenId, provider) {
+  mintedImage = await Jimp.read('src/assets/images/mint.png');
+  burnedImage = await Jimp.read('src/assets/images/burn.png');
+  
   logger.info(`Twitter listener triggered on transfer for token id: ${tokenId}`)
   try {
     if (from === ethers.constants.AddressZero || to === ethers.constants.AddressZero) {
