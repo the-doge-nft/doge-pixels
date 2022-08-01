@@ -60,7 +60,7 @@ class EthersHandler {
     // update the address map on transfer
     this.PXContract.on('Transfer', async (from, to, tokenId, event) => {
       debounce(this.getAddressMap.bind(this), 500, {maxWait: 2 * 1000})
-      await tweet(from, to, tokenId, this.provider)
+      tweet(from, to, tokenId, this.provider)
     })
 
     if (app_env !== "test") {
