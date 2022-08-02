@@ -5,13 +5,14 @@ import Typography, {TVariant} from "../Typography/Typography";
 interface BigTextProps {
   children: string | number;
   label?: string | number;
-  size?: "sm" | "md"
+  size?: "sm" | "md" | "lg"
 }
 
 
 const sizeToTypeMap = {
   sm: TVariant.PresStart28,
-  md: TVariant.PresStart45
+  md: TVariant.PresStart45,
+  lg: TVariant.PresStart65
 }
 
 

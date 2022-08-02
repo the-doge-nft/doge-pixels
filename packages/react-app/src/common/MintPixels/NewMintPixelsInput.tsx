@@ -14,13 +14,13 @@ import CowLogo from "../../images/cowlogo.svg"
 const NewMintPixelsInput: React.FC<{ store: MintPixelsDialogStore }> = observer(({store}) => {
     const [isDetailsOpen, setIsDetailsOpen] = useState(false)
     return <Box>
-        <Pane p={4}>
+        <Pane px={3} py={2}>
             <HStack spacing={4}>
                 <Box overflow={'hidden'} flex={2}>
                     {store.recentQuote?.srcCurrencyTotal &&
                     <BigText size={"sm"}>{formatWithThousandsSeparators(store.recentQuote.srcCurrencyTotal)}</BigText>}
                 </Box>
-                <VStack spacing={2} flex={1} alignItems={'flex-start'}>
+                <VStack spacing={3} flex={1} alignItems={'flex-start'}>
                     <Select
                         items={store.srcCurrencySelectItems}
                         value={store.srcCurrency}
@@ -28,14 +28,14 @@ const NewMintPixelsInput: React.FC<{ store: MintPixelsDialogStore }> = observer(
                             store.srcCurrency = val
                         }}/>
                     {store.srcCurrencyBalance.humanReadable !== null && <Box>
-                      <Typography color={'yellow.800'} variant={TVariant.ComicSans14}>
+                      <Typography color={'yellow.800'} variant={TVariant.PresStart10}>
                         Balance: {formatWithThousandsSeparators(store.srcCurrencyBalance.humanReadable)}
                       </Typography>
                     </Box>}
                 </VStack>
             </HStack>
         </Pane>
-        <Flex justifyContent={"center"} mt={10} mb={4}>
+        <Flex justifyContent={"center"} mt={6} mb={2}>
             <Icon
                 icon={"chevron-down"}
                 boxSize={7}/>
@@ -61,9 +61,9 @@ const NewMintPixelsInput: React.FC<{ store: MintPixelsDialogStore }> = observer(
                         boxSize={7}/>
                 </Button>
             </VStack>
-            <Pane p={4} display={"flex"}>
-                <BigText size={"md"}>{store.pixelCount}</BigText>
-                <VStack>
+            <Pane px={3} py={2} display={"flex"}>
+                <BigText size={"lg"}>{store.pixelCount}</BigText>
+                <Flex flexDirection={"column"} justifyContent={"center"} alignItems={"center"}>
                     <BigText size={"sm"}>PIXELS</BigText>
                     {store.recentQuote && <Button p={0} variant={ButtonVariant.Text}
                                                   isDisabled={store.pixelCount === store.recentQuote!.maxPixelAmount}
@@ -71,10 +71,10 @@ const NewMintPixelsInput: React.FC<{ store: MintPixelsDialogStore }> = observer(
                                                   onClick={() => store.pixelCount = store.recentQuote!.maxPixelAmount}>
                       Set Max ({store.recentQuote?.maxPixelAmount})
                     </Button>}
-                </VStack>
+                </Flex>
             </Pane>
         </HStack>
-        <Pane p={3} mt={12}>
+        <Pane px={3} py={2} mt={12}>
             {store.isLoading && <HStack spacing={2}>
               <Spinner size={'sm'} color={'yellow.700'}/>
               <Typography variant={TVariant.ComicSans14} color={'yellow.700'} fontWeight={"medium"}>Fetching best
@@ -94,7 +94,7 @@ const NewMintPixelsInput: React.FC<{ store: MintPixelsDialogStore }> = observer(
                   <Flex justifyContent={"space-between"}>
                       {store.srcCurrency !== "DOG" && <>
                         <Typography
-                          variant={TVariant.ComicSans14}>{store.recentQuote?.srcCurrencyTotal} {store.recentQuote.srcCurrency}</Typography>
+                          variant={TVariant.ComicSans14}>{formatWithThousandsSeparators(store.recentQuote.srcCurrencyTotal)} {store.recentQuote.srcCurrency}</Typography>
                         <Typography variant={TVariant.ComicSans14}>=</Typography>
                       </>}
                     <Typography

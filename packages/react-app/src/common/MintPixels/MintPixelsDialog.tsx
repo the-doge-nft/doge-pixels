@@ -63,8 +63,8 @@ const MintForm = observer(({store}: { store: MintPixelsModalStore }) => {
                 <Box mt={5}>
                     <NewMintPixelsInput store={store}/>
                 </Box>
-                <Flex justifyContent={"center"}>
-                    <Submit label={"Mint"} mt={10} isLoading={store.isLoading} isDisabled={!store.canMint}/>
+                <Flex justifyContent={"center"} mt={8}>
+                    <Submit label={"Mint"} isLoading={store.isLoading} isDisabled={!store.canMint}/>
                 </Flex>
             </Form>
         </>
