@@ -75,6 +75,9 @@ class MintPixelsDialogStore extends Reactionable((Navigable<MintModalView, Const
     @observable
     isLoading = true
 
+    @observable
+    isOrderComplete = false
+
     constructor() {
         super();
         makeObservable(this);
@@ -235,10 +238,11 @@ class MintPixelsDialogStore extends Reactionable((Navigable<MintModalView, Const
             }
             const tx = await this.srcCurrencyContract!.approve(GPv2VaultRelayerAddress, allowance)
             this.hasUserSignedTx = true
-            showDebugToast(`approving ${this.srcCurrency} vault spend: ${ethers.utils.formatUnits(this.srcCurrency, this.srcCurrencyDetails.decimals)}`)
+            showDebugToast(`approving ${this.srcCurrency} vault spend: ${ethers.utils.formatUnits(allowance, this.srcCurrencyDetails.decimals)}`)
             await tx.wait()
             this.pushNavigation(MintModalView.CowSwap)
         } catch (e) {
+            console.error(e)
             this.hasUserSignedTx = false
             this.popNavigation()
             showErrorToast("Error approving vault spend")
@@ -247,18 +251,22 @@ class MintPixelsDialogStore extends Reactionable((Navigable<MintModalView, Const
 
     async placeCowswapOrder() {
         try {
-            const order = await AppStore.web3.cowStore.acceptSimpleQuote(this.cowSimpleQuote!)
-            console.log('debug:: order', order)
-            await this.getCowOrders()
+            const orderId = await AppStore.web3.cowStore.acceptSimpleQuote(this.cowSimpleQuote!)
+            console.log('debug:: orderId', orderId)
+            const interval = setInterval(async () => {
+                const orders = await AppStore.web3.cowStore.getOrders({owner: AppStore.web3.address!})
+                const placedOrder = orders?.filter(order => order.uid === orderId)[0]
+                if (placedOrder && placedOrder.status === "fulfilled") {
+                    this.isOrderComplete = true
+                    clearInterval(interval)
+                    this.pushNavigation(MintModalView.MintPixels)
+                }
+                console.log('debug:: orders', orders)
+            }, 1000)
         } catch (e) {
             console.error('could not trade')
             showErrorToast('Could not place cowswap')
         }
-    }
-
-    async getCowOrders() {
-        const orders = await AppStore.web3.cowStore.getOrders({owner: AppStore.web3.address!})
-        console.log('debug:: orders', orders)
     }
 
     async approveDogSpend() {
@@ -276,7 +284,11 @@ class MintPixelsDialogStore extends Reactionable((Navigable<MintModalView, Const
             if (this.srcCurrency === "DOG") {
                 this.pushNavigation(MintModalView.MintPixels)
             } else {
-                this.pushNavigation(MintModalView.VaultApproval)
+                if (await this.getHasVaultAllowance()) {
+                    this.pushNavigation(MintModalView.CowSwap)
+                } else {
+                    this.pushNavigation(MintModalView.VaultApproval)
+                }
             }
         } catch (e) {
             this.hasUserSignedTx = false

@@ -48,8 +48,8 @@ const MintPixelsDialog = observer(({store, onSuccess, onGoToPixelsClick}: MintPi
         {store.currentView === MintModalView.VaultApproval && <VaultApproval store={store}/>}
         {store.currentView === MintModalView.LoadingVaultApproval && <LoadingVaultApproval store={store}/>}
         {store.currentView === MintModalView.CowSwap && <CowSwap store={store}/>}
-        {store.currentView === MintModalView.DogApproval && <Approval store={store}/>}
-        {store.currentView === MintModalView.LoadingDogApproval && <LoadingApproval store={store}/>}
+        {store.currentView === MintModalView.DogApproval && <DOGApproval store={store}/>}
+        {store.currentView === MintModalView.LoadingDogApproval && <LoadingDOGApproval store={store}/>}
         {store.currentView === MintModalView.MintPixels && <MintPixels store={store}/>}
         {store.currentView === MintModalView.Complete &&
         <Complete onSuccess={onGoToPixelsClick} txHash={store.txHash}/>}
@@ -126,7 +126,7 @@ const LoadingVaultApproval: React.FC<{ store: MintPixelsDialogStore }> = observe
     )
 })
 
-const Approval = observer(({store}: { store: MintPixelsModalStore }) => {
+const DOGApproval = observer(({store}: { store: MintPixelsModalStore }) => {
     return (
         <Box>
             <Box my={6}>
@@ -164,7 +164,7 @@ const Approval = observer(({store}: { store: MintPixelsModalStore }) => {
     );
 });
 
-const LoadingApproval = observer(({store}: { store: MintPixelsModalStore }) => {
+const LoadingDOGApproval = observer(({store}: { store: MintPixelsModalStore }) => {
     useEffect(() => {
         store.approveDogSpend()
         // eslint-disable-next-line
@@ -195,18 +195,22 @@ const MintPixels = observer(({store}: { store: MintPixelsModalStore }) => {
 });
 
 const CowSwap: React.FC<{ store: MintPixelsDialogStore }> = observer(({store}) => {
+    useEffect(() => {
+        store.placeCowswapOrder()
+    }, [])
     return (
         <Box>
             <Typography variant={TVariant.PresStart15}>
-                Time to place your trade
+                Your order is taking place
             </Typography>
+            <Spinner size={'sm'} color={'yellow.800'}/>
             <Box>
                 <Typography variant={TVariant.ComicSans14}>
                     {jsonify(store.cowSimpleQuote)}
                 </Typography>
             </Box>
-            <Button onClick={() => store.placeCowswapOrder()}>Trade!</Button>
-            <Button onClick={() => store.getCowOrders()}>Get Orders</Button>
+            {/*<Button onClick={() => store.placeCowswapOrder()}>Trade!</Button>*/}
+            {/*<Button onClick={() => store.getCowOrders()}>Get Orders</Button>*/}
         </Box>
     )
 })
