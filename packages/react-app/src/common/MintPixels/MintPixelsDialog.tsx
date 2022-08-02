@@ -59,7 +59,7 @@ const MintPixelsDialog = observer(({store, onSuccess, onGoToPixelsClick}: MintPi
 const MintForm = observer(({store}: { store: MintPixelsModalStore }) => {
     return (
         <>
-            <Form onSubmit={async (data) => store.handleMintSubmit(data.pixelCount)}>
+            <Form onSubmit={async () => store.handleMintSubmit()}>
                 <Box mt={5}>
                     <NewMintPixelsInput store={store}/>
                 </Box>
@@ -74,15 +74,6 @@ const MintForm = observer(({store}: { store: MintPixelsModalStore }) => {
 const VaultApproval: React.FC<{ store: MintPixelsDialogStore }> = observer(({store}) => {
     return (
         <VStack spacing={10}>
-            <Typography variant={TVariant.ComicSans14}>
-                You've selected to mint pixels for {store.srcCurrency}
-            </Typography>
-            <Typography textAlign={"center"} variant={TVariant.ComicSans14}>
-                The Pixel Portal will first trade your {store.srcCurrency} to DOG ({store.recentQuote?.dogAmount}) &
-                then mint - since 55,240 $DOG = 1 Pixel
-            </Typography>
-            <Link target={"_blank"} href={"https://docs.cow.fi/"}>Learn more here</Link>
-
             <Box>
                 <Box my={6}>
                     {store.approveInfiniteVault
@@ -92,7 +83,7 @@ const VaultApproval: React.FC<{ store: MintPixelsDialogStore }> = observer(({sto
                             </Typography>
                         </Flex>
                         : <Typography display={"block"} variant={TVariant.PresStart30}>
-                            {store.recentQuote!.srcCurrencyTotal}
+                            {formatWithThousandsSeparators(store.recentQuote!.srcCurrencyTotal)} {store.recentQuote?.srcCurrency}
                         </Typography>
                     }
                 </Box>

@@ -188,7 +188,7 @@ class MintPixelsDialogStore extends Reactionable((Navigable<MintModalView, Const
         }
     }
 
-    async handleMintSubmit(pixel_amount: number) {
+    async handleMintSubmit() {
         if (this.srcCurrency !== "DOG") {
             const tokenAllowance = await this.srcCurrencyContract!.allowance(AppStore.web3.address, GPv2VaultRelayerAddress)
             if (tokenAllowance.lt(this.recentQuote?._srcCurrencyTotal)) {
@@ -199,7 +199,7 @@ class MintPixelsDialogStore extends Reactionable((Navigable<MintModalView, Const
             }
             console.log("debug:: token allowance", tokenAllowance.toString())
         } else {
-            const dogToSpend = AppStore.web3.DOG_TO_PIXEL_SATOSHIS.mul(pixel_amount)
+            const dogToSpend = AppStore.web3.DOG_TO_PIXEL_SATOSHIS.mul(this.pixelCount)
             if (this.allowance!.lt(dogToSpend)) {
                 this.dogAllowanceToGrant = dogToSpend
                 this.pushNavigation(MintModalView.DogApproval)

@@ -40,12 +40,12 @@ const NewMintPixelsInput: React.FC<{ store: MintPixelsDialogStore }> = observer(
                 icon={"chevron-down"}
                 boxSize={7}/>
         </Flex>
-        <HStack spacing={6}>
+        <HStack spacing={12}>
             <VStack>
                 <Button
                     onClick={() => store.incrementPixelCount()}
                     mb={2}
-                    isDisabled={store.pixelCount === store.recentQuote?.maxPixelAmount}
+                    isDisabled={store.pixelCount === store.recentQuote?.maxPixelAmount || store.recentQuote?.maxPixelAmount === 0}
                 >
                     <Icon
                         icon={"chevron-up"}
@@ -65,8 +65,8 @@ const NewMintPixelsInput: React.FC<{ store: MintPixelsDialogStore }> = observer(
                 <BigText size={"md"}>{store.pixelCount}</BigText>
                 <Flex flexDirection={"column"} justifyContent={"center"} alignItems={"center"}>
                     <BigText size={"sm"}>{store.pixelCount === 1 ? "PIXEL" : "PIXELS"}</BigText>
-                    {store.recentQuote && <Button p={0} variant={ButtonVariant.Text}
-                                                  isDisabled={store.pixelCount === store.recentQuote!.maxPixelAmount}
+                    {store.recentQuote && <Button mt={1} p={0} variant={ButtonVariant.Text}
+                                                  isDisabled={store.pixelCount === store.recentQuote!.maxPixelAmount || store.recentQuote.maxPixelAmount === 0}
                                                   size={"xs"}
                                                   onClick={() => store.pixelCount = store.recentQuote!.maxPixelAmount}>
                       Set Max ({store.recentQuote?.maxPixelAmount})
@@ -76,8 +76,8 @@ const NewMintPixelsInput: React.FC<{ store: MintPixelsDialogStore }> = observer(
         </HStack>
         <Pane px={4} py={2} mt={8}>
             {store.isLoading && <HStack spacing={2}>
-              <Spinner size={'sm'} color={'yellow.700'}/>
-              <Typography variant={TVariant.ComicSans14} color={'yellow.700'} fontWeight={"medium"}>Fetching best
+              <Spinner size={'sm'} color={'yellow.800'}/>
+              <Typography variant={TVariant.ComicSans14} color={'yellow.800'} fontWeight={"medium"}>Fetching best
                 price</Typography>
             </HStack>}
             {!store.isLoading && store.recentQuote && store.pixelCount && <Box>
@@ -109,13 +109,13 @@ const NewMintPixelsInput: React.FC<{ store: MintPixelsDialogStore }> = observer(
                           <Typography
                             variant={TVariant.ComicSans14}>Price</Typography>
                           <Typography
-                            variant={TVariant.ComicSans14}>{formatWithThousandsSeparators(store.recentQuote.srcCurrencyAmount)}</Typography>
+                            variant={TVariant.ComicSans14}>{formatWithThousandsSeparators(store.recentQuote.srcCurrencyAmount)} {store.srcCurrency}</Typography>
                         </Flex>
                         <Flex justifyContent={"space-between"}>
                           <Typography
                             variant={TVariant.ComicSans14}>Fees (incl. gas costs)</Typography>
                           <Typography
-                            variant={TVariant.ComicSans14}>{store.recentQuote.srcCurrencyFee} {store.srcCurrency}</Typography>
+                            variant={TVariant.ComicSans14}>{formatWithThousandsSeparators(store.recentQuote.srcCurrencyFee)} {store.srcCurrency}</Typography>
                         </Flex>
                       </Box>
                       <Flex alignItems={"center"} justifyContent={"flex-end"} mt={2}>
