@@ -18,7 +18,7 @@ export const STILL_LOADING_SIGN = "-";
  * @return string 100,000,000
  **/
 export const formatWithThousandsSeparators = (val: number | string, maxDigits: number = 8): string => {
-  return Number(val).toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: maxDigits });
+  return Number(val).toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 4});
   // line below is probably the cause for the exception on safari: https://stackoverflow.com/questions/51568821/works-in-chrome-but-breaks-in-safari-invalid-regular-expression-invalid-group
   // return val.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g,    ",");
   // return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
