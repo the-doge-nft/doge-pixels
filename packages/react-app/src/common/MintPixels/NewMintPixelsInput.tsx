@@ -14,7 +14,7 @@ import CowLogo from "../../images/cowlogo.svg"
 const NewMintPixelsInput: React.FC<{ store: MintPixelsDialogStore }> = observer(({store}) => {
     const [isDetailsOpen, setIsDetailsOpen] = useState(false)
     return <Box>
-        <Pane px={3} py={2}>
+        <Pane px={4} py={2}>
             <HStack spacing={4}>
                 <Box overflow={'hidden'} flex={2}>
                     {store.recentQuote?.srcCurrencyTotal &&
@@ -28,7 +28,7 @@ const NewMintPixelsInput: React.FC<{ store: MintPixelsDialogStore }> = observer(
                             store.srcCurrency = val
                         }}/>
                     {store.srcCurrencyBalance.humanReadable !== null && <Box>
-                      <Typography color={'yellow.800'} variant={TVariant.PresStart10}>
+                      <Typography color={'yellow.800'} variant={TVariant.ComicSans14}>
                         Balance: {formatWithThousandsSeparators(store.srcCurrencyBalance.humanReadable)}
                       </Typography>
                     </Box>}
@@ -49,7 +49,7 @@ const NewMintPixelsInput: React.FC<{ store: MintPixelsDialogStore }> = observer(
                 >
                     <Icon
                         icon={"chevron-up"}
-                        boxSize={7}/>
+                        boxSize={5}/>
                 </Button>
                 <Button
                     onClick={() => store.decrementPixelCount()}
@@ -58,13 +58,13 @@ const NewMintPixelsInput: React.FC<{ store: MintPixelsDialogStore }> = observer(
                 >
                     <Icon
                         icon={"chevron-down"}
-                        boxSize={7}/>
+                        boxSize={5}/>
                 </Button>
             </VStack>
-            <Pane px={3} py={2} display={"flex"}>
-                <BigText size={"lg"}>{store.pixelCount}</BigText>
+            <Pane px={4} py={2} display={"flex"}>
+                <BigText size={"md"}>{store.pixelCount}</BigText>
                 <Flex flexDirection={"column"} justifyContent={"center"} alignItems={"center"}>
-                    <BigText size={"sm"}>PIXELS</BigText>
+                    <BigText size={"sm"}>{store.pixelCount === 1 ? "PIXEL" : "PIXELS"}</BigText>
                     {store.recentQuote && <Button p={0} variant={ButtonVariant.Text}
                                                   isDisabled={store.pixelCount === store.recentQuote!.maxPixelAmount}
                                                   size={"xs"}
@@ -74,7 +74,7 @@ const NewMintPixelsInput: React.FC<{ store: MintPixelsDialogStore }> = observer(
                 </Flex>
             </Pane>
         </HStack>
-        <Pane px={3} py={2} mt={12}>
+        <Pane px={4} py={2} mt={8}>
             {store.isLoading && <HStack spacing={2}>
               <Spinner size={'sm'} color={'yellow.700'}/>
               <Typography variant={TVariant.ComicSans14} color={'yellow.700'} fontWeight={"medium"}>Fetching best
@@ -88,9 +88,9 @@ const NewMintPixelsInput: React.FC<{ store: MintPixelsDialogStore }> = observer(
                 </Typography>
                 <Icon
                   icon={isDetailsOpen ? "chevron-down" : "chevron-up"}
-                  boxSize={7}/>
+                  boxSize={6}/>
               </HStack>
-                {isDetailsOpen && store.recentQuote && <Box mt={4}>
+                {isDetailsOpen && store.recentQuote && <Box mt={2}>
                   <Flex justifyContent={"space-between"}>
                       {store.srcCurrency !== "DOG" && <>
                         <Typography
@@ -109,7 +109,7 @@ const NewMintPixelsInput: React.FC<{ store: MintPixelsDialogStore }> = observer(
                           <Typography
                             variant={TVariant.ComicSans14}>Price</Typography>
                           <Typography
-                            variant={TVariant.ComicSans14}>{store.recentQuote.effectiveRate}</Typography>
+                            variant={TVariant.ComicSans14}>{formatWithThousandsSeparators(store.recentQuote.srcCurrencyAmount)}</Typography>
                         </Flex>
                         <Flex justifyContent={"space-between"}>
                           <Typography
@@ -118,8 +118,8 @@ const NewMintPixelsInput: React.FC<{ store: MintPixelsDialogStore }> = observer(
                             variant={TVariant.ComicSans14}>{store.recentQuote.srcCurrencyFee} {store.srcCurrency}</Typography>
                         </Flex>
                       </Box>
-                      <Flex alignItems={"center"} justifyContent={"flex-end"} mt={4}>
-                        <Image src={CowLogo} width={25} mr={1}/>
+                      <Flex alignItems={"center"} justifyContent={"flex-end"} mt={2}>
+                        <Image src={CowLogo} width={22} mr={1}/>
                         <Typography color={"yellow.800"} variant={TVariant.ComicSans14}>Powered by Cowprotocol</Typography>
                       </Flex>
                     </>}

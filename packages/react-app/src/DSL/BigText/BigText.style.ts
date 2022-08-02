@@ -15,7 +15,8 @@ const BigTextStyle = {
       WebkitTextFillColor: "transparent",
 
       WebkitTextStroke: lightOrDark(colorMode, "1px black", "1px transparent"),
-      overflowWrap: 'initial'
+      overflowWrap: 'initial',
+      userSelect: 'none'
     },
     label: {
       bg: lightOrDark(colorMode, "yellow.50", darkModeGradient),
@@ -27,7 +28,8 @@ const BigTextStyle = {
 
       WebkitTextStroke: lightOrDark(colorMode, "1px black", "2px transparent"),
       border: "none",
-      height: "auto"
+      height: "auto",
+      userSelect: 'none'
     },
     drop: {
       zIndex: -1,
@@ -38,7 +40,8 @@ const BigTextStyle = {
       WebkitBackgroundClip: "text",
       WebkitTextStroke: lightOrDark(colorMode, "none", "2px transparent"),
       "color": lightOrDark(colorMode, "black","purple.700"),
-      border: "none"
+      border: "none",
+      userSelect: 'none'
     }
   }),
   sizes: {

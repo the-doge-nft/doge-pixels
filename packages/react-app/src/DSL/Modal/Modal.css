@@ -7,9 +7,3 @@
 .react-draggable {
     overflow: inherit!important;
 }
-
-/*.ReactModal__Content--after-open {*/
-/*    !*overflow-y: scroll !important;*!*/
-/*    !*overflow-x: hidden !important;*!*/
-/*    max-height: 95%;*/
-/*}*/
