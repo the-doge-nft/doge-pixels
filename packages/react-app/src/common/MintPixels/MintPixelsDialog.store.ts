@@ -30,15 +30,6 @@ class MintPixelsDialogStore extends Reactionable((Navigable<MintModalView, Const
     pixelCount: number | string = 1;
 
     @observable
-    allowance?: BigNumber
-
-    @observable
-    dogAllowanceToGrant: BigNumber = BigNumber.from(0)
-
-    @observable
-    vaultAllowanceToGrant: BigNumber = BigNumber.from(0)
-
-    @observable
     hasUserSignedTx = false
 
     @observable
@@ -91,7 +82,6 @@ class MintPixelsDialogStore extends Reactionable((Navigable<MintModalView, Const
 
     init() {
         this.pushNavigation(MintModalView.Form);
-        this.refreshAllowance()
         this.react(() => [this.srcCurrency, this.pixelCount], async () => {
             console.log("debug:: trigger")
             if (Number(this.pixelCount) > 0) {
@@ -180,33 +170,34 @@ class MintPixelsDialogStore extends Reactionable((Navigable<MintModalView, Const
         return formatUnits(BigNumber.from(amount), env.app.availableTokens[currency].decimals)
     }
 
-    async refreshAllowance() {
-        try {
-            this.allowance = await AppStore.web3.getPxDogSpendAllowance()
-        } catch (e) {
-            showErrorToast("Could not get allowance")
+    async handleMintSubmit() {
+        if (this.srcCurrency !== "DOG") {
+            if (await this.getHasDOGAllowance()) {
+                if (await this.getHasVaultAllowance()) {
+                    this.pushNavigation(MintModalView.CowSwap)
+                } else {
+                    this.pushNavigation(MintModalView.VaultApproval)
+                }
+            } else {
+                this.pushNavigation(MintModalView.DogApproval)
+            }
+        } else {
+            if (await this.getHasDOGAllowance()) {
+                this.pushNavigation(MintModalView.MintPixels)
+            } else {
+                this.pushNavigation(MintModalView.DogApproval)
+            }
         }
     }
 
-    async handleMintSubmit() {
-        if (this.srcCurrency !== "DOG") {
-            const tokenAllowance = await this.srcCurrencyContract!.allowance(AppStore.web3.address, GPv2VaultRelayerAddress)
-            if (tokenAllowance.lt(this.recentQuote?._srcCurrencyTotal)) {
-                this.vaultAllowanceToGrant = this.recentQuote!._srcCurrencyTotal
-                this.pushNavigation(MintModalView.VaultApproval)
-            } else {
-                this.pushNavigation(MintModalView.CowSwap)
-            }
-            console.log("debug:: token allowance", tokenAllowance.toString())
-        } else {
-            const dogToSpend = AppStore.web3.DOG_TO_PIXEL_SATOSHIS.mul(this.pixelCount)
-            if (this.allowance!.lt(dogToSpend)) {
-                this.dogAllowanceToGrant = dogToSpend
-                this.pushNavigation(MintModalView.DogApproval)
-            } else {
-                this.pushNavigation(MintModalView.MintPixels)
-            }
-        }
+    async getHasDOGAllowance() {
+        const allowance = await AppStore.web3.getPxDogSpendAllowance()
+        return allowance.gte(this.recentQuote!._dogAmount)
+    }
+
+    async getHasVaultAllowance() {
+        const tokenAllowance = await this.srcCurrencyContract!.allowance(AppStore.web3.address, GPv2VaultRelayerAddress)
+        return tokenAllowance?.gte(this.recentQuote?._srcCurrencyTotal)
     }
 
     async mintPixels(amount: number) {
@@ -238,13 +229,11 @@ class MintPixelsDialogStore extends Reactionable((Navigable<MintModalView, Const
     async approveVaultSpend() {
         this.hasUserSignedTx = false
         try {
+            let allowance = this.recentQuote!._srcCurrencyTotal
             if (this.approveInfiniteVault) {
-                this.vaultAllowanceToGrant = ethers.constants.MaxUint256
-            } else {
-                this.vaultAllowanceToGrant = this.recentQuote!._srcCurrencyTotal
-                console.log("debug:: src currency total", this.recentQuote?.srcCurrencyTotal, ethers.utils.formatUnits(this.recentQuote!._srcCurrencyTotal, this.srcCurrencyDetails.decimals))
+                allowance = ethers.constants.MaxUint256
             }
-            const tx = await this.srcCurrencyContract!.approve(GPv2VaultRelayerAddress, this.vaultAllowanceToGrant)
+            const tx = await this.srcCurrencyContract!.approve(GPv2VaultRelayerAddress, allowance)
             this.hasUserSignedTx = true
             showDebugToast(`approving ${this.srcCurrency} vault spend: ${ethers.utils.formatUnits(this.srcCurrency, this.srcCurrencyDetails.decimals)}`)
             await tx.wait()
@@ -274,16 +263,21 @@ class MintPixelsDialogStore extends Reactionable((Navigable<MintModalView, Const
 
     async approveDogSpend() {
         this.hasUserSignedTx = false
+        let allowance = this.recentQuote!._dogAmount
         try {
             if (this.approveInfiniteDOG) {
-                this.dogAllowanceToGrant = ethers.constants.MaxUint256
+                allowance = ethers.constants.MaxUint256
             }
-            const tx = await AppStore.web3.approvePxSpendDog(this.dogAllowanceToGrant)
+            const tx = await AppStore.web3.approvePxSpendDog(allowance)
             this.hasUserSignedTx = true
-            showDebugToast(`approving DOG spend: ${formatWithThousandsSeparators(ethers.utils.formatEther(this.dogAllowanceToGrant))}`)
+            showDebugToast(`approving DOG spend: ${formatWithThousandsSeparators(ethers.utils.formatEther(allowance))}`)
             await tx.wait()
-            this.refreshAllowance()
-            this.pushNavigation(MintModalView.MintPixels)
+
+            if (this.srcCurrency === "DOG") {
+                this.pushNavigation(MintModalView.MintPixels)
+            } else {
+                this.pushNavigation(MintModalView.VaultApproval)
+            }
         } catch (e) {
             this.hasUserSignedTx = false
             this.popNavigation()

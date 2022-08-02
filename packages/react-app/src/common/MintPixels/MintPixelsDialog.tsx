@@ -59,7 +59,7 @@ const MintPixelsDialog = observer(({store, onSuccess, onGoToPixelsClick}: MintPi
 const MintForm = observer(({store}: { store: MintPixelsModalStore }) => {
     return (
         <>
-            <Form onSubmit={async () => store.handleMintSubmit()}>
+            <Form onSubmit={() => store.handleMintSubmit()}>
                 <Box mt={5}>
                     <NewMintPixelsInput store={store}/>
                 </Box>
@@ -111,6 +111,21 @@ const VaultApproval: React.FC<{ store: MintPixelsDialogStore }> = observer(({sto
     )
 })
 
+const LoadingVaultApproval: React.FC<{ store: MintPixelsDialogStore }> = observer(({store}) => {
+    useEffect(() => {
+        store.approveVaultSpend()
+    }, [])
+
+    return (
+        <Box>
+            <Loading
+                title={"Approving..."}
+                showSigningHint={!store.hasUserSignedTx}
+            />
+        </Box>
+    )
+})
+
 const Approval = observer(({store}: { store: MintPixelsModalStore }) => {
     return (
         <Box>
@@ -122,7 +137,7 @@ const Approval = observer(({store}: { store: MintPixelsModalStore }) => {
                         </Typography>
                     </Flex>
                     : <Typography display={"block"} variant={TVariant.PresStart30}>
-                        {formatWithThousandsSeparators(ethers.utils.formatEther(store.dogAllowanceToGrant))}
+                        {formatWithThousandsSeparators(ethers.utils.formatEther(store.recentQuote!._dogAmount))}
                     </Typography>
                 }
             </Box>
@@ -148,21 +163,6 @@ const Approval = observer(({store}: { store: MintPixelsModalStore }) => {
         </Box>
     );
 });
-
-const LoadingVaultApproval: React.FC<{ store: MintPixelsDialogStore }> = observer(({store}) => {
-    useEffect(() => {
-        store.approveVaultSpend()
-    }, [])
-
-    return (
-        <Box>
-            <Loading
-                title={"Approving..."}
-                showSigningHint={!store.hasUserSignedTx}
-            />
-        </Box>
-    )
-})
 
 const LoadingApproval = observer(({store}: { store: MintPixelsModalStore }) => {
     useEffect(() => {
