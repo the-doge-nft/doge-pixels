@@ -20,7 +20,7 @@ const NewMintPixelsInput: React.FC<{ store: MintPixelsDialogStore }> = observer(
                     {store.recentQuote?.srcCurrencyTotal &&
                     <BigText size={"sm"}>{formatWithThousandsSeparators(store.recentQuote.srcCurrencyTotal)}</BigText>}
                 </Box>
-                <VStack spacing={3} flex={1} alignItems={'flex-start'}>
+                <VStack spacing={3} flex={1} alignItems={'flex-start'} px={1}>
                     <Select
                         items={store.srcCurrencySelectItems}
                         value={store.srcCurrency}

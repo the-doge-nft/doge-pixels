@@ -16,7 +16,11 @@ const BigTextStyle = {
 
       WebkitTextStroke: lightOrDark(colorMode, "1px black", "1px transparent"),
       overflowWrap: 'initial',
-      userSelect: 'none'
+      userSelect: 'none',
+      whiteSpace: 'nowrap',
+      textOverflow: 'ellipsis',
+      w: 'full',
+      overflow: 'hidden'
     },
     label: {
       bg: lightOrDark(colorMode, "yellow.50", darkModeGradient),
@@ -41,7 +45,11 @@ const BigTextStyle = {
       WebkitTextStroke: lightOrDark(colorMode, "none", "2px transparent"),
       "color": lightOrDark(colorMode, "black","purple.700"),
       border: "none",
-      userSelect: 'none'
+      userSelect: 'none',
+      whiteSpace: 'nowrap',
+      textOverflow: 'ellipsis',
+      w: 'full',
+      overflow: 'hidden'
     }
   }),
   sizes: {

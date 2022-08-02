@@ -10,7 +10,7 @@ import "./Modal.css"
 
 export interface ModalProps extends ReactModal.Props {
   onClose: () => void;
-  size?: "xs" | "sm" | "md" | "lg",
+  size?: "xs" | "sm" | "md" | "lg" | "xl",
   renderFooter?: () => JSX.Element;
   title?: string;
   name?: string;
