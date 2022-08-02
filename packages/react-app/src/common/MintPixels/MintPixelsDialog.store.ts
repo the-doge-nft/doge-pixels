@@ -11,6 +11,7 @@ import {SimpleGetQuoteResponse} from "@cowprotocol/cow-sdk/dist/api/cow/types";
 import env from "../../environment";
 import erc20 from "../../contracts/erc20.json"
 import {formatUnits} from "ethers/lib/utils";
+import {sleep} from "../../helpers/sleep";
 
 export const GPv2VaultRelayerAddress = "0xC92E8bdf79f0507f65a392b0ab4667716BFE0110"
 
@@ -77,6 +78,9 @@ class MintPixelsDialogStore extends Reactionable((Navigable<MintModalView, Const
 
     @observable
     isOrderComplete = false
+
+    @observable
+    _pollOrdersTick = 0
 
     constructor() {
         super();
@@ -253,19 +257,28 @@ class MintPixelsDialogStore extends Reactionable((Navigable<MintModalView, Const
         try {
             const orderId = await AppStore.web3.cowStore.acceptSimpleQuote(this.cowSimpleQuote!)
             console.log('debug:: orderId', orderId)
-            const interval = setInterval(async () => {
+
+            this.react(() => this._pollOrdersTick, async () => {
                 const orders = await AppStore.web3.cowStore.getOrders({owner: AppStore.web3.address!})
                 const placedOrder = orders?.filter(order => order.uid === orderId)[0]
                 if (placedOrder && placedOrder.status === "fulfilled") {
-                    this.isOrderComplete = true
-                    clearInterval(interval)
-                    this.pushNavigation(MintModalView.MintPixels)
+                    if (placedOrder.status === "fulfilled") {
+                        this.isOrderComplete = true
+                        this.pushNavigation(MintModalView.MintPixels)
+                    } else if (placedOrder.status === "cancelled" || placedOrder.status === "expired") {
+                        this.isOrderComplete = false
+                        showErrorToast('Cow protocol order was cancelled or expired')
+                        this.popNavigation()
+                    } else {
+                        await sleep(3000)
+                        this._pollOrdersTick += 1
+                    }
                 }
-                console.log('debug:: orders', orders)
-            }, 1000)
+            })
         } catch (e) {
             console.error('could not trade')
-            showErrorToast('Could not place cowswap')
+            showErrorToast('Could not place order')
+            this.popNavigation()
         }
     }
 
