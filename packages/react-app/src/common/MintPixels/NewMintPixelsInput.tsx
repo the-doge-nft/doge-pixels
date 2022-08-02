@@ -27,9 +27,9 @@ const NewMintPixelsInput: React.FC<{ store: MintPixelsDialogStore }> = observer(
                         onChange={(val) => {
                             store.srcCurrency = val
                         }}/>
-                    {store.srcCurrencyBalance !== null && <Box>
+                    {store.srcCurrencyBalance.humanReadable !== null && <Box>
                       <Typography color={'yellow.800'} variant={TVariant.ComicSans14}>
-                        Balance: {formatWithThousandsSeparators(store.srcCurrencyBalance)}
+                        Balance: {formatWithThousandsSeparators(store.srcCurrencyBalance.humanReadable)}
                       </Typography>
                     </Box>}
                 </VStack>
@@ -77,12 +77,14 @@ const NewMintPixelsInput: React.FC<{ store: MintPixelsDialogStore }> = observer(
         <Pane p={3} mt={12}>
             {store.isLoading && <HStack spacing={2}>
               <Spinner size={'sm'} color={'yellow.700'}/>
-              <Typography variant={TVariant.ComicSans14} color={'yellow.700'} fontWeight={"medium"}>Fetching best price</Typography>
+              <Typography variant={TVariant.ComicSans14} color={'yellow.700'} fontWeight={"medium"}>Fetching best
+                price</Typography>
             </HStack>}
-            {!store.isLoading && <Box>
-              <HStack justifyContent={"space-between"} onClick={() => setIsDetailsOpen(!isDetailsOpen)} cursor={"pointer"}>
+            {!store.isLoading && store.recentQuote && store.pixelCount && <Box>
+              <HStack justifyContent={"space-between"} onClick={() => setIsDetailsOpen(!isDetailsOpen)}
+                      cursor={"pointer"}>
                 <Typography variant={TVariant.PresStart10}>
-                  1 DOG = {store.recentQuote?.effectiveRate} {store.recentQuote?.srcCurrency}
+                  1 Pixel = {formatWithThousandsSeparators(store.recentQuote.srcCurrencyTotal / Number(store.pixelCount))} {store.recentQuote?.srcCurrency}
                 </Typography>
                 <Icon
                   icon={isDetailsOpen ? "chevron-down" : "chevron-up"}
@@ -90,33 +92,37 @@ const NewMintPixelsInput: React.FC<{ store: MintPixelsDialogStore }> = observer(
               </HStack>
                 {isDetailsOpen && store.recentQuote && <Box mt={4}>
                   <Flex justifyContent={"space-between"}>
-                    <Typography
-                      variant={TVariant.ComicSans14}>{store.recentQuote?.srcCurrencyTotal} {store.recentQuote.srcCurrency}</Typography>
-                    <Typography variant={TVariant.ComicSans14}>=</Typography>
+                      {store.srcCurrency !== "DOG" && <>
+                        <Typography
+                          variant={TVariant.ComicSans14}>{store.recentQuote?.srcCurrencyTotal} {store.recentQuote.srcCurrency}</Typography>
+                        <Typography variant={TVariant.ComicSans14}>=</Typography>
+                      </>}
                     <Typography
                       variant={TVariant.ComicSans14}>{formatWithThousandsSeparators(store.recentQuote.dogAmount)} DOG</Typography>
                     <Typography variant={TVariant.ComicSans14}>=</Typography>
                     <Typography
                       variant={TVariant.ComicSans14}>{store.pixelCount} {store.pixelCount === 1 ? "Pixel" : "Pixels"}</Typography>
                   </Flex>
-                  <Box mt={4}>
-                    <Flex justifyContent={"space-between"}>
-                      <Typography
-                        variant={TVariant.ComicSans14}>Price</Typography>
-                      <Typography
-                        variant={TVariant.ComicSans14}>{store.recentQuote.effectiveRate}</Typography>
-                    </Flex>
-                    <Flex justifyContent={"space-between"}>
-                      <Typography
-                        variant={TVariant.ComicSans14}>Fees (incl. gas costs)</Typography>
-                      <Typography
-                        variant={TVariant.ComicSans14}>{store.recentQuote.srcCurrencyFee} {store.srcCurrency}</Typography>
-                    </Flex>
-                  </Box>
-                  <Flex alignItems={"center"} justifyContent={"flex-end"} mt={4}>
-                    <Image src={CowLogo} width={25} mr={1}/>
-                    <Typography color={"yellow.800"} variant={TVariant.ComicSans14}>Powered by Cowprotocol</Typography>
-                  </Flex>
+                    {store.srcCurrency !== "DOG" && <>
+                      <Box mt={4}>
+                        <Flex justifyContent={"space-between"}>
+                          <Typography
+                            variant={TVariant.ComicSans14}>Price</Typography>
+                          <Typography
+                            variant={TVariant.ComicSans14}>{store.recentQuote.effectiveRate}</Typography>
+                        </Flex>
+                        <Flex justifyContent={"space-between"}>
+                          <Typography
+                            variant={TVariant.ComicSans14}>Fees (incl. gas costs)</Typography>
+                          <Typography
+                            variant={TVariant.ComicSans14}>{store.recentQuote.srcCurrencyFee} {store.srcCurrency}</Typography>
+                        </Flex>
+                      </Box>
+                      <Flex alignItems={"center"} justifyContent={"flex-end"} mt={4}>
+                        <Image src={CowLogo} width={25} mr={1}/>
+                        <Typography color={"yellow.800"} variant={TVariant.ComicSans14}>Powered by Cowprotocol</Typography>
+                      </Flex>
+                    </>}
                 </Box>}
             </Box>}
         </Pane>

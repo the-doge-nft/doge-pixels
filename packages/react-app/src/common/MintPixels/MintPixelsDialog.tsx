@@ -61,53 +61,10 @@ const MintForm = observer(({store}: { store: MintPixelsModalStore }) => {
         <>
             <Form onSubmit={async (data) => store.handleMintSubmit(data.pixelCount)}>
                 <Box mt={5}>
-                    {/*<MintPixelsInput store={store}/>*/}
                     <NewMintPixelsInput store={store}/>
                 </Box>
-                <Box my={6}>
-                    {/*{store.isLoading && <Box display={"flex"} justifyContent={"center"}>*/}
-                    {/*  <Spinner color={'yellow.700'}/>*/}
-                    {/*</Box>}*/}
-                    {/*{!store.isLoading && store.recentQuote && <Dev>*/}
-                    {/*  <Typography variant={TVariant.ComicSans16}>Router</Typography>*/}
-                    {/*  <Box display={"flex"} justifyContent={"space-between"}>*/}
-                    {/*    <Box display={"flex"} flexDirection={"column"}>*/}
-                    {/*      <Typography variant={TVariant.ComicSans12}>*/}
-                    {/*        Cost: {formatWithThousandsSeparators(store.recentQuote.srcCurrencyAmount)} {store.recentQuote.srcCurrency}*/}
-                    {/*      </Typography>*/}
-                    {/*      <Typography variant={TVariant.ComicSans12}>*/}
-                    {/*        Fee: {formatWithThousandsSeparators(store.recentQuote.srcCurrencyFee)} {store.recentQuote.srcCurrency}*/}
-                    {/*      </Typography>*/}
-                    {/*      <Typography variant={TVariant.ComicSans12}>*/}
-                    {/*        Total: {formatWithThousandsSeparators(store.recentQuote.srcCurrencyTotal)} {store.recentQuote.srcCurrency}*/}
-                    {/*      </Typography>*/}
-                    {/*      <Typography variant={TVariant.ComicSans12}>*/}
-                    {/*        Effective*/}
-                    {/*        Rate: {formatWithThousandsSeparators(store.recentQuote.effectiveRate)} ({store.recentQuote.srcCurrency} /*/}
-                    {/*        DOG)*/}
-                    {/*      </Typography>*/}
-                    {/*    </Box>*/}
-                    {/*    <Box>*/}
-                    {/*      <Icon icon={'arrow-right'} boxSize={6}/>*/}
-                    {/*    </Box>*/}
-                    {/*    <Box>*/}
-                    {/*      <Typography variant={TVariant.ComicSans12}>*/}
-                    {/*        DOG: {store.recentQuote.dogAmount}*/}
-                    {/*      </Typography>*/}
-                    {/*    </Box>*/}
-                    {/*    <Box>*/}
-                    {/*      <Icon icon={'arrow-right'} boxSize={6}/>*/}
-                    {/*    </Box>*/}
-                    {/*    <Box>*/}
-                    {/*      <Typography variant={TVariant.ComicSans12}>*/}
-                    {/*        Pixels: {store.recentQuote.computedPixelCount}*/}
-                    {/*      </Typography>*/}
-                    {/*    </Box>*/}
-                    {/*  </Box>*/}
-                    {/*</Dev>}*/}
-                </Box>
                 <Flex justifyContent={"center"}>
-                    <Submit label={"Mint"} mt={10} isDisabled={store.isLoading}/>
+                    <Submit label={"Mint"} mt={10} isLoading={store.isLoading} isDisabled={!store.canMint}/>
                 </Flex>
             </Form>
         </>
