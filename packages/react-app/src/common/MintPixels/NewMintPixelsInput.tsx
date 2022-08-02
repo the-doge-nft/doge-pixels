@@ -64,7 +64,7 @@ const NewMintPixelsInput: React.FC<{ store: MintPixelsDialogStore }> = observer(
             <Pane px={4} py={2} display={"flex"}>
                 <BigText size={"md"}>{store.pixelCount}</BigText>
                 <Flex flexDirection={"column"} justifyContent={"center"} alignItems={"center"}>
-                    <BigText size={"sm"}>{store.pixelCount === 1 ? "PIXEL" : "PIXELS"}</BigText>
+                    <BigText isLight size={"sm"}>{store.pixelCount === 1 ? "PIXEL" : "PIXELS"}</BigText>
                     {store.recentQuote && <Button mt={1} p={0} variant={ButtonVariant.Text}
                                                   isDisabled={store.pixelCount === store.recentQuote!.maxPixelAmount || store.recentQuote.maxPixelAmount === 0}
                                                   size={"xs"}
