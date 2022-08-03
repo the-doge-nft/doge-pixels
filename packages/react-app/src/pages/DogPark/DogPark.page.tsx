@@ -18,6 +18,7 @@ import {convertToAbbreviation} from "../../helpers/numberFormatter";
 import BigText from "../../DSL/BigText/BigText";
 import {darkModeSecondary, lightModePrimary} from "../../DSL/Theme";
 import {NamedRoutes, route, SELECTED_PIXEL_PARAM} from "../../App.routes";
+import ParkPixels from "./ParkPixels";
 
 const DogParkPage = observer(function DogParkPage() {
   const history = useHistory()
@@ -121,13 +122,8 @@ const DogParkPage = observer(function DogParkPage() {
               <GridItem display={"flex"} justifyContent={"center"}>
                 {store.selectedPupper && <Box maxWidth={"fit-content"}>
                     <Flex flexDirection={"column"}>
-                      <PixelPane
-                        size={"lg"}
-                        variant={"shadow"}
-                        pupper={store.selectedPupper!}
-                        color={store.selectedPupperHex}
-                        pupperIndex={store.seletedPupperIndex}
-                      />
+                      <ParkPixels  selectedPupper={store.selectedPupper} puppers={store.selectedDogs} />
+                     
                       <Box my={10}>
                         <Box>
                           <Typography variant={TVariant.ComicSans18}>HEX:</Typography>
