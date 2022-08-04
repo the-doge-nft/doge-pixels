@@ -1,19 +1,8 @@
-import React, {useEffect, useRef, useState} from "react";
-import * as THREE from "three";
-import {Object3D} from "three";
-import {Canvas, useLoader} from "@react-three/fiber";
+import { useEffect } from "react";
 import Kobosu from "../../images/THE_ACTUAL_NFT_IMAGE.png"
-import {Box, useColorMode} from "@chakra-ui/react";
-import {createCanvasPixelSelectionSetter, getWorldPixelCoordinate, resizeCanvas} from "../Viewer/helpers";
-import {onPixelSelectType} from "../Viewer/Viewer.page";
-import ViewerStore from "../Viewer/Viewer.store";
-import {SELECT_PIXEL} from "../../services/mixins/eventable";
-import Button, {ButtonVariant} from "../../DSL/Button/Button";
-import createPanZoom, {PanZoomReturn} from "../../services/three-map-js";
-import PixelPane from "../../DSL/PixelPane/PixelPane";
+import { Box } from "@chakra-ui/react";
 import AppStore from "../../store/App.store";
 import {observer} from "mobx-react-lite";
-import Colors from "../../DSL/Colors/Colors";
 
 interface ParkPixelsProps {
   selectedPupper: number;
@@ -38,6 +27,14 @@ const PIXEL_WIDTH = 20;
 const PIXEL_HEIGHT = 20;
 const SCALE = IMAGE_WIDTH / 640;
 
+const getPixelOffsets = (y: number) => {
+  if (y <= IMAGE_HEIGHT / 2) {
+    return [PIXEL_OFFSET_X, BOTTOM_PIXEL_OFFSET_Y];
+  } else {
+    return [PIXEL_OFFSET_X, TOP_PIXEL_OFFSET_Y];
+  }
+}
+
 const ParkPixels = observer(({selectedPupper, puppers}: ParkPixelsProps) => {
    useEffect(() => {
     drawBackground()
@@ -48,19 +45,18 @@ const ParkPixels = observer(({selectedPupper, puppers}: ParkPixelsProps) => {
     ctx.fillStyle = "yellow"
     ctx.fillRect(selectedX * SCALE - PIXEL_WIDTH /2, selectedY * SCALE - PIXEL_HEIGHT /2, PIXEL_WIDTH, PIXEL_HEIGHT);
    }
+
    const drawPixels = (ctx: CanvasRenderingContext2D) => {
     const length = puppers.puppers.length;
     if (length < 1) return;
     ctx.save();
  
-    const [selectedX, selectedY] = AppStore.web3.pupperToPixelCoordsLocal(selectedPupper);
     ctx.save();
     ctx.strokeStyle = "red";
     ctx.beginPath();
 
     for(let i = 0 ; i < length; i ++) {
-      if (puppers.puppers[i] === selectedPupper) {
-      } else {
+      if (puppers.puppers[i] !== selectedPupper) {
         const [x, y] = AppStore.web3.pupperToPixelCoordsLocal(puppers.puppers[i]);
         ctx.rect(x * SCALE  - PIXEL_WIDTH /2, y* SCALE - PIXEL_HEIGHT /2, PIXEL_WIDTH, PIXEL_HEIGHT);
       }
@@ -71,7 +67,6 @@ const ParkPixels = observer(({selectedPupper, puppers}: ParkPixelsProps) => {
    }
 
    const drawPixelPane = (ctx: CanvasRenderingContext2D) => {
-
     const [, y] = AppStore.web3.pupperToPixelCoordsLocal(selectedPupper);
     let paneY: number;
     if (y <= IMAGE_HEIGHT / 2) {
@@ -92,15 +87,7 @@ const ParkPixels = observer(({selectedPupper, puppers}: ParkPixelsProps) => {
 
    }
 
-   function getPixelOffsets(y: number) {
-    if (y <= IMAGE_HEIGHT / 2) {
-      return [PIXEL_OFFSET_X, BOTTOM_PIXEL_OFFSET_Y];
-    } else {
-      return [PIXEL_OFFSET_X, TOP_PIXEL_OFFSET_Y];
-    }
-  }
-
-   function drawPixelPointer(ctx: CanvasRenderingContext2D) {
+   const drawPixelPointer = (ctx: CanvasRenderingContext2D) => {
     const [x, y] = AppStore.web3.pupperToPixelCoordsLocal(selectedPupper);
     const [pixelOffsetX, pixelOffsetY] = getPixelOffsets(y);
     let y1;
@@ -126,10 +113,9 @@ const ParkPixels = observer(({selectedPupper, puppers}: ParkPixelsProps) => {
   
     ctx.closePath();
     ctx.restore();
-    // return ctx;
   }
  
-  function drawImageSCALEd(img: any, ctx: CanvasRenderingContext2D) {
+  const drawScaledImage = (img: any, ctx: CanvasRenderingContext2D) => {
       var canvas = ctx.canvas ;
       var hRatio = canvas.width  / img.width    ;
       var vRatio =  canvas.height / img.height  ;
@@ -138,7 +124,7 @@ const ParkPixels = observer(({selectedPupper, puppers}: ParkPixelsProps) => {
       var centerShift_y = ( canvas.height - img.height*ratio ) / 2;  
       ctx.clearRect(0,0,canvas.width, canvas.height);
       ctx.drawImage(img, 0,0, img.width, img.height,
-                        centerShift_x,centerShift_y,img.width*ratio, img.height*ratio);  
+      centerShift_x,centerShift_y,img.width*ratio, img.height*ratio);  
   }
    const drawBackground = async () => {
     let canvas: HTMLCanvasElement = document.getElementById('canvas') as HTMLCanvasElement;
@@ -150,8 +136,7 @@ const ParkPixels = observer(({selectedPupper, puppers}: ParkPixelsProps) => {
 
       let img = await loadImage(Kobosu);
 
-      // ctx.drawImage(img, 0, 0, IMAGE_WIDTH, IMAGE_HEIGHT);
-      drawImageSCALEd(img, ctx);
+      drawScaledImage(img, ctx);
       drawPixelPane(ctx);
       drawSelectedPixel(ctx);
       drawPixelPointer(ctx)
@@ -173,7 +158,6 @@ const ParkPixels = observer(({selectedPupper, puppers}: ParkPixelsProps) => {
        <canvas id='canvas' width={400} height={300}>
 
        </canvas>
-      
     </Box>
   );
 });
