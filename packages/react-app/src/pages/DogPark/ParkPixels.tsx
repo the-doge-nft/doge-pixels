@@ -1,12 +1,16 @@
-import { useEffect } from "react";
+import {useEffect} from "react";
 import Kobosu from "../../images/THE_ACTUAL_NFT_IMAGE.png"
-import { Box } from "@chakra-ui/react";
+import {Box} from "@chakra-ui/react";
 import AppStore from "../../store/App.store";
 import {observer} from "mobx-react-lite";
+import Colors from "../../DSL/Colors/Colors";
+
+//@ts-ignore
+console.log('debug;: colors', Colors.yellow["700"])
 
 interface ParkPixelsProps {
   selectedPupper: number;
-  puppers: {address: string, puppers: number[], ens?: string}
+  puppers: { address: string, puppers: number[], ens?: string }
 }
 
 export enum CameraPositionZ {
@@ -23,8 +27,8 @@ const BOTTOM_PIXEL_OFFSET_Y = 200;
 const PIXEL_PANE_WIDTH = 70;
 const PIXEL_PANE_HEIGHT = 70;
 const PIXEL_TEXT_HEIGHT = 20;
-const PIXEL_WIDTH = 20;
-const PIXEL_HEIGHT = 20;
+const PIXEL_WIDTH = 15;
+const PIXEL_HEIGHT = 15;
 const SCALE = IMAGE_WIDTH / 640;
 
 const getPixelOffsets = (y: number) => {
@@ -36,38 +40,40 @@ const getPixelOffsets = (y: number) => {
 }
 
 const ParkPixels = observer(({selectedPupper, puppers}: ParkPixelsProps) => {
-   useEffect(() => {
+  useEffect(() => {
     drawBackground()
-   }, [selectedPupper])
+  }, [selectedPupper])
 
-   const drawSelectedPixel = (ctx: CanvasRenderingContext2D) => {
+  const drawSelectedPixel = (ctx: CanvasRenderingContext2D) => {
     const [selectedX, selectedY] = AppStore.web3.pupperToPixelCoordsLocal(selectedPupper);
-    ctx.fillStyle = "yellow"
-    ctx.fillRect(selectedX * SCALE - PIXEL_WIDTH /2, selectedY * SCALE - PIXEL_HEIGHT /2, PIXEL_WIDTH, PIXEL_HEIGHT);
-   }
+    //@ts-ignore
+    ctx.fillStyle = Colors.yellow["700"]
+    ctx.fillRect(selectedX * SCALE - PIXEL_WIDTH / 2, selectedY * SCALE - PIXEL_HEIGHT / 2, PIXEL_WIDTH, PIXEL_HEIGHT);
+  }
 
-   const drawPixels = (ctx: CanvasRenderingContext2D) => {
+  const drawPixels = (ctx: CanvasRenderingContext2D) => {
     const length = puppers.puppers.length;
     if (length < 1) return;
     ctx.save();
- 
+
     ctx.save();
-    ctx.strokeStyle = "red";
+    //@ts-ignore
+    ctx.strokeStyle = Colors.red["50"]
     ctx.beginPath();
 
-    for(let i = 0 ; i < length; i ++) {
+    for (let i = 0; i < length; i++) {
       if (puppers.puppers[i] !== selectedPupper) {
         const [x, y] = AppStore.web3.pupperToPixelCoordsLocal(puppers.puppers[i]);
-        ctx.rect(x * SCALE  - PIXEL_WIDTH /2, y* SCALE - PIXEL_HEIGHT /2, PIXEL_WIDTH, PIXEL_HEIGHT);
+        ctx.rect(x * SCALE - PIXEL_WIDTH / 2, y * SCALE - PIXEL_HEIGHT / 2, PIXEL_WIDTH, PIXEL_HEIGHT);
       }
     }
     ctx.stroke();
     ctx.closePath();
     ctx.restore();
-   }
+  }
 
-   const drawPixelPane = (ctx: CanvasRenderingContext2D) => {
-    const [, y] = AppStore.web3.pupperToPixelCoordsLocal(selectedPupper);
+  const drawPixelPane = (ctx: CanvasRenderingContext2D) => {
+    const [x, y] = AppStore.web3.pupperToPixelCoordsLocal(selectedPupper);
     let paneY: number;
     if (y <= IMAGE_HEIGHT / 2) {
       paneY = BOTTOM_PIXEL_OFFSET_Y;
@@ -77,17 +83,17 @@ const ParkPixels = observer(({selectedPupper, puppers}: ParkPixelsProps) => {
     const hex = AppStore.web3.pupperToHexLocal(selectedPupper);
     ctx.fillStyle = hex;
     ctx.fillRect(PIXEL_OFFSET_X, paneY, PIXEL_PANE_WIDTH, PIXEL_PANE_HEIGHT);
-    
+
     ctx.fillStyle = "white";
     ctx.fillRect(PIXEL_OFFSET_X, paneY + PIXEL_PANE_HEIGHT, PIXEL_PANE_WIDTH, PIXEL_TEXT_HEIGHT);
-   
-    ctx.font = "8px PressStart2P";
-    ctx.fillStyle = "black";    
-    ctx.fillText(hex, PIXEL_OFFSET_X + 10, paneY + PIXEL_PANE_HEIGHT + 15);
 
-   }
+    ctx.font = "7px PressStart2P";
+    ctx.fillStyle = "black";
+    ctx.fillText(`(${x},${y})`, PIXEL_OFFSET_X + 3, paneY + PIXEL_PANE_HEIGHT + 15);
 
-   const drawPixelPointer = (ctx: CanvasRenderingContext2D) => {
+  }
+
+  const drawPixelPointer = (ctx: CanvasRenderingContext2D) => {
     const [x, y] = AppStore.web3.pupperToPixelCoordsLocal(selectedPupper);
     const [pixelOffsetX, pixelOffsetY] = getPixelOffsets(y);
     let y1;
@@ -110,23 +116,23 @@ const ParkPixels = observer(({selectedPupper, puppers}: ParkPixelsProps) => {
     ctx.fillStyle = '#000000';
     ctx.stroke();
     ctx.fill();
-  
+
     ctx.closePath();
     ctx.restore();
   }
- 
+
   const drawScaledImage = (img: any, ctx: CanvasRenderingContext2D) => {
-      var canvas = ctx.canvas ;
-      var hRatio = canvas.width  / img.width    ;
-      var vRatio =  canvas.height / img.height  ;
-      var ratio  = Math.min ( hRatio, vRatio );
-      var centerShift_x = ( canvas.width - img.width*ratio ) / 2;
-      var centerShift_y = ( canvas.height - img.height*ratio ) / 2;  
-      ctx.clearRect(0,0,canvas.width, canvas.height);
-      ctx.drawImage(img, 0,0, img.width, img.height,
-      centerShift_x,centerShift_y,img.width*ratio, img.height*ratio);  
+    var canvas = ctx.canvas;
+    var hRatio = canvas.width / img.width;
+    var vRatio = canvas.height / img.height;
+    var ratio = Math.min(hRatio, vRatio);
+    var centerShift_x = (canvas.width - img.width * ratio) / 2;
+    var centerShift_y = (canvas.height - img.height * ratio) / 2;
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.drawImage(img, 0, 0, img.width, img.height,
+      centerShift_x, centerShift_y, img.width * ratio, img.height * ratio);
   }
-   const drawBackground = async () => {
+  const drawBackground = async () => {
     let canvas: HTMLCanvasElement = document.getElementById('canvas') as HTMLCanvasElement;
     if (canvas.getContext) {
 
@@ -142,22 +148,26 @@ const ParkPixels = observer(({selectedPupper, puppers}: ParkPixelsProps) => {
       drawPixelPointer(ctx)
       drawPixels(ctx);
     }
-   }
-
-   function loadImage(url: string): Promise<CanvasImageSource> {
-    return new Promise(r => { let i = new Image(); i.onload = (() => r(i)); i.src = url; });
   }
- 
+
+  function loadImage(url: string): Promise<CanvasImageSource> {
+    return new Promise(r => {
+      let i = new Image();
+      i.onload = (() => r(i));
+      i.src = url;
+    });
+  }
+
   return (
     <Box
-         w={400}
-         h={300}
-         zIndex={2}
-         _focus={{boxShadow: "none", borderColor: "inherit"}}
+      w={400}
+      h={300}
+      zIndex={2}
+      _focus={{boxShadow: "none", borderColor: "inherit"}}
     >
-       <canvas id='canvas' width={400} height={300}>
+      <canvas id='canvas' width={400} height={300}>
 
-       </canvas>
+      </canvas>
     </Box>
   );
 });
