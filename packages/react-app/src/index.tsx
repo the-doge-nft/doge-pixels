@@ -34,7 +34,7 @@ ReactDOM.render(
                           alignItems={"center"}
                           color={"inherit"}
                           // eslint-disable-next-line
-                          mx={5}>✨✨✨ Don't have $DOG? Click here to buy ✨✨✨</Typography>)}
+                          mx={5}>✨✨✨ Don't have $DOG? Click here to get it ✨✨✨</Typography>)}
                   </motion.div>
               </Box>
           </a>

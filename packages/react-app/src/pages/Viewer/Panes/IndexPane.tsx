@@ -26,7 +26,7 @@ const IndexPane = observer(function IndexPane({store}: {store: ViewerStore}) {
           </Link>.
           </Typography>
           <Typography variant={TVariant.ComicSans18} block mt={6}>
-            This site has two main functions.
+            This site has two main functions:
           </Typography>
           <Grid templateColumns={"0.1fr 1fr"} mt={2}>
             <GridItem>
@@ -80,6 +80,11 @@ const IndexPane = observer(function IndexPane({store}: {store: ViewerStore}) {
             </Typography>
             <Typography variant={TVariant.ComicSans18} block>
               $DOG / Doge Pixels = 55,239.899
+            </Typography>
+          </Box>
+          <Box mt={6}>
+            <Typography variant={TVariant.ComicSans18} block>
+              Enjoy!
             </Typography>
           </Box>
         </Box>
