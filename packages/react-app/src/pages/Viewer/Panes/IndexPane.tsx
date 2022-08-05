@@ -62,7 +62,7 @@ const IndexPane = observer(function IndexPane({store}: {store: ViewerStore}) {
             </GridItem>
             <GridItem>
               <Typography variant={TVariant.ComicSans18} block>
-                Burn Doge Pixels to redeem their fair value in $DOG (minus 1% fee)
+                Burn Doge Pixels to redeem their fair value in $DOG (minus 1% fee).
               </Typography>
             </GridItem>
           </Grid>
