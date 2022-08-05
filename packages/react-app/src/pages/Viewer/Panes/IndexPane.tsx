@@ -36,7 +36,23 @@ const IndexPane = observer(function IndexPane({store}: {store: ViewerStore}) {
             </GridItem>
             <GridItem>
               <Typography variant={TVariant.ComicSans18} block>
-                Lock $DOG to mint Doge Pixels.
+                Lock <Link
+                size={"lg"}
+                variant={Type.ComicSans}
+                href={"https://etherscan.io/token/0xbaac2b4491727d78d2b78815144570b9f2fe8899"}
+                isExternal
+                fontWeight={"bold"}
+              >
+                $DOG
+              </Link> to mint <Link
+                size={"lg"}
+                variant={Type.ComicSans}
+                href={"https://opensea.io/collection/doge-pixels"}
+                isExternal
+                fontWeight={"bold"}
+              >
+                Doge Pixels
+              </Link>.
               </Typography>
             </GridItem>
             <GridItem>
