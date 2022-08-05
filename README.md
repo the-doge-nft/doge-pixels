@@ -8,19 +8,37 @@
 
 [prod](https://pixels.thedao.ge/)
 
-# 🏃️ Run-it
+# 🏃️ Get it started
 Prerequisites: [Node](https://nodejs.org/en/download/) plus [Yarn](https://classic.yarnpkg.com/en/docs/install/) and [Git](https://git-scm.com/downloads)
 
 > clone it like u own it:
+> 
+> hit me up for env vars to get started
 
 ```bash
-git clone https://github.com/calebcarithers/dog.git
-cd dog
+git clone https://github.com/calebcarithers/doge-pixels.git
+cd doge-pixels
+yarn install
 ```
 
+# Run the frontend
+```bash
+cd packages/react-app
+yarn start
+```
+
+# Run the server
+```bash
+cd packages/server
+yarn dev
+```
+
+
+# Deploy contracts locally
 > install and start your 👷⛓‍ Hardhat chain:
 
 ```bash
+cd packages/hardhat
 yarn install
 yarn chain
 ```
@@ -29,23 +47,3 @@ yarn chain
 ```bash
 yarn deploy
 ```
-
-> after the deployment finishes, start your ✨ frontend there:
-
-```bash
-yarn start
-```
-
-> send some ETH to an account
-```bash
-yarn fund-account -amount <amount> -to <receiver_address>
-```
-
-🔏 Checkout the contracts in packages/hardhat/contract/token/PX (DOG20.sol & PX.sol)
-
-📝 Peep the frontend at `App.tsx` in `packages/react-app/src`
-
-💼 Edit the deployment scripts in `packages/hardhat/deploy`
-
-📱 Open http://localhost:3000 to see the app
-

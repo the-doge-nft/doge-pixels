@@ -1,4 +1,4 @@
-import React, {useEffect} from "react";
+import React, {useEffect, useState} from "react";
 import {observer} from "mobx-react-lite";
 import {Box, Flex} from "@chakra-ui/react";
 import MintPixelsModalStore from "../../pages/Viewer/MintPixelsModal/MintPixelsModal.store";
@@ -50,6 +50,16 @@ const MintPixelsDialog = observer(({store, onSuccess, onGoToPixelsClick}: MintPi
 })
 
 const MintForm = observer(({ store }: { store: MintPixelsModalStore }) => {
+  const [showLabel, setShowLabel] = useState(true)
+
+  useEffect(() => {
+    if (Number(store.pixel_count) >= 100) {
+      setShowLabel(false)
+    } else if (Number(store.pixel_count && !showLabel) < 100) {
+      setShowLabel(true)
+    }
+  }, [store.pixel_count])
+
   return (
     <>
       <Form onSubmit={async (data) => store.handleMintSubmit(data.pixel_count)}>
@@ -57,7 +67,7 @@ const MintForm = observer(({ store }: { store: MintPixelsModalStore }) => {
           <BigInput
             store={store}
             storeKey={"pixel_count"}
-            label={"PX"}
+            label={showLabel ? "PX" : undefined}
             validate={[
               required("1 pixel minimum"),
               minValue(1, "Must mint at least 1 pixel"),

@@ -31,7 +31,7 @@ function BigInput({
   const styles = useMultiStyleConfig("BigText", {size: "md"})
   return useObserver(() => <Box pt={3} pb={4} borderRadius={9}>
     <VStack spacing={3} align={"flex-start"} w={"full"}>
-      <Grid templateColumns={"2fr 1fr 0.75fr"} alignItems={"end"} justifyContent={"center"}>
+      <Grid templateColumns={label ? "2fr 1fr 0.75fr" : "2.5fr 1fr"} alignItems={"end"} justifyContent={"center"}>
         <GridItem colSpan={1}>
           <NumberInput
             px={8}
