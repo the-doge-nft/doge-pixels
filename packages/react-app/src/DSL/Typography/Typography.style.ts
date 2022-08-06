@@ -64,6 +64,11 @@ const TypographyStyle = {
       fontWeight: "normal",
       fontSize: "45px",
     },
+    PresStart65: {
+      fontFamily: Type.PresStart,
+      fontWeight: "normal",
+      fontSize: "65px",
+    },
     PresStart95: {
       fontFamily: Type.PresStart,
       fontWeight: "normal",

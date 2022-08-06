@@ -5,13 +5,14 @@ import { AllowedStyleProps } from "../Form/interfaces";
 interface PaneProps extends AllowedStyleProps {
   title?: any;
   children?: any;
+  onClick?: () => void
 }
 
 const Pane = ({ children, title, ...rest }: PaneProps) => {
   const styles = useMultiStyleConfig("Pane", {});
   return (
       <Box position={"relative"} zIndex={0} w={"100%"} h={"100%"}>
-      <Box __css={styles.container} {...rest}>
+      <Box __css={styles.container} cursor={rest.onClick ? "pointer" : "inherit"} {...rest}>
         {title && <Box __css={styles.title}>
           {title}
         </Box>}

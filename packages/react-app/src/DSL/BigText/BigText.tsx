@@ -5,23 +5,25 @@ import Typography, {TVariant} from "../Typography/Typography";
 interface BigTextProps {
   children: string | number;
   label?: string | number;
-  size?: "sm" | "md"
+  size?: "sm" | "md" | "lg";
+  isLight?: boolean
 }
 
 
 const sizeToTypeMap = {
   sm: TVariant.PresStart28,
-  md: TVariant.PresStart45
+  md: TVariant.PresStart45,
+  lg: TVariant.PresStart65
 }
 
 
-const BigText = ({children, label, size = "sm"}: BigTextProps) => {
+const BigText = ({children, label, size = "sm", isLight = false}: BigTextProps) => {
   const styles = useMultiStyleConfig("BigText", {size})
   return <Flex alignItems={"baseline"} justifyContent={"flex-start"} w={"100%"}>
     <Box position={"relative"} zIndex={1} w={"100%"}>
       <Typography
         variant={sizeToTypeMap[size]}
-        sx={styles.main}
+        sx={{...styles.main, bg: isLight ? 'yellow.50' : 'yellow.700'}}
         block
       >
         {children}

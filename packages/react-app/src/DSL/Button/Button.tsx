@@ -19,9 +19,10 @@ export interface ButtonProps extends AllowedStyleProps {
   isLoading?: boolean;
 }
 
-type ButtonSize = "sm" | "md" | "lg"
+type ButtonSize = "xs" | "sm" | "md" | "lg"
 
 const buttonTypographyMap: { [key in ButtonSize]: TVariant } = {
+  xs: TVariant.PresStart10,
   sm: TVariant.PresStart12,
   md: TVariant.PresStart15,
   lg: TVariant.PresStart28

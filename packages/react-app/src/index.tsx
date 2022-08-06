@@ -20,7 +20,7 @@ ReactDOM.render(
     <ColorModeScript initialColorMode={theme.config.initialColorMode} />
     <ChakraProvider theme={theme} resetCSS>
       <Fonts />
-      <div id={"react-modal-main"}>
+      <div id={"react-modal-main"} style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
           <a href={"https://www.coingecko.com/en/coins/the-doge-nft#markets"} target={"_blank"}>
               <Box py={1} bg={"black"} color={"white"} _hover={{bg: "yellow.700", color: "black"}} whiteSpace={"nowrap"} overflowX={"hidden"}>
                   <motion.div
@@ -44,6 +44,7 @@ ReactDOM.render(
   </React.StrictMode>,
   document.getElementById("root"),
 );
+
 
 // If you want to start measuring performance in your app, pass a function
 // to log results (for example: reportWebVitals(console.log))
