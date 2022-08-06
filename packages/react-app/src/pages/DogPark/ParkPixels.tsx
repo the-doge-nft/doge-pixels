@@ -84,8 +84,9 @@ const ParkPixels = observer(({selectedPupper, puppers}: ParkPixelsProps) => {
     ctx.fillRect(PIXEL_OFFSET_X, paneY + PIXEL_PANE_HEIGHT, PIXEL_PANE_WIDTH, PIXEL_TEXT_HEIGHT);
    
     ctx.font = "8px PressStart2P";
-    ctx.fillStyle = "black";    
-    ctx.fillText(hex, PIXEL_OFFSET_X + 10, paneY + PIXEL_PANE_HEIGHT + 15);
+    ctx.fillStyle = "black";
+    const pupperIndex = AppStore.web3.pupperToIndexLocal(selectedPupper)
+    ctx.fillText(`# ${pupperIndex}`, PIXEL_OFFSET_X + 5, paneY + PIXEL_PANE_HEIGHT + 15);
 
    }
 
@@ -132,7 +133,8 @@ const ParkPixels = observer(({selectedPupper, puppers}: ParkPixelsProps) => {
       ctx.strokeStyle = "black";
       ctx.stroke();
   }
-   const drawBackground = async () => {
+
+  const drawBackground = async () => {
     let canvas: HTMLCanvasElement = document.getElementById('canvas') as HTMLCanvasElement;
     if (canvas.getContext) {
 
@@ -150,7 +152,7 @@ const ParkPixels = observer(({selectedPupper, puppers}: ParkPixelsProps) => {
     }
    }
 
-   function loadImage(url: string): Promise<CanvasImageSource> {
+  const loadImage = (url: string): Promise<CanvasImageSource> => {
     return new Promise(r => { let i = new Image(); i.onload = (() => r(i)); i.src = url; });
   }
  
