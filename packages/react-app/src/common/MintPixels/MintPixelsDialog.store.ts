@@ -128,7 +128,12 @@ class MintPixelsDialogStore extends Reactionable((Navigable<MintModalView, Const
   }
 
   setSrcCurrencyContract() {
-    this.srcCurrencyContract = new ethers.Contract(this.srcCurrencyDetails.contractAddress, erc20, AppStore.web3.signer!)
+    if (this.srcCurrency === "DOG") {
+      this.srcCurrencyContract = AppStore.web3.dogContract as unknown as Contract
+    } else {
+      console.log('debug:: src currency contract', this.srcCurrencyDetails.contractAddress)
+      this.srcCurrencyContract = new ethers.Contract(this.srcCurrencyDetails.contractAddress, erc20, AppStore.web3.signer!)
+    }
   }
 
   async getSrcCurrencyBalance() {
@@ -200,11 +205,6 @@ class MintPixelsDialogStore extends Reactionable((Navigable<MintModalView, Const
   formatToDecimals(amount: string, currency: string) {
     return formatUnits(BigNumber.from(amount), env.app.availableTokens[currency].decimals)
   }
-
-  // PSUEDO STEPS
-  // 1: if src currency is DOG
-  //    a: if has sufficient allowance -> go to MintPixels
-  //    b: if not sufficient allowance -> go to DogApproval
 
   async handleMintSubmit() {
     if (this.srcCurrency !== "DOG") {
@@ -334,8 +334,6 @@ class MintPixelsDialogStore extends Reactionable((Navigable<MintModalView, Const
         return "Approve $DOG"
       case MintModalView.VaultApproval:
         return "Pixel Router Approval"
-      // case MintModalView.CowSwap:
-      //   return `Swapping ${this.srcCurrency} for $DOG`
       default:
         return ""
     }
