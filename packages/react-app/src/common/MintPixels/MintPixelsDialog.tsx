@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from "react";
 import {observer} from "mobx-react-lite";
-import {Box, Flex, HStack, Image, VStack} from "@chakra-ui/react";
+import {Box, Flex, HStack, Image, useColorMode, VStack} from "@chakra-ui/react";
 import Typography, {TVariant} from "../../DSL/Typography/Typography";
 import Form from "../../DSL/Form/Form";
 import {formatWithThousandsSeparators} from "../../helpers/numberFormatter";
@@ -195,6 +195,7 @@ const MintPixels = observer(({store}: { store: MintPixelsDialogStore }) => {
 });
 
 const CowSwap: React.FC<{ store: MintPixelsDialogStore }> = observer(({store}) => {
+    const { colorMode } = useColorMode()
     const [isOpen, setIsOpen] = useState(false)
     useEffect(() => {
         store.placeCowswapOrder()
@@ -219,12 +220,12 @@ const CowSwap: React.FC<{ store: MintPixelsDialogStore }> = observer(({store}) =
 
             <HStack mt={5} justifyContent={"space-between"} onClick={() => setIsOpen(!isOpen)}
                     cursor={"pointer"}>
-                <Typography variant={TVariant.PresStart10} color={"yellow.800"}>
+                <Typography variant={TVariant.PresStart10} color={colorMode === "light" ? "yellow.800" : "purple.50"}>
                     Order details
                 </Typography>
                 <Icon
                     fill={"yellow.800"}
-                    color={"yellow.800"}
+                    color={colorMode === "light" ? "yellow.800" : "purple.50"}
                     icon={isOpen ? "chevron-down" : "chevron-up"}
                     boxSize={6}/>
             </HStack>
@@ -233,29 +234,29 @@ const CowSwap: React.FC<{ store: MintPixelsDialogStore }> = observer(({store}) =
                   <Box mt={1}>
                     <Flex justifyContent={"space-between"}>
                       <Typography
-                        variant={TVariant.ComicSans14} color={"yellow.800"}>Buying</Typography>
+                        variant={TVariant.ComicSans14} color={colorMode === "light" ? "yellow.800" : "purple.50"}>Buying</Typography>
                       <Typography
                         variant={TVariant.ComicSans14}
-                        color={"yellow.800"}>{formatWithThousandsSeparators(store.recentQuote.dogAmount)} $DOG</Typography>
+                        color={colorMode === "light" ? "yellow.800" : "purple.50"}>{formatWithThousandsSeparators(store.recentQuote.dogAmount)} $DOG</Typography>
                     </Flex>
                     <Flex justifyContent={"space-between"}>
                       <Typography
-                        variant={TVariant.ComicSans14} color={"yellow.800"}>Selling</Typography>
+                        variant={TVariant.ComicSans14} color={colorMode === "light" ? "yellow.800" : "purple.50"}>Selling</Typography>
                       <Typography
                         variant={TVariant.ComicSans14}
-                        color={"yellow.800"}>{formatWithThousandsSeparators(store.recentQuote.srcCurrencyAmount)} {store.srcCurrency}</Typography>
+                        color={colorMode === "light" ? "yellow.800" : "purple.50"}>{formatWithThousandsSeparators(store.recentQuote.srcCurrencyAmount)} {store.srcCurrency}</Typography>
                     </Flex>
                     <Flex justifyContent={"space-between"}>
                       <Typography
-                        variant={TVariant.ComicSans14} color={"yellow.800"}>Fees</Typography>
+                        variant={TVariant.ComicSans14} color={colorMode === "light" ? "yellow.800" : "purple.50"}>Fees</Typography>
                       <Typography
                         variant={TVariant.ComicSans14}
-                        color={"yellow.800"}>{formatWithThousandsSeparators(store.recentQuote.srcCurrencyFee)} {store.srcCurrency}</Typography>
+                        color={colorMode === "light" ? "yellow.800" : "purple.50"}>{formatWithThousandsSeparators(store.recentQuote.srcCurrencyFee)} {store.srcCurrency}</Typography>
                     </Flex>
                   </Box>
                   <Flex alignItems={"center"} justifyContent={"flex-end"} mt={2}>
                     <Image src={CowLogo} width={22} mr={1}/>
-                    <Typography color={"yellow.800"} variant={TVariant.ComicSans14}>Powered by Cowprotocol</Typography>
+                    <Typography color={colorMode === "light" ? "yellow.800" : "purple.50"} variant={TVariant.ComicSans14}>Powered by Cowprotocol</Typography>
                   </Flex>
                 </>}
             </Box>}
