@@ -28,7 +28,7 @@ const PIXEL_HEIGHT = 20;
 const SCALE = IMAGE_WIDTH / 640;
 
 const getPixelOffsets = (y: number) => {
-  if (y <= IMAGE_HEIGHT / 2) {
+  if (y * SCALE <= IMAGE_HEIGHT / 2) {
     return [PIXEL_OFFSET_X, BOTTOM_PIXEL_OFFSET_Y];
   } else {
     return [PIXEL_OFFSET_X, TOP_PIXEL_OFFSET_Y];
@@ -38,9 +38,9 @@ const getPixelOffsets = (y: number) => {
 const ParkPixels = observer(({selectedPupper, puppers}: ParkPixelsProps) => {
    useEffect(() => {
     drawBackground()
-   }, [selectedPupper])
-
+   }, [selectedPupper, puppers])
    const drawSelectedPixel = (ctx: CanvasRenderingContext2D) => {
+    if (selectedPupper === -1) return;
     const [selectedX, selectedY] = AppStore.web3.pupperToPixelCoordsLocal(selectedPupper);
     ctx.fillStyle = "yellow"
     ctx.fillRect(selectedX * SCALE - PIXEL_WIDTH /2, selectedY * SCALE - PIXEL_HEIGHT /2, PIXEL_WIDTH, PIXEL_HEIGHT);
@@ -67,9 +67,11 @@ const ParkPixels = observer(({selectedPupper, puppers}: ParkPixelsProps) => {
    }
 
    const drawPixelPane = (ctx: CanvasRenderingContext2D) => {
+    if(selectedPupper === -1) return;
     const [, y] = AppStore.web3.pupperToPixelCoordsLocal(selectedPupper);
     let paneY: number;
-    if (y <= IMAGE_HEIGHT / 2) {
+    console.log({y})
+    if (y * SCALE <= IMAGE_HEIGHT / 2) {
       paneY = BOTTOM_PIXEL_OFFSET_Y;
     } else {
       paneY = TOP_PIXEL_OFFSET_Y;
@@ -88,6 +90,7 @@ const ParkPixels = observer(({selectedPupper, puppers}: ParkPixelsProps) => {
    }
 
    const drawPixelPointer = (ctx: CanvasRenderingContext2D) => {
+    if (selectedPupper === -1) return;
     const [x, y] = AppStore.web3.pupperToPixelCoordsLocal(selectedPupper);
     const [pixelOffsetX, pixelOffsetY] = getPixelOffsets(y);
     let y1;
