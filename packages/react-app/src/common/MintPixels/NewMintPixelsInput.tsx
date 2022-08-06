@@ -1,5 +1,5 @@
 import {observer} from "mobx-react-lite";
-import {Box, Flex, HStack, Image, Spinner, VStack} from "@chakra-ui/react";
+import {Box, Flex, HStack, Image, Spinner, useColorMode, VStack} from "@chakra-ui/react";
 import Pane from "../../DSL/Pane/Pane";
 import Icon from "../../DSL/Icon/Icon";
 import React, {useState} from "react";
@@ -13,6 +13,7 @@ import CowLogo from "../../images/cowlogo.svg"
 
 const NewMintPixelsInput: React.FC<{ store: MintPixelsDialogStore }> = observer(({store}) => {
     const [isDetailsOpen, setIsDetailsOpen] = useState(false)
+    const { colorMode } = useColorMode()
     return <Box>
         <Pane px={4} py={2}>
             <HStack spacing={4}>
@@ -28,7 +29,7 @@ const NewMintPixelsInput: React.FC<{ store: MintPixelsDialogStore }> = observer(
                             store.srcCurrency = val
                         }}/>
                     {store.srcCurrencyBalance.humanReadable !== null && <Box>
-                      <Typography color={'yellow.800'} variant={TVariant.ComicSans14}>
+                      <Typography color={colorMode === "light" ? "yellow.800" : "purple.50"} variant={TVariant.ComicSans14}>
                         Balance: {formatWithThousandsSeparators(store.srcCurrencyBalance.humanReadable)}
                       </Typography>
                     </Box>}
@@ -76,8 +77,8 @@ const NewMintPixelsInput: React.FC<{ store: MintPixelsDialogStore }> = observer(
         </HStack>
         <Pane px={4} py={2} mt={8}>
             {store.isLoading && <HStack spacing={2}>
-              <Spinner size={'sm'} color={'yellow.800'}/>
-              <Typography variant={TVariant.ComicSans14} color={'yellow.800'} fontWeight={"medium"}>Fetching best
+              <Spinner size={'sm'} color={colorMode === "light" ? "yellow.800" : "purple.50"}/>
+              <Typography variant={TVariant.ComicSans14} color={colorMode === "light" ? "yellow.800" : "purple.50"} fontWeight={"medium"}>Fetching best
                 price</Typography>
             </HStack>}
             {!store.isLoading && store.recentQuote && store.pixelCount && <Box>
@@ -120,7 +121,7 @@ const NewMintPixelsInput: React.FC<{ store: MintPixelsDialogStore }> = observer(
                       </Box>
                       <Flex alignItems={"center"} justifyContent={"flex-end"} mt={2}>
                         <Image src={CowLogo} width={22} mr={1}/>
-                        <Typography color={"yellow.800"} variant={TVariant.ComicSans14}>Powered by Cowprotocol</Typography>
+                        <Typography color={colorMode === "light" ? "yellow.800" : "purple.50"} variant={TVariant.ComicSans14}>Powered by Cowprotocol</Typography>
                       </Flex>
                     </>}
                 </Box>}
