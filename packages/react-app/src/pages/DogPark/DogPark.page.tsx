@@ -125,7 +125,7 @@ const DogParkPage = observer(function DogParkPage() {
                       <ParkPixels  selectedPupper={store.selectedPupper? store.selectedPupper : -1} puppers={store.selectedDogs} />
                       {
                         store.selectedPupper && 
-                        <Box my={10}>
+                        <Box mt={10}>
                           <Box>
                             <Typography variant={TVariant.ComicSans18}>HEX:</Typography>
                             <Typography variant={TVariant.ComicSans18} ml={2}>{store.selectedPupperHex}</Typography>
@@ -138,7 +138,7 @@ const DogParkPage = observer(function DogParkPage() {
                       }
                       
                     </Flex>
-                  <Button onClick={() => history.push(route(NamedRoutes.PIXELS, {[SELECTED_PIXEL_PARAM]: store.selectedPupper}))}>
+                  <Button onClick={() => history.push(route(NamedRoutes.PIXELS, {[SELECTED_PIXEL_PARAM]: store.selectedPupper}))} mt={10}>
                       View in portal
                   </Button>
                 </Box>}
