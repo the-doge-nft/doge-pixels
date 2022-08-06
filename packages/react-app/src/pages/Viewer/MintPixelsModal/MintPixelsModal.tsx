@@ -1,10 +1,9 @@
 import {observer} from "mobx-react-lite";
-import {useEffect, useMemo} from "react";
 import Modal, {ModalProps} from "../../../DSL/Modal/Modal";
 import MintPixelsDialog from "../../../common/MintPixels/MintPixelsDialog";
-import MintPixelsModalStore from "./MintPixelsModal.store";
 import { Box } from "@chakra-ui/react";
-import {MintModalView} from "../../../common/MintPixels/MintPixelsDialog.store";
+import MintPixelsDialogStore, {MintModalView} from "../../../common/MintPixels/MintPixelsDialog.store";
+import { useMemo } from "react";
 
 export interface MintPixelsModalProps extends Pick<ModalProps, "isOpen" | "onClose"> {
   onSuccess: () => void;
@@ -12,13 +11,7 @@ export interface MintPixelsModalProps extends Pick<ModalProps, "isOpen" | "onClo
 }
 
 const MintPixelsModal = observer(({ isOpen, onClose, onSuccess, goToPixels }: MintPixelsModalProps) => {
-  const store = useMemo(() => new MintPixelsModalStore(), [])
-  useEffect(() => {
-    if (isOpen) {
-      store.init()
-    }
-    // eslint-disable-next-line
-  }, [])
+  const store = useMemo(() => new MintPixelsDialogStore(), [])
   return (
     <Modal
       size={"lg"}
