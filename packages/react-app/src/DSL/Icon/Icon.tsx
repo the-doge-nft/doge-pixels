@@ -8,6 +8,7 @@ import PixelSun from "./custom/PixelSun";
 import PixelMoon from "./custom/PixelMoon";
 import Close from "./custom/Close";
 import Back from "./custom/Back";
+import Cowswap from "./custom/Cowswap";
 
 export type ReactIconName =
   | "chevron-up"
@@ -21,8 +22,9 @@ type CustomIconName =
   | "moon"
   | "close"
   | "back"
+  | "cowswap"
 
-const customIcons: CustomIconName[] = ['person', 'search', 'sun', 'moon', 'close', 'back']
+const customIcons: CustomIconName[] = ['person', 'search', 'sun', 'moon', 'close', 'back', 'cowswap']
 
 const iconStringToComponentMap = {
   "chevron-up": VscChevronUp,
@@ -36,7 +38,8 @@ const customIconStringToComponentMap = {
   sun: PixelSun,
   moon: PixelMoon,
   close: Close,
-  back: Back
+  back: Back,
+  cowswap: Cowswap
 }
 
 interface IconProps extends ChakraIconProps {
