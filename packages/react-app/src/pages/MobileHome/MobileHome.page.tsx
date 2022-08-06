@@ -57,7 +57,7 @@ const MobileHomePage = observer(() => {
         <Flex
             my={10}
             flexGrow={1}
-            overflowY={"scroll"}>
+            overflowY={"auto"}>
           <Flex
               w={"full"}
               h={"full"}

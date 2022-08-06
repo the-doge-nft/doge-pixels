@@ -1,27 +1,45 @@
 import React from "react";
-import {Box, Flex, useMultiStyleConfig} from "@chakra-ui/react";
+import {Box, Flex, useColorMode, useMultiStyleConfig} from "@chakra-ui/react";
 import Typography, {TVariant} from "../Typography/Typography";
+import {darkModeGradient} from "../Theme";
 
 interface BigTextProps {
   children: string | number;
   label?: string | number;
-  size?: "sm" | "md"
+  size?: "sm" | "md" | "lg";
+  isLight?: boolean
 }
 
 
 const sizeToTypeMap = {
   sm: TVariant.PresStart28,
-  md: TVariant.PresStart45
+  md: TVariant.PresStart45,
+  lg: TVariant.PresStart65
 }
 
 
-const BigText = ({children, label, size = "sm"}: BigTextProps) => {
+const BigText = ({children, label, size = "sm", isLight = false}: BigTextProps) => {
   const styles = useMultiStyleConfig("BigText", {size})
+  const {colorMode} = useColorMode()
+  let color = 'yellow.50'
+  if (isLight) {
+    if (colorMode === "light") {
+      color = 'yellow.50'
+    } else if (colorMode === "dark") {
+      color = "white"
+    }
+  } else {
+    if (colorMode === "light") {
+      color = "yellow.700"
+    } else {
+      color = darkModeGradient
+    }
+  }
   return <Flex alignItems={"baseline"} justifyContent={"flex-start"} w={"100%"}>
     <Box position={"relative"} zIndex={1} w={"100%"}>
       <Typography
         variant={sizeToTypeMap[size]}
-        sx={styles.main}
+        sx={{...styles.main, bg: color}}
         block
       >
         {children}

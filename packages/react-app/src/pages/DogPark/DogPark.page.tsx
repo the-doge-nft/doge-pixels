@@ -176,7 +176,6 @@ const DogKennel = observer(({store}: {store: DogParkPageStore}) => {
     <Flex flexDirection={"column"}>
       <Flex mb={6} alignItems={"flex-end"}>
         <Typography variant={TVariant.PresStart20} block height={"max-content"}>$DOG Locked</Typography>
-        <Typography variant={TVariant.PresStart24} ml={3} height={"max-content"} block>🔒</Typography>
       </Flex>
       <Flex flexGrow={1} alignItems={"center"}>
         <Box>
@@ -191,11 +190,11 @@ const DogKennel = observer(({store}: {store: DogParkPageStore}) => {
 
 const TopDogs = observer(({store}: {store: DogParkPageStore}) => {
   return <Pane display={"flex"} flexDirection={"column"} h={"full"}>
-    <Flex mb={6} alignItems={"flex-end"}>
+    <Flex mb={6} alignItems={"center"}>
       <Typography variant={TVariant.PresStart20} block height={"max-content"}>Top Dogs</Typography>
-      <Typography variant={TVariant.PresStart24} ml={3} height={"max-content"} block>🚀</Typography>
+      <Typography variant={TVariant.PresStart15} ml={3} height={"max-content"} block color={"yellow.75"}>({store.topDogs.length})</Typography>
     </Flex>
-    <Box overflowY={"scroll"} flexGrow={1} mt={4}>
+    <Box overflowY={"auto"} flexGrow={1} mt={4}>
       <Flex flexWrap={"wrap"} maxHeight={"300px"}>
         {store.topDogs.map((dog) => <UserCard key={`top-dog-${dog.address}`} store={store} dog={dog}/>)}
       </Flex>

@@ -12,7 +12,10 @@ import {Http} from "../services";
 import Web3providerStore, {EthersContractError, Web3ProviderConnectionError} from "./web3provider.store";
 import * as Sentry from "@sentry/react";
 import {ContractInterface} from "@ethersproject/contracts/src.ts/index";
-
+import {SupportedChainId} from "@cowprotocol/cow-sdk/dist/constants/chains";
+import {CowSdk, OrderKind} from "@cowprotocol/cow-sdk";
+import AppStore from "./App.store";
+import CowStore from "./cow.store";
 
 interface AddressToPuppers {
     [k: string]: {
@@ -50,14 +53,22 @@ class Web3Store extends Web3providerStore {
     @observable
     dogContractAddress: string
 
+    @observable
+    cowStore: CowStore
+
     constructor() {
         super()
         makeObservable(this)
         this.addressToPuppers = {}
+        this.cowStore = new CowStore()
 
         if (isDevModeEnabled()) {
             this.pxContractAddress = deployedContracts["4"]["rinkeby"]["contracts"]["PX"]["address"]
             this.dogContractAddress = deployedContracts["4"]["rinkeby"]["contracts"]["DOG20"]["address"]
+
+            // todo -- remove this
+            // this.pxContractAddress = deployedContracts["1"]["mainnet"]["contracts"]["PX"]["address"]
+            // this.dogContractAddress = deployedContracts["1"]["mainnet"]["contracts"]["DOG20"]["address"]
         } else if (isProduction()) {
             this.pxContractAddress = deployedContracts["1"]["mainnet"]["contracts"]["PX"]["address"]
             this.dogContractAddress = deployedContracts["1"]["mainnet"]["contracts"]["DOG20"]["address"]
@@ -79,16 +90,17 @@ class Web3Store extends Web3providerStore {
             await super.connect()
             this.connectToContracts(this.signer!)
             await this.errorGuardContracts()
+            this.cowStore.connect(this.signer!)
             this.refreshDogBalance()
             this.refreshPupperBalance()
         } catch (e) {
-          if (e instanceof Web3ProviderConnectionError) {
-            // pass
-          } else {
-            console.error(e)
-            Sentry.captureException(e)
-            showErrorToast("Error connecting")
-          }
+            if (e instanceof Web3ProviderConnectionError) {
+                // pass
+            } else {
+                console.error(e)
+                Sentry.captureException(e)
+                showErrorToast("Error connecting")
+            }
         }
     }
 
@@ -161,11 +173,11 @@ class Web3Store extends Web3providerStore {
     }
 
     getPupperOwnershipMap() {
-        return Http.get("/v1/config").then(({ data }) => this.addressToPuppers = data)
+        return Http.get("/v1/config").then(({data}) => this.addressToPuppers = data)
     }
 
     refreshPupperOwnershipMap() {
-        return Http.get("/v1/config/refresh").then(({ data }) => this.addressToPuppers = data)
+        return Http.get("/v1/config/refresh").then(({data}) => this.addressToPuppers = data)
     }
 
     getShibaDimensions() {
@@ -224,8 +236,7 @@ class Web3Store extends Web3providerStore {
     }
 
     async getPxDogSpendAllowance() {
-        const allowance = await this.dogContract!.allowance(this.address!, this.pxContract!.address)
-        return allowance
+        return this.dogContract!.allowance(this.address!, this.pxContract!.address)
     }
 
     async getDogToAccount() {
