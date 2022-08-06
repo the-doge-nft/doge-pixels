@@ -1,6 +1,5 @@
 const isProduction = () => {
-  // return process.env.NODE_ENV === "production" && process.env.REACT_APP_DOG_ENV === "aws_production";
-  return true
+  return process.env.NODE_ENV === "production" && process.env.REACT_APP_DOG_ENV === "aws_production";
 };
 const isStaging = () => {
   return process.env.NODE_ENV === "production" && process.env.REACT_APP_DOG_ENV === "aws_develop";

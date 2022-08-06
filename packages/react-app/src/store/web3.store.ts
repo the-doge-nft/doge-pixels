@@ -63,12 +63,12 @@ class Web3Store extends Web3providerStore {
         this.cowStore = new CowStore()
 
         if (isDevModeEnabled()) {
-            // this.pxContractAddress = deployedContracts["4"]["rinkeby"]["contracts"]["PX"]["address"]
-            // this.dogContractAddress = deployedContracts["4"]["rinkeby"]["contracts"]["DOG20"]["address"]
+            this.pxContractAddress = deployedContracts["4"]["rinkeby"]["contracts"]["PX"]["address"]
+            this.dogContractAddress = deployedContracts["4"]["rinkeby"]["contracts"]["DOG20"]["address"]
 
             // todo -- remove this
-            this.pxContractAddress = deployedContracts["1"]["mainnet"]["contracts"]["PX"]["address"]
-            this.dogContractAddress = deployedContracts["1"]["mainnet"]["contracts"]["DOG20"]["address"]
+            // this.pxContractAddress = deployedContracts["1"]["mainnet"]["contracts"]["PX"]["address"]
+            // this.dogContractAddress = deployedContracts["1"]["mainnet"]["contracts"]["DOG20"]["address"]
         } else if (isProduction()) {
             this.pxContractAddress = deployedContracts["1"]["mainnet"]["contracts"]["PX"]["address"]
             this.dogContractAddress = deployedContracts["1"]["mainnet"]["contracts"]["DOG20"]["address"]
