@@ -1,8 +1,9 @@
 import { useEffect } from "react";
 import Kobosu from "../../images/THE_ACTUAL_NFT_IMAGE.png"
-import { Box } from "@chakra-ui/react";
+import { Box, useColorMode } from "@chakra-ui/react";
 import AppStore from "../../store/App.store";
 import {observer} from "mobx-react-lite";
+import { lightOrDark } from "../../DSL/Theme";
 
 interface ParkPixelsProps {
   selectedPupper: number;
@@ -36,14 +37,19 @@ const getPixelOffsets = (y: number) => {
 }
 
 const ParkPixels = observer(({selectedPupper, puppers}: ParkPixelsProps) => {
+  const colorMode = useColorMode();
    useEffect(() => {
     drawBackground()
    }, [selectedPupper, puppers])
+   
    const drawSelectedPixel = (ctx: CanvasRenderingContext2D) => {
     if (selectedPupper === -1) return;
     const [selectedX, selectedY] = AppStore.web3.pupperToPixelCoordsLocal(selectedPupper);
-    ctx.fillStyle = "yellow"
+    let fillColor = lightOrDark(colorMode.colorMode, "#ffd335", "#ff00e5");
+    ctx.save();
+    ctx.fillStyle = fillColor;
     ctx.fillRect(selectedX * SCALE - PIXEL_WIDTH /2, selectedY * SCALE - PIXEL_HEIGHT /2, PIXEL_WIDTH, PIXEL_HEIGHT);
+    ctx.restore();
    }
 
    const drawPixels = (ctx: CanvasRenderingContext2D) => {
@@ -51,15 +57,15 @@ const ParkPixels = observer(({selectedPupper, puppers}: ParkPixelsProps) => {
     if (length < 1) return;
     ctx.save();
  
-    ctx.save();
-    ctx.strokeStyle = "red";
+    let strokeColor = lightOrDark(colorMode.colorMode, "black", "#4b0edd")
     ctx.beginPath();
+    ctx.strokeStyle = strokeColor;
 
     for(let i = 0 ; i < length; i ++) {
       if (puppers.puppers[i] !== selectedPupper) {
         const [x, y] = AppStore.web3.pupperToPixelCoordsLocal(puppers.puppers[i]);
         ctx.rect(x * SCALE  - PIXEL_WIDTH /2, y* SCALE - PIXEL_HEIGHT /2, PIXEL_WIDTH, PIXEL_HEIGHT);
-      }
+      } 
     }
     ctx.stroke();
     ctx.closePath();
@@ -70,7 +76,7 @@ const ParkPixels = observer(({selectedPupper, puppers}: ParkPixelsProps) => {
     if(selectedPupper === -1) return;
     const [, y] = AppStore.web3.pupperToPixelCoordsLocal(selectedPupper);
     let paneY: number;
-    console.log({y})
+
     if (y * SCALE <= IMAGE_HEIGHT / 2) {
       paneY = BOTTOM_PIXEL_OFFSET_Y;
     } else {
@@ -80,11 +86,13 @@ const ParkPixels = observer(({selectedPupper, puppers}: ParkPixelsProps) => {
     ctx.fillStyle = hex;
     ctx.fillRect(PIXEL_OFFSET_X, paneY, PIXEL_PANE_WIDTH, PIXEL_PANE_HEIGHT);
     
-    ctx.fillStyle = "white";
+    let fillColor = lightOrDark(colorMode.colorMode, "white", "#180e30")
+    ctx.fillStyle = fillColor;
     ctx.fillRect(PIXEL_OFFSET_X, paneY + PIXEL_PANE_HEIGHT, PIXEL_PANE_WIDTH, PIXEL_TEXT_HEIGHT);
    
     ctx.font = "8px PressStart2P";
-    ctx.fillStyle = "black";
+    let textColor = lightOrDark(colorMode.colorMode, "black", "white")
+    ctx.fillStyle = textColor;
     const pupperIndex = AppStore.web3.pupperToIndexLocal(selectedPupper)
     ctx.fillText(`# ${pupperIndex}`, PIXEL_OFFSET_X + 5, paneY + PIXEL_PANE_HEIGHT + 15);
 
@@ -130,7 +138,8 @@ const ParkPixels = observer(({selectedPupper, puppers}: ParkPixelsProps) => {
       ctx.drawImage(img, 0,0, img.width, img.height,
         centerShift_x, centerShift_y, img.width*ratio, img.height*ratio);  
       ctx.rect(0, 0, img.width*ratio, img.height*ratio);
-      ctx.strokeStyle = "black";
+      let borderColor = lightOrDark(colorMode.colorMode, "black", "white")
+      ctx.strokeStyle = borderColor;
       ctx.stroke();
   }
 
