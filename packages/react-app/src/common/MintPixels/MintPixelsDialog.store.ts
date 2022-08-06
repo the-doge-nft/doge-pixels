@@ -201,6 +201,11 @@ class MintPixelsDialogStore extends Reactionable((Navigable<MintModalView, Const
     return formatUnits(BigNumber.from(amount), env.app.availableTokens[currency].decimals)
   }
 
+  // PSUEDO STEPS
+  // 1: if src currency is DOG
+  //    a: if has sufficient allowance -> go to MintPixels
+  //    b: if not sufficient allowance -> go to DogApproval
+
   async handleMintSubmit() {
     if (this.srcCurrency !== "DOG") {
       if (await this.getHasDOGAllowance()) {
@@ -223,7 +228,6 @@ class MintPixelsDialogStore extends Reactionable((Navigable<MintModalView, Const
 
   async getHasDOGAllowance() {
     const allowance = await AppStore.web3.getPxDogSpendAllowance()
-    console.log('debug:: allowance', allowance)
     return allowance.gte(this.recentQuote!._dogAmount)
   }
 
@@ -342,11 +346,6 @@ class MintPixelsDialogStore extends Reactionable((Navigable<MintModalView, Const
     switch (this.currentView) {
       case MintModalView.Form:
         return "Mint a pixel of The Doge NFT, randomly selected from all 307,200 pixels."
-      case MintModalView.CowSwap:
-        if (this.hasUserSignedTx) {
-          return "Please be patient this could take a couple of minutes"
-        }
-        return ""
       default:
         return undefined
     }

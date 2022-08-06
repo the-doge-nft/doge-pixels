@@ -206,9 +206,9 @@ const CowSwap: React.FC<{ store: MintPixelsDialogStore }> = observer(({store}) =
         showSigningHint={!store.hasUserSignedTx}
       />
 
-
       {store.cowSwapOrderID &&
-        <Flex justifyContent="center"><Link href={`${CowStore.BASE_EXPLORER_URL}/${store.cowSwapOrderID}`} isExternal>
+        <Flex justifyContent="center" mt={4}>
+          <Link href={`${CowStore.BASE_EXPLORER_URL}/${store.cowSwapOrderID}`} isExternal>
           View Order Status</Link>
         </Flex>}
 

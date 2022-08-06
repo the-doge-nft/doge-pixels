@@ -236,8 +236,7 @@ class Web3Store extends Web3providerStore {
     }
 
     async getPxDogSpendAllowance() {
-        const allowance = await this.dogContract!.allowance(this.address!, this.pxContract!.address)
-        return allowance
+        return this.dogContract!.allowance(this.address!, this.pxContract!.address)
     }
 
     async getDogToAccount() {
