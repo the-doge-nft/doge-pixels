@@ -82,6 +82,8 @@ const ParkPixels = observer(({selectedPupper, puppers}: ParkPixelsProps) => {
     } else {
       paneY = TOP_PIXEL_OFFSET_Y;
     }
+    ctx.save();
+    ctx.beginPath();
     const hex = AppStore.web3.pupperToHexLocal(selectedPupper);
     ctx.fillStyle = hex;
     ctx.fillRect(PIXEL_OFFSET_X, paneY, PIXEL_PANE_WIDTH, PIXEL_PANE_HEIGHT);
@@ -92,10 +94,16 @@ const ParkPixels = observer(({selectedPupper, puppers}: ParkPixelsProps) => {
    
     ctx.font = "8px PressStart2P";
     let textColor = lightOrDark(colorMode.colorMode, "black", "white")
+    ctx.strokeStyle = textColor
+    ctx.rect(PIXEL_OFFSET_X, paneY, PIXEL_PANE_WIDTH, PIXEL_PANE_HEIGHT + PIXEL_TEXT_HEIGHT);
+    ctx.lineTo(PIXEL_OFFSET_X, paneY + PIXEL_PANE_HEIGHT)
+    ctx.lineTo(PIXEL_OFFSET_X + PIXEL_PANE_WIDTH, paneY + PIXEL_PANE_HEIGHT)
+    ctx.stroke();
     ctx.fillStyle = textColor;
     const pupperIndex = AppStore.web3.pupperToIndexLocal(selectedPupper)
     ctx.fillText(`# ${pupperIndex}`, PIXEL_OFFSET_X + 5, paneY + PIXEL_PANE_HEIGHT + 15);
-
+    ctx.closePath();
+    ctx.restore();
    }
 
    const drawPixelPointer = (ctx: CanvasRenderingContext2D) => {
