@@ -127,7 +127,10 @@ const ParkPixels = observer(({selectedPupper, puppers}: ParkPixelsProps) => {
       var centerShift_y = ( canvas.height - img.height*ratio ) / 2;  
       ctx.clearRect(0,0,canvas.width, canvas.height);
       ctx.drawImage(img, 0,0, img.width, img.height,
-      centerShift_x,centerShift_y,img.width*ratio, img.height*ratio);  
+        centerShift_x, centerShift_y, img.width*ratio, img.height*ratio);  
+      ctx.rect(0, 0, img.width*ratio, img.height*ratio);
+      ctx.strokeStyle = "black";
+      ctx.stroke();
   }
    const drawBackground = async () => {
     let canvas: HTMLCanvasElement = document.getElementById('canvas') as HTMLCanvasElement;
