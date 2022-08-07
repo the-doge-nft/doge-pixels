@@ -31,8 +31,8 @@ const BOTTOM_PIXEL_OFFSET_Y = 200;
 const PIXEL_PANE_WIDTH = 70;
 const PIXEL_PANE_HEIGHT = 70;
 const PIXEL_TEXT_HEIGHT = 20;
-const PIXEL_WIDTH = 20;
-const PIXEL_HEIGHT = 20;
+const PIXEL_WIDTH = 15;
+const PIXEL_HEIGHT = 15;
 const SCALE = IMAGE_WIDTH / 640;
 
 const getPixelOffsets = (y: number) => {
@@ -92,11 +92,11 @@ const ParkPixels = observer(({selectedPupper, puppers, onPupperClick}: ParkPixel
     ctx.stroke();
     ctx.closePath();
     ctx.restore();
-   }
+  }
 
    const drawPixelPane = (ctx: CanvasRenderingContext2D) => {
     if(selectedPupper === -1) return;
-    const [, y] = AppStore.web3.pupperToPixelCoordsLocal(selectedPupper);
+    const [x, y] = AppStore.web3.pupperToPixelCoordsLocal(selectedPupper);
     let paneY: number;
 
     if (y * SCALE <= IMAGE_HEIGHT / 2) {
@@ -123,7 +123,7 @@ const ParkPixels = observer(({selectedPupper, puppers, onPupperClick}: ParkPixel
     ctx.stroke();
     ctx.fillStyle = textColor;
     const pupperIndex = AppStore.web3.pupperToIndexLocal(selectedPupper)
-    ctx.fillText(`# ${pupperIndex}`, PIXEL_OFFSET_X + 5, paneY + PIXEL_PANE_HEIGHT + 15);
+    ctx.fillText(`(${x},${y})`, PIXEL_OFFSET_X + 3, paneY + PIXEL_PANE_HEIGHT + 15);
     ctx.closePath();
     ctx.restore();
    }
@@ -152,11 +152,11 @@ const ParkPixels = observer(({selectedPupper, puppers, onPupperClick}: ParkPixel
     ctx.fillStyle = '#000000';
     ctx.stroke();
     ctx.fill();
-  
+
     ctx.closePath();
     ctx.restore();
   }
- 
+
   const drawScaledImage = (img: any, ctx: CanvasRenderingContext2D) => {
       var canvas = ctx.canvas ;
       var hRatio = canvas.width  / img.width    ;
@@ -189,7 +189,7 @@ const ParkPixels = observer(({selectedPupper, puppers, onPupperClick}: ParkPixel
       drawPixelPointer(ctx)
       drawPixels(ctx);
     }
-   }
+  }
 
   const loadImage = (url: string): Promise<CanvasImageSource> => {
     return new Promise(r => { let i = new Image(); i.onload = (() => r(i)); i.src = url; });
@@ -253,14 +253,14 @@ const ParkPixels = observer(({selectedPupper, puppers, onPupperClick}: ParkPixel
  
   return (
     <Box
-         w={400}
-         h={300}
-         zIndex={2}
-         _focus={{boxShadow: "none", borderColor: "inherit"}}
+      w={400}
+      h={300}
+      zIndex={2}
+      _focus={{boxShadow: "none", borderColor: "inherit"}}
     >
        <canvas id='canvas' width={400} height={300} onMouseMove = {(e) => onCanvasMouseMove(e)} onMouseDown = {e => onCanvasMouseDown(e)}>
 
-       </canvas>
+      </canvas>
     </Box>
   );
 });
