@@ -37,6 +37,11 @@ const DogParkPage = observer(function DogParkPage() {
     store.init()
     // eslint-disable-next-line
   }, [])
+
+  const setPupper = (pupper: number) => {
+    store.selectedPupper = pupper
+    window.history.pushState({}, "", route(NamedRoutes.DOG_PARK, {address: store.selectedAddress, tokenID: store.selectedPupper}))
+  }
   return <Grid templateColumns={"0.5fr 1fr"} flexGrow={1}>
     <GridItem display={"flex"} flexDirection={"column"} flexGrow={1}>
       <TopDogs store={store}/>
@@ -122,7 +127,11 @@ const DogParkPage = observer(function DogParkPage() {
               <GridItem display={"flex"} justifyContent={"center"}>
                 {store.selectedDogs && <Box maxWidth={"fit-content"}>
                     <Flex flexDirection={"column"}>
-                      <ParkPixels  selectedPupper={store.selectedPupper? store.selectedPupper : -1} puppers={store.selectedDogs} />
+                      <ParkPixels   
+                        selectedPupper={store.selectedPupper? store.selectedPupper : -1} 
+                        puppers={store.selectedDogs} 
+                        onPupperClick={setPupper}
+                      />
                       {
                         store.selectedPupper && 
                         <Box mt={10}>

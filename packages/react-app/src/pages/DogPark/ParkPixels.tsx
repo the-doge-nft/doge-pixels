@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import Kobosu from "../../images/THE_ACTUAL_NFT_IMAGE.png"
 import { Box, useColorMode } from "@chakra-ui/react";
 import AppStore from "../../store/App.store";
@@ -7,7 +7,14 @@ import { lightOrDark } from "../../DSL/Theme";
 
 interface ParkPixelsProps {
   selectedPupper: number;
-  puppers: {address: string, puppers: number[], ens?: string}
+  puppers: {address: string, puppers: number[], ens?: string},
+  onPupperClick: (pupper: number) => void;
+}
+
+interface IPupperRectPosition {
+  pupper: number;
+  x: number,
+  y: number,
 }
 
 export enum CameraPositionZ {
@@ -36,14 +43,30 @@ const getPixelOffsets = (y: number) => {
   }
 }
 
-const ParkPixels = observer(({selectedPupper, puppers}: ParkPixelsProps) => {
+const ParkPixels = observer(({selectedPupper, puppers, onPupperClick}: ParkPixelsProps) => {
   const colorMode = useColorMode();
-   useEffect(() => {
+  const [pupperPositions, setPupperPositions] = useState<IPupperRectPosition[]>([])
+  
+  useEffect(() => {
     drawBackground()
-   }, [selectedPupper, puppers])
+
+    const length = puppers.puppers.length;
+    let positions: IPupperRectPosition[] = [];
+    for(let i = 0 ; i < length; i ++) {
+      const [x, y] = AppStore.web3.pupperToPixelCoordsLocal(puppers.puppers[i]);
+      positions.push({
+        pupper: puppers.puppers[i],
+        x: x * SCALE  - PIXEL_WIDTH /2,
+        y: y* SCALE - PIXEL_HEIGHT /2
+      })
+    }
+
+    setPupperPositions(positions);
+   }, [selectedPupper, puppers, colorMode])
    
-   const drawSelectedPixel = (ctx: CanvasRenderingContext2D) => {
+  const drawSelectedPixel = (ctx: CanvasRenderingContext2D) => {
     if (selectedPupper === -1) return;
+
     const [selectedX, selectedY] = AppStore.web3.pupperToPixelCoordsLocal(selectedPupper);
     let fillColor = lightOrDark(colorMode.colorMode, "#ffd335", "#ff00e5");
     ctx.save();
@@ -53,7 +76,7 @@ const ParkPixels = observer(({selectedPupper, puppers}: ParkPixelsProps) => {
    }
 
    const drawPixels = (ctx: CanvasRenderingContext2D) => {
-    const length = puppers.puppers.length;
+    const length = pupperPositions.length;
     if (length < 1) return;
     ctx.save();
  
@@ -62,9 +85,8 @@ const ParkPixels = observer(({selectedPupper, puppers}: ParkPixelsProps) => {
     ctx.strokeStyle = strokeColor;
 
     for(let i = 0 ; i < length; i ++) {
-      if (puppers.puppers[i] !== selectedPupper) {
-        const [x, y] = AppStore.web3.pupperToPixelCoordsLocal(puppers.puppers[i]);
-        ctx.rect(x * SCALE  - PIXEL_WIDTH /2, y* SCALE - PIXEL_HEIGHT /2, PIXEL_WIDTH, PIXEL_HEIGHT);
+      if (pupperPositions[i].pupper !== selectedPupper) {
+        ctx.rect(pupperPositions[i].x, pupperPositions[i].y, PIXEL_WIDTH, PIXEL_HEIGHT);
       } 
     }
     ctx.stroke();
@@ -172,6 +194,62 @@ const ParkPixels = observer(({selectedPupper, puppers}: ParkPixelsProps) => {
   const loadImage = (url: string): Promise<CanvasImageSource> => {
     return new Promise(r => { let i = new Image(); i.onload = (() => r(i)); i.src = url; });
   }
+
+  const onCanvasMouseMove = (e: any) => {
+    const x = e.clientX;
+    const y = e.clientY;
+
+    let canvas: HTMLCanvasElement = document.getElementById('canvas') as HTMLCanvasElement;
+    const rect = canvas.getBoundingClientRect();
+
+    const offsetX = x - rect.x;
+    const offsetY = y - rect.y;
+
+   const pupper = getPupperFromPosition(offsetX, offsetY)
+   if (pupper) {
+     document.body.style.cursor = "pointer";
+   } else {
+     document.body.style.cursor = "default";
+   }
+  }
+
+  function isInside(x: number, y: number, z1: number, z2: number, z3: number, z4: number) {
+      const x1 = Math.min(z1, z3);
+      const x2 = Math.max(z1, z3);
+      const y1 = Math.min(z2, z4);
+      const y2 = Math.max(z2, z4);
+      if ((x1 <= x ) && ( x <= x2) && (y1 <= y) && (y <= y2)) {
+          return true;
+      } else {
+          return false;
+      };
+  };
+
+  const getPupperFromPosition = (x: number, y: number) => {
+      const length = pupperPositions.length;
+      for(let i = 0 ; i < length; i ++) {
+          if (isInside(x, y, pupperPositions[i].x, pupperPositions[i].y, pupperPositions[i].x + PIXEL_WIDTH, pupperPositions[i].y + PIXEL_HEIGHT)) {
+            return pupperPositions[i].pupper
+          }
+      }
+
+      return;
+  }
+  
+  const onCanvasMouseDown = (e: any) => {
+    const x = e.clientX;
+    const y = e.clientY;
+    let canvas: HTMLCanvasElement = document.getElementById('canvas') as HTMLCanvasElement;
+    const rect = canvas.getBoundingClientRect();
+
+    const offsetX = x - rect.x;
+    const offsetY = y - rect.y;
+
+   const pupper = getPupperFromPosition(offsetX, offsetY)
+   if (pupper) {
+     onPupperClick(pupper);
+   }
+  }
  
   return (
     <Box
@@ -180,7 +258,7 @@ const ParkPixels = observer(({selectedPupper, puppers}: ParkPixelsProps) => {
          zIndex={2}
          _focus={{boxShadow: "none", borderColor: "inherit"}}
     >
-       <canvas id='canvas' width={400} height={300}>
+       <canvas id='canvas' width={400} height={300} onMouseMove = {(e) => onCanvasMouseMove(e)} onMouseDown = {e => onCanvasMouseDown(e)}>
 
        </canvas>
     </Box>
