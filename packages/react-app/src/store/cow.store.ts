@@ -17,10 +17,6 @@ class CowStore {
 
   static BASE_EXPLORER_URL = "https://explorer.cow.fi/mainnet/orders"
 
-  constructor() {
-    console.log("cow created")
-  }
-
   connect(signer: Signer) {
     //@ts-ignore
     this.client = new CowSdk<SupportedChainId.MAINNET>(SupportedChainId.MAINNET, {signer: signer})

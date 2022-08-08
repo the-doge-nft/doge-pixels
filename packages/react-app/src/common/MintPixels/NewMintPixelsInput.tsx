@@ -119,9 +119,9 @@ const NewMintPixelsInput: React.FC<{ store: MintPixelsDialogStore }> = observer(
                             variant={TVariant.ComicSans14}>{formatWithThousandsSeparators(store.recentQuote.srcCurrencyFee)} {store.srcCurrency}</Typography>
                         </Flex>
                       </Box>
-                      <Flex alignItems={"center"} justifyContent={"flex-end"} mt={2}>
-                        <Icon mr={1} fill={colorMode === "light" ? "yellow.800" : "purple.50"} icon={'cowswap'} boxSize={10}/>
-                        <Typography color={colorMode === "light" ? "yellow.800" : "purple.50"} variant={TVariant.ComicSans14}>Powered by Cowprotocol</Typography>
+                      <Flex color={colorMode === "light" ? "yellow.800" : "purple.50"} alignItems={"center"} justifyContent={"flex-end"} mt={3}>
+                        <Icon icon={'cowswap'} boxSize={6} mr={1}/>
+                        <Typography variant={TVariant.ComicSans14}>Powered by CoW Protocol</Typography>
                       </Flex>
                     </>}
                 </Box>}

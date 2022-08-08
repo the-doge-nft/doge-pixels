@@ -256,7 +256,7 @@ const CowSwap: React.FC<{ store: MintPixelsDialogStore }> = observer(({store}) =
                   </Box>
                   <Flex alignItems={"center"} justifyContent={"flex-end"} mt={2}>
                     <Icon mr={1} fill={colorMode === "light" ? "yellow.800" : "purple.50"} icon={'cowswap'} boxSize={10}/>
-                    <Typography color={colorMode === "light" ? "yellow.800" : "purple.50"} variant={TVariant.ComicSans14}>Powered by Cowprotocol</Typography>
+                    <Typography color={colorMode === "light" ? "yellow.800" : "purple.50"} variant={TVariant.ComicSans14}>Powered by CoW Protocol</Typography>
                   </Flex>
                 </>}
             </Box>}
