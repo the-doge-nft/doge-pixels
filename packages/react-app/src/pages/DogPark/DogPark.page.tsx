@@ -18,6 +18,7 @@ import {convertToAbbreviation} from "../../helpers/numberFormatter";
 import BigText from "../../DSL/BigText/BigText";
 import {darkModeSecondary, lightModePrimary} from "../../DSL/Theme";
 import {NamedRoutes, route, SELECTED_PIXEL_PARAM} from "../../App.routes";
+import ParkPixels from "./ParkPixels";
 
 const DogParkPage = observer(function DogParkPage() {
   const history = useHistory()
@@ -36,6 +37,11 @@ const DogParkPage = observer(function DogParkPage() {
     store.init()
     // eslint-disable-next-line
   }, [])
+
+  const setPupper = (pupper: number) => {
+    store.selectedPupper = pupper
+    window.history.pushState({}, "", route(NamedRoutes.DOG_PARK, {address: store.selectedAddress, tokenID: store.selectedPupper}))
+  }
   return <Grid templateColumns={"0.5fr 1fr"} flexGrow={1}>
     <GridItem display={"flex"} flexDirection={"column"} flexGrow={1}>
       <TopDogs store={store}/>
@@ -119,27 +125,33 @@ const DogParkPage = observer(function DogParkPage() {
                 </Box>
               </GridItem>
               <GridItem display={"flex"} justifyContent={"center"}>
-                {store.selectedPupper && <Box maxWidth={"fit-content"}>
+                {store.selectedDogs && <Box maxWidth={"fit-content"}>
                     <Flex flexDirection={"column"}>
-                      <PixelPane
-                        size={"lg"}
-                        variant={"shadow"}
-                        pupper={store.selectedPupper!}
-                        color={store.selectedPupperHex}
-                        pupperIndex={store.seletedPupperIndex}
+                      <ParkPixels   
+                        selectedPupper={store.selectedPupper? store.selectedPupper : -1} 
+                        puppers={store.selectedDogs} 
+                        onPupperClick={setPupper}
                       />
-                      <Box my={10}>
-                        <Box>
-                          <Typography variant={TVariant.ComicSans18}>HEX:</Typography>
-                          <Typography variant={TVariant.ComicSans18} ml={2}>{store.selectedPupperHex}</Typography>
+                      {
+                        store.selectedPupper && 
+                        <Box mt={10}>
+                          <Box mt={1}>
+                            <Typography variant={TVariant.ComicSans18}>Pixel #:</Typography>
+                            <Typography variant={TVariant.ComicSans18} ml={2}>{store.seletedPupperIndex}</Typography>
+                          </Box>
+                          <Box>
+                            <Typography variant={TVariant.ComicSans18}>HEX:</Typography>
+                            <Typography variant={TVariant.ComicSans18} ml={2}>{store.selectedPupperHex}</Typography>
+                          </Box>
+                          <Box mt={1}>
+                            <Typography variant={TVariant.ComicSans18}>Coordinates:</Typography>
+                            <Typography variant={TVariant.ComicSans18} ml={2}>({store.selectedPupperCoords[0]},{store.selectedPupperCoords[1]})</Typography>
+                          </Box>
                         </Box>
-                        <Box mt={1}>
-                          <Typography variant={TVariant.ComicSans18}>Coordinates:</Typography>
-                          <Typography variant={TVariant.ComicSans18} ml={2}>({store.selectedPupperCoords[0]},{store.selectedPupperCoords[1]})</Typography>
-                        </Box>
-                      </Box>
+                      }
+                      
                     </Flex>
-                  <Button onClick={() => history.push(route(NamedRoutes.PIXELS, {[SELECTED_PIXEL_PARAM]: store.selectedPupper}))}>
+                  <Button onClick={() => history.push(route(NamedRoutes.PIXELS, {[SELECTED_PIXEL_PARAM]: store.selectedPupper}))} mt={10}>
                       View in portal
                   </Button>
                 </Box>}
