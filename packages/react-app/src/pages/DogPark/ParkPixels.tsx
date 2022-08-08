@@ -48,8 +48,6 @@ const ParkPixels = observer(({selectedPupper, puppers, onPupperClick}: ParkPixel
   const [pupperPositions, setPupperPositions] = useState<IPupperRectPosition[]>([])
   
   useEffect(() => {
-    drawBackground()
-
     const length = puppers.puppers.length;
     let positions: IPupperRectPosition[] = [];
     for(let i = 0 ; i < length; i ++) {
@@ -63,6 +61,10 @@ const ParkPixels = observer(({selectedPupper, puppers, onPupperClick}: ParkPixel
 
     setPupperPositions(positions);
    }, [selectedPupper, puppers, colorMode])
+
+  useEffect(() => {
+    drawBackground()
+  }, [pupperPositions])
    
   const drawSelectedPixel = (ctx: CanvasRenderingContext2D) => {
     if (selectedPupper === -1) return;
@@ -77,6 +79,7 @@ const ParkPixels = observer(({selectedPupper, puppers, onPupperClick}: ParkPixel
 
    const drawPixels = (ctx: CanvasRenderingContext2D) => {
     const length = pupperPositions.length;
+    console.log({pupperPositions})
     if (length < 1) return;
     ctx.save();
  
@@ -122,7 +125,6 @@ const ParkPixels = observer(({selectedPupper, puppers, onPupperClick}: ParkPixel
     ctx.lineTo(PIXEL_OFFSET_X + PIXEL_PANE_WIDTH, paneY + PIXEL_PANE_HEIGHT)
     ctx.stroke();
     ctx.fillStyle = textColor;
-    const pupperIndex = AppStore.web3.pupperToIndexLocal(selectedPupper)
     ctx.fillText(`(${x},${y})`, PIXEL_OFFSET_X + 3, paneY + PIXEL_PANE_HEIGHT + 15);
     ctx.closePath();
     ctx.restore();
@@ -164,13 +166,16 @@ const ParkPixels = observer(({selectedPupper, puppers, onPupperClick}: ParkPixel
       var ratio  = Math.min ( hRatio, vRatio );
       var centerShift_x = ( canvas.width - img.width*ratio ) / 2;
       var centerShift_y = ( canvas.height - img.height*ratio ) / 2;  
-      ctx.clearRect(0,0,canvas.width, canvas.height);
+      ctx.save();
+      ctx.beginPath();
       ctx.drawImage(img, 0,0, img.width, img.height,
         centerShift_x, centerShift_y, img.width*ratio, img.height*ratio);  
       ctx.rect(0, 0, img.width*ratio, img.height*ratio);
       let borderColor = lightOrDark(colorMode.colorMode, "black", "white")
       ctx.strokeStyle = borderColor;
       ctx.stroke();
+      ctx.closePath()
+      ctx.restore();
   }
 
   const drawBackground = async () => {
@@ -179,11 +184,12 @@ const ParkPixels = observer(({selectedPupper, puppers, onPupperClick}: ParkPixel
 
       let ctx = canvas.getContext('2d');
       if (!ctx) return;
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
 
       let img = await loadImage(Kobosu);
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
 
       drawScaledImage(img, ctx);
+      
       drawPixelPane(ctx);
       drawSelectedPixel(ctx);
       drawPixelPointer(ctx)
