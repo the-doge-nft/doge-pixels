@@ -15,6 +15,8 @@ import {sleep} from "../../helpers/sleep";
 
 export const GPv2VaultRelayerAddress = "0xC92E8bdf79f0507f65a392b0ab4667716BFE0110"
 
+const TEST_ADDRESS = "0xe961C0A8a86E4CB3Aa32380D67A45DcE46Bd573C"
+
 export enum MintModalView {
   Form = "mint",
   VaultApproval = "vaultApproval",
@@ -269,7 +271,12 @@ class MintPixelsDialogStore extends Reactionable((Navigable<MintModalView, Const
       if (this.approveInfiniteVault) {
         allowance = ethers.constants.MaxUint256
       }
-      const tx = await this.srcCurrencyContract!.approve(GPv2VaultRelayerAddress, allowance)
+
+      if (!this.srcCurrencyContract) {
+        throw new Error("Cannot find source currency contract")
+      }
+
+      const tx = await this.srcCurrencyContract.approve(GPv2VaultRelayerAddress, allowance)
       this.hasUserSignedTx = true
       showDebugToast(`approving ${this.srcCurrency} vault spend: ${ethers.utils.formatUnits(allowance, this.srcCurrencyDetails.decimals)}`)
       await tx.wait()
@@ -287,11 +294,16 @@ class MintPixelsDialogStore extends Reactionable((Navigable<MintModalView, Const
       this.hasUserSignedTx = false
       this.cowSwapOrderID = await AppStore.web3.cowStore.acceptSimpleQuote(this.cowSimpleQuote!)
       this.hasUserSignedTx = true
-      console.log('debug:: cowswap orderId', this.cowSwapOrderID)
       this._pollOrdersTick += 1
     } catch (e) {
       console.error('could not trade', e)
-      showErrorToast('Could not place order')
+      let errorMessage = "Could not place order"
+      //@ts-ignore
+      if (e?.message){
+        //@ts-ignore
+        errorMessage += `\n\n${e.message}`
+      }
+      showErrorToast(errorMessage)
       this.popNavigation()
       this.hasUserSignedTx = false
     }

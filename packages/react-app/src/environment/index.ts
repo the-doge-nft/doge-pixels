@@ -7,6 +7,7 @@ if (isProduction()) {
   env = productionEnv;
 } else {
   env = developmentEnv;
+  // env = productionEnv;
 }
 
 // don't allow proxy on any builds
