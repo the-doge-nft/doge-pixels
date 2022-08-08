@@ -83,7 +83,7 @@ const ParkPixels = observer(({selectedPupper, puppers, onPupperClick}: ParkPixel
     if (length < 1) return;
     ctx.save();
  
-    let strokeColor = lightOrDark(colorMode.colorMode, "black", "#4b0edd")
+    let strokeColor = lightOrDark(colorMode.colorMode, "red", "#4b0edd")
     ctx.beginPath();
     ctx.strokeStyle = strokeColor;
 
@@ -117,7 +117,7 @@ const ParkPixels = observer(({selectedPupper, puppers, onPupperClick}: ParkPixel
     ctx.fillStyle = fillColor;
     ctx.fillRect(PIXEL_OFFSET_X, paneY + PIXEL_PANE_HEIGHT, PIXEL_PANE_WIDTH, PIXEL_TEXT_HEIGHT);
    
-    ctx.font = "8px PressStart2P";
+    ctx.font = "7px PressStart2P";
     let textColor = lightOrDark(colorMode.colorMode, "black", "white")
     ctx.strokeStyle = textColor
     ctx.rect(PIXEL_OFFSET_X, paneY, PIXEL_PANE_WIDTH, PIXEL_PANE_HEIGHT + PIXEL_TEXT_HEIGHT);

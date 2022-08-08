@@ -135,6 +135,10 @@ const DogParkPage = observer(function DogParkPage() {
                       {
                         store.selectedPupper && 
                         <Box mt={10}>
+                          <Box mt={1}>
+                            <Typography variant={TVariant.ComicSans18}>Pixel #:</Typography>
+                            <Typography variant={TVariant.ComicSans18} ml={2}>{store.seletedPupperIndex}</Typography>
+                          </Box>
                           <Box>
                             <Typography variant={TVariant.ComicSans18}>HEX:</Typography>
                             <Typography variant={TVariant.ComicSans18} ml={2}>{store.selectedPupperHex}</Typography>
