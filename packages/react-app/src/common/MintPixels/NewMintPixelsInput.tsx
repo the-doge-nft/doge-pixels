@@ -121,7 +121,7 @@ const NewMintPixelsInput: React.FC<{ store: MintPixelsDialogStore }> = observer(
                       </Box>
                       <Flex color={colorMode === "light" ? "yellow.800" : "purple.50"} alignItems={"center"} justifyContent={"flex-end"} mt={3}>
                         <Icon icon={'cowswap'} boxSize={6} mr={1}/>
-                        <Typography variant={TVariant.ComicSans14}>Powered by Cowprotocol</Typography>
+                        <Typography variant={TVariant.ComicSans14}>Powered by CoW Protocol</Typography>
                       </Flex>
                     </>}
                 </Box>}
