@@ -15,7 +15,7 @@ const IndexPane = observer(function IndexPane({store}: {store: ViewerStore}) {
       <Box overflowY={"auto"} flexGrow={1} h={"full"} mt={4}>
         <Box maxHeight={"300px"}>
           <Typography variant={TVariant.ComicSans18} block>
-            Welcome to the Doge Pixel Portal - your gateway to fractionalized ownership of <Link
+            Welcome to the Doge Pixel Portal - your gateway to collective ownership of <Link
               size={"lg"}
               variant={Type.ComicSans}
               href={"https://fractional.art/vaults/0xbaac2b4491727d78d2b78815144570b9f2fe8899"}
