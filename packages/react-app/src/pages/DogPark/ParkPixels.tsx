@@ -192,8 +192,8 @@ const ParkPixels = observer(({selectedPupper, puppers, onPupperClick}: ParkPixel
       
       drawPixelPane(ctx);
       drawSelectedPixel(ctx);
-      drawPixelPointer(ctx)
       drawPixels(ctx);
+      drawPixelPointer(ctx)
     }
   }
 
