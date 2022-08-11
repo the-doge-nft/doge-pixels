@@ -151,9 +151,13 @@ const DogParkPage = observer(function DogParkPage() {
                       }
                       
                     </Flex>
-                  <Button onClick={() => history.push(route(NamedRoutes.PIXELS, {[SELECTED_PIXEL_PARAM]: store.selectedPupper}))} mt={10}>
-                      View in portal
-                  </Button>
+                  {
+                    store.selectedPupper && 
+                     <Button onClick={() => history.push(route(NamedRoutes.PIXELS, {[SELECTED_PIXEL_PARAM]: store.selectedPupper}))} mt={10}>
+                        View in portal1
+                    </Button>
+                  }  
+                 
                 </Box>}
               </GridItem>
           </Grid>}
