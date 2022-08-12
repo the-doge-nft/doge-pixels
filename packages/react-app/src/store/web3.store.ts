@@ -144,7 +144,7 @@ class Web3Store extends Web3providerStore {
         const {dog: dogAddress, pixel: pixelAddress} = res.data
 
         if (dogAddress !== this.dogContractAddress) {
-            throw Error(`Frontend (${this.dogContractAddress}) and API (${dogAddress}) $DOG addresses do not match`)
+            throw Error(`Frontend (${this.dogContractAddress}) and API (${dogAddress}) DOG addresses do not match`)
         }
 
         if (pixelAddress !== this.pxContractAddress) {
@@ -154,8 +154,8 @@ class Web3Store extends Web3providerStore {
         console.log(`api connected to pixel contract: ${pixelAddress}`)
         console.log(`frontend connected to pixel contract: ${this.pxContractAddress}`)
 
-        console.log(`api connected to $DOG contract: ${dogAddress}`)
-        console.log(`frontend connected to $DOG contract: ${this.dogContractAddress}`)
+        console.log(`api connected to DOG contract: ${dogAddress}`)
+        console.log(`frontend connected to DOG contract: ${this.dogContractAddress}`)
     }
 
     async errorGuardContracts() {

@@ -10,6 +10,7 @@ const productionEnv = {
             WETH: {decimals: 18, contractAddress: "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2"},
             SHIB: {decimals: 18, contractAddress: "0x95aD61b0a150d79219dCF64E1E6Cc01f0B64C4cE"},
             WBTC: {decimals: 8, contractAddress: "0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599"},
+            NFD: {decimals: 18, contractAddress: "0xDFDb7f72c1F195C5951a234e8DB9806EB0635346"},
         }
     }
 };

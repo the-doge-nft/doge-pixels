@@ -191,7 +191,7 @@ const DogKennel = observer(({store}: {store: DogParkPageStore}) => {
   return <Pane h={"inherit"}>
     <Flex flexDirection={"column"}>
       <Flex mb={6} alignItems={"flex-end"}>
-        <Typography variant={TVariant.PresStart20} block height={"max-content"}>$DOG Locked</Typography>
+        <Typography variant={TVariant.PresStart20} block height={"max-content"}>DOG Locked</Typography>
       </Flex>
       <Flex flexGrow={1} alignItems={"center"}>
         <Box>

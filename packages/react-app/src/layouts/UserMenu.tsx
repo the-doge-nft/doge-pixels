@@ -62,7 +62,7 @@ const Balances = observer(function Balances() {
   return <Grid px={3} mt={2} templateColumns={"1fr 1fr"}>
     {AppStore.web3.web3Provider && <>
         <GridItem mr={4} display={"flex"} flexDirection={"column"}>
-            <Typography variant={TVariant.PresStart15}>$DOG</Typography>
+            <Typography variant={TVariant.PresStart15}>DOG</Typography>
             <Typography variant={TVariant.ComicSans18} mt={1} block>
               {AppStore.web3.dogBalance !== null
                 ? formatWithThousandsSeparators(ethers.utils.formatEther(AppStore.web3.dogBalance), 0)
@@ -84,11 +84,11 @@ const Balances = observer(function Balances() {
                               try {
                                 const tx = await AppStore.web3.getDogToAccount()
                                 await tx.wait()
-                                showDebugToast("Free $DOG aquired")
+                                showDebugToast("Free DOG aquired")
                                 AppStore.web3.refreshDogBalance()
                               } catch (e) {
                                 console.error(e)
-                                showErrorToast("Error getting free $DOG")
+                                showErrorToast("Error getting free DOG")
                               }
                             }}>
                             💰
