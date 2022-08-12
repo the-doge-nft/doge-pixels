@@ -190,10 +190,10 @@ const ParkPixels = observer(({selectedPupper, puppers, onPupperClick}: ParkPixel
 
       drawScaledImage(img, ctx);
       
-      drawPixelPane(ctx);
       drawSelectedPixel(ctx);
-      drawPixelPointer(ctx)
       drawPixels(ctx);
+      drawPixelPane(ctx);
+      drawPixelPointer(ctx)
     }
   }
 
