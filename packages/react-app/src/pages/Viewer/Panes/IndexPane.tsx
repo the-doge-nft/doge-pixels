@@ -43,7 +43,7 @@ const IndexPane = observer(function IndexPane({store}: {store: ViewerStore}) {
                 isExternal
                 fontWeight={"bold"}
               >
-                $DOG
+                DOG
               </Link> to mint <Link
                 size={"lg"}
                 variant={Type.ComicSans}
@@ -62,24 +62,24 @@ const IndexPane = observer(function IndexPane({store}: {store: ViewerStore}) {
             </GridItem>
             <GridItem>
               <Typography variant={TVariant.ComicSans18} block>
-                Burn Doge Pixels to redeem their fair value in $DOG (minus 1% fee).
+                Burn Doge Pixels to redeem their fair value in DOG (minus 1% fee).
               </Typography>
             </GridItem>
           </Grid>
 
           <Typography variant={TVariant.ComicSans18} block mt={6}>
-            $DOG is backed. 55,240 $DOG = 1 Pixel. Here's the math on that calculation:
+            DOG is backed. 55,240 DOG = 1 Pixel. Here's the math on that calculation:
           </Typography>
 
           <Box mt={6}>
             <Typography variant={TVariant.ComicSans18} block>
-              Total supply of $DOG  = 16,969,696,969
+              Total supply of DOG  = 16,969,696,969
             </Typography>
             <Typography variant={TVariant.ComicSans18} block>
               Total supply of Doge Pixels =  307,200
             </Typography>
             <Typography variant={TVariant.ComicSans18} block>
-              $DOG / Doge Pixels = 55,239.899
+              DOG / Doge Pixels = 55,239.899
             </Typography>
           </Box>
           <Box mt={6}>

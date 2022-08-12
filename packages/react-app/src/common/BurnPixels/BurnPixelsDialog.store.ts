@@ -111,7 +111,7 @@ class BurnPixelsDialogStore extends Navigable<BurnPixelsModalView, Constructor>(
     switch (this.currentView) {
       case BurnPixelsModalView.Select:
         if (this.isUserPixelOwner) {
-          return "Be sure to be careful with which pixels you select. You’ll most likely never see them again. A 1% fee in $DOG" +
+          return "Be sure to be careful with which pixels you select. You’ll most likely never see them again. A 1% fee in DOG" +
               " is taken upon burning your pixels."
         } else {
           return "No pixels found - try minting first!"

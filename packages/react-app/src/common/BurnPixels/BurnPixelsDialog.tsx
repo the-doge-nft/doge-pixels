@@ -74,7 +74,7 @@ const SelectPixels = observer(({store}: { store: BurnPixelsModalStore}) => {
         </Flex>
         <Flex justifyContent={"space-between"} alignItems={"flex-start"} mt={12}>
             <Flex flexDirection={"column"}>
-                <Typography variant={TVariant.PresStart15}>$DOG</Typography>
+                <Typography variant={TVariant.PresStart15}>DOG</Typography>
                 <Typography
                     variant={TVariant.ComicSans18}>
                   {formatWithThousandsSeparators(store.selectedPixelsDogValue)}

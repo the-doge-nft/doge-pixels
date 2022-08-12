@@ -333,7 +333,7 @@ class MintPixelsDialogStore extends Reactionable((Navigable<MintModalView, Const
     } catch (e) {
       this.hasUserSignedTx = false
       this.popNavigation()
-      showErrorToast("Error approving $DOG spend")
+      showErrorToast("Error approving DOG spend")
     }
   }
 
@@ -343,7 +343,7 @@ class MintPixelsDialogStore extends Reactionable((Navigable<MintModalView, Const
       case MintModalView.Form:
         return "Mint Pixels"
       case MintModalView.DogApproval:
-        return "Approve $DOG"
+        return "Approve DOG"
       case MintModalView.VaultApproval:
         return "Pixel Router Approval"
       default:

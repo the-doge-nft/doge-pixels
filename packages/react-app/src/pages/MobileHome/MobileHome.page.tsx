@@ -41,7 +41,7 @@ const MobileHomePage = observer(() => {
       <Flex flexDirection={"column"} w={"full"} mt={5}>
         <Flex justifyContent={"space-around"}>
             <Flex flexDirection={"column"} alignItems={"center"}>
-                <Typography variant={TVariant.PresStart24}>$DOG</Typography>
+                <Typography variant={TVariant.PresStart24}>DOG</Typography>
                 <Typography variant={TVariant.ComicSans22} mt={1} block>
                   {AppStore.web3.dogBalance !== null
                     ? formatWithThousandsSeparators(ethers.utils.formatEther(AppStore.web3.dogBalance), 0)

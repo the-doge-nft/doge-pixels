@@ -59,7 +59,7 @@ class Web3providerStore {
       }
       throw new Web3ProviderConnectionError()
     }
-
+    // todo -- remove this
     await this.validateNetwork()
   }
 

@@ -142,7 +142,7 @@ const DOGApproval = observer(({store}: { store: MintPixelsDialogStore }) => {
                 }
             </Box>
             <Typography block variant={TVariant.ComicSans18} mt={4}>
-                Please approve $DOG to be spent for pixels.
+                Please approve DOG to be spent for pixels.
             </Typography>
             <Form onSubmit={async () => store.pushNavigation(MintModalView.LoadingDogApproval)}>
                 <Box mt={5}>
@@ -203,7 +203,7 @@ const CowSwap: React.FC<{ store: MintPixelsDialogStore }> = observer(({store}) =
     return (
         <Box>
             <Loading
-                title={`Swapping ${store.srcCurrency} for $DOG`}
+                title={`Swapping ${store.srcCurrency} for DOG`}
                 showSigningHint={!store.hasUserSignedTx}
             />
 
@@ -237,7 +237,7 @@ const CowSwap: React.FC<{ store: MintPixelsDialogStore }> = observer(({store}) =
                         variant={TVariant.ComicSans14} color={colorMode === "light" ? "yellow.800" : "purple.50"}>Buying</Typography>
                       <Typography
                         variant={TVariant.ComicSans14}
-                        color={colorMode === "light" ? "yellow.800" : "purple.50"}>{formatWithThousandsSeparators(store.recentQuote.dogAmount)} $DOG</Typography>
+                        color={colorMode === "light" ? "yellow.800" : "purple.50"}>{formatWithThousandsSeparators(store.recentQuote.dogAmount)} DOG</Typography>
                     </Flex>
                     <Flex justifyContent={"space-between"}>
                       <Typography

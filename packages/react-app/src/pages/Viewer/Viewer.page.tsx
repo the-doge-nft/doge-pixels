@@ -91,7 +91,7 @@ const ViewerPage = observer(function ViewerPage() {
             flexDirection={"column"}
             justifyContent={"space-between"}
             title={store.currentView === ViewerView.Index &&
-              <Typography variant={TVariant.PresStart20}>Own the doge</Typography>}>
+              <Typography variant={TVariant.PresStart20}>Own the Doge</Typography>}>
               {store.showGoBack && <Box position={"relative"} left={"-20px"} top={"-20px"}>
                   <Box
                     p={0}
