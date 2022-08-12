@@ -154,7 +154,7 @@ const DogParkPage = observer(function DogParkPage() {
                   {
                     store.selectedPupper && 
                      <Button onClick={() => history.push(route(NamedRoutes.PIXELS, {[SELECTED_PIXEL_PARAM]: store.selectedPupper}))} mt={10}>
-                        View in portal1
+                        View in portal
                     </Button>
                   }  
                  
