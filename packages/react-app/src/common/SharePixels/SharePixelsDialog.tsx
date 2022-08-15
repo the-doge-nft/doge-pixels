@@ -1,6 +1,6 @@
-import { useColorMode } from "@chakra-ui/react";
+import { Flex, useColorMode } from "@chakra-ui/react";
 import { observer } from "mobx-react-lite";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { lightOrDark } from "../../DSL/Theme";
 import AppStore from "../../store/App.store";
 import SharePixelsDialogStore from "./SharePixelsDialog.store";
@@ -8,6 +8,10 @@ import Kobosu from "../../images/THE_ACTUAL_NFT_IMAGE.png"
 import MintImg from "../../images/mint.png"
 import BurnImg from "../../images/burn.png"
 import Typography, { TVariant } from "../../DSL/Typography/Typography";
+import { RiFacebookCircleLine, RiTwitterLine, RiRedditLine } from 'react-icons/ri';
+import { Icon } from '@chakra-ui/react'
+import BurnPixelsDialogStore from "../BurnPixels/BurnPixelsDialog.store";
+import BurnPixelsModalStore from "../../pages/Viewer/BurnPixelsModal/BurnPixelsModal.store";
 
 interface SharePixelsDialogProps {
   store: SharePixelsDialogStore;
@@ -23,7 +27,6 @@ export const IMAGE_HEIGHT = 300
 const PIXEL_WIDTH = 15;
 const PIXEL_HEIGHT = 15;
 const SCALE = IMAGE_WIDTH / 640;
-  const mintedPuppers: any[] = [1164717, 1174718];
 
 const SharePixelsDialog = observer(({store, isMinted}: SharePixelsDialogProps) => {
 
@@ -31,19 +34,19 @@ const SharePixelsDialog = observer(({store, isMinted}: SharePixelsDialogProps) =
   const colorMode = useColorMode();
 
   useEffect(() => {
-    const length = mintedPuppers.length;
+    const length = AppStore.web3.updatedPuppers.length;
     let positions: IPupperRectPosition[] = [];
     for(let i = 0 ; i < length; i ++) {
-      const [x, y] = AppStore.web3.pupperToPixelCoordsLocal(mintedPuppers[i]);
+      const [x, y] = AppStore.web3.pupperToPixelCoordsLocal(AppStore.web3.updatedPuppers[i]);
       positions.push({
-        pupper: mintedPuppers[i],
+        pupper: AppStore.web3.updatedPuppers[i],
         x: x * SCALE  - PIXEL_WIDTH /2,
         y: y* SCALE - PIXEL_HEIGHT /2
       })
     }
 
     setPupperPositions(positions);
-   }, [mintedPuppers, colorMode])
+   }, [AppStore.web3.updatedPuppers, colorMode])
 
   useEffect(() => {
     console.log({pupperPositions})
@@ -112,11 +115,18 @@ const drawScaledImage = (img: any, ctx: CanvasRenderingContext2D) => {
   }
   return <>
      <Typography variant={TVariant.ComicSans18} block style={{marginBottom: "15px"}}>
-            You just minted 3 pixels - let your friends know
+      {
+        `You just ${isMinted ? 'minted': 'burned'} 3 pixels - let your friends know`
+      }
       </Typography>
-       <canvas id='canvas' width={400} height={300}>
-
-      </canvas>
+      <Flex justifyContent={"center"} marginBottom={"20px"}>
+       <canvas id='canvas' width={400} height={300}/>
+      </Flex>
+      <Flex justifyContent={"space-around"} width={"250px"} margin={"auto"}>
+        <Icon as={RiTwitterLine} color="black" boxSize={12} cursor={"pointer"}/>
+        <Icon as={RiRedditLine} color="black" boxSize={12} cursor={"pointer"}/>
+        <Icon as={RiFacebookCircleLine} color="black" boxSize={12}  cursor={"pointer"} />
+      </Flex>
   </>
 })
 

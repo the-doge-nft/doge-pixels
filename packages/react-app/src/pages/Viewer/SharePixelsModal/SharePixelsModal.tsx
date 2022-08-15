@@ -20,7 +20,7 @@ const SharePixelsModal = observer(({ isOpen, onClose, isMinted}: SharePixelsModa
         top="200px"
         left="250px"
       >
-        <Box pt={12} pb={12}>
+        <Box >
           <SharePixelsDialog
             store={store}
             isMinted={isMinted}

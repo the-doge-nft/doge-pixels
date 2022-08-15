@@ -37,6 +37,9 @@ class Web3Store extends Web3providerStore {
 
     @observable
     pupperBalance?: number
+    
+    @observable
+    updatedPuppers: number[] = []
 
     @observable
     dogContract?: DOG20
@@ -177,7 +180,15 @@ class Web3Store extends Web3providerStore {
     }
 
     refreshPupperOwnershipMap() {
-        return Http.get("/v1/config/refresh").then(({data}) => this.addressToPuppers = data)
+        const currentOwnedPuppers = this.puppersOwned;
+        return Http.get("/v1/config/refresh").then(({data}) => {
+            this.addressToPuppers = data
+            const newOwnedPuppers = this.puppersOwned;
+
+            const firstArr = currentOwnedPuppers.length >= newOwnedPuppers.length ? currentOwnedPuppers : newOwnedPuppers
+            const secondArr = currentOwnedPuppers.length >= newOwnedPuppers.length ? newOwnedPuppers : currentOwnedPuppers
+            this.updatedPuppers = firstArr.filter((pupper: number) => !secondArr.includes(pupper));
+        })
     }
 
     getShibaDimensions() {
