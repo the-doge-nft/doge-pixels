@@ -16,6 +16,8 @@ export interface ModalProps extends ReactModal.Props {
   name?: string;
   defaultPosition?: any;
   description?: string;
+  left?: string;
+  top?: string;
 }
 
 let styleOverrides: {overlay: object, content: object} = {
@@ -25,7 +27,7 @@ let styleOverrides: {overlay: object, content: object} = {
     alignItems: "center",
     background: "none",
     width: "100vw",
-    pointerEvents: "none"
+    pointerEvents: "none",
   },
   content: {
     bottom: "unset",
@@ -51,6 +53,8 @@ const Modal = ({
         name,
         description,
         defaultPosition,
+        left,
+        top,
         ...rest
 }: ModalProps) => {
   const chakraStyles = useMultiStyleConfig("Modal", {size: size})
@@ -61,7 +65,16 @@ const Modal = ({
     <ReactModal
       onRequestClose={onClose}
       isOpen={isOpen}
-      style={styleOverrides}
+      style={
+        {
+          overlay: {
+            ...styleOverrides.overlay,
+            left: left ? left: 0,
+            top: top ? top: 0
+          },
+          content: styleOverrides.content
+        }
+      }
       // ariaHideApp={false}
       {...rest}
     >

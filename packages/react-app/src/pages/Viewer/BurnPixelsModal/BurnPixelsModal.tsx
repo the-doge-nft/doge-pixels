@@ -12,9 +12,10 @@ interface BurnPixelsModalProps {
   defaultPixel: number | null;
   onSuccess: (burnedPixelIDs: number[]) => void;
   onCompleteClose: () => void;
+  showShareModal: () => void;
 }
 
-const BurnPixelsModal = observer(({isOpen, onClose, defaultPixel, onSuccess, onCompleteClose}: BurnPixelsModalProps) => {
+const BurnPixelsModal = observer(({isOpen, onClose, defaultPixel, onSuccess, onCompleteClose, showShareModal}: BurnPixelsModalProps) => {
   // eslint-disable-next-line
   const store = useMemo(() => new BurnPixelsModalStore(defaultPixel), [defaultPixel])
 
@@ -29,6 +30,7 @@ const BurnPixelsModal = observer(({isOpen, onClose, defaultPixel, onSuccess, onC
       <BurnPixelsDialog
         store={store}
         onSuccess={onSuccess}
+        showShareModal={showShareModal}
         onCompleteClose={onCompleteClose}/>
     </Box>
   </Modal>

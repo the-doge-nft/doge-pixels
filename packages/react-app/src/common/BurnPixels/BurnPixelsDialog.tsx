@@ -19,9 +19,10 @@ interface BurnPixelsDialogProps {
   store: BurnPixelsDialogStore;
   onSuccess?: (burnedPixelIDs: number[]) => void;
   onCompleteClose: () => void
+  showShareModal: () => void
 }
 
-const BurnPixelsDialog = observer(({store, onCompleteClose, onSuccess}: BurnPixelsDialogProps) => {
+const BurnPixelsDialog = observer(({store, onCompleteClose, onSuccess, showShareModal}: BurnPixelsDialogProps) => {
   useEffect(() => {
     if (store.currentView === BurnPixelsModalView.Complete) {
       onSuccess && onSuccess(store.selectedPixels)
@@ -35,7 +36,7 @@ const BurnPixelsDialog = observer(({store, onCompleteClose, onSuccess}: BurnPixe
   return <>
     {store.currentView === BurnPixelsModalView.Select && <SelectPixels store={store}/>}
     {store.currentView === BurnPixelsModalView.LoadingBurning && <LoadingBurning store={store}/>}
-    {store.currentView === BurnPixelsModalView.Complete && <Complete onSuccess={onCompleteClose} txHash={store.txHash}/>}
+    {store.currentView === BurnPixelsModalView.Complete && <Complete onSuccess={onCompleteClose} txHash={store.txHash} showShareModal={showShareModal}/>}
   </>
 })
 
@@ -111,7 +112,7 @@ const LoadingBurning = observer(({store}: {store: BurnPixelsModalStore}) => {
   )
 })
 
-const Complete = observer(({onSuccess, txHash}: {onSuccess: () => void, txHash: string | null}) => {
+const Complete = observer(({onSuccess, txHash, showShareModal}: {onSuccess: () => void, txHash: string | null, showShareModal: () => void}) => {
   return <Box>
     <Typography variant={TVariant.PresStart28} textAlign={"center"} block>
       Pixels Burned
@@ -119,6 +120,18 @@ const Complete = observer(({onSuccess, txHash}: {onSuccess: () => void, txHash: 
     <Typography variant={TVariant.PresStart28} textAlign={"center"} mt={4} block>
       🔥🔥🔥
     </Typography>
+    <Flex justifyContent={"center"} mt={10} 
+            _hover={{
+            cursor: "pointer",
+            textDecoration: "underline",
+            }}
+        >
+            {txHash &&  
+            <Typography variant={TVariant.PresStart16} textAlign={"center"} block onClick={(e) =>showShareModal()}>
+                Share
+            </Typography>
+        }
+        </Flex>
     <Flex justifyContent={"center"} mt={12}>
       <Button onClick={() => onSuccess()}>Close</Button>
     </Flex>

@@ -8,9 +8,10 @@ import { useMemo } from "react";
 export interface MintPixelsModalProps extends Pick<ModalProps, "isOpen" | "onClose"> {
   onSuccess: () => void;
   goToPixels: () => void;
+  showShareModal: () => void;
 }
 
-const MintPixelsModal = observer(({ isOpen, onClose, onSuccess, goToPixels }: MintPixelsModalProps) => {
+const MintPixelsModal = observer(({ isOpen, onClose, onSuccess, goToPixels, showShareModal }: MintPixelsModalProps) => {
   const store = useMemo(() => new MintPixelsDialogStore(), [])
   return (
     <Modal
@@ -24,6 +25,7 @@ const MintPixelsModal = observer(({ isOpen, onClose, onSuccess, goToPixels }: Mi
         <MintPixelsDialog
           store={store}
           onSuccess={onSuccess}
+          showShareModal={showShareModal}
           onGoToPixelsClick={goToPixels}/>
       </Box>
     </Modal>

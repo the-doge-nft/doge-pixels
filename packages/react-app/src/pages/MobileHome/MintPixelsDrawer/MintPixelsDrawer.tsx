@@ -8,7 +8,7 @@ import {Box, Flex} from "@chakra-ui/react";
 
 interface MintPixelsDrawerProps extends MintPixelsModalProps {}
 
-const MintPixelsDrawer = observer(({isOpen, onClose, onSuccess, goToPixels}: MintPixelsDrawerProps) => {
+const MintPixelsDrawer = observer(({isOpen, onClose, onSuccess, goToPixels, showShareModal}: MintPixelsDrawerProps) => {
   const store = useMemo(() => new MintPixelsDialogStore(), [])
   return <Drawer
     title={store.title}
@@ -21,6 +21,7 @@ const MintPixelsDrawer = observer(({isOpen, onClose, onSuccess, goToPixels}: Min
         <MintPixelsDialog
           store={store}
           onSuccess={onSuccess}
+          showShareModal={showShareModal}
           onGoToPixelsClick={goToPixels}/>
       </Box>
     </Flex>

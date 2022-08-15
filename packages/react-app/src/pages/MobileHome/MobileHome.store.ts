@@ -9,12 +9,19 @@ class MobileHomeStore {
   @observable
   isBurnDrawerOpen = false
 
+  @observable
+  isShareModal = false
+
   constructor() {
     makeObservable(this)
   }
 
   init() {
     AppStore.web3.refreshPupperOwnershipMap()
+  }
+  
+  share(type: string) {
+    console.log({type})
   }
 }
 

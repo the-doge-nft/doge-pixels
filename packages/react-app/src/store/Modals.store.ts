@@ -18,6 +18,9 @@ class ModalsStore {
 
   @observable
   isBurnModalOpen = false;
+  
+  @observable
+  isShareModalOpen = false;
 
   @observable
   isHelperModalOpen = false;

@@ -23,9 +23,10 @@ interface MintPixelsDialogProps {
     store: MintPixelsDialogStore;
     onSuccess: () => void;
     onGoToPixelsClick: () => void
+    showShareModal: () => void
 }
 
-const MintPixelsDialog = observer(({store, onSuccess, onGoToPixelsClick}: MintPixelsDialogProps) => {
+const MintPixelsDialog = observer(({store, onSuccess, onGoToPixelsClick, showShareModal}: MintPixelsDialogProps) => {
     useEffect(() => {
         store.init()
         return () => {
@@ -52,7 +53,7 @@ const MintPixelsDialog = observer(({store, onSuccess, onGoToPixelsClick}: MintPi
         {store.currentView === MintModalView.LoadingDogApproval && <LoadingDOGApproval store={store}/>}
         {store.currentView === MintModalView.MintPixels && <MintPixels store={store}/>}
         {store.currentView === MintModalView.Complete &&
-        <Complete onSuccess={onGoToPixelsClick} txHash={store.txHash}/>}
+        <Complete onSuccess={onGoToPixelsClick} txHash={store.txHash} showShareModal={showShareModal} />}
     </>
 })
 
@@ -264,7 +265,7 @@ const CowSwap: React.FC<{ store: MintPixelsDialogStore }> = observer(({store}) =
     )
 })
 
-const Complete = observer(({onSuccess, txHash}: { onSuccess: () => void, txHash: string | null }) => {
+const Complete = observer(({onSuccess, txHash, showShareModal}: { onSuccess: () => void, txHash: string | null, showShareModal: () => void }) => {
     return <Box>
         <Typography variant={TVariant.PresStart28} textAlign={"center"} block>
             Pixels Minted
@@ -272,6 +273,19 @@ const Complete = observer(({onSuccess, txHash}: { onSuccess: () => void, txHash:
         <Typography variant={TVariant.PresStart28} textAlign={"center"} mt={4} block>
             🌟🦄💫🐸🐕🚀
         </Typography>
+       
+        <Flex justifyContent={"center"} mt={10} 
+            _hover={{
+            cursor: "pointer",
+            textDecoration: "underline",
+            }}
+        >
+            {txHash &&  
+            <Typography variant={TVariant.PresStart16} textAlign={"center"} block onClick={(e) =>showShareModal()}>
+                Share
+            </Typography>
+        }
+        </Flex>
         <Flex justifyContent={"center"} mt={12}>
             <Button onClick={() => onSuccess()}>Go to pixels</Button>
         </Flex>

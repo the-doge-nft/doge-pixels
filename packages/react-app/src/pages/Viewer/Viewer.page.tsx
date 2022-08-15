@@ -18,6 +18,7 @@ import MemeModal from "./MemeModal";
 import Drawer from "../../DSL/Drawer/Drawer";
 import {useLocation, useParams} from "react-router-dom";
 import {NamedRoutes, route, SELECTED_PIXEL_PARAM} from "../../App.routes";
+import SharePixelsModal from "./SharePixelsModal/SharePixelsModal";
 
 /*
   Hack to reload page even if we are already on the route that renders this page
@@ -118,6 +119,7 @@ const ViewerPage = observer(function ViewerPage() {
         onSuccess={() => {
           store.modals.isMintMemeModalOpen = true
         }}
+        showShareModal={() => store.modals.isShareModalOpen = true}
         goToPixels={() => {
           store.modals.isMintModalOpen = false
           store.modals.isMintMemeModalOpen = false
@@ -126,10 +128,16 @@ const ViewerPage = observer(function ViewerPage() {
           }
         }}
       />}
+      {store.modals.isShareModalOpen && <SharePixelsModal
+        isOpen={store.modals.isShareModalOpen}
+        isMinted={store.modals.isMintModalOpen}
+        onClose={() => store.modals.isShareModalOpen = false}
+      />}
       {store.modals.isBurnModalOpen && <BurnPixelsModal
         defaultPixel={store.selectedPupper}
         isOpen={store.modals.isBurnModalOpen}
         onClose={() => store.modals.isBurnModalOpen = false}
+        showShareModal={() => store.modals.isShareModalOpen = true}
         onSuccess={(burnedPixelIDs) => {
           store.modals.isBurnMemeModalOpen = true
           if (store.selectedPupper) {

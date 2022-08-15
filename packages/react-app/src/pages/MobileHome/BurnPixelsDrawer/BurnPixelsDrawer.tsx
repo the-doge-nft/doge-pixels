@@ -11,9 +11,10 @@ interface BurnPixelsModalProps {
   defaultPixel: number | null;
   onSuccess: () =>  void;
   onCompleteClose: () => void;
+  showShareModal: () => void;
 }
 
-const BurnPixelsDrawer = observer(({isOpen, onClose, defaultPixel, onSuccess, onCompleteClose}: BurnPixelsModalProps) => {
+const BurnPixelsDrawer = observer(({isOpen, onClose, defaultPixel, onSuccess, onCompleteClose, showShareModal}: BurnPixelsModalProps) => {
   const store = useMemo(() => new BurnPixelsDrawerStore(defaultPixel), [defaultPixel])
   return <Drawer
     title={store.modalTitle}
@@ -27,6 +28,7 @@ const BurnPixelsDrawer = observer(({isOpen, onClose, defaultPixel, onSuccess, on
           store={store}
           onCompleteClose={onCompleteClose}
           onSuccess={onSuccess}
+          showShareModal={showShareModal}
         />
       </Box>
     </Flex>

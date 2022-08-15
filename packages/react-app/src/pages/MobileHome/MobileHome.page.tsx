@@ -114,14 +114,26 @@ const MobileHomePage = observer(() => {
         onClose={() => store.isMintDrawerOpen = false}
         onSuccess={() => console.log()}
         goToPixels={() => store.isMintDrawerOpen = false}
+        showShareModal={() => store.isMintDrawerOpen = true}
       />}
       {store.isBurnDrawerOpen &&
       <BurnPixelsDrawer
         isOpen={store.isBurnDrawerOpen}
         onClose={() => store.isBurnDrawerOpen = false}
         onSuccess={() => console.log()}
+        showShareModal={() => store.isMintDrawerOpen = true}
         onCompleteClose={() => store.isBurnDrawerOpen = false}
         defaultPixel={null}
+      />}
+
+      {store.isShareModal &&
+      <MintPixelsDrawer
+        isOpen={store.isShareModal}
+        onClose={() => store.isShareModal = false}
+        // onShare={(type: string) => store.share(type)}
+        onSuccess={() => console.log()}
+        showShareModal={() => store.isMintDrawerOpen = true}
+        goToPixels={() => store.isMintDrawerOpen = false}
       />}
     </Box>
   </Flex>
