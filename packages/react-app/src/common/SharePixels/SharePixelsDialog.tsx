@@ -10,8 +10,8 @@ import BurnImg from "../../images/burn.png"
 import Typography, { TVariant } from "../../DSL/Typography/Typography";
 import { RiFacebookCircleLine, RiTwitterLine, RiRedditLine } from 'react-icons/ri';
 import { Icon } from '@chakra-ui/react'
-import BurnPixelsDialogStore from "../BurnPixels/BurnPixelsDialog.store";
-import BurnPixelsModalStore from "../../pages/Viewer/BurnPixelsModal/BurnPixelsModal.store";
+import { FacebookShareButton, FacebookIcon, TwitterShareButton, TwitterIcon } from "react-share";
+import { Http } from "../../services";
 
 interface SharePixelsDialogProps {
   store: SharePixelsDialogStore;
@@ -32,14 +32,24 @@ const SharePixelsDialog = observer(({store, isMinted}: SharePixelsDialogProps) =
 
   const [pupperPositions, setPupperPositions] = useState<IPupperRectPosition[]>([])
   const colorMode = useColorMode();
-
+  const [png, setPNG] = useState();
+  // useEffect(() => {
+  //     Http.post("/v1/puppers/share", {
+  //       puppers: [1149946],
+  //       isMinted
+  //     }).then(({data}) => {
+            
+  //       })
+  //   }, [])
   useEffect(() => {
-    const length = AppStore.web3.updatedPuppers.length;
+    const puppers = [1149946]
+    // const puppers = AppStore.web3.updatedPuppers || [1149946]
+    const length = puppers.length;
     let positions: IPupperRectPosition[] = [];
     for(let i = 0 ; i < length; i ++) {
-      const [x, y] = AppStore.web3.pupperToPixelCoordsLocal(AppStore.web3.updatedPuppers[i]);
+      const [x, y] = AppStore.web3.pupperToPixelCoordsLocal(puppers[i]);
       positions.push({
-        pupper: AppStore.web3.updatedPuppers[i],
+        pupper: puppers[i],
         x: x * SCALE  - PIXEL_WIDTH /2,
         y: y* SCALE - PIXEL_HEIGHT /2
       })
@@ -123,9 +133,24 @@ const drawScaledImage = (img: any, ctx: CanvasRenderingContext2D) => {
        <canvas id='canvas' width={400} height={300}/>
       </Flex>
       <Flex justifyContent={"space-around"} width={"250px"} margin={"auto"}>
-        <Icon as={RiTwitterLine} color="black" boxSize={12} cursor={"pointer"}/>
+        {/* <Icon as={RiTwitterLine} color="black" boxSize={12} cursor={"pointer"}/>
         <Icon as={RiRedditLine} color="black" boxSize={12} cursor={"pointer"}/>
-        <Icon as={RiFacebookCircleLine} color="black" boxSize={12}  cursor={"pointer"} />
+        <Icon as={RiFacebookCircleLine} color="black" boxSize={12}  cursor={"pointer"} /> */}
+        <FacebookShareButton
+          url={"https://peing.net/ja/"}
+          hashtag={"#hashtag"}
+          className="Demo__some-network__share-button"
+        >
+          <FacebookIcon size={32} round /> 
+        </FacebookShareButton>
+        <br />
+        <TwitterShareButton
+          title={"test"}
+          url={"https://peing.net/ja/"}
+          hashtags={["hashtag1", "hashtag2"]}
+        >
+          <TwitterIcon size={32} round />
+        </TwitterShareButton>
       </Flex>
   </>
 })
