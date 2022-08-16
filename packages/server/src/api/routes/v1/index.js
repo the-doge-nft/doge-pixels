@@ -6,7 +6,7 @@ const {getAddressToOwnershipMap} = require("../../web3/px");
 const {ethers} = require("ethers");
 const axios = require("axios");
 const TokenNotMintedError = require("../../errors/TokenNotMintedError");
-
+const Controller = require("../../controllers/index");
 const router = express.Router()
 
 router.get(
@@ -178,6 +178,11 @@ router.get(
     }
   }
 )
+
+// router.post(
+//   '/puppers/share',
+//   Controller.puppersShare
+// )
 
 module.exports = router;
 
