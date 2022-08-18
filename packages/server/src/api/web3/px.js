@@ -131,6 +131,8 @@ async function getAddressToOwnershipMap(EthersClient) {
   addressToPuppers = removeZeroAddress(addressToPuppers)
   addressToPuppers = sortTokenIDsByAscendingTime(addressToPuppers)
 
+  console.log('debug:: addressToPuppers', addressToPuppers)
+
   await redisClient.set(redisClient.keys.ADDRESS_TO_TOKENID, JSON.stringify(addressToPuppers))
   logger.info('Finished building address map')
 }
