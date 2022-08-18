@@ -7,10 +7,12 @@ import DSLPage from "./pages/DSL.page";
 import DogParkPage from "./pages/DogPark/DogPark.page";
 import {isDevModeEnabled} from "./environment/helpers";
 import MobileHomePage from "./pages/MobileHome/MobileHome.page";
+import PixelArtPage from "./pages/PixelArt/PixelArt.page";
 
 export enum NamedRoutes {
   VIEWER = "viewer",
   DOG_PARK = "park",
+  PIXEL_ART = "art",
   DSL = "dsl",
   MOBILE_HOME = "mobile",
   PIXELS = "pixels"
@@ -58,6 +60,18 @@ const routes: AppRouteInterface[] = [
     component: DogParkPage,
     desktopName: "Dog park",
     mobileName: "Park",
+    showOnMobile: false,
+    showOnDesktop: true,
+    order: 1
+  },
+  {
+    path: "/art",
+    name: NamedRoutes.PIXEL_ART,
+    exact: true,
+    layout: AppLayout,
+    component: PixelArtPage,
+    desktopName: "Pixel art",
+    mobileName: "Art",
     showOnMobile: false,
     showOnDesktop: true,
     order: 1

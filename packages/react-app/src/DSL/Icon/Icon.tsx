@@ -9,6 +9,8 @@ import PixelMoon from "./custom/PixelMoon";
 import Close from "./custom/Close";
 import Back from "./custom/Back";
 import Cowswap from "./custom/Cowswap";
+import ToolPen from "./custom/ToolPen";
+import ToolErase from "./custom/ToolErase";
 
 export type ReactIconName =
   | "chevron-up"
@@ -23,8 +25,10 @@ type CustomIconName =
   | "close"
   | "back"
   | "cowswap"
+  | "toolPen"
+  | "toolErase"
 
-const customIcons: CustomIconName[] = ['person', 'search', 'sun', 'moon', 'close', 'back', 'cowswap']
+const customIcons: CustomIconName[] = ['person', 'search', 'sun', 'moon', 'close', 'back', 'cowswap', 'toolPen', 'toolErase']
 
 const iconStringToComponentMap = {
   "chevron-up": VscChevronUp,
@@ -39,7 +43,9 @@ const customIconStringToComponentMap = {
   moon: PixelMoon,
   close: Close,
   back: Back,
-  cowswap: Cowswap
+  cowswap: Cowswap,
+  toolPen: ToolPen,
+  toolErase: ToolErase,
 }
 
 interface IconProps extends ChakraIconProps {
