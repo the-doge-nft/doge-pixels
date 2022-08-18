@@ -62,7 +62,6 @@ const generateImage = async (puppers, isMinted) => {
     const markImg = new Canvas.Image;
     markImg.src = markImgData;
 
-    // drawScaledImage(backgroundImage, ctx); 
     ctx.drawImage(backgroundImage, 0,0, backgroundImage.width, backgroundImage.height)
     ctx.drawImage(markImg, 520,430, 100, 20)
     drawPixels(ctx, puppers);
