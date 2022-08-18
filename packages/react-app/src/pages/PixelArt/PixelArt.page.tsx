@@ -3,10 +3,9 @@ import { observer } from "mobx-react-lite";
 import { useEffect, useMemo, useState } from "react";
 import Pane from "../../DSL/Pane/Pane";
 import Typography, { TVariant } from "../../DSL/Typography/Typography";
-import PixelArtPageStore, { ActionInterface, EraseAction, PenAction, PixelArtTool, TRANSPARENT_PIXEL } from "./PixelArtPage.store";
+import PixelArtPageStore, { EraseAction, PenAction, PixelArtTool, TRANSPARENT_PIXEL } from "./PixelArtPage.store";
 import Icon from "../../DSL/Icon/Icon";
 import { darkModeSecondary, lightModePrimary } from "../../DSL/Theme";
-import { Link } from "react-router-dom";
 
 const CANVAS_ELEMENT_SIZE = 512;
 
@@ -24,10 +23,13 @@ const PixelArtPage = observer(function PixelArtPage() {
         <Grid templateColumns={"0.5fr 1fr"} flexGrow={1}>
             <GridItem display={"flex"} flexDirection={"column"} flexGrow={1}>
                 <MainMenu store={store} />
+                <Box w={'100%'} border={'0.5px solid black'} mx={'10px'} marginBottom={'5px'} />
                 <GridItem display={"flex"} flexDirection={"row"} flexGrow={1}>
                     <ToolBar store={store} />
+                    {/*<Box h={'97%'} border={'0.5px solid black'} my={'10px'}/>*/}
                     <ArtCanvas store={store} />
                 </GridItem>
+                <Box w={'100%'} border={'0.5px solid black'} mx={'10px'} />
                 <PixelPalette store={store} />
             </GridItem>
         </Grid>
@@ -37,6 +39,7 @@ const PixelArtPage = observer(function PixelArtPage() {
 
 const ArtCanvas = observer(({ store }: { store: PixelArtPageStore }) => {
     const [mousePressed, setMousePressed] = useState(false);
+    const [lastCoords, setLastCoords] = useState<number[]>([0, 0]);
 
     useEffect(() => {
         let canvas: HTMLCanvasElement = document.getElementById('canvas') as HTMLCanvasElement;
@@ -66,12 +69,21 @@ const ArtCanvas = observer(({ store }: { store: PixelArtPageStore }) => {
 
     const onCanvasMouseMove = (e: any) => {
         if (mousePressed) {
-            updatePixel(e.clientX, e.clientY);
+            const cn = 10;
+            let dx = (e.clientX - lastCoords[0]) / cn;
+            let dy = (e.clientY - lastCoords[1]) / cn;
+            for(let cd = 0; cd < cn; ++cd) {
+                const x = lastCoords[0] + dx * cd;
+                const y = lastCoords[1] + dy * cd;
+                updatePixel(x, y);
+            }
+            setLastCoords([e.clientX, e.clientY]);
         }
     }
 
     const onCanvasMouseDown = (e: any) => {
         updatePixel(e.clientX, e.clientY);
+        setLastCoords([e.clientX, e.clientY]);
         setMousePressed(true);
     }
 
@@ -97,7 +109,7 @@ const ArtCanvas = observer(({ store }: { store: PixelArtPageStore }) => {
 const PixelPalette = observer(({ store }: { store: PixelArtPageStore }) => {
     const { colorMode } = useColorMode()
 
-    return <Box margin={"5px"} border={"1px dashed black"}>
+    return <Box margin={"10px"}>
         <GridItem display={"flex"} flexDirection={"row"} flexGrow={1}>
             <Box display={"flex"} flexDirection={"column"} flexWrap={'wrap'} height={70}>
                 {/*store.brushPixels.map((entry: any, index: number) => {
@@ -116,6 +128,7 @@ const PixelPalette = observer(({ store }: { store: PixelArtPageStore }) => {
                     </Box>
                 })*/}
                 {store.palette && <Box boxSize={'64px'} bgColor={store.palette[store.selectedBrushPixelIndex]} />}
+                <Box border={"1px solid black"} m={'3px'} w={'1px'} h={'84%'} marginLeft={'5px'}/>
                 {store.palette?.map((entry: any, index: number) => {
                     return <Box
                         key={index}
@@ -128,7 +141,7 @@ const PixelPalette = observer(({ store }: { store: PixelArtPageStore }) => {
                             store.selectedBrushPixelIndex = index;
                         }}
                     >
-                        <Box boxSize={6} bgColor={entry} />
+                        <Box boxSize={'24px'} bgColor={entry} />
                     </Box>
                 })}
             </Box>
