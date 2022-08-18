@@ -5,6 +5,8 @@ import { ObjectKeys } from "../../helpers/objects";
 import { Reactionable } from "../../services/mixins/reactionable";
 import AppStore from "../../store/App.store";
 
+export const TRANSPARENT_PIXEL = '#0000';
+
 export enum PixelArtTool {
     pen,
     erase,
@@ -28,11 +30,11 @@ export class PenAction implements ActionInterface {
         this.storedColor = '';
     }
     do(store: PixelArtPageStore) {
-        this.storedColor = store.canvasPixels[this.x + this.y * store.canvasSize];
-        store.canvasPixels[this.x + this.y * store.canvasSize] = this.color;
+        this.storedColor = store.getPixelColor(this.x, this.y);
+        store.setPixelColor(this.x, this.y, this.color);
     }
     undo(store: PixelArtPageStore) {
-        store.canvasPixels[this.x + this.y * store.canvasSize] = this.storedColor;
+        store.setPixelColor(this.x, this.y, this.storedColor);
     }
 }
 
@@ -48,20 +50,19 @@ export class EraseAction implements ActionInterface {
     }
 
     do(store: PixelArtPageStore) {
-        this.storedColor = store.canvasPixels[this.x + this.y * store.canvasSize];
-        store.canvasPixels[this.x + this.y * store.canvasSize] = '#00000000';
+        this.storedColor = store.getPixelColor(this.x, this.y);
+        store.setPixelColor(this.x, this.y, TRANSPARENT_PIXEL);
     }
     undo(store: PixelArtPageStore) {
-        store.canvasPixels[this.x + this.y * store.canvasSize] = this.storedColor;
+        store.setPixelColor(this.x, this.y, this.storedColor);
     }
 }
 
 class PixelArtPageStore extends Reactionable(EmptyClass) {
-    @observable
-    selectedAddress: string;
+    canvas?: HTMLCanvasElement;
 
     @observable
-    brushPixels: any[];
+    selectedAddress: string;
 
     @observable
     selectedBrushPixelIndex: number;
@@ -79,9 +80,6 @@ class PixelArtPageStore extends Reactionable(EmptyClass) {
     @observable
     redoActions: ActionInterface[];
 
-    @observable
-    tick: number = 0;
-
     constructor() {
         super()
         makeObservable(this)
@@ -90,11 +88,10 @@ class PixelArtPageStore extends Reactionable(EmptyClass) {
 
         this.canvasPixels = [];
         for (let cn = 0; cn < this.canvasSize * this.canvasSize; ++cn) {
-            this.canvasPixels.push('#00000000');
+            this.canvasPixels.push(TRANSPARENT_PIXEL);
         }
 
         this.selectedBrushPixelIndex = 0;
-        this.brushPixels = ['#000000', '#ff0000', '#00ff00', '#0000ff', '#ff00ff', '#ffffff'];
 
         this.selectedToolIndex = 0;
         this.tools = [
@@ -112,12 +109,73 @@ class PixelArtPageStore extends Reactionable(EmptyClass) {
         this.redoActions = [];
     }
 
+    setCanvas(canvas: HTMLCanvasElement) {
+        this.canvas = canvas;
+    }
+
+    updateCanvas() {
+        if (!this.canvas) return;
+
+        let ctx = this.canvas.getContext('2d');
+        if (!ctx) return;
+
+        const cellSize = this.canvas.width / this.canvasSize;
+
+        ctx.save();
+        ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+        for (let cy = 0; cy < this.canvasSize; ++cy) {
+            for (let cx = 0; cx < this.canvasSize; ++cx) {
+                ctx.fillStyle = this.canvasPixels[cx + cy * this.canvasSize];
+                ctx.fillRect(cx * cellSize, cy * cellSize, cellSize, cellSize);
+            }
+        }
+        ctx.restore();
+    }
+
+    drawPixel(x: number, y: number, color: string) {
+        if (!this.canvas) return;
+
+        let ctx = this.canvas.getContext('2d');
+        if (!ctx) return;
+
+        const cellSize = this.canvas.width / this.canvasSize;
+
+        ctx.save();
+        ctx.fillStyle = color;
+        ctx.fillRect(x * cellSize, y * cellSize, cellSize, cellSize);
+        ctx.restore();
+
+    }
+
+    clearPixel(x: number, y: number) {
+        if (!this.canvas) return;
+
+        let ctx = this.canvas.getContext('2d');
+        if (!ctx) return;
+
+        const cellSize = this.canvas.width / this.canvasSize;
+        ctx.clearRect(x * cellSize, y * cellSize, cellSize, cellSize);
+    }
+
+    getPFP() {
+        
+    }
+
     setPixelColor(x: number, y: number, color: string) {
         this.canvasPixels[x + y * this.canvasSize] = color;
+        if (color === TRANSPARENT_PIXEL) {
+            this.clearPixel(x, y);
+        } else {
+            this.drawPixel(x, y, color);
+        }
     }
 
     getPixelColor(x: number, y: number): string {
         return this.canvasPixels[x + y * this.canvasSize];
+    }
+
+    isSamePixel(x: number, y: number, color: string): boolean {
+        return this.canvasPixels[x + y * this.canvasSize] === color;
     }
 
     @action
@@ -125,7 +183,6 @@ class PixelArtPageStore extends Reactionable(EmptyClass) {
         action.do(this);
         this.undoActions.push(action);
         this.redoActions = [];
-        ++this.tick;
     }
     @action
     undoAction() {
@@ -137,7 +194,6 @@ class PixelArtPageStore extends Reactionable(EmptyClass) {
                 this.redoActions.push(action);
             }
         }
-        ++this.tick;
     }
     @action
     redoAction() {
@@ -149,7 +205,6 @@ class PixelArtPageStore extends Reactionable(EmptyClass) {
                 this.undoActions.push(action);
             }
         }
-        ++this.tick;
     }
 
     @computed
@@ -177,12 +232,17 @@ class PixelArtPageStore extends Reactionable(EmptyClass) {
 
     @computed
     get palette() {
-        return this.selectedDogs?.puppers.map(px => {
+        let data = this.selectedDogs?.puppers.map(px => {
             return AppStore.web3.pupperToHexLocal(px);
         })
         .sort((a, b) => {
             return a.localeCompare(b);
         });
+        data = data?.filter(function(item, pos) {
+            return data.indexOf(item) == pos;
+        })
+
+        return data;
     }
 
 }

@@ -3,9 +3,10 @@ import { observer } from "mobx-react-lite";
 import { useEffect, useMemo, useState } from "react";
 import Pane from "../../DSL/Pane/Pane";
 import Typography, { TVariant } from "../../DSL/Typography/Typography";
-import PixelArtPageStore, { ActionInterface, EraseAction, PenAction, PixelArtTool } from "./PixelArtPage.store";
+import PixelArtPageStore, { ActionInterface, EraseAction, PenAction, PixelArtTool, TRANSPARENT_PIXEL } from "./PixelArtPage.store";
 import Icon from "../../DSL/Icon/Icon";
 import { darkModeSecondary, lightModePrimary } from "../../DSL/Theme";
+import { Link } from "react-router-dom";
 
 const CANVAS_ELEMENT_SIZE = 512;
 
@@ -30,6 +31,7 @@ const PixelArtPage = observer(function PixelArtPage() {
                 <PixelPalette store={store} />
             </GridItem>
         </Grid>
+        <a id={'pfp-link'} />
     </Pane>
 });
 
@@ -38,25 +40,8 @@ const ArtCanvas = observer(({ store }: { store: PixelArtPageStore }) => {
 
     useEffect(() => {
         let canvas: HTMLCanvasElement = document.getElementById('canvas') as HTMLCanvasElement;
-        updateCanvas(canvas);
-    }, [store.tick]);
-
-    const updateCanvas = (canvas: HTMLCanvasElement) => {
-        let ctx = canvas.getContext('2d');
-        if (!ctx) return;
-
-        const cellSize = CANVAS_ELEMENT_SIZE / store.canvasSize;
-
-        ctx.save();
-        ctx.clearRect(0, 0, CANVAS_ELEMENT_SIZE, CANVAS_ELEMENT_SIZE);
-        for (let cy = 0; cy < store.canvasSize; ++cy) {
-            for (let cx = 0; cx < store.canvasSize; ++cx) {
-                ctx.fillStyle = store.canvasPixels[cx + cy * store.canvasSize];
-                ctx.fillRect(cx * cellSize, cy * cellSize, cellSize, cellSize);
-            }
-        }
-        ctx.restore();
-    }
+        store.setCanvas(canvas);
+    }, []);
 
     const updatePixel = (x: number, y: number) => {
         let canvas: HTMLCanvasElement = document.getElementById('canvas') as HTMLCanvasElement;
@@ -68,11 +53,11 @@ const ArtCanvas = observer(({ store }: { store: PixelArtPageStore }) => {
             const canvasPixelY = Math.floor((y - rect.y) / canvasCellSize);
 
             if (store.tools[store.selectedToolIndex].id === PixelArtTool.pen) {
-                if (store.palette[store.selectedBrushPixelIndex] !== store.getPixelColor(canvasPixelX, canvasPixelY)) {
+                if (!store.isSamePixel(canvasPixelX, canvasPixelY, store.palette[store.selectedBrushPixelIndex])) {
                     store.doAction(new PenAction(canvasPixelX, canvasPixelY, store.palette[store.selectedBrushPixelIndex]));
                 }
             } else {
-                if ('#00000000' !== store.getPixelColor(canvasPixelX, canvasPixelY)) {
+                if (!store.isSamePixel(canvasPixelX, canvasPixelY, TRANSPARENT_PIXEL)) {
                     store.doAction(new EraseAction(canvasPixelX, canvasPixelY));
                 }
             }
@@ -114,7 +99,7 @@ const PixelPalette = observer(({ store }: { store: PixelArtPageStore }) => {
 
     return <Box margin={"5px"} border={"1px dashed black"}>
         <GridItem display={"flex"} flexDirection={"row"} flexGrow={1}>
-            <Grid templateColumns='repeat(2, 0fr)'>
+            <Box display={"flex"} flexDirection={"column"} flexWrap={'wrap'} height={70}>
                 {/*store.brushPixels.map((entry: any, index: number) => {
                     return <Box
                         key={index}
@@ -130,7 +115,8 @@ const PixelPalette = observer(({ store }: { store: PixelArtPageStore }) => {
                         <Box boxSize={6} bgColor={entry} />
                     </Box>
                 })*/}
-                {store.palette.map((entry: any, index: number) => {
+                {store.palette && <Box boxSize={'64px'} bgColor={store.palette[store.selectedBrushPixelIndex]} />}
+                {store.palette?.map((entry: any, index: number) => {
                     return <Box
                         key={index}
                         p={1}
@@ -145,7 +131,7 @@ const PixelPalette = observer(({ store }: { store: PixelArtPageStore }) => {
                         <Box boxSize={6} bgColor={entry} />
                     </Box>
                 })}
-            </Grid>
+            </Box>
         </GridItem>
     </Box>
 })
@@ -180,6 +166,20 @@ const MainMenu = observer(({ store }: { store: PixelArtPageStore }) => {
     }
     const redoAction = () => {
         store.redoAction();
+    }
+    const downloadPFP = () => {
+        let canvas: HTMLCanvasElement = document.getElementById('canvas') as HTMLCanvasElement;
+        var image = canvas.toDataURL("image/png").replace("image/png", "image/octet-stream");
+
+        var link = document.getElementById('pfp-link');
+        if (link) {
+            link.setAttribute('download', 'wowsome_pfp.png');
+            link.setAttribute('href', image);
+            link.click();
+        }
+    }
+
+    const postTweet = () => {
     }
 
     return <Box>
@@ -218,8 +218,8 @@ const MainMenu = observer(({ store }: { store: PixelArtPageStore }) => {
                 </Typography>
             </MenuButton>
             <MenuList>
-                <MenuItem>Undo</MenuItem>
-                <MenuItem>Redo</MenuItem>
+                <MenuItem onClick={downloadPFP}>Download as PFP</MenuItem>
+                <MenuItem onClick={postTweet}>Tweet</MenuItem>
             </MenuList>
         </Menu>
     </Box>
