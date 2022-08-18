@@ -106,6 +106,8 @@ async function getAddressToOwnershipMap(EthersClient) {
   const fromBlock = Number(vars.contract_block_number_deployment)
   const toBlock = (await EthersClient.provider.getBlock()).number
 
+  console.log('debug:: from block', fromBlock, toBlock)
+
   // infura limits the response to 10k items per response. we grab them in chunks here
   // https://docs.infura.io/infura/networks/ethereum/json-rpc-methods/eth_getlogs
   let logs = []
@@ -116,6 +118,8 @@ async function getAddressToOwnershipMap(EthersClient) {
     const _logs = await EthersClient.PXContract.queryFilter(filter, i, i+step)
     logs.push(..._logs)
   }
+
+  console.log('debug:: logs length', logs.length)
 
   for (const tx of logs) {
     const {from, to} = tx.args
