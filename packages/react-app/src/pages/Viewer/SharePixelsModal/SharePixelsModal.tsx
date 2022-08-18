@@ -1,7 +1,7 @@
 import {observer} from "mobx-react-lite";
 import Modal, {ModalProps} from "../../../DSL/Modal/Modal";
 import SharePixelsDialog from "../../../common/SharePixels/SharePixelsDialog";
-import { Box, Flex } from "@chakra-ui/react";
+import { Box } from "@chakra-ui/react";
 import SharePixelsDialogStore from "../../../common/SharePixels/SharePixelsDialog.store";
 import { useMemo } from "react";
 

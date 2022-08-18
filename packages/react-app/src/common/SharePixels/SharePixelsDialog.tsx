@@ -16,14 +16,19 @@ const SharePixelsDialog = observer(({store, isMinted}: SharePixelsDialogProps) =
   const [image, setImage] = useState();
   const [shareURL, setShareURL] = useState("");
   useEffect(() => {
+    console.log("share", AppStore.web3.updatedPuppers)
+    if (AppStore.web3.updatedPuppers.length > 0) {
       Http.post("/v1/puppers/share", {
-        puppers: [1149946],
+        puppers: AppStore.web3.updatedPuppers,
         isMinted
       }).then(({data}) => {
             setImage(data.image)
             setShareURL(data.url)
+        }).catch(err => {
+            console.log(err.message)
         })
-    }, [AppStore.web3.updatedPuppers])
+    }
+  }, [AppStore.web3.updatedPuppers])
 
   return <>
      <Typography variant={TVariant.ComicSans18} block style={{marginBottom: "15px"}}>

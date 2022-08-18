@@ -79,7 +79,6 @@ const puppersShare = async(req, res, next) => {
         }
 
         const response = await generateImage(puppers, isMinted);
-        // var blobData = dataURItoBlob(image);
         const params = {
             Bucket: process.env.AWS_S3_BUCKET_NAME,
             Key: `${isMinted ? 'mint' : 'burn'}_${puppers[0]}.png`, // File name you want to save as in S3
