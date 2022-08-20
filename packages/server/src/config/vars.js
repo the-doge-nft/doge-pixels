@@ -20,6 +20,7 @@ module.exports = {
   twitter_consumer_secret: process.env.TWITTER_CONSUMER_SECRET,
   twitter_access_token_key: process.env.TWITTER_ACCESS_TOKEN_KEY,
   twitter_access_token_secret: process.env.TWITTER_ACCESS_TOKEN_SECRET,
+  aws_bucket_name: process.env.AWS_S3_BUCKET_NAME,
   isProd: process.env.APP_ENV === "production"
 }
 

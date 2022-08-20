@@ -2,6 +2,7 @@ const fs = require('fs')
 const {createCanvas} = require('canvas')
 const Canvas = require('canvas')
 const AWS = require('aws-sdk');
+const vars = require("../../config/vars");
 
 const PIXEL_WIDTH = 20;
 const PIXEL_HEIGHT = 20;
@@ -79,7 +80,7 @@ const puppersShare = async(req, res, next) => {
 
         const response = await generateImage(puppers, isMinted);
         const params = {
-            Bucket: process.env.AWS_S3_BUCKET_NAME,
+            Bucket: vars.aws_bucket_name,
             Key: `${isMinted ? 'mint' : 'burn'}_${puppers[0]}.png`, // File name you want to save as in S3
             Body: response.buffer,
             CreateBucketConfiguration: {
