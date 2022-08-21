@@ -35,19 +35,6 @@
     "clean": "cd packages/hardhat && npx hardhat clean",
     "fund-account": "yarn workspace @dog/hardhat fund-account"
   },
-  "workspaces": {
-    "packages": [
-      "packages/*"
-    ],
-    "nohoist": [
-      "**/@graphprotocol/graph-ts",
-      "**/@graphprotocol/graph-ts/**",
-      "**/hardhat",
-      "**/hardhat/**",
-      "**/hardhat-ts",
-      "**/hardhat-ts/**"
-    ]
-  },
   "dependencies": {},
   "devDependencies": {}
 }
