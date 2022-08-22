@@ -61,7 +61,7 @@ const ArtCanvasComponent = observer(({ store }: { store: PixelArtPageStore }) =>
         store.setCanvas(canvas);
     });
 
-    const updatePixel = (x: number, y: number) => {
+    const updatePixel = (x: number, y: number, action: PixelAction) => {
         let canvas: HTMLCanvasElement = document.getElementById('canvas') as HTMLCanvasElement;
         const rect = canvas.getBoundingClientRect();
         const canvasCellSize = CANVAS_ELEMENT_SIZE / store.pixelsCanvas.canvasSize;
@@ -69,19 +69,19 @@ const ArtCanvasComponent = observer(({ store }: { store: PixelArtPageStore }) =>
             rect.top < y && rect.bottom > y) {
             const canvasX = Math.floor((x - rect.x) / canvasCellSize);
             const canvasY = Math.floor((y - rect.y) / canvasCellSize);
-            activeAction?.update(store.pixelsCanvas, canvasX, canvasY);
+            action.update(store.pixelsCanvas, canvasX, canvasY);
         }
     }
 
     const onCanvasMouseMove = (e: any) => {
-        if (mousePressed) {
+        if (mousePressed && activeAction) {
             const cn = 10;
             let dx = (e.clientX - lastCoords[0]) / cn;
             let dy = (e.clientY - lastCoords[1]) / cn;
             for (let cd = 0; cd < cn; ++cd) {
                 const x = lastCoords[0] + dx * cd;
                 const y = lastCoords[1] + dy * cd;
-                updatePixel(x, y);
+                updatePixel(x, y, activeAction);
             }
             setLastCoords([e.clientX, e.clientY]);
         }
@@ -89,8 +89,9 @@ const ArtCanvasComponent = observer(({ store }: { store: PixelArtPageStore }) =>
 
     const onCanvasMouseDown = (e: any) => {
         const color = pixelArtTools[store.selectedToolIndex].id === PixelArtTool.pen ? store.palette[store.selectedBrushPixelIndex] : TRANSPARENT_PIXEL;
-        setActiveAction(new PixelAction(color));
-        updatePixel(e.clientX, e.clientY);
+        let action = new PixelAction(color);
+        setActiveAction(action);
+        updatePixel(e.clientX, e.clientY, action);
         setLastCoords([e.clientX, e.clientY]);
         setMousePressed(true);
     }
@@ -114,7 +115,7 @@ const ArtCanvasComponent = observer(({ store }: { store: PixelArtPageStore }) =>
         backgroundClip={'border-box, border-box'}
         backgroundSize={'16px 16px, 16px 16px'}
     >
-        <canvas id='canvas' width={CANVAS_ELEMENT_SIZE} height={CANVAS_ELEMENT_SIZE} onMouseMove={(e) => onCanvasMouseMove(e)} onMouseDown={e => onCanvasMouseDown(e)} onMouseUp={e => onCanvasMouseUp(e)} />
+        <canvas id='canvas' width={CANVAS_ELEMENT_SIZE} height={CANVAS_ELEMENT_SIZE} onMouseMove={(e) => onCanvasMouseMove(e)} onMouseDown={e => onCanvasMouseDown(e)} onMouseUp={e => onCanvasMouseUp(e)} onMouseLeave={e => onCanvasMouseUp(e)} />
     </Box>
 })
 

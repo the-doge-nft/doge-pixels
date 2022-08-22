@@ -42,9 +42,11 @@ class PixelArtPageStore extends Reactionable(EmptyClass) {
 
     setCanvas(canvas: HTMLCanvasElement) {
         this.pixelsCanvas.canvas = canvas;
+        this.pixelsCanvas.updateCanvas();
     }
 
 
+    @action
     pushAction(action: ActionInterface) {
         this.undoActions.push(action);
         this.redoActions = [];
