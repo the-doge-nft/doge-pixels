@@ -111,7 +111,6 @@ const ArtCanvasComponent = observer(({ store }: { store: PixelArtPageStore }) =>
         backgroundRepeat={'repeat, repeat'}
         backgroundPosition={'0px 0, 8px 8px'}
         transformOrigin={'0 0 0'}
-        //backgroundOrigin={'padding-box, padding-box'}
         backgroundClip={'border-box, border-box'}
         backgroundSize={'16px 16px, 16px 16px'}
     >
@@ -125,7 +124,19 @@ const PixelsPaletteComponent = observer(({ store }: { store: PixelArtPageStore }
     return <Box margin={"10px"}>
         <GridItem display={"flex"} flexDirection={"row"} flexGrow={0}>
             <Box display={"flex"} flexDirection={"column"} flexWrap={'wrap'} height={70}>
-                {store.palette && <Box boxSize={'64px'} bgColor={store.palette[store.selectedBrushPixelIndex]} />}
+                {store.palette && store.selectedToolIndex === PixelArtTool.pen && <Box
+                    boxSize={'64px'}
+                    border={"1px solid gray"}
+                    bgColor={store.palette[store.selectedBrushPixelIndex]} />}
+                {store.selectedToolIndex === PixelArtTool.erase && <Box
+                    boxSize={'64px'}
+                    border={"1px solid gray"}
+                    background={'linear-gradient(45deg, rgba(0, 0, 0, 0.0980392) 25%, transparent 25%, transparent 75%, rgba(0, 0, 0, 0.0980392) 75%, rgba(0, 0, 0, 0.0980392) 0), linear-gradient(45deg, rgba(0, 0, 0, 0.0980392) 25%, transparent 25%, transparent 75%, rgba(0, 0, 0, 0.0980392) 75%, rgba(0, 0, 0, 0.0980392) 0), white'}
+                    backgroundRepeat={'repeat, repeat'}
+                    backgroundPosition={'0px 0, 8px 8px'}
+                    transformOrigin={'0 0 0'}
+                    backgroundClip={'border-box, border-box'}
+                    backgroundSize={'16px 16px, 16px 16px'} />}
                 <Box border={"1px solid gray"} m={'3px'} w={'1px'} h={'84%'} marginLeft={'5px'} />
                 {store.palette?.map((entry: any, index: number) => {
                     return <Box
@@ -137,6 +148,7 @@ const PixelsPaletteComponent = observer(({ store }: { store: PixelArtPageStore }
                         _hover={{ bg: (colorMode === "light" ? lightModePrimary : darkModeSecondary) }}
                         onClick={() => {
                             store.selectedBrushPixelIndex = index;
+                            store.selectedToolIndex = PixelArtTool.pen;
                         }}
                     >
                         <Box boxSize={'24px'} bgColor={entry} />
