@@ -1,4 +1,4 @@
-import { Box, Grid, GridItem, Menu, MenuButton, MenuDivider, MenuItem, MenuList, useColorMode } from "@chakra-ui/react";
+import { Box, Grid, GridItem, Menu, MenuButton, MenuItem, MenuList, useColorMode } from "@chakra-ui/react";
 import { observer } from "mobx-react-lite";
 import { useEffect, useMemo, useState } from "react";
 import Pane from "../../DSL/Pane/Pane";
@@ -6,7 +6,7 @@ import Typography, { TVariant } from "../../DSL/Typography/Typography";
 import PixelArtPageStore from "./PixelArtPage.store";
 import Icon from "../../DSL/Icon/Icon";
 import { darkModeSecondary, lightModePrimary } from "../../DSL/Theme";
-import { PixelAction } from "./PixelArtActions";
+import { ClearAction, PixelAction } from "./PixelArtActions";
 import { PixelArtTool, pixelArtTools } from "./PixelArtTools";
 import { TRANSPARENT_PIXEL } from "./PixelArtCanvas";
 
@@ -178,6 +178,12 @@ const MainMenuComponent = observer(({ store }: { store: PixelArtPageStore }) => 
     const redoAction = () => {
         store.redoAction();
     }
+    const clearCanvas = () => {
+        const clearAction = new ClearAction(store.pixelsCanvas);
+        if (clearAction.isValid()) {
+            store.pushAction(clearAction);
+        }
+    }
     const downloadPFP = () => {
         let canvas: HTMLCanvasElement = document.getElementById('canvas') as HTMLCanvasElement;
         var image = canvas.toDataURL("image/png").replace("image/png", "image/octet-stream");
@@ -196,41 +202,33 @@ const MainMenuComponent = observer(({ store }: { store: PixelArtPageStore }) => 
     return <Box>
         <Menu>
             <MenuButton
-                border={'none'}>
+                border={'none'}
+                bg={'none'}>
                 <Typography variant={TVariant.PresStart15}>
                     File
                 </Typography>
             </MenuButton>
-            <MenuList>
+            <MenuList pt={0}>
                 <MenuItem>New File</MenuItem>
-                <MenuItem>New Window</MenuItem>
-                <MenuDivider />
-                <MenuItem>Open...</MenuItem>
                 <MenuItem>Save File</MenuItem>
+                <MenuItem onClick={downloadPFP}>Export</MenuItem>
+                <MenuItem onClick={postTweet}>Share</MenuItem>
+                <MenuItem>Import</MenuItem>
+                <MenuItem>Randomize</MenuItem>
             </MenuList>
         </Menu>
         <Menu>
             <MenuButton
-                border={'none'}>
+                border={'none'}
+                bg={'none'}>
                 <Typography variant={TVariant.PresStart15}>
                     Edit
                 </Typography>
             </MenuButton>
-            <MenuList>
+            <MenuList pt={0}>
                 <MenuItem disabled={store.undoActions.length === 0} onClick={undoAction}>Undo</MenuItem>
                 <MenuItem disabled={store.redoActions.length === 0} onClick={redoAction}>Redo</MenuItem>
-            </MenuList>
-        </Menu>
-        <Menu>
-            <MenuButton
-                border={'none'}>
-                <Typography variant={TVariant.PresStart15}>
-                    Share
-                </Typography>
-            </MenuButton>
-            <MenuList>
-                <MenuItem onClick={downloadPFP}>Download as PFP</MenuItem>
-                <MenuItem onClick={postTweet}>Tweet</MenuItem>
+                <MenuItem onClick={clearCanvas}>Clear</MenuItem>
             </MenuList>
         </Menu>
     </Box>

@@ -48,3 +48,15 @@ export class PixelAction implements ActionInterface {
         return this.pixels.length > 0;
     }
 }
+
+export class ClearAction extends PixelAction {
+    constructor(pixelsCanvas: PixelArtCanvas) {
+        super(TRANSPARENT_PIXEL);
+
+        for(let cy = 0; cy < pixelsCanvas.canvasSize; ++cy) {
+            for(let cx = 0; cx < pixelsCanvas.canvasSize; ++cx) {
+                this.update(pixelsCanvas, cx, cy);
+            }
+        }
+    }
+}
