@@ -3,6 +3,7 @@ import { PixelsService } from './pixels/pixels.service';
 import { ethers } from 'ethers';
 import { EthersService } from './ethers/ethers.service';
 import { HttpService } from '@nestjs/axios';
+import {PixelsRepository} from "./pixels/pixels.repository";
 
 @Controller()
 export class AppController {
@@ -10,6 +11,7 @@ export class AppController {
 
   constructor(
     private readonly pixelService: PixelsService,
+    private readonly pixelsRepository: PixelsRepository,
     private readonly ethersService: EthersService,
     private readonly httpService: HttpService,
   ) {}
@@ -17,6 +19,39 @@ export class AppController {
   @Get('status')
   getStatus() {
     return 'WOW';
+  }
+
+  @Get('config')
+  async getOwnershipConfig() {
+    return this.pixelsRepository.getOwnershipMap()
+  }
+
+  @Get('config/refresh')
+  async getConfigRefreshed() {
+    await this.pixelService.syncTransfers()
+    return this.pixelsRepository.getOwnershipMap()
+  }
+
+  @Get('px/dimensions')
+  async getPictureDimensions() {
+    return this.pixelService.getDimensions()
+  }
+
+  @Get('px/balance/:address')
+  async getPixelAddressBalance(@Param() params: {address: string}) {
+    const balance = await this.pixelService.getPixelBalanceByAddress(params.address)
+    return {balance: balance.toNumber()}
+  }
+
+  @Get('px/owner/:tokenId')
+  async getOwnerByTokenId(@Param() params: {tokenId: number}) {
+    const token = await this.pixelsRepository.findByTokenId(Number(params.tokenId))
+    if (!token) {
+      throw new Error('Could not find token')
+    }
+    return {
+      address: token.ownerAddress
+    }
   }
 
   @Get('dog/locked')

@@ -65,11 +65,8 @@ export class PixelsService implements OnModuleInit {
   }
 
   async syncTransfers() {
-
-    this.logger.debug(`dropping all pixel records`)
-    await this.pixelsRepository.deleteAll()
-
-    const addressToPuppers = {}
+    // this.logger.debug(`dropping all pixel records`)
+    // await this.pixelsRepository.deleteAll()
 
     const filter = this.pxContract.filters.Transfer(null, null)
     const fromBlock = this.configService.get('pixelContractDeploymentBlockNumber')
@@ -99,16 +96,6 @@ export class PixelsService implements OnModuleInit {
       } else {
         await this.pixelsRepository.updateOwner({tokenId: tokenId.toNumber(), ownerAddress: to})
       }
-
-      // const transfer = await this.pixelTransfersService.findByTxHash(txHash)
-      // if (!transfer) {
-      //   this.logger.log(`inserting transfer`)
-      //   await this.pixelTransfersService.create({
-      //     from, to, txHash, tokenId: tokenId.toNumber()
-      //   })
-      // } else {
-      //   this.logger.log(`transfer already exists`)
-      // }
     }
   }
 
@@ -125,5 +112,18 @@ export class PixelsService implements OnModuleInit {
 
   getPixelURI(tokenId: string) {
     return this.pxContract.tokenURI(tokenId);
+  }
+
+  async getDimensions() {
+    const width = await this.pxContract.SHIBA_WIDTH()
+    const height = await this.pxContract.SHIBA_HEIGHT()
+    return {
+      widht: width.toNumber(),
+      height: height.toNumber()
+    }
+  }
+
+  getPixelBalanceByAddress(address: string) {
+    return this.pxContract.balanceOf(address)
   }
 }

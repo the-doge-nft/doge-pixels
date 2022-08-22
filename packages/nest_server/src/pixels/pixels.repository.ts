@@ -1,5 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { PrismaService } from "../prisma.service";
+import {ethers} from "ethers";
 
 @Injectable()
 export class PixelsRepository {
@@ -35,6 +36,21 @@ export class PixelsRepository {
 
     deleteAll() {
         return this.prisma.pixels.deleteMany()
+    }
+
+    async getOwnershipMap() {
+        const map = {}
+        const data = await this.prisma.pixels.findMany()
+        data.forEach(item => {
+            if (map[item.ownerAddress]) {
+                map[item.ownerAddress].push(item.tokenId)
+            } else {
+                map[item.ownerAddress] = [item.tokenId]
+            }
+        })
+        // remove zero address for now
+        delete map[ethers.constants.AddressZero]
+        return map
     }
 }
 
