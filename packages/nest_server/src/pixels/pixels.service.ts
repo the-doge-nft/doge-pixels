@@ -4,7 +4,6 @@ import { OnEvent } from '@nestjs/event-emitter';
 import { Events } from '../events';
 import { ethers } from 'ethers';
 import { EthersService } from '../ethers/ethers.service';
-import { ConfigService } from '@nestjs/config';
 import * as ABI from '../contracts/hardhat_contracts.json';
 
 @Injectable()
@@ -17,7 +16,7 @@ export class PixelsService implements OnModuleInit {
 
   onModuleInit() {
     this.logger.log('PixelsService is loaded');
-    if (!this.pxContract && !this.dogContract) {
+    if (!this.pxContract && !this.dogContract && this.ethersService.provider) {
       this.connectToContracts(this.ethersService.provider);
     }
   }
@@ -53,5 +52,20 @@ export class PixelsService implements OnModuleInit {
       dogContractInfo.abi,
       provider,
     );
+  }
+
+  getDogLocked() {
+    return this.dogContract.balanceOf(this.pxContract.address);
+  }
+
+  getContractAddresses() {
+    return {
+      dog: this.dogContract.address,
+      pixel: this.pxContract.address,
+    };
+  }
+
+  getPixelURI(tokenId: string) {
+    return this.pxContract.tokenURI(tokenId);
   }
 }

@@ -98,4 +98,8 @@ export class EthersService implements OnModuleInit {
       }
     });
   }
+
+  getEnsName(address: string) {
+    return this.provider.lookupAddress(address);
+  }
 }
