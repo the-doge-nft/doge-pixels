@@ -17,7 +17,7 @@ const PixelArtPage = observer(function PixelArtPage() {
 
     useEffect(() => {
         document.addEventListener("keydown", handleHotkeys, false);
-    }, []);
+    });
 
     const handleHotkeys = (e: KeyboardEvent) => {
         const ctrlPressed = window.navigator.platform.match("Mac") ? e.metaKey : e.ctrlKey;
@@ -59,7 +59,7 @@ const ArtCanvasComponent = observer(({ store }: { store: PixelArtPageStore }) =>
     useEffect(() => {
         let canvas: HTMLCanvasElement = document.getElementById('canvas') as HTMLCanvasElement;
         store.setCanvas(canvas);
-    }, []);
+    });
 
     const updatePixel = (x: number, y: number) => {
         let canvas: HTMLCanvasElement = document.getElementById('canvas') as HTMLCanvasElement;
