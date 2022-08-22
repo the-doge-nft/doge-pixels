@@ -1,8 +1,9 @@
 export enum PixelArtTool {
-    pen,
+    pen = 0,
     erase,
 }
 
+// mrodionov: order of elements should foloow the enum above
 export const pixelArtTools = [
     {
         id: PixelArtTool.pen,
