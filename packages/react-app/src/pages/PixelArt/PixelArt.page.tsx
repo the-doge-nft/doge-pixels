@@ -3,9 +3,10 @@ import { observer } from "mobx-react-lite";
 import { useEffect, useMemo, useState } from "react";
 import Pane from "../../DSL/Pane/Pane";
 import Typography, { TVariant } from "../../DSL/Typography/Typography";
-import PixelArtPageStore, { EraseAction, PenAction, PixelArtTool, TRANSPARENT_PIXEL } from "./PixelArtPage.store";
+import PixelArtPageStore, { PixelArtTool, TRANSPARENT_PIXEL } from "./PixelArtPage.store";
 import Icon from "../../DSL/Icon/Icon";
 import { darkModeSecondary, lightModePrimary } from "../../DSL/Theme";
+import { PixelAction } from "./PixelArtActions";
 
 const CANVAS_ELEMENT_SIZE = 512;
 
@@ -24,7 +25,7 @@ const PixelArtPage = observer(function PixelArtPage() {
         } else if (ctrlPressed && e.code === 'KeyZ') {
             e.preventDefault();
             store.undoAction();
-        } 
+        }
     }
 
     return <Pane display={"flex"} flexDirection={"column"} padding={"0px"}>
@@ -51,6 +52,7 @@ const PixelArtPage = observer(function PixelArtPage() {
 const ArtCanvas = observer(({ store }: { store: PixelArtPageStore }) => {
     const [mousePressed, setMousePressed] = useState(false);
     const [lastCoords, setLastCoords] = useState<number[]>([0, 0]);
+    const [activeAction, setActiveAction] = useState<PixelAction | null>(null);
 
     useEffect(() => {
         let canvas: HTMLCanvasElement = document.getElementById('canvas') as HTMLCanvasElement;
@@ -63,18 +65,9 @@ const ArtCanvas = observer(({ store }: { store: PixelArtPageStore }) => {
         const canvasCellSize = CANVAS_ELEMENT_SIZE / store.canvasSize;
         if (rect.left < x && rect.right > x &&
             rect.top < y && rect.bottom > y) {
-            const canvasPixelX = Math.floor((x - rect.x) / canvasCellSize);
-            const canvasPixelY = Math.floor((y - rect.y) / canvasCellSize);
-
-            if (store.tools[store.selectedToolIndex].id === PixelArtTool.pen) {
-                if (!store.isSamePixel(canvasPixelX, canvasPixelY, store.palette[store.selectedBrushPixelIndex])) {
-                    store.doAction(new PenAction(canvasPixelX, canvasPixelY, store.palette[store.selectedBrushPixelIndex]));
-                }
-            } else {
-                if (!store.isSamePixel(canvasPixelX, canvasPixelY, TRANSPARENT_PIXEL)) {
-                    store.doAction(new EraseAction(canvasPixelX, canvasPixelY));
-                }
-            }
+            const canvasX = Math.floor((x - rect.x) / canvasCellSize);
+            const canvasY = Math.floor((y - rect.y) / canvasCellSize);
+            activeAction?.update(store, canvasX, canvasY);
         }
     }
 
@@ -93,12 +86,18 @@ const ArtCanvas = observer(({ store }: { store: PixelArtPageStore }) => {
     }
 
     const onCanvasMouseDown = (e: any) => {
+        const color = store.tools[store.selectedToolIndex].id === PixelArtTool.pen ? store.palette[store.selectedBrushPixelIndex] : TRANSPARENT_PIXEL;
+        setActiveAction(new PixelAction(color));
         updatePixel(e.clientX, e.clientY);
         setLastCoords([e.clientX, e.clientY]);
         setMousePressed(true);
     }
 
     const onCanvasMouseUp = (e: any) => {
+        if (activeAction && activeAction.isValid()) {
+            store.pushAction(activeAction);
+        }
+        setActiveAction(null);
         setMousePressed(false);
     }
 

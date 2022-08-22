@@ -4,58 +4,13 @@ import { EmptyClass } from "../../helpers/mixins";
 import { ObjectKeys } from "../../helpers/objects";
 import { Reactionable } from "../../services/mixins/reactionable";
 import AppStore from "../../store/App.store";
+import { ActionInterface } from "./PixelArtActions";
 
 export const TRANSPARENT_PIXEL = '#0000';
 
 export enum PixelArtTool {
     pen,
     erase,
-}
-
-export interface ActionInterface {
-    do(store: PixelArtPageStore): void,
-    undo(store: PixelArtPageStore): void,
-}
-
-export class PenAction implements ActionInterface {
-    x: number;
-    y: number;
-    color: string;
-    storedColor: string;
-
-    constructor(x: number, y: number, color: string) {
-        this.x = x;
-        this.y = y;
-        this.color = color;
-        this.storedColor = '';
-    }
-    do(store: PixelArtPageStore) {
-        this.storedColor = store.getPixelColor(this.x, this.y);
-        store.setPixelColor(this.x, this.y, this.color);
-    }
-    undo(store: PixelArtPageStore) {
-        store.setPixelColor(this.x, this.y, this.storedColor);
-    }
-}
-
-export class EraseAction implements ActionInterface {
-    x: number;
-    y: number;
-    storedColor: string;
-
-    constructor(x: number, y: number) {
-        this.x = x;
-        this.y = y;
-        this.storedColor = '';
-    }
-
-    do(store: PixelArtPageStore) {
-        this.storedColor = store.getPixelColor(this.x, this.y);
-        store.setPixelColor(this.x, this.y, TRANSPARENT_PIXEL);
-    }
-    undo(store: PixelArtPageStore) {
-        store.setPixelColor(this.x, this.y, this.storedColor);
-    }
 }
 
 class PixelArtPageStore extends Reactionable(EmptyClass) {
@@ -140,21 +95,12 @@ class PixelArtPageStore extends Reactionable(EmptyClass) {
 
         const cellSize = this.canvas.width / this.canvasSize;
 
-        ctx.save();
-        ctx.fillStyle = color;
-        ctx.fillRect(x * cellSize, y * cellSize, cellSize, cellSize);
-        ctx.restore();
-
-    }
-
-    clearPixel(x: number, y: number) {
-        if (!this.canvas) return;
-
-        let ctx = this.canvas.getContext('2d');
-        if (!ctx) return;
-
-        const cellSize = this.canvas.width / this.canvasSize;
-        ctx.clearRect(x * cellSize, y * cellSize, cellSize, cellSize);
+        if (color === TRANSPARENT_PIXEL) {
+            ctx.clearRect(x * cellSize, y * cellSize, cellSize, cellSize);
+        } else {
+            ctx.fillStyle = color;
+            ctx.fillRect(x * cellSize, y * cellSize, cellSize, cellSize);    
+        }
     }
 
     getPFP() {
@@ -163,11 +109,7 @@ class PixelArtPageStore extends Reactionable(EmptyClass) {
 
     setPixelColor(x: number, y: number, color: string) {
         this.canvasPixels[x + y * this.canvasSize] = color;
-        if (color === TRANSPARENT_PIXEL) {
-            this.clearPixel(x, y);
-        } else {
-            this.drawPixel(x, y, color);
-        }
+        this.drawPixel(x, y, color);
     }
 
     getPixelColor(x: number, y: number): string {
@@ -178,18 +120,16 @@ class PixelArtPageStore extends Reactionable(EmptyClass) {
         return this.canvasPixels[x + y * this.canvasSize] === color;
     }
 
-    @action
-    doAction(action: ActionInterface) {
-        action.do(this);
+    pushAction(action: ActionInterface) {
         this.undoActions.push(action);
         this.redoActions = [];
     }
+
     @action
     undoAction() {
         if (this.undoActions.length) {
             const action: ActionInterface | undefined = this.undoActions.pop();
             if (action) {
-                console.log('undo', action);
                 action.undo(this);
                 this.redoActions.push(action);
             }
@@ -200,8 +140,7 @@ class PixelArtPageStore extends Reactionable(EmptyClass) {
         if (this.redoActions.length) {
             const action: ActionInterface | undefined = this.redoActions.pop();
             if (action) {
-                console.log('redo', action);
-                action.do(this);
+                action.redo(this);
                 this.undoActions.push(action);
             }
         }
@@ -239,7 +178,7 @@ class PixelArtPageStore extends Reactionable(EmptyClass) {
             return a.localeCompare(b);
         });
         data = data?.filter(function(item, pos) {
-            return data.indexOf(item) == pos;
+            return data.indexOf(item) === pos;
         })
 
         return data;
