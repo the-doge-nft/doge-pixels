@@ -9,11 +9,12 @@ import { PrismaService } from './prisma.service';
 import { EthersService } from './ethers/ethers.service';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { HttpModule } from '@nestjs/axios';
+import { PixelTransfersService } from './pixel-transfers/pixel-transfers.service';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
-      load: [configuration],
+      load: [() => configuration],
     }),
     ScheduleModule.forRoot(),
     EventEmitterModule.forRoot(),
@@ -22,6 +23,6 @@ import { HttpModule } from '@nestjs/axios';
     }),
   ],
   controllers: [AppController],
-  providers: [AppService, PrismaService, EthersService, PixelsService],
+  providers: [AppService, PrismaService, EthersService, PixelsService, PixelTransfersService],
 })
 export class AppModule {}

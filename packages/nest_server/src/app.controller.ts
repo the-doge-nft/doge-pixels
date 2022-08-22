@@ -17,7 +17,7 @@ export class AppController {
 
   @Get('status')
   getStatus() {
-    return 'RUNIT';
+    return 'WOW';
   }
 
   @Get('dog/locked')
