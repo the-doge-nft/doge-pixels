@@ -7,6 +7,8 @@ import AppStore from "../../store/App.store";
 import { ActionInterface } from "./PixelArtActions";
 import { CanvasSize, PixelArtCanvas } from "./PixelArtCanvas";
 
+const MAX_ACTIONS_CN = 50;
+
 class PixelArtPageStore extends Reactionable(EmptyClass) {
     @observable
     selectedAddress: string;
@@ -50,6 +52,9 @@ class PixelArtPageStore extends Reactionable(EmptyClass) {
     pushAction(action: ActionInterface) {
         this.undoActions.push(action);
         this.redoActions = [];
+        if (this.undoActions.length > MAX_ACTIONS_CN) {
+            this.undoActions.pop();
+        }
     }
 
     @action
