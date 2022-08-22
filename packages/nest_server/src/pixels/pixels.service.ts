@@ -9,6 +9,7 @@ import {ConfigService} from "@nestjs/config";
 import {Configuration} from "../config/configuration";
 import {from} from "rxjs";
 import {log} from "util";
+import {PixelTransfersService} from "../pixel-transfers/pixel-transfers.service";
 
 @Injectable()
 export class PixelsService implements OnModuleInit {
@@ -16,7 +17,7 @@ export class PixelsService implements OnModuleInit {
   private pxContract: ethers.Contract;
   private dogContract: ethers.Contract;
 
-  constructor(private ethersService: EthersService, private configService: ConfigService<Configuration>) {}
+  constructor(private ethersService: EthersService, private configService: ConfigService<Configuration>, private pixelTransfersService: PixelTransfersService) {}
 
   async onModuleInit() {
     this.logger.log('PixelsService is loaded');
@@ -82,11 +83,20 @@ export class PixelsService implements OnModuleInit {
       logs.push(..._logs)
     }
 
-    const { transactionHash, args } = logs[0]
-    const { from, to, tokenId } = args
+    for (const log of logs) {
+      const { transactionHash: txHash, args } = log
+      const { from, to, tokenId } = args
 
-    this.logger.debug(`got logs of length: ${logs.length}`)
-    this.logger.log(`txHash:: ${transactionHash} -- from:: ${from} -- to:: ${to} -- tokenId:: ${tokenId}`)
+      const transfer = await this.pixelTransfersService.findByTxHash(txHash)
+      if (!transfer) {
+        this.logger.log(`inserting transfer`)
+        await this.pixelTransfersService.create({
+          from, to, txHash, tokenId: tokenId.toNumber()
+        })
+      } else {
+        this.logger.log(`transfer already exists`)
+      }
+    }
   }
 
   getDogLocked() {

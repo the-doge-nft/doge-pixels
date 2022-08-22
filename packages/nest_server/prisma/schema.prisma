@@ -15,8 +15,8 @@ model PixelTransfers {
   id                Int @id @default(autoincrement())
   insertedAt        DateTime @default(now())
   transactedAt      DateTime
+  txHash            String @unique
   from              String
   to                String
-  tokenId           Int @unique
-  txHash            String @unique
+  tokenId           Int
 }

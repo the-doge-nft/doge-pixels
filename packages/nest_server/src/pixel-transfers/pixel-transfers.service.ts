@@ -5,7 +5,7 @@ import { PrismaService } from "../prisma.service";
 export class PixelTransfersService {
     constructor(private prismaService: PrismaService) {}
 
-    create(from: string, to: string, tokenId: number, txHash: string) {
+    create({from, to, tokenId, txHash}: {from: string, to: string, tokenId: number, txHash: string}) {
         return this.prismaService.pixelTransfers.create({
             data: {
                 transactedAt: new Date(),
@@ -15,5 +15,9 @@ export class PixelTransfersService {
                 txHash
             }
         })
+    }
+
+    findByTxHash(txHash: string) {
+        return this.prismaService.pixelTransfers.findUnique({where: {txHash}})
     }
 }
