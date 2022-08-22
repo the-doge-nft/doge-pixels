@@ -14,20 +14,20 @@ spacedEcho() {
 }
 
 up() {
-    # TODO: issues here connecting to db from api docker container
-    echo "spinning up api"
+    spacedEcho "spinning up db"
     docker-compose up -d db
     sleep 5
+    yarn compile_contracts
+    spacedEcho "migrating local db"
     yarn prisma migrate dev --name init
-    yarn start:dev
-#    docker-compose up -d api
-#    docker-compose logs
+    spacedEcho "spinning up api"
+    docker-compose up -d api
+    docker-compose logs -f
 }
 
 down() {
     echo "bringing down db & api"
     docker-compose down --remove-orphans -v
-    killall node
 }
 
 usage() {
