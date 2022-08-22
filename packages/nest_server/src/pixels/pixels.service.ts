@@ -1,5 +1,4 @@
 import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
-import { Interval } from '@nestjs/schedule';
 import { OnEvent } from '@nestjs/event-emitter';
 import { Events } from '../events';
 import { ethers } from 'ethers';
@@ -7,9 +6,7 @@ import { EthersService } from '../ethers/ethers.service';
 import * as ABI from '../contracts/hardhat_contracts.json';
 import {ConfigService} from "@nestjs/config";
 import {Configuration} from "../config/configuration";
-import {from} from "rxjs";
-import {log} from "util";
-import {PixelTransfersService} from "../pixel-transfers/pixel-transfers.service";
+import {PixelsRepository} from "./pixels.repository";
 
 @Injectable()
 export class PixelsService implements OnModuleInit {
@@ -17,7 +14,7 @@ export class PixelsService implements OnModuleInit {
   private pxContract: ethers.Contract;
   private dogContract: ethers.Contract;
 
-  constructor(private ethersService: EthersService, private configService: ConfigService<Configuration>, private pixelTransfersService: PixelTransfersService) {}
+  constructor(private ethersService: EthersService, private configService: ConfigService<Configuration>, private pixelsRepository: PixelsRepository) {}
 
   async onModuleInit() {
     this.logger.log('PixelsService is loaded');
@@ -68,6 +65,10 @@ export class PixelsService implements OnModuleInit {
   }
 
   async syncTransfers() {
+
+    this.logger.debug(`dropping all pixel records`)
+    await this.pixelsRepository.deleteAll()
+
     const addressToPuppers = {}
 
     const filter = this.pxContract.filters.Transfer(null, null)
@@ -87,15 +88,27 @@ export class PixelsService implements OnModuleInit {
       const { transactionHash: txHash, args } = log
       const { from, to, tokenId } = args
 
-      const transfer = await this.pixelTransfersService.findByTxHash(txHash)
-      if (!transfer) {
-        this.logger.log(`inserting transfer`)
-        await this.pixelTransfersService.create({
-          from, to, txHash, tokenId: tokenId.toNumber()
-        })
-      } else {
-        this.logger.log(`transfer already exists`)
+      if (tokenId.toNumber() === 1160191) {
+        this.logger.log(`${from} -- ${to} -- ${txHash}`)
       }
+
+      const pixel = await this.pixelsRepository.findByTokenId(tokenId.toNumber())
+      this.logger.debug(`debug:: pixel: ${pixel}`)
+      if (!pixel) {
+        await this.pixelsRepository.create({from, to, tokenId: tokenId.toNumber()})
+      } else {
+        await this.pixelsRepository.updateOwner({tokenId: tokenId.toNumber(), ownerAddress: to})
+      }
+
+      // const transfer = await this.pixelTransfersService.findByTxHash(txHash)
+      // if (!transfer) {
+      //   this.logger.log(`inserting transfer`)
+      //   await this.pixelTransfersService.create({
+      //     from, to, txHash, tokenId: tokenId.toNumber()
+      //   })
+      // } else {
+      //   this.logger.log(`transfer already exists`)
+      // }
     }
   }
 

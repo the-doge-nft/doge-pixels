@@ -1,5 +1,4 @@
 import { Controller, Get, Logger, Param } from '@nestjs/common';
-import { AppService } from './app.service';
 import { PixelsService } from './pixels/pixels.service';
 import { ethers } from 'ethers';
 import { EthersService } from './ethers/ethers.service';

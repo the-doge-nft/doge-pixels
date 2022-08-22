@@ -11,12 +11,14 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model PixelTransfers {
+model Pixels {
   id                Int @id @default(autoincrement())
   insertedAt        DateTime @default(now())
-  transactedAt      DateTime
-  txHash            String @unique
-  from              String
-  to                String
-  tokenId           Int
+  updatedAt         DateTime @default(now())
+  ownerAddress      String
+  tokenId           Int @unique
+  name              String
+  description       String
+  tokenUri          String
+  metadata          String
 }

@@ -9,7 +9,7 @@ import { PrismaService } from './prisma.service';
 import { EthersService } from './ethers/ethers.service';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { HttpModule } from '@nestjs/axios';
-import { PixelTransfersService } from './pixel-transfers/pixel-transfers.service';
+import { PixelsRepository } from "./pixels/pixels.repository";
 
 @Module({
   imports: [
@@ -23,6 +23,6 @@ import { PixelTransfersService } from './pixel-transfers/pixel-transfers.service
     }),
   ],
   controllers: [AppController],
-  providers: [AppService, PrismaService, EthersService, PixelsService, PixelTransfersService],
+  providers: [AppService, PrismaService, EthersService, PixelsService, PixelsRepository],
 })
 export class AppModule {}
