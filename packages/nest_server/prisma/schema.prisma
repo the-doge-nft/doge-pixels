@@ -1,0 +1,22 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+  binaryTargets = ["native", "linux-musl"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model PixelTransfers {
+  id                Int @id @default(autoincrement())
+  insertedAt        DateTime @default(now())
+  transactedAt      DateTime
+  from              String
+  to                String
+  tokenId           Int @unique
+  txHash            String @unique
+}
