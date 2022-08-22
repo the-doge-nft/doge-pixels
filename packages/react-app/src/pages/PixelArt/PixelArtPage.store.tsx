@@ -8,11 +8,6 @@ import { ActionInterface } from "./PixelArtActions";
 
 export const TRANSPARENT_PIXEL = '#0000';
 
-export enum PixelArtTool {
-    pen,
-    erase,
-}
-
 class PixelArtPageStore extends Reactionable(EmptyClass) {
     canvas?: HTMLCanvasElement;
 
@@ -21,8 +16,6 @@ class PixelArtPageStore extends Reactionable(EmptyClass) {
 
     @observable
     selectedBrushPixelIndex: number;
-
-    tools: any[];
 
     @observable
     selectedToolIndex: number;
@@ -49,16 +42,6 @@ class PixelArtPageStore extends Reactionable(EmptyClass) {
         this.selectedBrushPixelIndex = 0;
 
         this.selectedToolIndex = 0;
-        this.tools = [
-            {
-                id: PixelArtTool.pen,
-                icon: 'toolPen',
-            },
-            {
-                id: PixelArtTool.erase,
-                icon: 'toolErase',
-            },
-        ];
 
         this.undoActions = [];
         this.redoActions = [];

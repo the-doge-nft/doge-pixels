@@ -3,10 +3,11 @@ import { observer } from "mobx-react-lite";
 import { useEffect, useMemo, useState } from "react";
 import Pane from "../../DSL/Pane/Pane";
 import Typography, { TVariant } from "../../DSL/Typography/Typography";
-import PixelArtPageStore, { PixelArtTool, TRANSPARENT_PIXEL } from "./PixelArtPage.store";
+import PixelArtPageStore, { TRANSPARENT_PIXEL } from "./PixelArtPage.store";
 import Icon from "../../DSL/Icon/Icon";
 import { darkModeSecondary, lightModePrimary } from "../../DSL/Theme";
 import { PixelAction } from "./PixelArtActions";
+import { PixelArtTool, pixelArtTools } from "./PixelArtTools";
 
 const CANVAS_ELEMENT_SIZE = 512;
 
@@ -86,7 +87,7 @@ const ArtCanvas = observer(({ store }: { store: PixelArtPageStore }) => {
     }
 
     const onCanvasMouseDown = (e: any) => {
-        const color = store.tools[store.selectedToolIndex].id === PixelArtTool.pen ? store.palette[store.selectedBrushPixelIndex] : TRANSPARENT_PIXEL;
+        const color = pixelArtTools[store.selectedToolIndex].id === PixelArtTool.pen ? store.palette[store.selectedBrushPixelIndex] : TRANSPARENT_PIXEL;
         setActiveAction(new PixelAction(color));
         updatePixel(e.clientX, e.clientY);
         setLastCoords([e.clientX, e.clientY]);
@@ -164,7 +165,7 @@ const ToolBar = observer(({ store }: { store: PixelArtPageStore }) => {
 
     return <Box margin={"5px"}>
         <GridItem display={"flex"} flexDirection={"column"} flexGrow={0}>
-            {store.tools.map((entry: any, index: number) => {
+            {pixelArtTools.map((entry: any, index: number) => {
                 return <Box
                     key={index}
                     p={1}
