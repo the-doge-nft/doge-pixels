@@ -1,8 +1,8 @@
-import PixelArtPageStore, { TRANSPARENT_PIXEL } from "./PixelArtPage.store";
+import { PixelArtCanvas, TRANSPARENT_PIXEL } from "./PixelArtCanvas";
 
 export interface ActionInterface {
-    undo(store: PixelArtPageStore): void;
-    redo(store: PixelArtPageStore): void;
+    undo(pixelsCanvas: PixelArtCanvas): void;
+    redo(pixelsCanvas: PixelArtCanvas): void;
     isValid(): boolean;
 }
 
@@ -20,27 +20,27 @@ export class PixelAction implements ActionInterface {
         this.color = color;
     }
 
-    update(store: PixelArtPageStore, x: number, y: number): void {
-        const previousColor = store.getPixelColor(x, y);
+    update(pixelsCanvas: PixelArtCanvas, x: number, y: number): void {
+        const previousColor = pixelsCanvas.getPixelColor(x, y);
         if (previousColor !== this.color) {
             this.pixels.push({
                 x,
                 y,
                 color: previousColor,
             })
-            store.setPixelColor(x, y, this.color);
+            pixelsCanvas.setPixelColor(x, y, this.color);
         }
     }
 
-    redo(store: PixelArtPageStore) {
+    redo(pixelsCanvas: PixelArtCanvas) {
         for (const pixelInfo of this.pixels) {
-            store.setPixelColor(pixelInfo.x, pixelInfo.y, this.color);
+            pixelsCanvas.setPixelColor(pixelInfo.x, pixelInfo.y, this.color);
         }
     }
 
-    undo(store: PixelArtPageStore) {
+    undo(pixelsCanvas: PixelArtCanvas) {
         for (const pixelInfo of this.pixels) {
-            store.setPixelColor(pixelInfo.x, pixelInfo.y, pixelInfo.color);
+            pixelsCanvas.setPixelColor(pixelInfo.x, pixelInfo.y, pixelInfo.color);
         }
     }
 

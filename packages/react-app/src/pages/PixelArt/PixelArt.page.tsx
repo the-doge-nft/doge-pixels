@@ -3,11 +3,12 @@ import { observer } from "mobx-react-lite";
 import { useEffect, useMemo, useState } from "react";
 import Pane from "../../DSL/Pane/Pane";
 import Typography, { TVariant } from "../../DSL/Typography/Typography";
-import PixelArtPageStore, { TRANSPARENT_PIXEL } from "./PixelArtPage.store";
+import PixelArtPageStore from "./PixelArtPage.store";
 import Icon from "../../DSL/Icon/Icon";
 import { darkModeSecondary, lightModePrimary } from "../../DSL/Theme";
 import { PixelAction } from "./PixelArtActions";
 import { PixelArtTool, pixelArtTools } from "./PixelArtTools";
+import { TRANSPARENT_PIXEL } from "./PixelArtCanvas";
 
 const CANVAS_ELEMENT_SIZE = 512;
 
@@ -35,22 +36,22 @@ const PixelArtPage = observer(function PixelArtPage() {
         </Typography>
         <Grid templateColumns={"0fr 1fr"} flexGrow={0}>
             <GridItem display={"flex"} flexDirection={"column"} flexGrow={0}>
-                <MainMenu store={store} />
+                <MainMenuComponent store={store} />
                 <Box border={'0.5px solid gray'} mx={'10px'} marginBottom={'5px'} />
                 <GridItem display={"flex"} flexDirection={"row"} flexGrow={0}>
-                    <ToolBar store={store} />
+                    <ToolsComponent store={store} />
                     {/*<Box h={'97%'} border={'0.5px solid gray'} my={'10px'}/>*/}
-                    <ArtCanvas store={store} />
+                    <ArtCanvasComponent store={store} />
                 </GridItem>
                 <Box border={'0.5px solid gray'} mx={'10px'} />
-                <PixelPalette store={store} />
+                <PixelsPaletteComponent store={store} />
             </GridItem>
         </Grid>
         <a id={'pfp-link'} />
     </Pane>
 });
 
-const ArtCanvas = observer(({ store }: { store: PixelArtPageStore }) => {
+const ArtCanvasComponent = observer(({ store }: { store: PixelArtPageStore }) => {
     const [mousePressed, setMousePressed] = useState(false);
     const [lastCoords, setLastCoords] = useState<number[]>([0, 0]);
     const [activeAction, setActiveAction] = useState<PixelAction | null>(null);
@@ -63,12 +64,12 @@ const ArtCanvas = observer(({ store }: { store: PixelArtPageStore }) => {
     const updatePixel = (x: number, y: number) => {
         let canvas: HTMLCanvasElement = document.getElementById('canvas') as HTMLCanvasElement;
         const rect = canvas.getBoundingClientRect();
-        const canvasCellSize = CANVAS_ELEMENT_SIZE / store.canvasSize;
+        const canvasCellSize = CANVAS_ELEMENT_SIZE / store.pixelsCanvas.canvasSize;
         if (rect.left < x && rect.right > x &&
             rect.top < y && rect.bottom > y) {
             const canvasX = Math.floor((x - rect.x) / canvasCellSize);
             const canvasY = Math.floor((y - rect.y) / canvasCellSize);
-            activeAction?.update(store, canvasX, canvasY);
+            activeAction?.update(store.pixelsCanvas, canvasX, canvasY);
         }
     }
 
@@ -117,27 +118,12 @@ const ArtCanvas = observer(({ store }: { store: PixelArtPageStore }) => {
     </Box>
 })
 
-const PixelPalette = observer(({ store }: { store: PixelArtPageStore }) => {
+const PixelsPaletteComponent = observer(({ store }: { store: PixelArtPageStore }) => {
     const { colorMode } = useColorMode()
 
     return <Box margin={"10px"}>
         <GridItem display={"flex"} flexDirection={"row"} flexGrow={0}>
             <Box display={"flex"} flexDirection={"column"} flexWrap={'wrap'} height={70}>
-                {/*store.brushPixels.map((entry: any, index: number) => {
-                    return <Box
-                        key={index}
-                        p={1}
-                        bg={store.selectedBrushPixelIndex === index
-                            ? (colorMode === "light" ? lightModePrimary : darkModeSecondary)
-                            : "inherit"}
-                        _hover={{ bg: (colorMode === "light" ? lightModePrimary : darkModeSecondary) }}
-                        onClick={() => {
-                            store.selectedBrushPixelIndex = index;
-                        }}
-                    >
-                        <Box boxSize={6} bgColor={entry} />
-                    </Box>
-                })*/}
                 {store.palette && <Box boxSize={'64px'} bgColor={store.palette[store.selectedBrushPixelIndex]} />}
                 <Box border={"1px solid gray"} m={'3px'} w={'1px'} h={'84%'} marginLeft={'5px'} />
                 {store.palette?.map((entry: any, index: number) => {
@@ -160,7 +146,7 @@ const PixelPalette = observer(({ store }: { store: PixelArtPageStore }) => {
     </Box>
 })
 
-const ToolBar = observer(({ store }: { store: PixelArtPageStore }) => {
+const ToolsComponent = observer(({ store }: { store: PixelArtPageStore }) => {
     const { colorMode } = useColorMode()
 
     return <Box margin={"5px"}>
@@ -184,7 +170,7 @@ const ToolBar = observer(({ store }: { store: PixelArtPageStore }) => {
     </Box>
 })
 
-const MainMenu = observer(({ store }: { store: PixelArtPageStore }) => {
+const MainMenuComponent = observer(({ store }: { store: PixelArtPageStore }) => {
     const undoAction = () => {
         store.undoAction();
     }
