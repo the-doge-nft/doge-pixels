@@ -13,23 +13,34 @@ const PixelArtPage = observer(function PixelArtPage() {
     const store = useMemo(() => new PixelArtPageStore(), [])
 
     useEffect(() => {
-        console.log(store.selectedDogs);
+        document.addEventListener("keydown", handleHotkeys, false);
     }, []);
 
-    return <Pane display={"flex"} flexDirection={"column"} h={"full"} padding={"0px"}>
+    const handleHotkeys = (e: KeyboardEvent) => {
+        const ctrlPressed = window.navigator.platform.match("Mac") ? e.metaKey : e.ctrlKey;
+        if (ctrlPressed && e.shiftKey && e.code === 'KeyZ') {
+            e.preventDefault();
+            store.redoAction();
+        } else if (ctrlPressed && e.code === 'KeyZ') {
+            e.preventDefault();
+            store.undoAction();
+        } 
+    }
+
+    return <Pane display={"flex"} flexDirection={"column"} padding={"0px"}>
         <Typography variant={TVariant.PresStart10} m={2}>
             {store.selectedAddress}
         </Typography>
-        <Grid templateColumns={"0.5fr 1fr"} flexGrow={1}>
-            <GridItem display={"flex"} flexDirection={"column"} flexGrow={1}>
+        <Grid templateColumns={"0fr 1fr"} flexGrow={0}>
+            <GridItem display={"flex"} flexDirection={"column"} flexGrow={0}>
                 <MainMenu store={store} />
-                <Box w={'100%'} border={'0.5px solid black'} mx={'10px'} marginBottom={'5px'} />
-                <GridItem display={"flex"} flexDirection={"row"} flexGrow={1}>
+                <Box border={'0.5px solid gray'} mx={'10px'} marginBottom={'5px'} />
+                <GridItem display={"flex"} flexDirection={"row"} flexGrow={0}>
                     <ToolBar store={store} />
-                    {/*<Box h={'97%'} border={'0.5px solid black'} my={'10px'}/>*/}
+                    {/*<Box h={'97%'} border={'0.5px solid gray'} my={'10px'}/>*/}
                     <ArtCanvas store={store} />
                 </GridItem>
-                <Box w={'100%'} border={'0.5px solid black'} mx={'10px'} />
+                <Box border={'0.5px solid gray'} mx={'10px'} />
                 <PixelPalette store={store} />
             </GridItem>
         </Grid>
@@ -72,7 +83,7 @@ const ArtCanvas = observer(({ store }: { store: PixelArtPageStore }) => {
             const cn = 10;
             let dx = (e.clientX - lastCoords[0]) / cn;
             let dy = (e.clientY - lastCoords[1]) / cn;
-            for(let cd = 0; cd < cn; ++cd) {
+            for (let cd = 0; cd < cn; ++cd) {
                 const x = lastCoords[0] + dx * cd;
                 const y = lastCoords[1] + dy * cd;
                 updatePixel(x, y);
@@ -92,15 +103,15 @@ const ArtCanvas = observer(({ store }: { store: PixelArtPageStore }) => {
     }
 
     return <Box
-        border={"1px dashed black"}
+        border={"1px solid gray"}
         margin={"5px"}
         background={'linear-gradient(45deg, rgba(0, 0, 0, 0.0980392) 25%, transparent 25%, transparent 75%, rgba(0, 0, 0, 0.0980392) 75%, rgba(0, 0, 0, 0.0980392) 0), linear-gradient(45deg, rgba(0, 0, 0, 0.0980392) 25%, transparent 25%, transparent 75%, rgba(0, 0, 0, 0.0980392) 75%, rgba(0, 0, 0, 0.0980392) 0), white'}
         backgroundRepeat={'repeat, repeat'}
-        backgroundPosition={'0px 0, 5px 5px'}
+        backgroundPosition={'0px 0, 8px 8px'}
         transformOrigin={'0 0 0'}
         //backgroundOrigin={'padding-box, padding-box'}
         backgroundClip={'border-box, border-box'}
-        backgroundSize={'10px 10px, 10px 10px'}
+        backgroundSize={'16px 16px, 16px 16px'}
     >
         <canvas id='canvas' width={CANVAS_ELEMENT_SIZE} height={CANVAS_ELEMENT_SIZE} onMouseMove={(e) => onCanvasMouseMove(e)} onMouseDown={e => onCanvasMouseDown(e)} onMouseUp={e => onCanvasMouseUp(e)} />
     </Box>
@@ -110,7 +121,7 @@ const PixelPalette = observer(({ store }: { store: PixelArtPageStore }) => {
     const { colorMode } = useColorMode()
 
     return <Box margin={"10px"}>
-        <GridItem display={"flex"} flexDirection={"row"} flexGrow={1}>
+        <GridItem display={"flex"} flexDirection={"row"} flexGrow={0}>
             <Box display={"flex"} flexDirection={"column"} flexWrap={'wrap'} height={70}>
                 {/*store.brushPixels.map((entry: any, index: number) => {
                     return <Box
@@ -128,7 +139,7 @@ const PixelPalette = observer(({ store }: { store: PixelArtPageStore }) => {
                     </Box>
                 })*/}
                 {store.palette && <Box boxSize={'64px'} bgColor={store.palette[store.selectedBrushPixelIndex]} />}
-                <Box border={"1px solid black"} m={'3px'} w={'1px'} h={'84%'} marginLeft={'5px'}/>
+                <Box border={"1px solid gray"} m={'3px'} w={'1px'} h={'84%'} marginLeft={'5px'} />
                 {store.palette?.map((entry: any, index: number) => {
                     return <Box
                         key={index}
@@ -153,7 +164,7 @@ const ToolBar = observer(({ store }: { store: PixelArtPageStore }) => {
     const { colorMode } = useColorMode()
 
     return <Box margin={"5px"}>
-        <GridItem display={"flex"} flexDirection={"column"} flexGrow={1}>
+        <GridItem display={"flex"} flexDirection={"column"} flexGrow={0}>
             {store.tools.map((entry: any, index: number) => {
                 return <Box
                     key={index}
