@@ -1,15 +1,16 @@
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { ConfigModule } from '@nestjs/config';
-import configuration from './config/configuration';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import configuration, { Configuration } from './config/configuration';
 import { ScheduleModule } from '@nestjs/schedule';
 import { PixelsService } from './pixels/pixels.service';
 import { PrismaService } from './prisma.service';
 import { EthersService } from './ethers/ethers.service';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { HttpModule } from '@nestjs/axios';
-import { PixelsRepository } from "./pixels/pixels.repository";
+import { PixelsRepository } from './pixels/pixels.repository';
+import { SentryModule } from '@ntegral/nestjs-sentry';
 
 @Module({
   imports: [
@@ -21,8 +22,22 @@ import { PixelsRepository } from "./pixels/pixels.repository";
     HttpModule.register({
       timeout: 5000,
     }),
+    SentryModule.forRootAsync({
+      imports: [ConfigModule],
+      useFactory: async (config: ConfigService<Configuration>) => ({
+        dsn: config.get('sentryDns'),
+        debug: true,
+      }),
+      inject: [ConfigService],
+    }),
   ],
   controllers: [AppController],
-  providers: [AppService, PrismaService, EthersService, PixelsService, PixelsRepository],
+  providers: [
+    AppService,
+    PrismaService,
+    EthersService,
+    PixelsService,
+    PixelsRepository,
+  ],
 })
 export class AppModule {}

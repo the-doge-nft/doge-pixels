@@ -3,6 +3,8 @@ import { ethers } from 'ethers';
 import { ConfigService } from '@nestjs/config';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { Events } from '../events';
+import { InjectSentry, SentryService } from '@ntegral/nestjs-sentry';
+import { AppEnv } from '../config/configuration';
 
 @Injectable()
 export class EthersService implements OnModuleInit {
@@ -17,6 +19,7 @@ export class EthersService implements OnModuleInit {
       infura: { wsEndpoint: string };
     }>,
     private eventEmitter: EventEmitter2,
+    @InjectSentry() private readonly sentryClient: SentryService,
   ) {
     const appEnv = this.configService.get('appEnv');
     if (appEnv === 'production') {
@@ -31,13 +34,15 @@ export class EthersService implements OnModuleInit {
   }
 
   onModuleInit() {
-    this.logger.log('EthersService is loaded');
     this.initWS();
   }
 
   initWS() {
-    this.logger.log(`Creating WS provider on network: ${this.network}`);
-    if (this.configService.get('appEnv') === 'test') {
+    const logMessage = `Creating WS provider on network: ${this.network}`;
+    this.logger.log(logMessage);
+    this.sentryClient.instance().captureMessage(logMessage);
+
+    if (this.configService.get('appEnv') === AppEnv.test) {
       this.provider = new ethers.providers.WebSocketProvider(
         `ws://127.0.0.1:8545`,
       );
@@ -49,17 +54,18 @@ export class EthersService implements OnModuleInit {
     }
     this.eventEmitter.emit(Events.ETHERS_WS_PROVIDER_CONNECTED, this.provider);
 
-    if (this.configService.get('appEnv') !== 'test') {
+    if (this.configService.get('appEnv') !== AppEnv.test) {
       this.keepAlive({
         provider: this.provider,
         onDisconnect: () => {
-          this.logger.error('websocket connection lost');
           this.initWS();
         },
       });
     }
   }
 
+  // the ws connection from infura often drops which we *cannot* have happen
+  // as we need to be listening to contract events at all times
   keepAlive({
     provider,
     onDisconnect,
@@ -80,7 +86,10 @@ export class EthersService implements OnModuleInit {
     });
 
     provider._websocket.on('close', (err) => {
-      this.logger.error('Websocket connection closed');
+      const logMessage = 'Websocket connection closed';
+      this.logger.error(logMessage);
+      this.sentryClient.instance().captureMessage(logMessage);
+
       if (keepAliveInterval) {
         clearInterval(keepAliveInterval);
       }

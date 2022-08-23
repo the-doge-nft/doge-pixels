@@ -17,8 +17,4 @@ model Pixels {
   updatedAt         DateTime @default(now())
   ownerAddress      String
   tokenId           Int @unique
-  name              String
-  description       String
-  tokenUri          String
-  metadata          String
 }
