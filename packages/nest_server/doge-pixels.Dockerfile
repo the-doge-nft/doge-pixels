@@ -13,6 +13,7 @@ RUN yarn install --frozen-lockfile
 
 COPY --chown=node:node . .
 
+# generate prisma client
 RUN yarn prisma:generate
 
 USER node
@@ -49,6 +50,9 @@ FROM node:18-alpine as production
 # Copy the bundled code from the build stage to the production image
 COPY --chown=node:node --from=build /usr/src/app/node_modules ./node_modules
 COPY --chown=node:node --from=build /usr/src/app/dist ./dist
+
+# Migrate the db
+RUN yarn prisma migrate deploy
 
 # Start the server using the production build
 CMD [ "node", "dist/main.js" ]
