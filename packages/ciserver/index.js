@@ -6,8 +6,6 @@ const app = express();
 
 const port = 3009;
 const dockerRegistery = "calebcarithers";
-const dockerUser = process.env.DOCKER_USER;
-const dockerPassword = process.env.DOCKER_PW;
 
 let ciEndpoint, appEnv;
 
@@ -35,9 +33,8 @@ const pullImage = (hash) => {
     .execSync(`docker manifest inspect ${fullImageName} > /dev/null ; echo $?`)
     .toString();
   if (imageExists !== "0") {
-    log(
-      `image (${hash}) not found -- check returned: ${imageExists} -- trying to pull`
-    );
+    log(`image (${hash}) not found:: check returned: ${imageExists}`);
+    log(`trying to pull image: ${hash}`);
     const pull = childProcess.execSync(`docker pull ${fullImageName}`);
     log(`pull (${hash}) result: ${pull.toString()}`);
 
@@ -50,22 +47,25 @@ app.get("status", (req, res) => {
   res.send("🏃‍️");
 });
 
-app.get("/" + ciEndpoint, async (req, res) => {
+app.get("/" + ciEndpoint, async (req, res, next) => {
   const hash = req.query.SHA1;
+
+  console.log("debug:: hash", hash);
+
   if (!hash) {
-    throw new Error("Must supply build hash");
+    return next(new Error("Must supply build hash"));
   }
 
   log(`got SHA1: ${hash}`);
-  pullImage(hash);
 
   try {
+    pullImage(hash);
   } catch (e) {
     log(e);
     log("got error");
-    res.status(500).send(e.message);
+    return res.status(500).send(e.message);
   }
-  res.send("OK");
+  return res.send("OK");
 });
 
 app.listen(port, () => {
