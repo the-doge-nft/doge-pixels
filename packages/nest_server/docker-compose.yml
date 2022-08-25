@@ -12,7 +12,6 @@ services:
         POSTGRES_DB: ${POSTGRES_DB}
     restart: always
 
-# TODO: api unable to connect to DB
   api:
     build:
         context: .

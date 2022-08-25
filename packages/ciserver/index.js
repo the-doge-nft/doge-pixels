@@ -23,6 +23,10 @@ const log = (msg) => {
   console.log(`[${new Date().toISOString()}] ${msg}`);
 };
 
+const maybeBackupDb = () => {
+  console.log("TODO: BACKUP DB");
+};
+
 const pullImage = (hash) => {
   const imageName = `${dockerRegistery}/doge-pixels`;
   const imageHash = `${hash}`;
@@ -37,6 +41,8 @@ const pullImage = (hash) => {
     log(`trying to pull image: ${hash}`);
     const pull = childProcess.execSync(`docker pull ${fullImageName}`);
     log(`pull (${hash}) result: ${pull.toString()}`);
+
+    maybeBackupDb();
 
     const up = childProcess.execSync(`./run-deployment.sh ${hash} ${appEnv}`);
     log(`docker up result: ${up.toString()}`);
