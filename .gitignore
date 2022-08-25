@@ -82,6 +82,5 @@ packages/validation-tool
 tools/
 
 # ignore all workflows for now
-.github
 calebtools
 
