@@ -14,9 +14,9 @@ let ciEndpoint, appEnv;
 if (process.env.APP_ENV === "production") {
   ciEndpoint = "prod-ci-endpoint";
   appEnv = "production";
-} else if (process.env.APP_ENV === "development") {
-  ciEndpoint = "dev-ci-endpoint";
-  appEnv = "development";
+} else if (process.env.APP_ENV === "staging") {
+  ciEndpoint = "staging-ci-endpoint";
+  appEnv = "staging";
 } else {
   throw new Error("Invalid APP_ENV");
 }
@@ -32,22 +32,10 @@ const loginDocker = () => {
   log("login:: ", login);
 };
 
-app.get("status", (req, res) => {
-  res.send("🏃‍️");
-});
-
-app.get("/" + ciEndpoint, async (req, res) => {
-  const hash = req.query.SHA1;
-  if (!hash) {
-    throw new Error("Must supply build hash");
-  }
-
-  log(`got SHA1: ${hash}`);
-
-  const imageName = `${dockerRegistery}/pixels`;
+const pullImage = (hash) => {
+  const imageName = `${dockerRegistery}/doge-pixels`;
   const imageHash = `${hash}`;
   const fullImageName = `${imageName}:${imageHash}`;
-
   log(`full image name: ${fullImageName}`);
 
   const imageExists = childProcess
@@ -63,6 +51,20 @@ app.get("/" + ciEndpoint, async (req, res) => {
     const up = childProcess.execSync(`./run-deployment.sh ${hash} ${appEnv}`);
     log(`docker up result: ${up.toString()}`);
   }
+};
+
+app.get("status", (req, res) => {
+  res.send("🏃‍️");
+});
+
+app.get("/" + ciEndpoint, async (req, res) => {
+  const hash = req.query.SHA1;
+  if (!hash) {
+    throw new Error("Must supply build hash");
+  }
+
+  log(`got SHA1: ${hash}`);
+  pullImage(hash);
 
   try {
   } catch (e) {

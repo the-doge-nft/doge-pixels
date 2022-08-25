@@ -16,7 +16,7 @@ services:
   api:
     build:
         context: .
-        dockerfile: api.Dockerfile
+        dockerfile: doge-pixels.Dockerfile
         target: development
     volumes:
       - .:/usr/src/app
