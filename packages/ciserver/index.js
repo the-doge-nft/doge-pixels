@@ -10,10 +10,10 @@ const dockerRegistery = "calebcarithers";
 let ciEndpoint, appEnv;
 
 if (process.env.APP_ENV === "production") {
-  ciEndpoint = "prod-ci-endpoint";
+  ciEndpoint = "paragraph-restrict-hip-ambiguous-hand-fascinate";
   appEnv = "production";
 } else if (process.env.APP_ENV === "staging") {
-  ciEndpoint = "staging-ci-endpoint";
+  ciEndpoint = "serve-project-jurisdiction-stand-peak-elegant";
   appEnv = "staging";
 } else {
   throw new Error("Invalid APP_ENV");
