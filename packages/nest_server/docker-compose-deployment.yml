@@ -1,14 +1,16 @@
-db:
-  image: postgres:14-alpine
-  ports:
-    - '5432:5432'
-  volumes:
-    - pixelsdb:/var/lib/postgresql/data
-  environment:
-    POSTGRES_USER: ${POSTGRES_USER}
-    POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-    POSTGRES_DB: ${POSTGRES_DB}
-  restart: always
+version: '3.8'
+services:
+  db:
+    image: postgres:14-alpine
+    ports:
+      - '5432:5432'
+    volumes:
+      - pixelsdb:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    restart: always
 
   api:
     image: "${DOCKER_REGISTRY:?No docker registry supplied}/doge-pixels:${BUILD_ID:?No build ID supplied}"
