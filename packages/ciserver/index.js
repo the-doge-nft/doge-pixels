@@ -1,5 +1,5 @@
 const express = require("express");
-const childProcess = require("child-process");
+const childProcess = require("child_process");
 require("dotenv").config();
 
 const app = express();
