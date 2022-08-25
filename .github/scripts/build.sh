@@ -27,11 +27,12 @@ buildApi() {
   latest_tag="$(latestTagFor "$appname")"
   sha_tag="$(fullShaTagFor "$appname")"
 
-  echo "building:: $appname: $sha_tag"
+  echo "👷‍🚧👷 building:: $appname: $sha_tag"
 
   docker build "./packages/nest_server" \
   -f "./packages/nest_server/$appname.Dockerfile" \
   -t "$latest_tag" \
+  --label "runnumber=${GITHUB_RUN_ID}" \
   --target production
 
   docker tag "$latest_tag" "$sha_tag"
