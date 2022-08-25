@@ -25,13 +25,6 @@ const log = (msg) => {
   console.log(`[${new Date().toISOString()}] ${msg}`);
 };
 
-const loginDocker = () => {
-  const login = childProcess.execSync(
-    `$ echo "${dockerPassword}" | docker login --username ${dockerUser} --password-stdin`
-  );
-  log("login:: ", login);
-};
-
 const pullImage = (hash) => {
   const imageName = `${dockerRegistery}/doge-pixels`;
   const imageHash = `${hash}`;
