@@ -24,7 +24,7 @@ const log = (msg) => {
 };
 
 const maybeBackupDb = () => {
-  console.log("TODO: BACKUP DB");
+  console.log("TODO ⚠️⚠️⚠️⚠️: BACKUP DB");
 };
 
 const pullImage = (hash) => {
@@ -55,9 +55,6 @@ app.get("status", (req, res) => {
 
 app.get("/" + ciEndpoint, async (req, res, next) => {
   const hash = req.query.SHA1;
-
-  console.log("debug:: hash", hash);
-
   if (!hash) {
     return next(new Error("Must supply build hash"));
   }
