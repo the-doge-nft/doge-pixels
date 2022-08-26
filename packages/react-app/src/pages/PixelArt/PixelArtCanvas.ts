@@ -1,3 +1,5 @@
+import { sha512 } from "ethers/lib/utils";
+
 export const TRANSPARENT_PIXEL = '#0000';
 
 export enum CanvasSize {
@@ -6,6 +8,11 @@ export enum CanvasSize {
     L = 64,
     XL = 128,
 }
+
+/*export async function sha256(str: string) {
+    const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(str));
+    return Array.prototype.map.call(new Uint8Array(buf), x => (('00' + x.toString(16)).slice(-2))).join('');
+}*/
 
 export class PixelArtCanvas {
     canvas?: HTMLCanvasElement;
@@ -40,6 +47,20 @@ export class PixelArtCanvas {
         ctx.restore();
     }
 
+    generateIdenticon(text: string, colors: string[]) {
+        const revString = '0x' + text.substring(2).split('').reverse().join('');
+        let hashedText = sha512(text) + sha512(revString);
+        hashedText = hashedText + hashedText.substring(2).split('').reverse().join('');
+        for (let cy = 0; cy < this.canvasSize; ++cy) {
+            for (let cx = 0; cx < this.canvasSize; ++cx) {
+                let i = cx + cy * this.canvasSize;
+                i %= hashedText.length;
+                let code = hashedText.charCodeAt(i) - 32;
+                this.setPixelColor(cx, cy, colors[code % colors.length]);
+            }
+        }
+    }
+
     drawPixel(x: number, y: number, color: string) {
         if (!this.canvas) return;
 
@@ -52,7 +73,7 @@ export class PixelArtCanvas {
             ctx.clearRect(x * cellSize, y * cellSize, cellSize, cellSize);
         } else {
             ctx.fillStyle = color;
-            ctx.fillRect(x * cellSize, y * cellSize, cellSize, cellSize);    
+            ctx.fillRect(x * cellSize, y * cellSize, cellSize, cellSize);
         }
     }
 

@@ -24,13 +24,19 @@ class PixelArtPageStore extends Reactionable(EmptyClass) {
     @observable
     redoActions: ActionInterface[];
 
+    @observable
+    backgroundImage: string;
+
+    @observable
+    isImportTemplateModalOpened: boolean;
+
     pixelsCanvas: PixelArtCanvas;
 
     constructor() {
         super()
         makeObservable(this)
 
-        this.pixelsCanvas = new PixelArtCanvas(CanvasSize.M);
+        this.pixelsCanvas = new PixelArtCanvas(CanvasSize.S);
 
         this.selectedAddress = '0xd801d86C10e2185a8FCBccFB7D7baF0A6C5B6BD5';
 
@@ -40,6 +46,10 @@ class PixelArtPageStore extends Reactionable(EmptyClass) {
 
         this.undoActions = [];
         this.redoActions = [];
+
+        this.backgroundImage = '';
+
+        this.isImportTemplateModalOpened = false;
     }
 
     setCanvas(canvas: HTMLCanvasElement) {

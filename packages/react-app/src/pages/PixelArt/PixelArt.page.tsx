@@ -9,6 +9,7 @@ import { darkModeSecondary, lightModePrimary } from "../../DSL/Theme";
 import { ClearAction, PixelAction } from "./PixelArtActions";
 import { PixelArtTool, pixelArtTools } from "./PixelArtTools";
 import { TRANSPARENT_PIXEL } from "./PixelArtCanvas";
+import ImportTemplateModal from "./ImportTemplateModal/ImportTemplateModal";
 
 const CANVAS_ELEMENT_SIZE = 512;
 
@@ -48,6 +49,10 @@ const PixelArtPage = observer(function PixelArtPage() {
             </GridItem>
         </Grid>
         <a id={'pfp-link'} />
+        {store.isImportTemplateModalOpened && <ImportTemplateModal
+            store={store}
+            isOpen={store.isImportTemplateModalOpened}
+            onClose={() => { store.isImportTemplateModalOpened = false; }} />}
     </Pane>
 });
 
@@ -114,7 +119,14 @@ const ArtCanvasComponent = observer(({ store }: { store: PixelArtPageStore }) =>
         backgroundClip={'border-box, border-box'}
         backgroundSize={'16px 16px, 16px 16px'}
     >
-        <canvas id='canvas' width={CANVAS_ELEMENT_SIZE} height={CANVAS_ELEMENT_SIZE} onMouseMove={(e) => onCanvasMouseMove(e)} onMouseDown={e => onCanvasMouseDown(e)} onMouseUp={e => onCanvasMouseUp(e)} onMouseLeave={e => onCanvasMouseUp(e)} />
+        <Box
+            backgroundImage={store.backgroundImage}
+            backgroundSize={'contain'}
+            backgroundPosition={'center'}
+            backgroundRepeat={'no-repeat'}
+        >
+            <canvas id='canvas' width={CANVAS_ELEMENT_SIZE} height={CANVAS_ELEMENT_SIZE} onMouseMove={(e) => onCanvasMouseMove(e)} onMouseDown={e => onCanvasMouseDown(e)} onMouseUp={e => onCanvasMouseUp(e)} onMouseLeave={e => onCanvasMouseUp(e)} />
+        </Box>
     </Box>
 })
 
@@ -209,6 +221,34 @@ const MainMenuComponent = observer(({ store }: { store: PixelArtPageStore }) => 
     }
 
     const postTweet = () => {
+        const canvas: HTMLCanvasElement = document.getElementById('canvas') as HTMLCanvasElement;
+        const data = canvas.toDataURL().replace('data:image/png;base64,', '');
+        fetch('https://prod.hmstrs.com/twitter/upload', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                data,
+                ext: 'png',
+            })
+        }).then(response => response.json()).then(data => {
+            console.log('twitter upload', data);
+            if (data && data.id && data.location) {
+                const message = 'I just created pixel art with my doge pixels, check it out here';
+                const screenshotUrl = 'https://prod.hmstrs.com/twitter/' + data.id;
+                const text = encodeURIComponent(`${message}\n${screenshotUrl}`);
+                window.open(`https://twitter.com/intent/tweet?text=${text}`, "_blank");
+            }
+        }).catch((err) => {
+            console.error(err);
+        });;
+    }
+
+    const importTemplate = () => {
+        store.isImportTemplateModalOpened = true;
+    }
+
+    const generateIdenticon = () => {
+        store.pixelsCanvas.generateIdenticon(store.selectedAddress, store.palette);
     }
 
     return <Box>
@@ -225,8 +265,8 @@ const MainMenuComponent = observer(({ store }: { store: PixelArtPageStore }) => 
                 <MenuItem>Save File</MenuItem>
                 <MenuItem onClick={downloadPFP}>Export</MenuItem>
                 <MenuItem onClick={postTweet}>Share</MenuItem>
-                <MenuItem>Import</MenuItem>
-                <MenuItem>Randomize</MenuItem>
+                <MenuItem onClick={importTemplate}>Import</MenuItem>
+                <MenuItem onClick={generateIdenticon}>Randomize</MenuItem>
             </MenuList>
         </Menu>
         <Menu>
