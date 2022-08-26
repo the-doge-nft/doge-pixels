@@ -15,7 +15,7 @@ services:
   api:
     image: "${DOCKER_REGISTRY:?No docker registry supplied}/doge-pixels:${BUILD_ID:?No build ID supplied}"
     ports:
-      - '8083:8081'
+      - '${PORT}:${PORT}'
     env_file:
       - .env
     # https://github.com/prisma/prisma/issues/1385
