@@ -72,5 +72,7 @@ app.get("/" + ciEndpoint, async (req, res, next) => {
 });
 
 app.listen(port, () => {
-  console.log(`[${process.env.APP_ENV}] CI SERVER LISTENING ON PORT: ${port}`);
+  console.log(
+    `[${process.env.APP_ENV}] CI SERVER LISTENING ON PORT: ${port} & endpoint ${ciEndpoint}`
+  );
 });
