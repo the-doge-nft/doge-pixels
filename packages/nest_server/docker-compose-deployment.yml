@@ -21,7 +21,6 @@ services:
     # https://github.com/prisma/prisma/issues/1385
     environment:
       DATABASE_URL: postgresql://${POSTGRES_USER:?No postgres user proivded}:${POSTGRES_PASSWORD:?No db password provided}@db:5432/${POSTGRES_DB:?No db provided}?schema=public
-    command: yarn start:debug
     depends_on:
       - db
     restart: always

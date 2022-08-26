@@ -20,7 +20,8 @@
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
-    "prisma:generate": "prisma generate"
+    "prisma:generate": "prisma generate",
+    "start:migrate:prod": "prisma migrate deploy && yarn start:prod"
   },
   "dependencies": {
     "@nestjs/axios": "^0.1.0",
@@ -36,7 +37,8 @@
     "ethers": "^5.7.0",
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.2",
-    "rxjs": "^7.2.0"
+    "rxjs": "^7.2.0",
+    "prisma": "^4.2.1"
   },
   "devDependencies": {
     "@nestjs/cli": "^9.0.0",
@@ -54,7 +56,6 @@
     "eslint-plugin-prettier": "^4.0.0",
     "jest": "28.1.2",
     "prettier": "^2.3.2",
-    "prisma": "^4.2.1",
     "source-map-support": "^0.5.20",
     "supertest": "^6.1.3",
     "ts-jest": "28.0.5",

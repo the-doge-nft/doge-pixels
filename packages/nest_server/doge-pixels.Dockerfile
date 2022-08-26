@@ -7,9 +7,9 @@ WORKDIR /usr/src/app
 
 COPY --chown=node:node package.json ./
 COPY --chown=node:node yarn.lock ./
-COPY --chown=node:node prisma ./prisma
+COPY --chown=node:node prisma ./prisma/
 
-RUN yarn install --frozen-lockfile
+RUN yarn install
 
 COPY --chown=node:node . .
 
@@ -28,17 +28,18 @@ WORKDIR /usr/src/app
 
 COPY --chown=node:node package.json ./
 COPY --chown=node:node yarn.lock ./
-
+COPY --chown=node:node prisma ./prisma/
 COPY --chown=node:node --from=development /usr/src/app/node_modules ./node_modules
 COPY --chown=node:node . .
 
 # Run the build command which creates the production bundle
 RUN yarn run build
 
-# Set NODE_ENV environment variable
+# this is prod!
 ENV NODE_ENV production
 
-RUN yarn install --frozen-lockfile
+# install only prod deps: `prisma` is a prod dependecy since we need it for `prisma migrate` in the prod container
+RUN yarn install --frozen-lockfile --prod
 
 USER node
 
@@ -49,10 +50,11 @@ FROM node:18-alpine as production
 
 # Copy the bundled code from the build stage to the production image
 COPY --chown=node:node --from=build /usr/src/app/node_modules ./node_modules
+COPY --chown=node:node --from=build /usr/src/app/package.json ./package.json
+COPY --chown=node:node --from=build /usr/src/app/yarn.lock ./yarn.lock
 COPY --chown=node:node --from=build /usr/src/app/dist ./dist
+COPY --chown=node:node --from=build /usr/src/app/prisma ./prisma
 
-# Migrate the db
-RUN yarn prisma migrate deploy
 
-# Start the server using the production build
-CMD [ "node", "dist/main.js" ]
+# Migrate db & start build
+CMD [ "yarn", "start:migrate:prod" ]
