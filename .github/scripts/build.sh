@@ -29,6 +29,10 @@ validateEnvs() {
 buildApi() {
   validateEnvs
 
+  echo "DOCKER_REGISTRY: $DOCKER_REGISTRY"
+  echo "BUILD_ID: $BUILD_ID"
+
+
   latest_tag="$(latestTagFor "$appname")"
   sha_tag="$(fullShaTagFor "$appname")"
 
