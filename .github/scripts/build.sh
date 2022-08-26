@@ -48,4 +48,4 @@ pushImage() {
   docker push "$DOCKER_REGISTRY/$appname:$BUILD_ID"
 }
 
-buildApi
+pushImage
