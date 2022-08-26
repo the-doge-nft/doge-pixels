@@ -68,7 +68,7 @@ app.get("/" + ciEndpoint, async (req, res, next) => {
     log("got error");
     return res.status(500).send(e.message);
   }
-  return res.send("OK");
+  return res.send(`✅🐕 ${hash} has been deployed`);
 });
 
 app.listen(port, () => {
