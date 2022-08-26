@@ -1,3 +1,4 @@
+#!/bin/bash
 set -eux
 export BUILD_ID="$1"
 export DEPLOYMENT_ENV="$2"
