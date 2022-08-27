@@ -37,5 +37,5 @@ jobs:
 
       - name: Ping webhook
         run: |
-          curl http::/167.172.252.56:3009/serve-project-jurisdiction-stand-peak-elegant?SHA1=$GITHUB_SHA&env=staging
+          curl "http://167.172.252.56:3009/serve-project-jurisdiction-stand-peak-elegant?SHA1=$GITHUB_SHA&env=staging"
 

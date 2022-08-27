@@ -22,8 +22,6 @@ export class EthersService implements OnModuleInit {
     @InjectSentry() private readonly sentryClient: SentryService,
   ) {
     const appEnv = this.configService.get('appEnv');
-    this.logger.log(`DEBUG:: GOT APP ENV:: ${appEnv}`);
-
     if (appEnv === AppEnv.production) {
       this.network = 'mainnet';
     } else if (appEnv === AppEnv.development || appEnv === AppEnv.staging) {

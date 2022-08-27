@@ -19,7 +19,7 @@ export class AppController {
   @Get('status')
   getStatus() {
     return (
-      'MUCH WOW WOW WOW\n' +
+      '~~~MUCH~~~\n' +
       '' +
       '░░░░░░░░░▄░░░░░░░░░░░░░░▄░░░░\n' +
       '░░░░░░░░▌▒█░░░░░░░░░░░▄▀▒▌░░░\n' +
