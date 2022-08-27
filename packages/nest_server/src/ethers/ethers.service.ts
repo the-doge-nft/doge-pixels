@@ -22,11 +22,13 @@ export class EthersService implements OnModuleInit {
     @InjectSentry() private readonly sentryClient: SentryService,
   ) {
     const appEnv = this.configService.get('appEnv');
-    if (appEnv === 'production') {
+    this.logger.log(`DEBUG:: GOT APP ENV:: ${appEnv}`);
+
+    if (appEnv === AppEnv.production) {
       this.network = 'mainnet';
-    } else if (appEnv === 'development') {
+    } else if (appEnv === AppEnv.development || appEnv === AppEnv.staging) {
       this.network = 'rinkeby';
-    } else if (appEnv === 'test') {
+    } else if (appEnv === AppEnv.test) {
       this.network = 'localhost';
     } else {
       throw new Error('App environment unknown');
