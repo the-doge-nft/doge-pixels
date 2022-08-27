@@ -51,5 +51,3 @@ pushImage() {
   validateEnvs
   docker push "$DOCKER_REGISTRY/$appname:$BUILD_ID"
 }
-
-pushImage
