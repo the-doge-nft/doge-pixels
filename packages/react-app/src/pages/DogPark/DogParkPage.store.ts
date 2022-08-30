@@ -44,7 +44,10 @@ class DogParkPageStore extends Reactionable(EmptyClass) {
   }
 
   init() {
-    AppStore.web3.getDogLocked().then(balance => this.lockedDog = balance)
+    AppStore.web3.getDogLocked().then(balance => {
+      this.lockedDog = Number(balance)
+      // this.lockedDog = 107552083.33353
+    })
     AppStore.web3.getPupperOwnershipMap()
 
     if (AppStore.web3.web3Provider) {
