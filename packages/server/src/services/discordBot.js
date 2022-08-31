@@ -5,7 +5,7 @@ const Jimp = require("jimp");
 const ethers = require("ethers");
 const logger = require("../config/config");
 const { sentryClient } = require("./Sentry");
-const { isProd } = require("../config/vars");
+const { isProd, discord_channel_id, discord_token } = require("../config/vars");
 const {
     pupperToPixelCoordsLocal,
     getPixelOffsets,
@@ -33,7 +33,7 @@ client.once("ready", () => {
   console.log("Discordbot Ready!");
 });
 
-client.login(process.env.DISCORD_TOKEN);
+client.login(discord_token);
 
 async function discordBot(from, to, tokenId, provider) {
     mintedImage = await Jimp.read("src/assets/images/mint.png");
@@ -126,7 +126,7 @@ async function uploadImageToDiscord(tokenId, content) {
 
     // get base64 image
     let base64image = await image.getBufferAsync("image/png");
-    client.channels.cache.get(process.env.DISCORD_CHANNEL_ID).send({
+    client.channels.cache.get(discord_channel_id).send({
       content,
       files: [
         {
