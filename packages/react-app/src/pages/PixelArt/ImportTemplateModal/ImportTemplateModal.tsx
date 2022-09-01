@@ -26,13 +26,13 @@ const ImportTemplateModal = observer((props: ImportTemplateModalProps) => {
 
     const onApply = () => {
         if (image !== '') {
-            props.store.backgroundImage = image;
+            props.store.templateImage = image;
         }
         props.onClose();
     }
 
     const onReset = () => {
-        props.store.backgroundImage = '';
+        props.store.templateImage = '';
         props.onClose();
     }
 

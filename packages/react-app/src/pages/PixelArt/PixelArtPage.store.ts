@@ -8,6 +8,7 @@ import { ActionInterface } from "./PixelArtActions";
 import { CanvasSize, PixelArtCanvas } from "./PixelArtCanvas";
 
 const MAX_ACTIONS_CN = 50;
+const CANVAS_ELEMENT_SIZE = 512;
 
 class PixelArtPageStore extends Reactionable(EmptyClass) {
     @observable
@@ -25,10 +26,20 @@ class PixelArtPageStore extends Reactionable(EmptyClass) {
     redoActions: ActionInterface[];
 
     @observable
-    backgroundImage: string;
+    templateImage: string;
+    @observable 
+    templateLeft: number;
+    @observable 
+    templateTop: number;
+    @observable 
+    templateWidth: number;
+    @observable 
+    templateHeight: number;
 
     @observable
     isImportTemplateModalOpened: boolean;
+    @observable
+    isCanvasPropertiesModalOpened: boolean;
 
     pixelsCanvas: PixelArtCanvas;
 
@@ -47,9 +58,14 @@ class PixelArtPageStore extends Reactionable(EmptyClass) {
         this.undoActions = [];
         this.redoActions = [];
 
-        this.backgroundImage = '';
+        this.templateImage = '';
+        this.templateLeft = 0;
+        this.templateTop = 0;
+        this.templateWidth = CANVAS_ELEMENT_SIZE;
+        this.templateHeight = CANVAS_ELEMENT_SIZE;
 
         this.isImportTemplateModalOpened = false;
+        this.isCanvasPropertiesModalOpened = false;
     }
 
     setCanvas(canvas: HTMLCanvasElement) {

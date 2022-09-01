@@ -10,6 +10,7 @@ import { ClearAction, PixelAction } from "./PixelArtActions";
 import { PixelArtTool, pixelArtTools } from "./PixelArtTools";
 import { TRANSPARENT_PIXEL } from "./PixelArtCanvas";
 import ImportTemplateModal from "./ImportTemplateModal/ImportTemplateModal";
+import CanvasPropertiesModal from "./CanvasPropertiesModal/CanvasPropertiesModal";
 
 const CANVAS_ELEMENT_SIZE = 512;
 
@@ -53,14 +54,14 @@ const PixelArtPage = observer(function PixelArtPage() {
             store={store}
             isOpen={store.isImportTemplateModalOpened}
             onClose={() => { store.isImportTemplateModalOpened = false; }} />}
+        {store.isCanvasPropertiesModalOpened && <CanvasPropertiesModal
+            store={store}
+            isOpen={store.isCanvasPropertiesModalOpened}
+            onClose={() => { store.isCanvasPropertiesModalOpened = false; }} />}
     </Pane>
 });
 
 const ArtCanvasComponent = observer(({ store }: { store: PixelArtPageStore }) => {
-    const [mousePressed, setMousePressed] = useState(false);
-    const [lastCoords, setLastCoords] = useState<number[]>([0, 0]);
-    const [activeAction, setActiveAction] = useState<PixelAction | null>(null);
-
     useEffect(() => {
         let canvas: HTMLCanvasElement = document.getElementById('canvas') as HTMLCanvasElement;
         store.setCanvas(canvas);
@@ -78,36 +79,40 @@ const ArtCanvasComponent = observer(({ store }: { store: PixelArtPageStore }) =>
         }
     }
 
-    const onCanvasMouseMove = (e: any) => {
-        if (mousePressed && activeAction) {
-            const cn = 10;
-            let dx = (e.clientX - lastCoords[0]) / cn;
-            let dy = (e.clientY - lastCoords[1]) / cn;
-            for (let cd = 0; cd < cn; ++cd) {
-                const x = lastCoords[0] + dx * cd;
-                const y = lastCoords[1] + dy * cd;
-                updatePixel(x, y, activeAction);
-            }
-            setLastCoords([e.clientX, e.clientY]);
-        }
-    }
+    const onMouseDown = (mouseDownEvent: any) => {
+        if (!store.palette || !store.palette.length)
+            return;
 
-    const onCanvasMouseDown = (e: any) => {
         const color = pixelArtTools[store.selectedToolIndex].id === PixelArtTool.pen ? store.palette[store.selectedBrushPixelIndex] : TRANSPARENT_PIXEL;
         let action = new PixelAction(color);
-        setActiveAction(action);
-        updatePixel(e.clientX, e.clientY, action);
-        setLastCoords([e.clientX, e.clientY]);
-        setMousePressed(true);
-    }
+        console.log(action);
+        let lastX = mouseDownEvent.clientX;
+        let lastY = mouseDownEvent.clientY;
+        updatePixel(mouseDownEvent.clientX, mouseDownEvent.clientY, action);
 
-    const onCanvasMouseUp = (e: any) => {
-        if (activeAction && activeAction.isValid()) {
-            store.pushAction(activeAction);
+        function onMouseMove(mouseMoveEvent: any) {
+            const cn = 10;
+            let dx = (mouseMoveEvent.clientX - lastX) / cn;
+            let dy = (mouseMoveEvent.clientY - lastY) / cn;
+            for (let cd = 0; cd < cn; ++cd) {
+                const x = lastX + dx * cd;
+                const y = lastY + dy * cd;
+                updatePixel(x, y, action);
+            }
+            lastX = mouseMoveEvent.clientX;
+            lastY = mouseMoveEvent.clientY;
         }
-        setActiveAction(null);
-        setMousePressed(false);
-    }
+        function onMouseUp() {
+            if (action.isValid()) {
+                store.pushAction(action);
+            }
+
+            document.body.removeEventListener("mousemove", onMouseMove);
+        }
+
+        document.body.addEventListener("mousemove", onMouseMove);
+        document.body.addEventListener("mouseup", onMouseUp, { once: true });
+    };
 
     return <Box
         border={"1px solid gray"}
@@ -120,12 +125,29 @@ const ArtCanvasComponent = observer(({ store }: { store: PixelArtPageStore }) =>
         backgroundSize={'16px 16px, 16px 16px'}
     >
         <Box
-            backgroundImage={store.backgroundImage}
-            backgroundSize={'contain'}
-            backgroundPosition={'center'}
-            backgroundRepeat={'no-repeat'}
+            overflow={'hidden'}
+            width={CANVAS_ELEMENT_SIZE}
+            height={CANVAS_ELEMENT_SIZE}
         >
-            <canvas id='canvas' width={CANVAS_ELEMENT_SIZE} height={CANVAS_ELEMENT_SIZE} onMouseMove={(e) => onCanvasMouseMove(e)} onMouseDown={e => onCanvasMouseDown(e)} onMouseUp={e => onCanvasMouseUp(e)} onMouseLeave={e => onCanvasMouseUp(e)} />
+            <Box
+                position={'relative'}
+                top={store.templateTop+'px'}
+                left={store.templateLeft+'px'}
+                width={store.templateWidth+'px'}
+                height={store.templateHeight+'px'}
+                backgroundImage={store.templateImage}
+                backgroundSize={'contain'}
+                backgroundPosition={'center'}
+                backgroundRepeat={'no-repeat'}
+            >
+            </Box>
+            <canvas
+                style={{
+                    position: 'relative',
+                    top: -store.templateHeight,
+                }}
+                id='canvas' width={CANVAS_ELEMENT_SIZE} height={CANVAS_ELEMENT_SIZE} onMouseDown={onMouseDown}>
+            </canvas>
         </Box>
     </Box>
 })
@@ -251,6 +273,10 @@ const MainMenuComponent = observer(({ store }: { store: PixelArtPageStore }) => 
         store.pixelsCanvas.generateIdenticon(store.selectedAddress, store.palette);
     }
 
+    const canvasProperties = () => {
+        store.isCanvasPropertiesModalOpened = true;
+    }
+
     return <Box>
         <Menu>
             <MenuButton
@@ -267,6 +293,7 @@ const MainMenuComponent = observer(({ store }: { store: PixelArtPageStore }) => 
                 <MenuItem onClick={postTweet}>Share</MenuItem>
                 <MenuItem onClick={importTemplate}>Import</MenuItem>
                 <MenuItem onClick={generateIdenticon}>Randomize</MenuItem>
+                <MenuItem onClick={canvasProperties}>Properties</MenuItem>
             </MenuList>
         </Menu>
         <Menu>
