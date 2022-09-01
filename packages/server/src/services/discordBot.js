@@ -6,6 +6,7 @@ const ethers = require("ethers");
 const logger = require("../config/config");
 const { sentryClient } = require("./Sentry");
 const { isProd, discord_channel_id, discord_token } = require("../config/vars");
+
 const {
     pupperToPixelCoordsLocal,
     getPixelOffsets,
@@ -30,7 +31,7 @@ const client = new Client({
 });
 
 client.once("ready", () => {
-  console.log("Discordbot Ready!");
+  logger.info("Discord bot Ready!");
 });
 
 client.login(discord_token);
@@ -92,7 +93,7 @@ function addPointerImage(tokenId, content) {
       y1
     );
     const buffer = canvas.toBuffer("image/png");
-    logger.info(`discordbot starting to write file: ${tokenId}`);
+    logger.info(`discord bot starting to write file: ${tokenId}`);
 
     return new Promise((resolve, reject) => {
       fs.writeFile(
