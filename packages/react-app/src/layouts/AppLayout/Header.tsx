@@ -10,41 +10,38 @@ import { useHistory } from "react-router-dom";
 import NavLinks from "./NavLinks";
 
 const Header = observer(() => {
-  return <Grid
-    templateColumns={{ base: "1fr", md: "1fr 1fr 1fr", lg: "1fr 1fr 1fr", xl: "1fr 0.5fr 0.5fr" }}
-    mb={10}
-    templateRows={"1fr"}
-    display={{ base: "none", md: "grid" }}
-  >
-    <GridItem w={"full"}>
+  return <Box mb={10} display={{ base: "none", md: "flex" }}>
+    <Box w={"full"}>
       <Flex alignItems={"center"} mb={2}>
         <Title />
       </Flex>
-    </GridItem>
-    <GridItem mx={4}>
-      <Flex w={"full"} h={"full"} alignItems={"center"} justifyContent={"center"}>
-        <HStack spacing={12}>
-          <NavLinks />
-        </HStack>
-      </Flex>
-    </GridItem>
-    <GridItem display={{ base: "none", md: "flex" }} alignItems={"center"} justifyContent={"flex-end"} w={"full"}>
-      <Flex mr={8}>
-        <ColorModeToggle />
-      </Flex>
-      {!AppStore.web3.web3Provider && (
-        <Button
-          whiteSpace={{ base: "normal", lg: "nowrap" }}
-          onClick={() => {
-            AppStore.web3.connect();
-          }}
-        >
-          Connect Wallet
-        </Button>
-      )}
-      {AppStore.web3.address && AppStore.web3.web3Provider && <UserMenu />}
-    </GridItem>
-  </Grid>
+    </Box>
+    <Flex>
+      <Box mr={6} display={{base: "none", xl: "block"}}>
+        <Flex w={"full"} h={"full"} alignItems={"center"} justifyContent={"center"}>
+          <HStack spacing={12}>
+            <NavLinks />
+          </HStack>
+        </Flex>
+      </Box>
+      <Box display={{ base: "none", md: "flex" }} alignItems={"center"} justifyContent={"flex-end"} w={"full"}>
+        <Flex mr={8}>
+          <ColorModeToggle />
+        </Flex>
+        {!AppStore.web3.web3Provider && (
+          <Button
+            whiteSpace={{ base: "normal", lg: "nowrap" }}
+            onClick={() => {
+              AppStore.web3.connect();
+            }}
+          >
+            Connect
+          </Button>
+        )}
+        {AppStore.web3.address && AppStore.web3.web3Provider && <UserMenu />}
+      </Box>
+    </Flex>
+  </Box>
 })
 
 const Title = () => {

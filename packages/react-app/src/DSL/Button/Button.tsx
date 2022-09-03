@@ -56,14 +56,14 @@ const Button = ({ submit, children, variant = ButtonVariant.Primary, size = "md"
         }}
         onTouchEnd={() => setIsHover(false)}
       >
-        <Typography
+        {typeof children === "string" ? <Typography
           variant={buttonTypographyMap[size]}
           color={"inherit"}
           overflow={"hidden"}
           textOverflow={"ellipsis"}
         >
           {children}
-        </Typography>
+        </Typography> : children}
       </ChakraButton>
       <Box
         //@ts-ignore

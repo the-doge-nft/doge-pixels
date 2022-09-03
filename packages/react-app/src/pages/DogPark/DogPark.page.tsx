@@ -148,27 +148,35 @@ const DogParkPage = observer(function DogParkPage() {
                               onPupperClick={setPupper}
                             />
                             {store.selectedPixel && (
-                              <Flex mt={1}>
-                                <Box>
-                                  <Box>
+                              <Flex mt={3}>
+                                <Grid templateColumns={"1fr 1fr"} templateRows={"1fr 1fr"} columnGap={2}>
+                                  <GridItem>
                                     <Typography variant={TVariant.ComicSans18}>Pixel #:</Typography>
+                                  </GridItem>
+                                  <GridItem>
                                     <Typography variant={TVariant.ComicSans18} ml={2}>
                                       {store.seletedPixelIndex}
                                     </Typography>
-                                  </Box>
-                                  <Box>
+                                  </GridItem>
+
+                                  <GridItem>
                                     <Typography variant={TVariant.ComicSans18}>HEX:</Typography>
+                                  </GridItem>
+                                  <GridItem>
                                     <Typography variant={TVariant.ComicSans18} ml={2}>
                                       {store.selectedPixelHexColor}
                                     </Typography>
-                                  </Box>
-                                  <Box mt={1}>
+                                  </GridItem>
+
+                                  <GridItem>
                                     <Typography variant={TVariant.ComicSans18}>Coordinates:</Typography>
+                                  </GridItem>
+                                  <GridItem>
                                     <Typography variant={TVariant.ComicSans18} ml={2}>
                                       ({store.selectedPixelCoordinates[0]},{store.selectedPixelCoordinates[1]})
                                     </Typography>
-                                  </Box>
-                                </Box>
+                                  </GridItem>
+                                </Grid>
                                 <Flex alignItems={"center"} justifyContent={"flex-end"} flexGrow={1}>
                                   <Button
                                     size={"sm"}

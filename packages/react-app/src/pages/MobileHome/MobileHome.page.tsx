@@ -34,7 +34,7 @@ const MobileHomePage = observer(() => {
             onClick={() => {
           AppStore.web3.connect()
         }}>
-            Connect Wallet
+            Connect
         </Button>
       </Flex>}
     {AppStore.web3.web3Provider &&

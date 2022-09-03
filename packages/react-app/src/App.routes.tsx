@@ -7,7 +7,7 @@ import DSLPage from "./pages/DSL.page";
 import DogParkPage from "./pages/DogPark/DogPark.page";
 import {isDevModeEnabled} from "./environment/helpers";
 import MobileHomePage from "./pages/MobileHome/MobileHome.page";
-import Perks from "./pages/Perks/Perks";
+import PerksPage from "./pages/Perks/Perks.page";
 
 export enum NamedRoutes {
   VIEWER = "viewer",
@@ -57,7 +57,7 @@ const routes: AppRouteInterface[] = [
     name: NamedRoutes.PERKS,
     exact: true,
     layout: AppLayout,
-    component: Perks,
+    component: PerksPage,
     desktopName: "Perks",
     mobileName: "Perks",
     showOnMobile: true,
