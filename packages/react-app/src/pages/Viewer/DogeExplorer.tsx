@@ -1,19 +1,20 @@
-import React, {useEffect, useRef, useState} from "react";
+import React, { useEffect, useRef, useState } from "react";
 import * as THREE from "three";
-import {Object3D} from "three";
-import {Canvas, useLoader} from "@react-three/fiber";
-import Kobosu from "../../images/THE_ACTUAL_NFT_IMAGE.png"
-import {Box, useColorMode} from "@chakra-ui/react";
-import {createCanvasPixelSelectionSetter, getWorldPixelCoordinate, resizeCanvas} from "./helpers";
-import {onPixelSelectType} from "./Viewer.page";
+import { Object3D } from "three";
+import { Canvas, useLoader } from "@react-three/fiber";
+import Kobosu from "../../images/THE_ACTUAL_NFT_IMAGE.png";
+import { Box, useColorMode } from "@chakra-ui/react";
+import { createCanvasPixelSelectionSetter, getWorldPixelCoordinate, resizeCanvas } from "./helpers";
+import { onPixelSelectType } from "./Viewer.page";
 import ViewerStore from "./Viewer.store";
-import {SELECT_PIXEL} from "../../services/mixins/eventable";
-import Button, {ButtonVariant} from "../../DSL/Button/Button";
-import createPanZoom, {PanZoomReturn} from "../../services/three-map-js";
+import { SELECT_PIXEL } from "../../services/mixins/eventable";
+import Button, { ButtonVariant } from "../../DSL/Button/Button";
+import createPanZoom, { PanZoomReturn } from "../../services/three-map-js";
 import PixelPane from "../../DSL/PixelPane/PixelPane";
 import AppStore from "../../store/App.store";
-import {observer} from "mobx-react-lite";
+import { observer } from "mobx-react-lite";
 import Colors from "../../DSL/Colors/Colors";
+import Typography, { TVariant } from "../../DSL/Typography/Typography";
 
 interface ThreeSceneProps {
     onPixelSelect: onPixelSelectType;
@@ -290,7 +291,11 @@ const DogeExplorer = observer(({onPixelSelect, store}: ThreeSceneProps) => {
               </Box>}
             <Box position={"absolute"} bottom={0} left={0} p={2}>
                 <Button size={"xs"} variant={ButtonVariant.Text}
-                        onClick={() => setShowOwned(!showOwned)}>{showOwned ? "hide" : "show"} owned</Button>
+                        onClick={() => setShowOwned(!showOwned)}>
+                    <Typography variant={TVariant.ComicSans14}>
+                        {showOwned ? "hide" : "show"} owned
+                    </Typography>
+                </Button>
             </Box>
         </Box>
     );
