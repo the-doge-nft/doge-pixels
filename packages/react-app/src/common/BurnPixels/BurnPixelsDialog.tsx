@@ -25,7 +25,7 @@ const BurnPixelsDialog = observer(({store, onCompleteClose, onSuccess}: BurnPixe
   useEffect(() => {
     if (store.currentView === BurnPixelsModalView.Complete) {
       onSuccess && onSuccess(store.selectedPixels)
-      AppStore.web3.refreshPupperOwnershipMap()
+      AppStore.web3.refreshPixelOwnershipMap()
       AppStore.web3.refreshPupperBalance()
       AppStore.web3.refreshDogBalance()
     }

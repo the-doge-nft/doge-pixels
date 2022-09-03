@@ -12,9 +12,6 @@ import {Http} from "../services";
 import Web3providerStore, {EthersContractError, Web3ProviderConnectionError} from "./web3provider.store";
 import * as Sentry from "@sentry/react";
 import {ContractInterface} from "@ethersproject/contracts/src.ts/index";
-import {SupportedChainId} from "@cowprotocol/cow-sdk/dist/constants/chains";
-import {CowSdk, OrderKind} from "@cowprotocol/cow-sdk";
-import AppStore from "./App.store";
 import CowStore from "./cow.store";
 
 interface AddressToPuppers {
@@ -81,7 +78,7 @@ class Web3Store extends Web3providerStore {
         if (web3Modal.cachedProvider && !this.web3Provider?.connection) {
             this.connect()
         }
-        this.getPupperOwnershipMap()
+        this.getPixelOwnershipMap()
         this.getShibaDimensions()
     }
 
@@ -172,11 +169,11 @@ class Web3Store extends Web3providerStore {
         }
     }
 
-    getPupperOwnershipMap() {
+    getPixelOwnershipMap() {
         return Http.get("/v1/config").then(({data}) => this.addressToPuppers = data)
     }
 
-    refreshPupperOwnershipMap() {
+    refreshPixelOwnershipMap() {
         return Http.get("/v1/config/refresh").then(({data}) => this.addressToPuppers = data)
     }
 

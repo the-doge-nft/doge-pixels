@@ -7,13 +7,15 @@ import DSLPage from "./pages/DSL.page";
 import DogParkPage from "./pages/DogPark/DogPark.page";
 import {isDevModeEnabled} from "./environment/helpers";
 import MobileHomePage from "./pages/MobileHome/MobileHome.page";
+import Perks from "./pages/Perks/Perks";
 
 export enum NamedRoutes {
   VIEWER = "viewer",
   DOG_PARK = "park",
   DSL = "dsl",
   MOBILE_HOME = "mobile",
-  PIXELS = "pixels"
+  PIXELS = "pixels",
+  PERKS = "perks"
 }
 
 export interface AppRouteInterface {
@@ -51,12 +53,24 @@ export const SELECTED_PIXEL_PARAM = "id_with_offset"
 */
 const routes: AppRouteInterface[] = [
   {
+    path: "/perks",
+    name: NamedRoutes.PERKS,
+    exact: true,
+    layout: AppLayout,
+    component: Perks,
+    desktopName: "Perks",
+    mobileName: "Perks",
+    showOnMobile: true,
+    showOnDesktop: true,
+    order: 2
+  },
+  {
     path: "/park/:address?/:tokenID?",
     name: NamedRoutes.DOG_PARK,
     exact: true,
     layout: AppLayout,
     component: DogParkPage,
-    desktopName: "Dog park",
+    desktopName: "Park",
     mobileName: "Park",
     showOnMobile: false,
     showOnDesktop: true,

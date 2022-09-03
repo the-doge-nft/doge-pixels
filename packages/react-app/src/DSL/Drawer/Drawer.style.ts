@@ -1,16 +1,16 @@
-import {colorModeType, lightOrDark} from "../Theme";
+import { colorModeType, lightOrDarkMode } from "../Theme";
 
 const DrawerStyle = {
   parts: ["overlay", "dialogContainer", "dialog", "header", "closeButton", "body", "footer"],
-  baseStyle: ({colorMode}: {colorMode: colorModeType}) => ({
+  baseStyle: ({ colorMode }: { colorMode: colorModeType }) => ({
     dialog: {
-      bg: lightOrDark(colorMode, "yellow.50", "purple.700"),
+      bg: lightOrDarkMode(colorMode, "yellow.50", "purple.700"),
     },
     body: {
-      height: "100%"
-    }
+      height: "100%",
+    },
   }),
-  sizes: { }
-}
+  sizes: {},
+};
 
-export default DrawerStyle
+export default DrawerStyle;

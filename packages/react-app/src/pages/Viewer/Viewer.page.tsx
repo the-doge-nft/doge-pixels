@@ -1,6 +1,6 @@
 import React, {Suspense, useCallback, useEffect, useMemo} from "react";
 import {Box, Flex, Grid, GridItem} from "@chakra-ui/react";
-import ThreeScene from "./ThreeScene";
+import DogeExplorer from "./DogeExplorer";
 import ViewerStore, {ViewerView} from "./Viewer.store";
 import {observer} from "mobx-react-lite";
 import Pane from "../../DSL/Pane/Pane";
@@ -12,9 +12,9 @@ import SelectedPixelPane from "./Panes/SelectedPixelPane";
 import AppStore from "../../store/App.store";
 import Icon from "../../DSL/Icon/Icon";
 import Loading from "../../DSL/Loading/Loading";
-import ScrollHelperModal from "./ScrollHelperModal/ScrollHelperModal";
+import ScrollHelperModal from "../../DSL/Modal/ScrollHelperModal";
 import Typography, {TVariant} from "../../DSL/Typography/Typography";
-import MemeModal from "./MemeModal";
+import MemeModal from "../../DSL/Modal/MemeModal";
 import Drawer from "../../DSL/Drawer/Drawer";
 import {useLocation, useParams} from "react-router-dom";
 import {NamedRoutes, route, SELECTED_PIXEL_PARAM} from "../../App.routes";
@@ -78,7 +78,7 @@ const ViewerPage = observer(function ViewerPage() {
               h={"full"}>
               <Loading/>
             </Flex>}>
-              <ThreeScene
+              <DogeExplorer
                 onPixelSelect={onPixelSelect}
                 store={store}
               />

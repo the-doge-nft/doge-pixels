@@ -24,7 +24,7 @@ type ButtonSize = "xs" | "sm" | "md" | "lg"
 const buttonTypographyMap: { [key in ButtonSize]: TVariant } = {
   xs: TVariant.PresStart10,
   sm: TVariant.PresStart12,
-  md: TVariant.PresStart15,
+  md: TVariant.PresStart14,
   lg: TVariant.PresStart28
 };
 

@@ -29,7 +29,7 @@ export enum CameraPositionZ {
 export const IMAGE_WIDTH = 640
 export const IMAGE_HEIGHT = 480
 
-const ThreeScene = observer(({onPixelSelect, store}: ThreeSceneProps) => {
+const DogeExplorer = observer(({onPixelSelect, store}: ThreeSceneProps) => {
     const {colorMode} = useColorMode()
     //@ts-ignore
     const selectedPixelColor = colorMode === "light" ? Colors['red']["50"] : Colors['magenta']['50']
@@ -264,15 +264,6 @@ const ThreeScene = observer(({onPixelSelect, store}: ThreeSceneProps) => {
                 <PixelPane size={"md"} pupper={0} color={"fff"} pupperIndex={0}/>
               </Box>}
             <Box position={"absolute"} bottom={0} left={0}>
-                <Button size={"sm"}
-                        variant={ButtonVariant.Text}
-                        onClick={() => camera.position.z = (CameraPositionZ.close + CameraPositionZ.far) / 2}>+</Button>
-                <Button size={"sm"}
-                        variant={ButtonVariant.Text}
-                        onClick={() => camera.position.z = (CameraPositionZ.close + CameraPositionZ.far) / 5}>++</Button>
-                <Button size={"sm"}
-                        variant={ButtonVariant.Text}
-                        onClick={() => camera.position.z = CameraPositionZ.close + 50}>+++</Button>
                 <Button size={"sm"} variant={ButtonVariant.Text}
                         onClick={() => setShowOwned(!showOwned)}>{showOwned ? "hide" : "show"} owned</Button>
             </Box>
@@ -281,4 +272,4 @@ const ThreeScene = observer(({onPixelSelect, store}: ThreeSceneProps) => {
 });
 
 
-export default ThreeScene;
+export default DogeExplorer;

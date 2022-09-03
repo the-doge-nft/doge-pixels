@@ -1,6 +1,6 @@
 import {Object3D, PerspectiveCamera, WebGLRenderer} from "three";
 import {Vector3} from "three/src/math/Vector3";
-import {CameraPositionZ, IMAGE_HEIGHT, IMAGE_WIDTH} from "./ThreeScene";
+import {CameraPositionZ, IMAGE_HEIGHT, IMAGE_WIDTH} from "./DogeExplorer";
 import {RefObject} from "react";
 
 export const getPixelIndex = (point: number, length: number) => {
