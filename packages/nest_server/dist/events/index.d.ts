@@ -1,3 +1,0 @@
-export declare enum Events {
-    ETHERS_WS_PROVIDER_CONNECTED = "ETHERS_WS_PROVIDER_CONNECTED"
-}
