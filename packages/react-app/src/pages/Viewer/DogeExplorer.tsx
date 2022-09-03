@@ -246,6 +246,31 @@ const DogeExplorer = observer(({onPixelSelect, store}: ThreeSceneProps) => {
                 {showOwned && AppStore.web3.addressToPuppers && <>
                     {Object.keys(AppStore.web3.addressToPuppers).map((address: string) => {
                         const tokens = AppStore.web3.addressToPuppers?.[address].tokenIDs
+
+                        // @next -- add cool hovering pixel around the owned pixel
+
+                        // return tokens?.map(token => {
+                        //     const [x, y] = AppStore.web3.pupperToPixelCoordsLocal(token)
+                        //     const color = AppStore.web3.pupperToHexLocal(token)
+                        //     const xPos = x - (overlayLength / 2)
+                        //     const yPos = -1 * y - (overlayLength / 2)
+                        //
+                        //     const meshX = xPos + (overlayLength * 2)
+                        //     const meshY = yPos - (overlayLength*2)
+                        //     const meshZ = 0.0001
+                        //
+                        //     const width = overlayLength * 2
+                        //     const height = overlayLength * 2
+                        //
+                        //     return <group>
+                        //         <Line start={[meshX, meshX + 10]} end={[meshY, meshY + 10]}/>
+                        //         <mesh position={[meshX, meshY, meshZ]} visible={true}>
+                        //             <planeGeometry attach={"geometry"} args={[width, height]}/>
+                        //             <meshBasicMaterial attach={"material"} color={"red"} opacity={1} depthTest={false}/>
+                        //         </mesh>
+                        //     </group>
+                        // })
+
                         return tokens?.map(token => {
                             const [x, y] = AppStore.web3.pupperToPixelCoordsLocal(token)
                             const xPos = x - (overlayLength / 2)
@@ -271,5 +296,19 @@ const DogeExplorer = observer(({onPixelSelect, store}: ThreeSceneProps) => {
     );
 });
 
+
+const Line: React.FC<any> = ({ start, end }) => {
+    const ref = useRef<SVGLineElement | null>(null)
+    useEffect(() => {
+        //@ts-ignore
+        ref.current?.geometry.setFromPoints([start, end].map((point) => new THREE.Vector3(...point)))
+    }, [start, end])
+    return (
+      <line ref={ref}>
+          <bufferGeometry />
+          <lineBasicMaterial color="hotpink" />
+      </line>
+    )
+}
 
 export default DogeExplorer;
