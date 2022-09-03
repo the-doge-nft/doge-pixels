@@ -73,7 +73,7 @@ const MobileHomePage = observer(() => {
                 <PixelPane
                   key={`mobile-home-pixels-${pupper}`}
                   onClick={() => history.push(route(NamedRoutes.PIXELS, {[SELECTED_PIXEL_PARAM]: pupper}))}
-                  size={"md"}
+                  size={"sm"}
                   pupper={pupper}
                   color={hex}
                   pupperIndex={index}

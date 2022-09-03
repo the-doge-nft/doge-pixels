@@ -91,7 +91,7 @@ const ViewerPage = observer(function ViewerPage() {
             flexDirection={"column"}
             justifyContent={"space-between"}
             title={store.currentView === ViewerView.Index &&
-              <Typography variant={TVariant.PresStart20}>Own the Doge</Typography>}>
+              <Typography variant={TVariant.PresStart16}>Own the Doge</Typography>}>
               {store.showGoBack && <Box position={"relative"} left={"-20px"} top={"-20px"}>
                   <Box
                     p={0}
@@ -103,7 +103,7 @@ const ViewerPage = observer(function ViewerPage() {
                       store.clearSelectedPupper()
                     }}
                   >
-                    <Icon icon={"back"} boxSize={7}/>
+                    <Icon icon={"back"} boxSize={6}/>
                 </Box>
               </Box>}
             {store.currentView === ViewerView.Index && <IndexPane store={store}/>}

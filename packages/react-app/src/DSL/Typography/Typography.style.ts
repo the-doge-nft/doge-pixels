@@ -1,4 +1,5 @@
 import { Type } from "../Fonts/Fonts";
+import { TVariant } from "./Typography";
 
 export const GlobalFont = `${Type.PresStart}, sans-serif`;
 
@@ -9,6 +10,11 @@ const TypographyStyle = {
     textDecorationColor: colorMode === "light" ? "black" : "white",
   }),
   variants: {
+    [TVariant.PresStart8]: {
+      fontFamily: Type.PresStart,
+      fontWeight: "normal",
+      fontSize: "8px",
+    },
     PresStart10: {
       fontFamily: Type.PresStart,
       fontWeight: "normal",

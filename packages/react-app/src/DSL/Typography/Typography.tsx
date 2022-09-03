@@ -3,6 +3,7 @@ import { Text } from "@chakra-ui/react";
 import { TextProps } from "@chakra-ui/layout/dist/types/text";
 
 export enum TVariant {
+  PresStart8 = "PresStart8",
   PresStart10 = "PresStart10",
   PresStart12 = "PresStart12",
   PresStart14 = "PresStart14",

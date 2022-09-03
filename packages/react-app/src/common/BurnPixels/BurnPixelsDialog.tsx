@@ -119,9 +119,6 @@ const Complete = observer(({onSuccess, txHash}: {onSuccess: () => void, txHash: 
     <Typography variant={TVariant.PresStart28} textAlign={"center"} mt={4} block>
       🔥🔥🔥
     </Typography>
-    <Flex justifyContent={"center"} mt={12}>
-      <Button onClick={() => onSuccess()}>Close</Button>
-    </Flex>
     <Flex justifyContent={"center"} mt={10}>
       {txHash && <Link href={getEtherscanURL(txHash, "tx")} isExternal>View tx</Link>}
     </Flex>

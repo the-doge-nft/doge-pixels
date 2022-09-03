@@ -63,8 +63,9 @@ const DogParkPage = observer(function DogParkPage() {
           <Box mb={8}>
             <Form onSubmit={async () => {}}>
               <TextInput
+                fontSize={"14px"}
                 rightIcon={"search"}
-                placeholder={"Search pixel owners by address"}
+                placeholder={"Search pixel owners"}
                 {...model(store, "addressToSearch")}
               />
             </Form>
@@ -87,10 +88,13 @@ const DogParkPage = observer(function DogParkPage() {
                     </Box>
                 </Box>}
                 {store.selectedUserHasPixels && (
-                  <Grid templateColumns={"1fr 1fr"} h={"full"}>
-                    <GridItem display={"flex"} flexDirection={"column"}>
+                  <Grid
+                    templateRows={{base: "1fr 1fr", "xl": "1fr"}}
+                    templateColumns={{base: "1fr", "xl": "1fr 1fr"}}
+                    h={"full"}>
+                    <GridItem order={{base: 2, xl: 1}} display={"flex"}>
                       <Box overflowY={"auto"} flexGrow={1}>
-                        <Flex flexWrap={"wrap"} maxHeight={"300px"}>
+                        <Flex flexWrap={{base: "nowrap", xl: "wrap"}} maxHeight={"300px"}>
                           {store.selectedOwner?.pixels.map(px => {
                             const hex = AppStore.web3.pupperToHexLocal(px);
                             const index = AppStore.web3.pupperToIndexLocal(px);
@@ -105,16 +109,17 @@ const DogParkPage = observer(function DogParkPage() {
                                     : "inherit"
                                 }
                                 p={2}
-                                m={1}
                                 mt={0}
                                 _hover={{ bg: colorMode === "light" ? lightModePrimary : darkModeSecondary }}
                               >
                                 <PixelPane
+                                  showCoords={true}
                                   size={"sm"}
                                   key={`top_dog_${px}`}
                                   pupper={px}
                                   color={hex}
                                   pupperIndex={index}
+                                  coordinates={AppStore.web3.pupperToPixelCoordsLocal(px)}
                                   onClick={px => {
                                     store.selectedPixel = px;
                                     window.history.pushState(
@@ -133,9 +138,9 @@ const DogParkPage = observer(function DogParkPage() {
                         </Flex>
                       </Box>
                     </GridItem>
-                    <GridItem display={"flex"} justifyContent={"center"}>
+                    <GridItem order={{base: 1, xl: 2}} display={"flex"} justifyContent={"center"} mx={4}>
                       {store.selectedOwner && (
-                        <Box maxWidth={"fit-content"}>
+                        <Box maxWidth={"fit-content"} mt={2}>
                           <Flex flexDirection={"column"}>
                             <ParkPixels
                               selectedPixel={store.selectedPixel ? store.selectedPixel : -1}
@@ -143,40 +148,42 @@ const DogParkPage = observer(function DogParkPage() {
                               onPupperClick={setPupper}
                             />
                             {store.selectedPixel && (
-                              <Box mt={10}>
-                                <Box mt={1}>
-                                  <Typography variant={TVariant.ComicSans18}>Pixel #:</Typography>
-                                  <Typography variant={TVariant.ComicSans18} ml={2}>
-                                    {store.seletedPixelIndex}
-                                  </Typography>
-                                </Box>
+                              <Flex mt={1}>
                                 <Box>
-                                  <Typography variant={TVariant.ComicSans18}>HEX:</Typography>
-                                  <Typography variant={TVariant.ComicSans18} ml={2}>
-                                    {store.selectedPixelHexColor}
-                                  </Typography>
+                                  <Box>
+                                    <Typography variant={TVariant.ComicSans18}>Pixel #:</Typography>
+                                    <Typography variant={TVariant.ComicSans18} ml={2}>
+                                      {store.seletedPixelIndex}
+                                    </Typography>
+                                  </Box>
+                                  <Box>
+                                    <Typography variant={TVariant.ComicSans18}>HEX:</Typography>
+                                    <Typography variant={TVariant.ComicSans18} ml={2}>
+                                      {store.selectedPixelHexColor}
+                                    </Typography>
+                                  </Box>
+                                  <Box mt={1}>
+                                    <Typography variant={TVariant.ComicSans18}>Coordinates:</Typography>
+                                    <Typography variant={TVariant.ComicSans18} ml={2}>
+                                      ({store.selectedPixelCoordinates[0]},{store.selectedPixelCoordinates[1]})
+                                    </Typography>
+                                  </Box>
                                 </Box>
-                                <Box mt={1}>
-                                  <Typography variant={TVariant.ComicSans18}>Coordinates:</Typography>
-                                  <Typography variant={TVariant.ComicSans18} ml={2}>
-                                    ({store.selectedPixelCoordinates[0]},{store.selectedPixelCoordinates[1]})
-                                  </Typography>
-                                </Box>
-                              </Box>
+                                <Flex alignItems={"center"} justifyContent={"flex-end"} flexGrow={1}>
+                                  <Button
+                                    size={"sm"}
+                                    onClick={() =>
+                                      history.push(
+                                        route(NamedRoutes.PIXELS, { [SELECTED_PIXEL_PARAM]: store.selectedPixel }),
+                                      )
+                                    }
+                                  >
+                                    Portal
+                                  </Button>
+                                </Flex>
+                              </Flex>
                             )}
                           </Flex>
-                          {store.selectedPixel && (
-                            <Button
-                              onClick={() =>
-                                history.push(
-                                  route(NamedRoutes.PIXELS, { [SELECTED_PIXEL_PARAM]: store.selectedPixel }),
-                                )
-                              }
-                              mt={10}
-                            >
-                              View in portal
-                            </Button>
-                          )}
                         </Box>
                       )}
                     </GridItem>

@@ -130,7 +130,7 @@ const ParkPixels = observer(({ selectedPixel, pixelOwner, onPupperClick }: ParkP
     ctx.fillStyle = hex;
     ctx.fillRect(PIXEL_OFFSET_X, paneY, PIXEL_PANE_WIDTH, PIXEL_PANE_HEIGHT);
 
-    let fillColor = lightOrDarkMode(colorMode, "white", "#180e30");
+    let fillColor = lightOrDarkMode(colorMode, "#FFF8E4", "#180e30");
     ctx.fillStyle = fillColor;
     ctx.fillRect(PIXEL_OFFSET_X, paneY + PIXEL_PANE_HEIGHT, PIXEL_PANE_WIDTH, PIXEL_TEXT_HEIGHT);
 

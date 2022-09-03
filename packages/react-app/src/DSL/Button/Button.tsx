@@ -47,11 +47,13 @@ const Button = ({ submit, children, variant = ButtonVariant.Primary, size = "md"
         size={size}
         __css={styles.button}
         onClick={onClick}
-        // onTouchStart={onClick}
         isLoading={isLoading}
         onMouseEnter={() => setIsHover(true)}
         onMouseLeave={() => setIsHover(false)}
-        onTouchStart={() => setIsHover(true)}
+        onTouchStart={() => {
+          setIsHover(true)
+          onClick && onClick()
+        }}
         onTouchEnd={() => setIsHover(false)}
       >
         <Typography

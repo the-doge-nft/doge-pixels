@@ -44,10 +44,11 @@ const Footer = observer(() => {
     <Box w={"full"} mt={5}>
       <Flex justifyContent={"space-between"}>
         <Box>
-          <Typography variant={TVariant.ComicSans12}>
+          <Typography variant={TVariant.ComicSans10}>
             Built by
             {contributers.map((person, index, arr) => (
               <Link
+                size={"sm"}
                 key={`${person.name}`}
                 fontWeight={"bold"}
                 variant={Type.ComicSans}
@@ -61,6 +62,7 @@ const Footer = observer(() => {
             ))}
             with support from
             <Link
+              size={"sm"}
               fontWeight={"bold"}
               variant={Type.ComicSans}
               mx={1}

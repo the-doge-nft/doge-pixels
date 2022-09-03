@@ -288,8 +288,8 @@ const DogeExplorer = observer(({onPixelSelect, store}: ThreeSceneProps) => {
               <Box ref={tooltipRef} position={"absolute"} zIndex={2} display={"none"} pointerEvents={"none"}>
                 <PixelPane size={"md"} pupper={0} color={"fff"} pupperIndex={0}/>
               </Box>}
-            <Box position={"absolute"} bottom={0} left={0}>
-                <Button size={"sm"} variant={ButtonVariant.Text}
+            <Box position={"absolute"} bottom={0} left={0} p={2}>
+                <Button size={"xs"} variant={ButtonVariant.Text}
                         onClick={() => setShowOwned(!showOwned)}>{showOwned ? "hide" : "show"} owned</Button>
             </Box>
         </Box>
