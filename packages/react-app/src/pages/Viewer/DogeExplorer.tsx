@@ -292,9 +292,7 @@ const DogeExplorer = observer(({onPixelSelect, store}: ThreeSceneProps) => {
             <Box position={"absolute"} bottom={0} left={0} p={2}>
                 <Button size={"xs"} variant={ButtonVariant.Text}
                         onClick={() => setShowOwned(!showOwned)}>
-                    <Typography variant={TVariant.ComicSans14}>
                         {showOwned ? "hide" : "show"} owned
-                    </Typography>
                 </Button>
             </Box>
         </Box>
