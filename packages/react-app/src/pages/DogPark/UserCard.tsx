@@ -1,14 +1,20 @@
-import React from "react";
+import React, { PropsWithChildren } from "react";
 import DogParkPageStore, { PixelOwnerInfo } from "./DogParkPage.store";
 import {Box, Flex, useColorMode} from "@chakra-ui/react";
 import Typography, {TVariant} from "../../DSL/Typography/Typography";
 import {abbreviate} from "../../helpers/strings";
 import PxPill from "./PxPill";
-import Icon from "../../DSL/Icon/Icon";
-import {darkModeSecondary, lightModePrimary} from "../../DSL/Theme";
+import { darkModeSecondary, lightModePrimary, lightOrDarkMode } from "../../DSL/Theme";
 import {NamedRoutes, route} from "../../App.routes";
+import { observer } from "mobx-react-lite";
 
-const UserCard = ({store, pixelOwner}: {store: DogParkPageStore, pixelOwner: PixelOwnerInfo }) => {
+interface UserCardProps {
+  store: DogParkPageStore;
+  pixelOwner: PixelOwnerInfo;
+  isSelected?: boolean
+}
+
+const UserCard: React.FC<PropsWithChildren<UserCardProps>> = observer(({store, pixelOwner, isSelected = false, children}) => {
   const {colorMode} = useColorMode()
 
   return <Flex
@@ -18,8 +24,6 @@ const UserCard = ({store, pixelOwner}: {store: DogParkPageStore, pixelOwner: Pix
     key={`${pixelOwner.address}`}
     px={2}
     py={2}
-    my={1}
-    color={"black"}
     _hover={{
       cursor: "pointer",
       bg: colorMode === "light" ? lightModePrimary : darkModeSecondary
@@ -32,10 +36,8 @@ const UserCard = ({store, pixelOwner}: {store: DogParkPageStore, pixelOwner: Pix
     }}
   >
     <Flex alignItems={"center"} overflow={"hidden"}>
-      <Icon icon={'person'} display={"inline-block"} boxSize={5}/>
       <Typography
         variant={TVariant.PresStart14}
-        ml={4}
         block
         overflow={"hidden"}
         textOverflow={"ellipsis"}
@@ -43,11 +45,12 @@ const UserCard = ({store, pixelOwner}: {store: DogParkPageStore, pixelOwner: Pix
       >
         {pixelOwner.ens ? pixelOwner.ens : abbreviate(pixelOwner.address, 4)}
       </Typography>
+      {children}
     </Flex>
     <Box ml={4}>
-      <PxPill count={pixelOwner.pixels.length} />
+      <PxPill bg={isSelected ? lightOrDarkMode(colorMode, "yellow.700", "magenta.50") : "transparent"} count={pixelOwner.pixels.length} />
     </Box>
   </Flex>
-}
+})
 
 export default UserCard;

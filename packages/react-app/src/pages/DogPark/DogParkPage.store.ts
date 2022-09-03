@@ -81,13 +81,13 @@ class DogParkPageStore extends Reactionable(EmptyClass) {
   }
 
   @computed
-  get selectedOwner(): PixelOwnerInfo {
+  get selectedOwner(): PixelOwnerInfo | undefined {
     return this.sortedPixelOwners.filter(dog => dog.address === this.selectedAddress)[0]
   }
 
   @computed
   get selectedUserHasPixels() {
-    return this.selectedOwner?.pixels.length > 0
+    return this.selectedOwner !== undefined && this.selectedOwner.pixels.length > 0
   }
 
   @computed

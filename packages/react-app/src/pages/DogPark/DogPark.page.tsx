@@ -74,24 +74,7 @@ const DogParkPage = observer(function DogParkPage() {
             {!store.selectedAddress && <SearchHints store={store} />}
             {store.selectedAddress && (
               <>
-                <Box mb={5} h={store.selectedUserHasPixels ? "initial" : "full"}>
-                  <Flex alignItems={"center"}>
-                    <Flex alignItems={"center"}>
-                      <Icon icon={"person"} boxSize={6} />
-                      <Typography variant={TVariant.PresStart20} ml={3}>
-                        {store.selectedAddressDisplayName}
-                      </Typography>
-                      {store.isSelectedAddressAuthedUser && (
-                        <Typography variant={TVariant.PresStart15} ml={3}>
-                          (you)
-                        </Typography>
-                      )}
-                    </Flex>
-                    <Box ml={4}>
-                      <PxPill count={store.selectedUserHasPixels ? store.selectedOwner?.pixels.length : 0} />
-                    </Box>
-                  </Flex>
-                  {!store.selectedUserHasPixels && (
+                {!store.selectedUserHasPixels && <Box mb={5} h={store.selectedUserHasPixels ? "initial" : "full"}>
                     <Box w={"full"} h={"full"}>
                       <Flex alignItems={"center"} w={"full"} h={"full"} justifyContent={"center"}>
                         <Typography variant={TVariant.PresStart28} color={"#d6ceb6"}>
@@ -102,9 +85,7 @@ const DogParkPage = observer(function DogParkPage() {
                         </Typography>
                       </Flex>
                     </Box>
-                  )}
-                </Box>
-
+                </Box>}
                 {store.selectedUserHasPixels && (
                   <Grid templateColumns={"1fr 1fr"} h={"full"}>
                     <GridItem display={"flex"} flexDirection={"column"}>
@@ -268,10 +249,16 @@ const TopDogs = observer(({ store }: { store: DogParkPageStore }) => {
           ({store.sortedPixelOwners.length})
         </Typography>
       </Flex>
-      <Box overflowY={"auto"} flexGrow={1} mt={4}>
-        <Flex flexWrap={"wrap"} maxHeight={"300px"}>
+      <Box overflowY={"auto"} flexGrow={1}>
+        <Flex flexWrap={"wrap"} maxHeight={"300px"} sx={{flexGap: "10px"}}>
           {store.sortedPixelOwners.map(owner => (
-            <UserCard key={`top-dog-${owner.address}`} store={store} pixelOwner={owner} />
+            <UserCard isSelected={store.selectedOwner && store.selectedOwner.address === owner.address} key={`top-dog-${owner.address}`} store={store} pixelOwner={owner}>
+                  {AppStore.web3?.address === owner.address && (
+                    <Typography color={lightOrDarkMode(colorMode, "yellow.100", "gray.300")} variant={TVariant.PresStart12} ml={4}>
+                      (you)
+                    </Typography>
+                  )}
+            </UserCard>
           ))}
         </Flex>
       </Box>

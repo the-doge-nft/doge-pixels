@@ -302,7 +302,7 @@ const ParkPixels = observer(({ selectedPixel, pixelOwner, onPupperClick }: ParkP
       h={IMAGE_HEIGHT}
       overflow={"hidden"}
       borderWidth={1}
-      borderColor={"white"}
+      borderColor={lightOrDarkMode(colorMode, "black", "white")}
       _focus={{ boxShadow: "none" }}
     >
       <canvas

@@ -3,7 +3,7 @@ import { Box, useColorMode } from "@chakra-ui/react";
 import { lightOrDarkMode } from "../../DSL/Theme";
 import Typography, { TVariant } from "../../DSL/Typography/Typography";
 
-const PxPill = ({ count }: { count: number }) => {
+const PxPill = ({ count, bg }: { count: number, bg?: string }) => {
   const { colorMode } = useColorMode();
   return (
     <Box
@@ -14,9 +14,9 @@ const PxPill = ({ count }: { count: number }) => {
       borderWidth={"1px"}
       borderStyle={"solid"}
       borderColor={lightOrDarkMode(colorMode, "black", "white")}
+      bg={bg}
       minWidth={"80px"}
-      px={"12px"}
-      py={"4px"}
+      py={"2px"}
     >
       <Typography variant={TVariant.ComicSans16} mr={1}>
         {count}

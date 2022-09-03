@@ -1,7 +1,7 @@
 import {generatePath} from "react-router-dom";
 import {RouteMiddleware} from "./services/middleware";
 import {FC} from "react";
-import AppLayout from "./layouts/AppLayout";
+import AppLayout from "./layouts/AppLayout/AppLayout";
 import ViewerPage from "./pages/Viewer/Viewer.page";
 import DSLPage from "./pages/DSL.page";
 import DogParkPage from "./pages/DogPark/DogPark.page";
@@ -123,9 +123,9 @@ if (isDevModeEnabled()) {
     component: DSLPage,
     desktopName: "DSL",
     mobileName: "DSL",
-    showOnMobile: false,
-    showOnDesktop: false,
-    order: 1
+    showOnMobile: true,
+    showOnDesktop: true,
+    order: 4
   })
 }
 

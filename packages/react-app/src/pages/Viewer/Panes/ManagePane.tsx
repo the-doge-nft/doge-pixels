@@ -16,7 +16,7 @@ const ManagePane = observer(function ManagePane({store}: {store: ViewerStore}) {
         block
         mt={1}
         mb={5}
-        variant={TVariant.PresStart18}>
+        variant={TVariant.PresStart16}>
         Your Pixels ({AppStore.web3.puppersOwned.length})
       </Typography>
       <Box overflow={"auto"} h={"full"} mt={3}>
