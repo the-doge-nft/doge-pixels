@@ -31,6 +31,17 @@ const PIXEL_WIDTH = 15;
 const PIXEL_HEIGHT = 15;
 const SCALE = IMAGE_WIDTH / 640;
 
+function createHiPPICanvas(w: number, h: number) {
+  let ratio = window.devicePixelRatio;
+  let cv = document.getElementById("canvas") as HTMLCanvasElement;
+  cv.width = w * ratio;
+  cv.height = h * ratio;
+  cv.style.width = w + "px";
+  cv.style.height = h + "px";
+  cv.getContext("2d")!.scale(ratio, ratio);
+  return cv;
+}
+
 const getPixelOffsets = (y: number) => {
   if (y * SCALE <= IMAGE_HEIGHT / 2) {
     return [PIXEL_OFFSET_X, BOTTOM_PIXEL_OFFSET_Y];
@@ -40,7 +51,7 @@ const getPixelOffsets = (y: number) => {
 };
 
 const ParkPixels = observer(({ selectedPixel, pixelOwner, onPupperClick }: ParkPixelsProps) => {
-  const colorMode = useColorMode();
+  const { colorMode } = useColorMode();
   const [pupperPositions, setPupperPositions] = useState<IPupperRectPosition[]>([]);
 
   useEffect(() => {
@@ -59,6 +70,17 @@ const ParkPixels = observer(({ selectedPixel, pixelOwner, onPupperClick }: ParkP
   }, [selectedPixel, pixelOwner, colorMode]);
 
   useEffect(() => {
+    // scale the canvas so we don't see pixelated shapes
+    let ratio = window.devicePixelRatio;
+    let cv = document.getElementById("canvas") as HTMLCanvasElement;
+    cv.width = IMAGE_WIDTH * ratio;
+    cv.height = IMAGE_HEIGHT * ratio;
+    cv.style.width = IMAGE_WIDTH + "px";
+    cv.style.height = IMAGE_HEIGHT + "px";
+    cv.getContext("2d")!.scale(ratio, ratio);
+  }, [])
+
+  useEffect(() => {
     drawBackground();
   }, [pupperPositions]);
 
@@ -66,7 +88,7 @@ const ParkPixels = observer(({ selectedPixel, pixelOwner, onPupperClick }: ParkP
     if (selectedPixel === -1) return;
 
     const [selectedX, selectedY] = AppStore.web3.pupperToPixelCoordsLocal(selectedPixel);
-    let fillColor = lightOrDarkMode(colorMode.colorMode, "#ffd335", "#ff00e5");
+    let fillColor = lightOrDarkMode(colorMode, "#ffd335", "#ff00e5");
     ctx.save();
     ctx.fillStyle = fillColor;
     ctx.fillRect(selectedX * SCALE - PIXEL_WIDTH / 2, selectedY * SCALE - PIXEL_HEIGHT / 2, PIXEL_WIDTH, PIXEL_HEIGHT);
@@ -78,7 +100,7 @@ const ParkPixels = observer(({ selectedPixel, pixelOwner, onPupperClick }: ParkP
     if (length < 1) return;
     ctx.save();
 
-    let strokeColor = lightOrDarkMode(colorMode.colorMode, "red", "#4b0edd");
+    let strokeColor = lightOrDarkMode(colorMode, "red", "#4b0edd");
     ctx.beginPath();
     ctx.strokeStyle = strokeColor;
 
@@ -108,19 +130,19 @@ const ParkPixels = observer(({ selectedPixel, pixelOwner, onPupperClick }: ParkP
     ctx.fillStyle = hex;
     ctx.fillRect(PIXEL_OFFSET_X, paneY, PIXEL_PANE_WIDTH, PIXEL_PANE_HEIGHT);
 
-    let fillColor = lightOrDarkMode(colorMode.colorMode, "white", "#180e30");
+    let fillColor = lightOrDarkMode(colorMode, "white", "#180e30");
     ctx.fillStyle = fillColor;
     ctx.fillRect(PIXEL_OFFSET_X, paneY + PIXEL_PANE_HEIGHT, PIXEL_PANE_WIDTH, PIXEL_TEXT_HEIGHT);
 
     ctx.font = "7px PressStart2P";
-    let textColor = lightOrDarkMode(colorMode.colorMode, "black", "white");
+    let textColor = lightOrDarkMode(colorMode, "black", "white");
     ctx.strokeStyle = textColor;
     ctx.rect(PIXEL_OFFSET_X, paneY, PIXEL_PANE_WIDTH, PIXEL_PANE_HEIGHT + PIXEL_TEXT_HEIGHT);
     ctx.lineTo(PIXEL_OFFSET_X, paneY + PIXEL_PANE_HEIGHT);
     ctx.lineTo(PIXEL_OFFSET_X + PIXEL_PANE_WIDTH, paneY + PIXEL_PANE_HEIGHT);
     ctx.stroke();
     ctx.fillStyle = textColor;
-    ctx.fillText(`(${x},${y})`, PIXEL_OFFSET_X + 3, paneY + PIXEL_PANE_HEIGHT + 15);
+    ctx.fillText(`(${x},${y})`, PIXEL_OFFSET_X + 3, paneY + PIXEL_PANE_HEIGHT + 14);
     ctx.closePath();
     ctx.restore();
   };
@@ -155,10 +177,12 @@ const ParkPixels = observer(({ selectedPixel, pixelOwner, onPupperClick }: ParkP
   };
 
   const drawScaledImage = (img: any, ctx: CanvasRenderingContext2D) => {
+    const pixelRatio = window.devicePixelRatio
     var canvas = ctx.canvas;
     var hRatio = canvas.width / img.width;
     var vRatio = canvas.height / img.height;
     var ratio = Math.min(hRatio, vRatio);
+
     var centerShift_x = (canvas.width - img.width * ratio) / 2;
     var centerShift_y = (canvas.height - img.height * ratio) / 2;
     ctx.save();
@@ -167,17 +191,14 @@ const ParkPixels = observer(({ selectedPixel, pixelOwner, onPupperClick }: ParkP
       img,
       0,
       0,
-      img.width,
-      img.height,
+      img.width * pixelRatio,
+      img.height * pixelRatio,
       centerShift_x,
       centerShift_y,
       img.width * ratio,
       img.height * ratio,
     );
     ctx.rect(0, 0, img.width * ratio, img.height * ratio);
-    let borderColor = lightOrDarkMode(colorMode.colorMode, "black", "white");
-    ctx.strokeStyle = borderColor;
-    ctx.stroke();
     ctx.closePath();
     ctx.restore();
   };
@@ -276,14 +297,16 @@ const ParkPixels = observer(({ selectedPixel, pixelOwner, onPupperClick }: ParkP
   };
 
   return (
-    <Box w={IMAGE_WIDTH} h={IMAGE_HEIGHT} _focus={{ boxShadow: "none", borderColor: "inherit" }}>
-      {/*<Canvas>*/}
-
-      {/*</Canvas>*/}
+    <Box
+      w={IMAGE_WIDTH}
+      h={IMAGE_HEIGHT}
+      overflow={"hidden"}
+      borderWidth={1}
+      borderColor={"white"}
+      _focus={{ boxShadow: "none" }}
+    >
       <canvas
         id="canvas"
-        width={IMAGE_WIDTH}
-        height={IMAGE_HEIGHT}
         onMouseMove={e => onCanvasMouseMove(e)}
         onMouseDown={e => onCanvasMouseDown(e)}
       />
