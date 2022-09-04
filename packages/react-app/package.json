@@ -83,7 +83,7 @@
     "_aws_dev_invalidate_cloudfront": "aws cloudfront create-invalidation --distribution-id EM5YGQYZPD5JN --paths '/*'",
     "_aws_prod_invalidate_cloudfront": "aws cloudfront create-invalidation --distribution-id E14PJ8YMLCOVWA --paths '/*'",
     "_aws_prod_old_invalidate_cloudfront": "aws cloudfront create-invalidation --distribution-id ERSKXV74XPGYQ --paths '/*'",
-    "_dev_build": "yarn prestart && CI=false REACT_APP_DOG_ENV=surge_staging react-app-rewired build",
+    "_dev_build": "yarn prestart && CI=false REACT_APP_DOG_ENV=aws_develop react-app-rewired build",
     "_prod_build": "yarn prestart && CI=false REACT_APP_DOG_ENV=aws_production react-app-rewired build",
     "deploy:aws_dev": "yarn _dev_build && yarn _aws_dev_deploy && yarn _aws_dev_invalidate_cloudfront",
     "deploy:aws_prod": "yarn _prod_build && yarn _aws_prod_deploy && yarn _aws_prod_invalidate_cloudfront",
