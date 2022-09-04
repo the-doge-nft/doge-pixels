@@ -106,12 +106,12 @@ const Modal = ({
             <Box __css={chakraStyles.body}>
               {title && (
                 <Box __css={chakraStyles.title}>
-                  <Typography variant={TVariant.PresStart20}>{title}</Typography>
+                  <Typography variant={TVariant.PresStart18}>{title}</Typography>
                 </Box>
               )}
               {description && (
                 <Box __css={chakraStyles.description}>
-                  <Typography variant={TVariant.ComicSans18}>{description}</Typography>
+                  <Typography variant={TVariant.ComicSans16}>{description}</Typography>
                 </Box>
               )}
               {children}

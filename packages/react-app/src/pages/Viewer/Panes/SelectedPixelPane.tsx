@@ -73,22 +73,10 @@ const SelectedPixelPane = observer(function SelectedPixelPane({store}: {store: V
             </Box>}
           </Flex>
 
-          <Flex justifyContent={"center"} mt={6}>
-            <Button variant={ButtonVariant.Text} onClick={() => {
-              let url
-              if (isDevModeEnabled()) {
-                url = `https://testnets.opensea.io/assets/${AppStore.web3.pxContractAddress}/${store.selectedPupper}`
-              } else if (isProduction()) {
-                url = `https://opensea.io/assets/${AppStore.web3.pxContractAddress}/${store.selectedPupper}`
-              } else {
-                throw Error("Unknown environment")
-              }
-              window.open(url, "_blank")
-            }}>
-              <Typography block variant={TVariant.PresStart16} mt={2}>
-                View on Opensea
-              </Typography>
-            </Button>
+          <Flex justifyContent={"center"} mt={12}>
+            <Link href={isDevModeEnabled() ? `https://testnets.opensea.io/assets/${AppStore.web3.pxContractAddress}/${store.selectedPupper}` : `https://opensea.io/assets/${AppStore.web3.pxContractAddress}/${store.selectedPupper}`}>
+              View on Opensea
+            </Link>
           </Flex>
         </Box>}
       </Box>
