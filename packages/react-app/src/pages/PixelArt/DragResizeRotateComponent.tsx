@@ -85,18 +85,6 @@ const DragResizeRotateComponent = observer(function DragResizeComponent(props: D
                 y -= dy;
             }
 
-            /*if (cornerX !== 0 && cornerY === 0) dy = 0;
-            if (cornerX === 0 && cornerY !== 0) dx = 0;
-
-            if (cornerX === 1) w -= dx;
-            if (cornerY === 1) h -= dy;
-            if (cornerX === -1) w += dx;
-            if (cornerY === -1) h += dy;
-            if (cornerX === -1) x -= dx;
-            if (cornerY === -1) y -= dy;
-            if (cornerX === 0) x -= dx;
-            if (cornerY === 0) y -= dy;*/
-
             setPosition(value => ({
                 x: x,
                 y: y,
@@ -107,9 +95,9 @@ const DragResizeRotateComponent = observer(function DragResizeComponent(props: D
             }));
             setRotation(value => (a));
             setRotationStr(value => (`rotate(${a}deg)`));
-            /*if (props.onChange) {
+            if (props.onChange) {
                 props.onChange(x, y, w, h, a);
-            }*/
+            }
         }
         function onMouseUp() {
             document.body.removeEventListener("mousemove", onMouseMove);
@@ -122,7 +110,7 @@ const DragResizeRotateComponent = observer(function DragResizeComponent(props: D
     return <Box
         id='drag-resize'
         key='drag-resize'
-        position={'relative'}
+        position={'absolute'}
         style={{
             left: position.x,
             top: position.y,

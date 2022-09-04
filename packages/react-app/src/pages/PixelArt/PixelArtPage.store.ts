@@ -16,6 +16,7 @@ export class Sticker {
     width: number;
     height: number;
     rotation: number;
+    image: string;
 
     constructor() {
         this.x = 0;
@@ -23,6 +24,7 @@ export class Sticker {
         this.width = 100;
         this.height = 100;
         this.rotation = 0;
+        this.image = '';
     }
 }
 
@@ -58,6 +60,8 @@ class PixelArtPageStore extends Reactionable(EmptyClass) {
     @observable
     isImportTemplateModalOpened: boolean;
     @observable
+    isImportStickerModalOpened: boolean;
+    @observable
     isCanvasPropertiesModalOpened: boolean;
 
     pixelsCanvas: PixelArtCanvas;
@@ -84,10 +88,10 @@ class PixelArtPageStore extends Reactionable(EmptyClass) {
         this.templateHeight = CANVAS_ELEMENT_SIZE;
 
         this.stickers = [];
-        this.stickers.push(new Sticker());
 
         this.isImportTemplateModalOpened = false;
         this.isCanvasPropertiesModalOpened = false;
+        this.isImportStickerModalOpened = false;
     }
 
     setCanvas(canvas: HTMLCanvasElement) {

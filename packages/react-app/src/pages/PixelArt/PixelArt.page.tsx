@@ -12,6 +12,7 @@ import { TRANSPARENT_PIXEL } from "./PixelArtCanvas";
 import ImportTemplateModal from "./ImportTemplateModal/ImportTemplateModal";
 import CanvasPropertiesModal from "./CanvasPropertiesModal/CanvasPropertiesModal";
 import DragResizeRotateComponent from "./DragResizeRotateComponent";
+import ImportStickerModal from "./ImportStickerModal/ImportStickerModal";
 
 const CANVAS_ELEMENT_SIZE = 512;
 
@@ -55,6 +56,10 @@ const PixelArtPage = observer(function PixelArtPage() {
             store={store}
             isOpen={store.isImportTemplateModalOpened}
             onClose={() => { store.isImportTemplateModalOpened = false; }} />}
+        {store.isImportStickerModalOpened && <ImportStickerModal
+            store={store}
+            isOpen={store.isImportStickerModalOpened}
+            onClose={() => { store.isImportStickerModalOpened = false; }} />}
         {store.isCanvasPropertiesModalOpened && <CanvasPropertiesModal
             store={store}
             isOpen={store.isCanvasPropertiesModalOpened}
@@ -114,6 +119,14 @@ const ArtCanvasComponent = observer(({ store }: { store: PixelArtPageStore }) =>
         document.body.addEventListener("mouseup", onMouseUp, { once: true });
     };
 
+    const onStickerChange = (sticker: Sticker, left: number, top: number, width: number, height: number, rotation: number) => {
+        sticker.x = left;
+        sticker.y = top;
+        sticker.width = width;
+        sticker.height = height;
+        sticker.rotation = rotation;
+    }
+
     return <Box
         border={"1px solid gray"}
         margin={"5px"}
@@ -150,17 +163,22 @@ const ArtCanvasComponent = observer(({ store }: { store: PixelArtPageStore }) =>
             </canvas>
             <Box
                 position={'relative'}
-                top={-store.templateHeight-CANVAS_ELEMENT_SIZE}
+                top={-store.templateHeight - CANVAS_ELEMENT_SIZE}
                 width={CANVAS_ELEMENT_SIZE}
                 height={CANVAS_ELEMENT_SIZE}
             >
                 {store.stickers.map((entry: Sticker, index: number) => {
                     return <DragResizeRotateComponent
-                        top={100}
-                        left={100}
-                        width={300}
-                        height={200}
-                        rotation={0}
+                        key={index}
+                        image={entry.image}
+                        top={entry.y}
+                        left={entry.x}
+                        width={entry.width}
+                        height={entry.height}
+                        rotation={entry.rotation}
+                        onChange={(left: number, top: number, width: number, height: number, rotation: number) => {
+                            onStickerChange(entry, left, top, width, height, rotation);
+                        }}
                     />
                 })}
             </Box>
@@ -285,6 +303,10 @@ const MainMenuComponent = observer(({ store }: { store: PixelArtPageStore }) => 
         store.isImportTemplateModalOpened = true;
     }
 
+    const importSticker = () => {
+        store.isImportStickerModalOpened = true;
+    }
+
     const generateIdenticon = () => {
         store.pixelsCanvas.generateIdenticon(store.selectedAddress, store.palette);
     }
@@ -307,7 +329,8 @@ const MainMenuComponent = observer(({ store }: { store: PixelArtPageStore }) => 
                 <MenuItem>Save File</MenuItem>
                 <MenuItem onClick={downloadPFP}>Export</MenuItem>
                 <MenuItem onClick={postTweet}>Share</MenuItem>
-                <MenuItem onClick={importTemplate}>Import</MenuItem>
+                <MenuItem onClick={importTemplate}>Import Template</MenuItem>
+                <MenuItem onClick={importSticker}>Import Sticker</MenuItem>
                 <MenuItem onClick={generateIdenticon}>Randomize</MenuItem>
                 <MenuItem onClick={canvasProperties}>Properties</MenuItem>
             </MenuList>
