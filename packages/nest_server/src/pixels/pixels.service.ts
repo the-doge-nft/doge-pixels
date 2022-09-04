@@ -23,6 +23,7 @@ export class PixelsService implements OnModuleInit {
   ) {}
 
   async onModuleInit() {
+    this.logger.log(`PIXELS SERVICE INIT`)
     if (!this.pxContract && !this.dogContract && this.ethersService.provider) {
       this.initContracts(this.ethersService.provider);
     }
