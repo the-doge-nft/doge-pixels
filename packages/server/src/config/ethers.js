@@ -7,7 +7,8 @@ const {keepAlive} = require("./helpers");
 const {getAddressToOwnershipMap} = require("../api/web3/px");
 const {sentryClient} = require("../services/Sentry");
 const debounce = require("lodash.debounce")
-const tweet = require("../services/twitterBot");
+const {tweet} = require("../services/twitterBot");
+const discordBot = require("../services/discordBot");
 
 class EthersHandler {
   constructor() {
@@ -62,6 +63,7 @@ class EthersHandler {
       logger.info(`Transfer callback hit for: ${tokenId}`)
       debounce(this.getAddressMap.bind(this), 500, {maxWait: 2 * 1000})
       tweet(from, to, tokenId, this.provider)
+      discordBot(from, to, tokenId, this.provider)
     })
 
     if (app_env !== "test") {

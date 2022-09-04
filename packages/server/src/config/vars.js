@@ -21,6 +21,8 @@ module.exports = {
   twitter_access_token_key: process.env.TWITTER_ACCESS_TOKEN_KEY,
   twitter_access_token_secret: process.env.TWITTER_ACCESS_TOKEN_SECRET,
   nomics_api_key: process.env.NOMICS_API_KEY,
+  discord_token: process.env.DISCORD_TOKEN,
+  discord_channel_id: process.env.DISCORD_CHANNEL_ID,
   isProd: process.env.APP_ENV === "production"
 }
 
