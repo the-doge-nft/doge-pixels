@@ -13,7 +13,7 @@ const PerksPage = observer(() => {
       <Box maxW={"3xl"}>
         <Box textAlign={"center"}>
           <Typography variant={TVariant.ComicSans16}>
-            Pixel perks offer beneficial assets to our pixel holders. Checkout what has happpened and whats upcoming.
+            Pixels give holders access to drops. Find them here.
           </Typography>
         </Box>
         <Flex flexDirection={"column"} sx={{gap: "20px"}} mt={8}>
