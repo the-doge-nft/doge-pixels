@@ -7,8 +7,8 @@ import * as ABI from '../contracts/hardhat_contracts.json';
 import { ConfigService } from '@nestjs/config';
 import { Configuration } from '../config/configuration';
 import { PixelsRepository } from './pixels.repository';
-// import { InjectSentry, SentryService } from '@ntegral/nestjs-sentry';
 import KobosuJson from "../assets/images/kobosu.json";
+import {InjectSentry, SentryService} from "@travelerdev/nestjs-sentry";
 
 @Injectable()
 export class PixelsService implements OnModuleInit {
@@ -25,7 +25,7 @@ export class PixelsService implements OnModuleInit {
     private configService: ConfigService<Configuration>,
     private pixelsRepository: PixelsRepository,
     private eventEmitter: EventEmitter2,
-    // @InjectSentry() private readonly sentryClient: SentryService,
+    @InjectSentry() private readonly sentryClient: SentryService,
   ) {}
 
   async onModuleInit() {
@@ -39,7 +39,7 @@ export class PixelsService implements OnModuleInit {
   async handleProviderConnected(provider: ethers.providers.WebSocketProvider) {
     const logMessage = 'Infura provider re-connected';
     this.logger.log(logMessage);
-    // this.sentryClient.instance().captureMessage(logMessage);
+    this.sentryClient.instance().captureMessage(logMessage);
     this.initContracts(provider);
   }
 

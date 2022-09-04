@@ -1,0 +1,3 @@
+[submodule "packages/nest_server/nestjs-sentry"]
+	path = packages/nest_server/src/nestjs-sentry
+	url = git@github.com:travelerdev/nestjs-sentry.git

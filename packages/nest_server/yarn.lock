@@ -1540,7 +1540,7 @@
     "@sentry/utils" "7.12.1"
     tslib "^1.9.3"
 
-"@sentry/node@^7.11.1":
+"@sentry/node@^7.12.1":
   version "7.12.1"
   resolved "https://registry.yarnpkg.com/@sentry/node/-/node-7.12.1.tgz#ced12d0db3ca5715d699858acb1e2f2ea1d7c59b"
   integrity sha512-ZVT2+lLd3gbhOuCOczlFLHH2KnD4EXrq6jRp5Sb2vsSZGVHnVsbD5j7i54zbSBqcydlFqzVMqWSysGTKoYiimw==
@@ -1590,6 +1590,11 @@
   version "0.3.0"
   resolved "https://registry.yarnpkg.com/@tokenizer/token/-/token-0.3.0.tgz#fe98a93fe789247e998c75e74e9c7c63217aa276"
   integrity sha512-OvjF+z51L3ov0OyAU0duzsYuvO01PH7x4t6DJx+guahgTnBHkhJdG7soQeTSFLWN3efnHyibZ4Z8l2EuWwJN3A==
+
+"@travelerdev/nestjs-sentry@^4.0.1":
+  version "4.0.1"
+  resolved "https://registry.yarnpkg.com/@travelerdev/nestjs-sentry/-/nestjs-sentry-4.0.1.tgz#d944fae14a391c97a6238932764fb4cedba3d20d"
+  integrity sha512-q1+kZpm5jUxhZesOqYH05aQZq906Ye8Kgki7C0vIW51A/SBYMgQgYJd7upNAbIiNkxTA70YcnU1CA6sjUDempA==
 
 "@tsconfig/node10@^1.0.7":
   version "1.0.9"

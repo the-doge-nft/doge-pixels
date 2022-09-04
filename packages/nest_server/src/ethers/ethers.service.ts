@@ -3,8 +3,8 @@ import { ethers } from 'ethers';
 import { ConfigService } from '@nestjs/config';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { Events } from '../events';
-// import { InjectSentry, SentryService } from '@ntegral/nestjs-sentry';
 import { AppEnv } from '../config/configuration';
+import {InjectSentry, SentryService} from "@travelerdev/nestjs-sentry";
 
 @Injectable()
 export class EthersService implements OnModuleInit {
@@ -20,7 +20,7 @@ export class EthersService implements OnModuleInit {
       infura: { wsEndpoint: string };
     }>,
     private eventEmitter: EventEmitter2,
-    // @InjectSentry() private readonly sentryClient: SentryService,
+    @InjectSentry() private readonly sentryClient: SentryService,
   ) {
     const appEnv = this.configService.get('appEnv');
     if (appEnv === AppEnv.production) {
@@ -41,7 +41,7 @@ export class EthersService implements OnModuleInit {
   initWS() {
     const logMessage = `Creating WS provider on network: ${this.network}`;
     this.logger.log(logMessage);
-    // this.sentryClient.instance().captureMessage(logMessage);
+    this.sentryClient.instance().captureMessage(logMessage);
 
     if (this.configService.get('appEnv') === AppEnv.test) {
       this.provider = new ethers.providers.WebSocketProvider(
