@@ -89,7 +89,7 @@ export class EthersService implements OnModuleInit {
     provider._websocket.on('close', (err) => {
       const logMessage = 'Websocket connection closed';
       this.logger.error(logMessage);
-      // this.sentryClient.instance().captureMessage(logMessage);
+      this.sentryClient.instance().captureMessage(logMessage);
 
       if (keepAliveInterval) {
         clearInterval(keepAliveInterval);
