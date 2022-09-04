@@ -1,27 +1,27 @@
 import { Box } from "@chakra-ui/react";
 import { observer } from "mobx-react-lite";
 import { useState } from "react";
+import { ChangeStickerAction, RemoveStickerAction } from "./PixelArtActions";
+import PixelArtPageStore, { Sticker } from "./PixelArtPage.store";
 
 const SAFE_ZONE = 20;
 const MIN_SIZE = 50;
 
-interface DragResizeRotateComponentProps {
-    image?: string;
-    top: number;
-    left: number;
-    width: number;
-    height: number;
-    rotation: number;
-    onChange?: (left: number, top: number, width: number, height: number, rotation: number) => void;
+interface StickerComponentProps {
+    sticker: Sticker;
+    store: PixelArtPageStore;
+    bgColor?: string;
 }
 
-const DragResizeRotateComponent = observer(function DragResizeComponent(props: DragResizeRotateComponentProps) {
-    const [position, setPosition] = useState({ x: props.left, y: props.top });
-    const [size, setSize] = useState({ x: props.width, y: props.height });
-    const [rotation, setRotation] = useState(props.rotation);
-    const [rotationStr, setRotationStr] = useState(`rotate(${props.rotation}deg)`)
+const StickerComponent = observer(function StickerComponent(props: StickerComponentProps) {
+    const [position, setPosition] = useState({ x: props.sticker.x, y: props.sticker.y });
+    const [size, setSize] = useState({ x: props.sticker.width, y: props.sticker.height });
+    const [rotation, setRotation] = useState(props.sticker.rotation);
+    const [rotationStr, setRotationStr] = useState(`rotate(${props.sticker.rotation}deg)`)
 
     const onMouseDown = (mouseDownEvent: any) => {
+        let action: any = null;
+
         const startSize = size;
         const startPosition = position;
 
@@ -52,6 +52,9 @@ const DragResizeRotateComponent = observer(function DragResizeComponent(props: D
         const capture = { x: mouseDownEvent.pageX, y: mouseDownEvent.pageY };
 
         function onMouseMove(mouseMoveEvent: any) {
+            if (!action) {
+                action = new ChangeStickerAction(props.sticker);
+            }
             let dx = capture.x - mouseMoveEvent.pageX;
             let dy = capture.y - mouseMoveEvent.pageY;
 
@@ -73,7 +76,7 @@ const DragResizeRotateComponent = observer(function DragResizeComponent(props: D
                 }
                 const angle = Math.atan2(rotationVector.y, rotationVector.x);
                 a += (angle - startAngle) / Math.PI * 180;
-        
+
                 let dw = (moveLength - startLength) / startLength * w;
                 let dh = (moveLength - startLength) / startLength * h;
                 w += dw;
@@ -95,17 +98,30 @@ const DragResizeRotateComponent = observer(function DragResizeComponent(props: D
             }));
             setRotation(value => (a));
             setRotationStr(value => (`rotate(${a}deg)`));
-            if (props.onChange) {
-                props.onChange(x, y, w, h, a);
-            }
+
+            props.sticker.x = x;
+            props.sticker.y = y;
+            props.sticker.width = w;
+            props.sticker.height = h;
+            props.sticker.rotation = a;
         }
         function onMouseUp() {
+            if (action) {
+                action.update();
+                props.store.pushAction(action);
+            }
             document.body.removeEventListener("mousemove", onMouseMove);
         }
 
         document.body.addEventListener("mousemove", onMouseMove);
         document.body.addEventListener("mouseup", onMouseUp, { once: true });
     };
+
+    const removeSticker = () => {
+        const action = new RemoveStickerAction(props.sticker);
+        action.do(props.store);
+        props.store.pushAction(action);
+    }
 
     return <Box
         id='drag-resize'
@@ -122,14 +138,22 @@ const DragResizeRotateComponent = observer(function DragResizeComponent(props: D
         }}
         w={100}
         h={100}
-        bgColor={'#F008'}
+        bgColor={props.bgColor}
         onMouseDown={onMouseDown}
-        backgroundImage={props.image}
+        backgroundImage={props.sticker.image}
         backgroundSize={'contain'}
         backgroundPosition={'center'}
         backgroundRepeat={'no-repeat'}
     >
+        <Box
+            position={'absolute'}
+            bgColor={'#FFFF'}
+            right={'0px'}
+            width={SAFE_ZONE+'px'}
+            height={SAFE_ZONE+'px'}
+            onClick={removeSticker}
+        />
     </Box>
 });
 
-export default DragResizeRotateComponent;
+export default StickerComponent;

@@ -10,21 +10,38 @@ import { CanvasSize, PixelArtCanvas } from "./PixelArtCanvas";
 const MAX_ACTIONS_CN = 50;
 const CANVAS_ELEMENT_SIZE = 512;
 
-export class Sticker {
+export class Sticker extends Reactionable(EmptyClass) {
+    @observable
     x: number;
+    @observable
     y: number;
+    @observable
     width: number;
+    @observable
     height: number;
+    @observable
     rotation: number;
     image: string;
 
     constructor() {
+        super()
+        makeObservable(this)
+
         this.x = 0;
         this.y = 0;
         this.width = 100;
         this.height = 100;
         this.rotation = 0;
         this.image = '';
+    }
+
+    @action
+    set(x: number, y: number, width: number, height: number, rotation: number) {
+        this.x = x;
+        this.y = y;
+        this.width = width;
+        this.height = height;
+        this.rotation = rotation;
     }
 }
 
@@ -45,16 +62,16 @@ class PixelArtPageStore extends Reactionable(EmptyClass) {
 
     @observable
     templateImage: string;
-    @observable 
+    @observable
     templateLeft: number;
-    @observable 
+    @observable
     templateTop: number;
-    @observable 
+    @observable
     templateWidth: number;
-    @observable 
+    @observable
     templateHeight: number;
 
-    @observable 
+    @observable
     stickers: Sticker[];
 
     @observable
@@ -99,9 +116,14 @@ class PixelArtPageStore extends Reactionable(EmptyClass) {
         this.pixelsCanvas.updateCanvas();
     }
 
+    @action
+    refreshStickers() {
+        this.stickers.splice(0, 0);
+    }
 
     @action
     pushAction(action: ActionInterface) {
+        console.log('pushAction', action);
         this.undoActions.push(action);
         this.redoActions = [];
         if (this.undoActions.length > MAX_ACTIONS_CN) {
@@ -114,7 +136,8 @@ class PixelArtPageStore extends Reactionable(EmptyClass) {
         if (this.undoActions.length) {
             const action: ActionInterface | undefined = this.undoActions.pop();
             if (action) {
-                action.undo(this.pixelsCanvas);
+                console.log('undoAction', action);
+                action.undo(this);
                 this.redoActions.push(action);
             }
         }
@@ -124,7 +147,8 @@ class PixelArtPageStore extends Reactionable(EmptyClass) {
         if (this.redoActions.length) {
             const action: ActionInterface | undefined = this.redoActions.pop();
             if (action) {
-                action.redo(this.pixelsCanvas);
+                console.log('redoAction', action);
+                action.redo(this);
                 this.undoActions.push(action);
             }
         }
@@ -158,10 +182,10 @@ class PixelArtPageStore extends Reactionable(EmptyClass) {
         let data = this.selectedDogs?.puppers.map(px => {
             return AppStore.web3.pupperToHexLocal(px);
         })
-        .sort((a, b) => {
-            return a.localeCompare(b);
-        });
-        data = data?.filter(function(item, pos) {
+            .sort((a, b) => {
+                return a.localeCompare(b);
+            });
+        data = data?.filter(function (item, pos) {
             return data.indexOf(item) === pos;
         })
 

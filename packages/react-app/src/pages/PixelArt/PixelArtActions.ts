@@ -1,8 +1,9 @@
 import { PixelArtCanvas, TRANSPARENT_PIXEL } from "./PixelArtCanvas";
+import PixelArtPageStore, { Sticker } from "./PixelArtPage.store";
 
 export interface ActionInterface {
-    undo(pixelsCanvas: PixelArtCanvas): void;
-    redo(pixelsCanvas: PixelArtCanvas): void;
+    undo(store: PixelArtPageStore): void;
+    redo(store: PixelArtPageStore): void;
     isValid(): boolean;
 }
 
@@ -20,27 +21,27 @@ export class PixelAction implements ActionInterface {
         this.color = color;
     }
 
-    update(pixelsCanvas: PixelArtCanvas, x: number, y: number): void {
-        const previousColor = pixelsCanvas.getPixelColor(x, y);
+    update(store: PixelArtPageStore, x: number, y: number): void {
+        const previousColor = store.pixelsCanvas.getPixelColor(x, y);
         if (previousColor !== this.color) {
             this.pixels.push({
                 x,
                 y,
                 color: previousColor,
             })
-            pixelsCanvas.setPixelColor(x, y, this.color);
+            store.pixelsCanvas.setPixelColor(x, y, this.color);
         }
     }
 
-    redo(pixelsCanvas: PixelArtCanvas) {
+    redo(store: PixelArtPageStore) {
         for (const pixelInfo of this.pixels) {
-            pixelsCanvas.setPixelColor(pixelInfo.x, pixelInfo.y, this.color);
+            store.pixelsCanvas.setPixelColor(pixelInfo.x, pixelInfo.y, this.color);
         }
     }
 
-    undo(pixelsCanvas: PixelArtCanvas) {
+    undo(store: PixelArtPageStore) {
         for (const pixelInfo of this.pixels) {
-            pixelsCanvas.setPixelColor(pixelInfo.x, pixelInfo.y, pixelInfo.color);
+            store.pixelsCanvas.setPixelColor(pixelInfo.x, pixelInfo.y, pixelInfo.color);
         }
     }
 
@@ -49,14 +50,113 @@ export class PixelAction implements ActionInterface {
     }
 }
 
-export class ClearAction extends PixelAction {
-    constructor(pixelsCanvas: PixelArtCanvas) {
+export class ClearCanvasAction extends PixelAction {
+    constructor(store: PixelArtPageStore) {
         super(TRANSPARENT_PIXEL);
 
-        for(let cy = 0; cy < pixelsCanvas.canvasSize; ++cy) {
-            for(let cx = 0; cx < pixelsCanvas.canvasSize; ++cx) {
-                this.update(pixelsCanvas, cx, cy);
+        for (let cy = 0; cy < store.pixelsCanvas.canvasSize; ++cy) {
+            for (let cx = 0; cx < store.pixelsCanvas.canvasSize; ++cx) {
+                this.update(store, cx, cy);
             }
         }
+    }
+}
+
+export class AddStickerAction implements ActionInterface {
+    sticker: Sticker;
+    constructor(sticker: Sticker) {
+        this.sticker = sticker;
+    }
+    undo(store: PixelArtPageStore): void {
+        store.stickers.pop();
+    }
+    redo(store: PixelArtPageStore): void {
+        store.stickers.push(this.sticker);
+    }
+    isValid(): boolean {
+        return true;
+    }
+}
+
+export class RemoveStickerAction implements ActionInterface {
+    sticker: Sticker;
+    index: number;
+    constructor(sticker: Sticker) {
+        this.sticker = sticker;
+        this.index = 0;
+    }
+    do(store: PixelArtPageStore): void {
+        this.redo(store);
+    }
+    undo(store: PixelArtPageStore): void {
+        store.stickers.splice(this.index, 0, this.sticker);
+    }
+    redo(store: PixelArtPageStore): void {
+        this.index = store.stickers.findIndex(entry => { return entry === this.sticker; })
+        store.stickers.splice(this.index, 1);
+    }
+    isValid(): boolean {
+        return true;
+    }
+}
+
+export class ChangeStickerAction implements ActionInterface {
+    oldX: number;
+    oldY: number;
+    oldWidth: number;
+    oldHeight: number;
+    oldRotation: number;
+
+    newX: number;
+    newY: number;
+    newWidth: number;
+    newHeight: number;
+    newRotation: number;
+
+    sticker: Sticker;
+
+    constructor(sticker: Sticker) {
+        this.sticker = sticker;
+
+        this.oldX = sticker.x;
+        this.oldY = sticker.y;
+        this.oldWidth = sticker.width;
+        this.oldHeight = sticker.height;
+        this.oldRotation = sticker.rotation;
+
+        this.newX = this.sticker.x;
+        this.newY = this.sticker.y;
+        this.newWidth = this.sticker.width;
+        this.newHeight = this.sticker.height;
+        this.newRotation = this.sticker.rotation;
+
+    }
+    undo(store: PixelArtPageStore): void {
+        this.sticker.set(this.oldX, this.oldY, this.oldWidth, this.oldHeight, this.oldRotation);
+        /*this.sticker.x = this.oldX;
+        this.sticker.y = this.oldY;
+        this.sticker.width = this.oldWidth;
+        this.sticker.height = this.oldHeight;
+        this.sticker.rotation = this.oldRotation;*/
+        store.refreshStickers();
+    }
+    redo(store: PixelArtPageStore): void {
+        this.sticker.set(this.newX, this.newY, this.newWidth, this.newHeight, this.newRotation);
+        /*this.sticker.x = this.newX;
+        this.sticker.y = this.newY;
+        this.sticker.width = this.newWidth;
+        this.sticker.height = this.newHeight;
+        this.sticker.rotation = this.newRotation;*/
+        store.refreshStickers();
+    }
+    update(): void {
+        this.newX = this.sticker.x;
+        this.newY = this.sticker.y;
+        this.newWidth = this.sticker.width;
+        this.newHeight = this.sticker.height;
+        this.newRotation = this.sticker.rotation;
+    }
+    isValid(): boolean {
+        return true;
     }
 }

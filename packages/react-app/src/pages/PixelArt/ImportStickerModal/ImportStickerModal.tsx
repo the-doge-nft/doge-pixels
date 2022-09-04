@@ -5,6 +5,7 @@ import PixelArtPageStore, { Sticker } from "../PixelArtPage.store";
 import { Input } from "../../../DSL/Form/Input/Input";
 import Button, { ButtonVariant } from "../../../DSL/Button/Button";
 import { useState } from "react";
+import { AddStickerAction } from "../PixelArtActions";
 
 interface ImportStickerModalProps {
     isOpen: boolean;
@@ -40,6 +41,7 @@ const ImportStickerModal = observer((props: ImportStickerModalProps) => {
             sticker.width = imageWidth;
             sticker.height = imageHeight;
             props.store.stickers.push(sticker);
+            props.store.pushAction(new AddStickerAction(sticker));
         }
         props.onClose();
     }

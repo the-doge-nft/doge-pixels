@@ -1,17 +1,17 @@
 import { Box, Grid, GridItem, Menu, MenuButton, MenuItem, MenuList, useColorMode } from "@chakra-ui/react";
 import { observer } from "mobx-react-lite";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo } from "react";
 import Pane from "../../DSL/Pane/Pane";
 import Typography, { TVariant } from "../../DSL/Typography/Typography";
 import PixelArtPageStore, { Sticker } from "./PixelArtPage.store";
 import Icon from "../../DSL/Icon/Icon";
 import { darkModeSecondary, lightModePrimary } from "../../DSL/Theme";
-import { ClearAction, PixelAction } from "./PixelArtActions";
+import { ClearCanvasAction, PixelAction } from "./PixelArtActions";
 import { PixelArtTool, pixelArtTools } from "./PixelArtTools";
 import { TRANSPARENT_PIXEL } from "./PixelArtCanvas";
 import ImportTemplateModal from "./ImportTemplateModal/ImportTemplateModal";
 import CanvasPropertiesModal from "./CanvasPropertiesModal/CanvasPropertiesModal";
-import DragResizeRotateComponent from "./DragResizeRotateComponent";
+import StickerComponent from "./StickerComponent";
 import ImportStickerModal from "./ImportStickerModal/ImportStickerModal";
 
 const CANVAS_ELEMENT_SIZE = 512;
@@ -21,6 +21,10 @@ const PixelArtPage = observer(function PixelArtPage() {
 
     useEffect(() => {
         document.addEventListener("keydown", handleHotkeys, false);
+        
+        return () => {
+            document.removeEventListener("keydown", handleHotkeys);
+        };
     });
 
     const handleHotkeys = (e: KeyboardEvent) => {
@@ -67,7 +71,9 @@ const PixelArtPage = observer(function PixelArtPage() {
     </Pane>
 });
 
+let stickerAction: any;
 const ArtCanvasComponent = observer(({ store }: { store: PixelArtPageStore }) => {
+
     useEffect(() => {
         let canvas: HTMLCanvasElement = document.getElementById('canvas') as HTMLCanvasElement;
         store.setCanvas(canvas);
@@ -81,7 +87,7 @@ const ArtCanvasComponent = observer(({ store }: { store: PixelArtPageStore }) =>
             rect.top < y && rect.bottom > y) {
             const canvasX = Math.floor((x - rect.x) / canvasCellSize);
             const canvasY = Math.floor((y - rect.y) / canvasCellSize);
-            action.update(store.pixelsCanvas, canvasX, canvasY);
+            action.update(store, canvasX, canvasY);
         }
     }
 
@@ -118,14 +124,6 @@ const ArtCanvasComponent = observer(({ store }: { store: PixelArtPageStore }) =>
         document.body.addEventListener("mousemove", onMouseMove);
         document.body.addEventListener("mouseup", onMouseUp, { once: true });
     };
-
-    const onStickerChange = (sticker: Sticker, left: number, top: number, width: number, height: number, rotation: number) => {
-        sticker.x = left;
-        sticker.y = top;
-        sticker.width = width;
-        sticker.height = height;
-        sticker.rotation = rotation;
-    }
 
     return <Box
         border={"1px solid gray"}
@@ -166,19 +164,14 @@ const ArtCanvasComponent = observer(({ store }: { store: PixelArtPageStore }) =>
                 top={-store.templateHeight - CANVAS_ELEMENT_SIZE}
                 width={CANVAS_ELEMENT_SIZE}
                 height={CANVAS_ELEMENT_SIZE}
+                pointerEvents={store.selectedToolIndex === PixelArtTool.stickers ? 'all' : 'none'}
             >
                 {store.stickers.map((entry: Sticker, index: number) => {
-                    return <DragResizeRotateComponent
+                    return <StickerComponent
                         key={index}
-                        image={entry.image}
-                        top={entry.y}
-                        left={entry.x}
-                        width={entry.width}
-                        height={entry.height}
-                        rotation={entry.rotation}
-                        onChange={(left: number, top: number, width: number, height: number, rotation: number) => {
-                            onStickerChange(entry, left, top, width, height, rotation);
-                        }}
+                        store={store}
+                        sticker={entry}
+                        bgColor={store.selectedToolIndex === PixelArtTool.stickers ? '#F008' : ''}
                     />
                 })}
             </Box>
@@ -192,7 +185,7 @@ const PixelsPaletteComponent = observer(({ store }: { store: PixelArtPageStore }
     return <Box margin={"10px"}>
         <GridItem display={"flex"} flexDirection={"row"} flexGrow={0}>
             <Box display={"flex"} flexDirection={"column"} flexWrap={'wrap'} height={70}>
-                {store.palette && store.selectedToolIndex === PixelArtTool.pen && <Box
+                {store.palette && store.selectedToolIndex !== PixelArtTool.erase && <Box
                     boxSize={'64px'}
                     border={"1px solid gray"}
                     bgColor={store.palette[store.selectedBrushPixelIndex]} />}
@@ -259,7 +252,7 @@ const MainMenuComponent = observer(({ store }: { store: PixelArtPageStore }) => 
         store.redoAction();
     }
     const clearCanvas = () => {
-        const clearAction = new ClearAction(store.pixelsCanvas);
+        const clearAction = new ClearCanvasAction(store);
         if (clearAction.isValid()) {
             store.pushAction(clearAction);
         }
