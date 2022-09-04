@@ -62,8 +62,10 @@ const NavLinks = ({ isMobile }: { isMobile?: boolean }) => {
             <Link
               isNav
               to={getPath(appRoute.name)}
+              display="block"
               key={`mobile-nav-${appRoute.path}`}
               textDecoration={getMatch(appRoute.path) ? "underline" : "none"}
+              marginBottom="5px"
             >
               {appRoute.mobileName}
             </Link>

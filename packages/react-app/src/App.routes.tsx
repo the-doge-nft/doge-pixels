@@ -72,7 +72,7 @@ const routes: AppRouteInterface[] = [
     component: DogParkPage,
     desktopName: "Park",
     mobileName: "Park",
-    showOnMobile: false,
+    showOnMobile: true,
     showOnDesktop: true,
     order: 1
   },
