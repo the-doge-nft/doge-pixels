@@ -1,18 +1,16 @@
-import {colorModeType, lightOrDark} from "../Theme";
+import { colorModeType, lightOrDarkMode } from "../Theme";
 
-const containerWidth = 130
-const containerXPadding = 10
-const handleSize = 35
+const containerWidth = 115;
+const containerXPadding = 10;
+const handleSize = 30;
 
-export const colorModeToggleSizes = {
-
-}
+export const colorModeToggleSizes = {};
 
 const ColorModeToggleStyle = {
   parts: ["container", "handle", "dogImage", "leftIcon", "rightIcon", "drop"],
-  baseStyle: ({colorMode}: { colorMode: colorModeType }) => ({
+  baseStyle: ({ colorMode }: { colorMode: colorModeType }) => ({
     container: {
-      color: lightOrDark(colorMode,"black", "white"),
+      color: lightOrDarkMode(colorMode, "black", "white"),
       position: "relative",
       display: "inline-flex",
       alignItems: "center",
@@ -20,9 +18,9 @@ const ColorModeToggleStyle = {
       width: `${containerWidth}px`,
       borderStyle: "solid",
       borderWidth: "1px",
-      borderColor: lightOrDark(colorMode,"black", "white"),
+      borderColor: lightOrDarkMode(colorMode, "black", "white"),
       _hover: {
-        cursor: "pointer"
+        cursor: "pointer",
       },
       _active: {
         transform: "translate(6px, 6px)",
@@ -33,39 +31,37 @@ const ColorModeToggleStyle = {
       msUserSelect: "none",
       webkitUserSelect: "none",
       zIndex: 2,
-      bg: lightOrDark(colorMode, "yellow.50", "purple.700")
+      bg: lightOrDarkMode(colorMode, "yellow.50", "purple.700"),
     },
     // WARNING: these are params to style prop on motion.div
     handle: {
       position: "relative",
       // background: lightOrDark(colorMode, "black", "#180E30"),
-      border: lightOrDark(colorMode, "1px solid black", "1px solid white"),
+      border: lightOrDarkMode(colorMode, "1px solid black", "1px solid white"),
       borderRadius: 100,
       width: `${handleSize}px`,
       height: `${handleSize}px`,
       zIndex: 1,
       overflow: "hidden",
-      left: lightOrDark(colorMode, "0", `${containerWidth - (2*containerXPadding) - handleSize}px`)
+      left: lightOrDarkMode(colorMode, "0", `${containerWidth - 2 * containerXPadding - handleSize}px`),
     },
     dogeImage: {
       maxWidth: "140%",
       width: "140%",
       height: "140%",
       position: "relative",
-      top: lightOrDark(colorMode, "3px", "2px"),
-      right: lightOrDark(colorMode, "18px", "-2px"),
-      // position: "absolute",
-      // right: lightOrDark(colorMode, "2px", ""),
+      top: lightOrDarkMode(colorMode, "3px", "2px"),
+      right: lightOrDarkMode(colorMode, "18px", "-2px"),
     },
     leftIcon: {
       left: `${containerXPadding}px`,
       position: "absolute",
-      ml: 2
+      ml: 2,
     },
     rightIcon: {
       right: `${containerXPadding}px`,
       position: "absolute",
-      mr: 2
+      mr: 2,
     },
     drop: {
       zIndex: -1,
@@ -73,15 +69,15 @@ const ColorModeToggleStyle = {
       width: `${containerWidth}px`,
       height: "100%",
       borderRadius: "35px",
-      bg: lightOrDark(colorMode, "black", "purple.700"),
+      bg: lightOrDarkMode(colorMode, "black", "purple.700"),
       borderWidth: "1px",
       borderStyle: "solid",
-      borderColor: lightOrDark(colorMode, "black", "white"),
+      borderColor: lightOrDarkMode(colorMode, "black", "white"),
       top: "10px",
       left: "10px",
       // display: "none"
-    }
-  })
-}
+    },
+  }),
+};
 
 export default ColorModeToggleStyle;

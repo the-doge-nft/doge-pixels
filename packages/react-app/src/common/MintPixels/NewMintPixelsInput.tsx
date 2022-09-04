@@ -1,15 +1,15 @@
-import {observer} from "mobx-react-lite";
-import {Box, Flex, HStack, Image, Spinner, useColorMode, VStack} from "@chakra-ui/react";
+import { observer } from "mobx-react-lite";
+import { Box, Flex, HStack, Spinner, useColorMode, VStack } from "@chakra-ui/react";
 import Pane from "../../DSL/Pane/Pane";
 import Icon from "../../DSL/Icon/Icon";
-import React, {useState} from "react";
+import React, { useState } from "react";
 import MintPixelsDialogStore from "./MintPixelsDialog.store";
 import BigText from "../../DSL/BigText/BigText";
 import Select from "../../DSL/Select/Select";
-import Typography, {TVariant} from "../../DSL/Typography/Typography";
-import {formatWithThousandsSeparators} from "../../helpers/numberFormatter";
-import Button, {ButtonVariant} from "../../DSL/Button/Button";
-import CowLogo from "../../images/cowlogo.svg"
+import Typography, { TVariant } from "../../DSL/Typography/Typography";
+import { formatWithThousandsSeparators } from "../../helpers/numberFormatter";
+import Button, { ButtonVariant } from "../../DSL/Button/Button";
+import { lightOrDarkMode } from "../../DSL/Theme";
 
 const NewMintPixelsInput: React.FC<{ store: MintPixelsDialogStore }> = observer(({store}) => {
     const [isDetailsOpen, setIsDetailsOpen] = useState(false)
@@ -21,18 +21,21 @@ const NewMintPixelsInput: React.FC<{ store: MintPixelsDialogStore }> = observer(
                     {store.recentQuote?.srcCurrencyTotal &&
                     <BigText size={"sm"}>{formatWithThousandsSeparators(store.recentQuote.srcCurrencyTotal)}</BigText>}
                 </Box>
-                <VStack spacing={3} flex={1} alignItems={'flex-start'} px={1}>
+                <VStack spacing={3} flex={1} alignItems={'flex-end'} px={1}>
                     <Select
                         items={store.srcCurrencySelectItems}
                         value={store.srcCurrency}
                         onChange={(val) => {
                             store.srcCurrency = val
                         }}/>
-                    {store.srcCurrencyBalance.humanReadable !== null && <Box>
-                      <Typography color={colorMode === "light" ? "yellow.800" : "purple.50"} variant={TVariant.ComicSans14}>
-                        Balance: {formatWithThousandsSeparators(store.srcCurrencyBalance.humanReadable)}
+                    {store.srcCurrencyBalance.humanReadable !== null && <Flex flexDirection={"column"} alignItems={"flex-end"}>
+                      <Typography color={lightOrDarkMode(colorMode, "yellow.100", "gray.300")} variant={TVariant.ComicSans14} fontWeight={"bold"}>
+                        {formatWithThousandsSeparators(store.srcCurrencyBalance.humanReadable)}
                       </Typography>
-                    </Box>}
+                        <Typography color={lightOrDarkMode(colorMode, "yellow.100", "gray.300")} variant={TVariant.ComicSans14}>
+                            balance
+                        </Typography>
+                    </Flex>}
                 </VStack>
             </HStack>
         </Pane>
@@ -70,7 +73,7 @@ const NewMintPixelsInput: React.FC<{ store: MintPixelsDialogStore }> = observer(
                                                   isDisabled={store.pixelCount === store.recentQuote!.maxPixelAmount || store.recentQuote.maxPixelAmount === 0}
                                                   size={"xs"}
                                                   onClick={() => store.pixelCount = store.recentQuote!.maxPixelAmount}>
-                      Set Max ({store.recentQuote?.maxPixelAmount})
+                            Set Max ({store.recentQuote?.maxPixelAmount})
                     </Button>}
                 </Flex>
             </Pane>

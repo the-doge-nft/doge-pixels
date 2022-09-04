@@ -7,7 +7,6 @@ class BurnPixelsModalStore extends BurnPixelsDialogStore {
    super(defaultPixel);
    makeObservable(this)
  }
-
 }
 
 export default BurnPixelsModalStore

@@ -1,25 +1,31 @@
 import React from "react";
-import {Box, useColorMode} from "@chakra-ui/react";
-import {lightOrDark} from "../../DSL/Theme";
-import Typography, {TVariant} from "../../DSL/Typography/Typography";
+import { Box, useColorMode } from "@chakra-ui/react";
+import { lightOrDarkMode } from "../../DSL/Theme";
+import Typography, { TVariant } from "../../DSL/Typography/Typography";
 
-const PxPill = ({count}: { count: number }) => {
-  const {colorMode} = useColorMode()
-  return <Box
-    display={"inline-flex"}
-    borderRadius={100}
-    justifyContent={"center"}
-    alignItems={"center"}
-    borderWidth={"1px"}
-    borderStyle={"solid"}
-    borderColor={lightOrDark(colorMode, "black", "white")}
-    minWidth={"80px"}
-    px={"12px"}
-    py={"4px"}
-  >
-    <Typography variant={TVariant.ComicSans18} mr={1}>{count}</Typography>
-    <Typography variant={TVariant.ComicSans18} ml={1}>PX</Typography>
-  </Box>
-}
+const PxPill = ({ count, bg }: { count: number, bg?: string }) => {
+  const { colorMode } = useColorMode();
+  return (
+    <Box
+      display={"inline-flex"}
+      borderRadius={100}
+      justifyContent={"center"}
+      alignItems={"center"}
+      borderWidth={"1px"}
+      borderStyle={"solid"}
+      borderColor={lightOrDarkMode(colorMode, "black", "white")}
+      bg={bg}
+      minWidth={"80px"}
+      py={"2px"}
+    >
+      <Typography variant={TVariant.ComicSans16} mr={1}>
+        {count}
+      </Typography>
+      <Typography variant={TVariant.ComicSans16} ml={1}>
+        PX
+      </Typography>
+    </Box>
+  );
+};
 
 export default PxPill;

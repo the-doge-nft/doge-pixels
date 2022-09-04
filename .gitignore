@@ -84,3 +84,4 @@ tools/
 # ignore all workflows for now
 calebtools
 
+packages/nest_server/dist

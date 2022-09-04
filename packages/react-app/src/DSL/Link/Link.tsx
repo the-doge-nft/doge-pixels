@@ -26,10 +26,11 @@ const NormalLink = ({...rest}: LinkProps) => {
 
 const Link = ({isNav, variant = Type.PresStart, size = "md", ...rest}: LinkProps) => {
   const styles = useStyleConfig('Link', {variant, size})
+  const fontSize = styles.fontSize as string
   if (isNav) {
-    return <NavLink variant={variant} {...rest} __css={styles}/>
+    return <NavLink fontSize={fontSize} variant={variant} {...rest} __css={styles}/>
   } else {
-    return <NormalLink variant={variant} {...rest} __css={styles}/>
+    return <NormalLink fontSize={fontSize} variant={variant} {...rest} __css={styles}/>
   }
 }
 
