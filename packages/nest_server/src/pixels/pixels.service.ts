@@ -1,13 +1,14 @@
 import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
-import { OnEvent } from '@nestjs/event-emitter';
-import { Events } from '../events';
+import {EventEmitter2, OnEvent} from '@nestjs/event-emitter';
+import {Events, PixelMintOrBurnPayload} from '../events';
 import { ethers } from 'ethers';
 import { EthersService } from '../ethers/ethers.service';
 import * as ABI from '../contracts/hardhat_contracts.json';
 import { ConfigService } from '@nestjs/config';
 import { Configuration } from '../config/configuration';
 import { PixelsRepository } from './pixels.repository';
-import { InjectSentry, SentryService } from '@ntegral/nestjs-sentry';
+// import { InjectSentry, SentryService } from '@ntegral/nestjs-sentry';
+import KobosuJson from "../assets/images/kobosu.json";
 
 @Injectable()
 export class PixelsService implements OnModuleInit {
@@ -15,11 +16,16 @@ export class PixelsService implements OnModuleInit {
   private pxContract: ethers.Contract;
   private dogContract: ethers.Contract;
 
+  public imageWidth = 640;
+  public imageHeight = 480;
+  private pixelToIDOffset = 1000000;
+
   constructor(
     private ethersService: EthersService,
     private configService: ConfigService<Configuration>,
     private pixelsRepository: PixelsRepository,
-    @InjectSentry() private readonly sentryClient: SentryService,
+    private eventEmitter: EventEmitter2,
+    // @InjectSentry() private readonly sentryClient: SentryService,
   ) {}
 
   async onModuleInit() {
@@ -33,7 +39,7 @@ export class PixelsService implements OnModuleInit {
   async handleProviderConnected(provider: ethers.providers.WebSocketProvider) {
     const logMessage = 'Infura provider re-connected';
     this.logger.log(logMessage);
-    this.sentryClient.instance().captureMessage(logMessage);
+    // this.sentryClient.instance().captureMessage(logMessage);
     this.initContracts(provider);
   }
 
@@ -69,6 +75,8 @@ export class PixelsService implements OnModuleInit {
   private initPixelListener() {
     this.pxContract.on('Transfer', async (from, to, tokenId, event) => {
       this.logger.log(`new transfer event hit: ${from} -- ${to} -- ${tokenId}`);
+      const payload: PixelMintOrBurnPayload = {from, to, tokenId}
+      this.eventEmitter.emit(Events.PIXEL_MINT_OR_BURN, payload)
       this.pixelsRepository.updateOwner({ tokenId, ownerAddress: to });
     });
   }
@@ -140,5 +148,19 @@ export class PixelsService implements OnModuleInit {
 
   getPixelBalanceByAddress(address: string) {
     return this.pxContract.balanceOf(address);
+  }
+
+  pixelToIndexLocal(pixel: number) {
+    return pixel - this.pixelToIDOffset
+  }
+
+  pixelToCoordsLocal(pixel: number) {
+    const index = this.pixelToIndexLocal(pixel)
+    return [index % this.imageWidth, Math.floor(index / this.imageWidth)]
+  }
+
+  pixelToHexLocal(pixel: number) {
+    const [x, y] = this.pixelToCoordsLocal(pixel)
+    return KobosuJson[y][x]
   }
 }

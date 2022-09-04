@@ -10,7 +10,10 @@ import { EthersService } from './ethers/ethers.service';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { HttpModule } from '@nestjs/axios';
 import { PixelsRepository } from './pixels/pixels.repository';
-import { SentryModule } from '@ntegral/nestjs-sentry';
+// import { SentryModule } from '@ntegral/nestjs-sentry';
+import { TwitterService } from './twitter/twitter.service';
+import { DiscordService } from './discord/discord.service';
+import { PixelImageGeneratorService } from './pixel-image-generator/pixel-image-generator.service';
 
 @Module({
   imports: [
@@ -22,14 +25,14 @@ import { SentryModule } from '@ntegral/nestjs-sentry';
     HttpModule.register({
       timeout: 5000,
     }),
-    SentryModule.forRootAsync({
-      imports: [ConfigModule],
-      useFactory: async (config: ConfigService<Configuration>) => ({
-        dsn: config.get('sentryDns'),
-        debug: true,
-      }),
-      inject: [ConfigService],
-    }),
+    // SentryModule.forRootAsync({
+    //   imports: [ConfigModule],
+    //   useFactory: async (config: ConfigService<Configuration>) => ({
+    //     dsn: config.get('sentryDns'),
+    //     debug: true,
+    //   }),
+    //   inject: [ConfigService],
+    // }),
   ],
   controllers: [AppController],
   providers: [
@@ -38,6 +41,9 @@ import { SentryModule } from '@ntegral/nestjs-sentry';
     EthersService,
     PixelsService,
     PixelsRepository,
+    TwitterService,
+    DiscordService,
+    PixelImageGeneratorService,
   ],
 })
 export class AppModule {}

@@ -19,9 +19,13 @@ up() {
     sleep 5
     yarn compile_contracts
     spacedEcho "migrating local db"
-    yarn prisma migrate dev --name init
+    yarn run prisma migrate dev --name init
     spacedEcho "spinning up api"
-    docker-compose up -d api
+    if [[ $1 = "--build" ]]; then
+      docker-compose up --build -d api;
+    else
+      docker-compose up -d api
+    fi;
     docker-compose logs -f
 }
 
@@ -45,7 +49,7 @@ HELP_USAGE
 if [[ $1 == "down" ]]; then
     down
 elif [[ $1 == "up" ]]; then
-    up
+    up $2
 else
     usage
 fi

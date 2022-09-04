@@ -3,9 +3,7 @@
   "version": "1.0.0",
   "keywords": [
     "ethereum",
-    "react",
-    "workspaces",
-    "yarn"
+    "react"
   ],
   "private": true,
   "scripts": {
