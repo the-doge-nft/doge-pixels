@@ -36,7 +36,7 @@ const Perk: React.FC<{item: PerkItem}> = ({ item }) => {
       __css={styles.container}
       w={"full"}
     >
-      <Flex __css={styles.button} w={"full"} textAlign={"left"} flexDirection={"column"} justifyContent={"flex-start"}>
+      <Flex __css={styles.button} w={"full"} alignItems={"flex-start"} flexDirection={"column"} justifyContent={"flex-start"}>
         <Typography variant={TVariant.PresStart16}>{title}</Typography>
         <Typography mt={2} variant={TVariant.ComicSans14}>{description}</Typography>
         <Typography mt={1} textAlign={'right'} variant={TVariant.ComicSans12} color={lightOrDarkMode(colorMode, "yellow.100", "gray.300")}>{date}</Typography>
