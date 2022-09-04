@@ -8,7 +8,7 @@ import PixelPane from "../../../DSL/PixelPane/PixelPane";
 import {SELECT_PIXEL} from "../../../services/mixins/eventable";
 import AppStore from "../../../store/App.store";
 import Dev from "../../../common/Dev";
-import {isDevModeEnabled, isProduction} from "../../../environment/helpers";
+import {isDevModeEnabled, isProduction, isStaging} from "../../../environment/helpers";
 import Link from "../../../DSL/Link/Link";
 
 const SelectedPixelPane = observer(function SelectedPixelPane({store}: {store: ViewerStore}) {
@@ -74,7 +74,7 @@ const SelectedPixelPane = observer(function SelectedPixelPane({store}: {store: V
           </Flex>
 
           <Flex justifyContent={"center"} mt={12}>
-            <Link href={isDevModeEnabled() ? `https://testnets.opensea.io/assets/${AppStore.web3.pxContractAddress}/${store.selectedPupper}` : `https://opensea.io/assets/${AppStore.web3.pxContractAddress}/${store.selectedPupper}`}>
+            <Link href={(isDevModeEnabled() || isStaging()) ? `https://testnets.opensea.io/assets/${AppStore.web3.pxContractAddress}/${store.selectedPupper}` : `https://opensea.io/assets/${AppStore.web3.pxContractAddress}/${store.selectedPupper}`}>
               View on Opensea
             </Link>
           </Flex>

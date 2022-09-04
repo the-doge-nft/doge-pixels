@@ -5,7 +5,7 @@ import {showErrorToast} from "../DSL/Toast/Toast";
 import deployedContracts from "../contracts/hardhat_contracts.json"
 import {Signer} from "@ethersproject/abstract-signer";
 import {Provider} from "@ethersproject/abstract-provider";
-import {isDevModeEnabled, isProduction} from "../environment/helpers";
+import {isDevModeEnabled, isProduction, isStaging} from "../environment/helpers";
 import {DOG20, PX} from "../../../hardhat/types";
 import KobosuJson from "../images/kobosu.json"
 import {Http} from "../services";
@@ -62,7 +62,7 @@ class Web3Store extends Web3providerStore {
         this.addressToPuppers = {}
         this.cowStore = new CowStore()
 
-        if (isDevModeEnabled()) {
+        if (isDevModeEnabled() || isStaging()) {
             this.pxContractAddress = deployedContracts["4"]["rinkeby"]["contracts"]["PX"]["address"]
             this.dogContractAddress = deployedContracts["4"]["rinkeby"]["contracts"]["DOG20"]["address"]
 
@@ -109,7 +109,7 @@ class Web3Store extends Web3providerStore {
         let pxABI: ContractInterface
         let dogABI: ContractInterface
 
-        if (isDevModeEnabled()) {
+        if (isDevModeEnabled() || isStaging()) {
             pxABI = deployedContracts["4"]["rinkeby"]["contracts"]["PX"].abi
             dogABI = deployedContracts["4"]["rinkeby"]["contracts"]["DOG20"].abi
         } else if (isProduction()) {
