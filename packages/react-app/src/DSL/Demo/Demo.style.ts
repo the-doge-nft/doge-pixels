@@ -1,12 +1,12 @@
-import { colorModeType, darkModePrimary, lightOrDark } from "../Theme";
+import { colorModeType, darkModePrimary, lightOrDarkMode } from "../Theme";
 
 const DemoStyle = {
   baseStyle: ({ colorMode }: { colorMode: colorModeType }) => ({
-    bg: lightOrDark(colorMode, "yellow.50", darkModePrimary),
+    bg: lightOrDarkMode(colorMode, "yellow.50", darkModePrimary),
     borderStyle: "solid",
     borderWidth: "1px",
-    borderColor: lightOrDark(colorMode, "black", "white"),
-    borderRadius: "0px"
+    borderColor: lightOrDarkMode(colorMode, "black", "white"),
+    borderRadius: "0px",
   }),
 };
 

@@ -1,11 +1,11 @@
-import {colorModeType, lightOrDark} from "../Theme";
-import {Type} from "../Fonts/Fonts";
+import { colorModeType, lightOrDarkMode } from "../Theme";
+import { Type } from "../Fonts/Fonts";
 
 const LinkStyle = {
-  baseStyle: ({colorMode}: {colorMode: colorModeType}) => ({
+  baseStyle: ({ colorMode }: { colorMode: colorModeType }) => ({
     fontFamily: Type.PresStart,
     textDecoration: "none",
-    color: lightOrDark(colorMode, "black", "white"),
+    color: lightOrDarkMode(colorMode, "black", "white"),
     boxShadow: "none",
     display: "inline-block",
     textUnderlineOffset: "5px",
@@ -13,32 +13,36 @@ const LinkStyle = {
       boxShadow: "none",
     },
     _focus: {
-      boxShadow: "none"
+      boxShadow: "none",
     },
     _hover: {
       textDecoration: "underline",
       transform: "translate(4px 4px)",
-    }
+    },
   }),
   sizes: {
     sm: {
-      fontSize: "10px"
+      fontSize: "10px",
     },
     md: {
-      fontSize: "15px"
+      fontSize: "16px",
     },
     lg: {
-      fontSize: "26px"
-    }
+      fontSize: "26px",
+    },
   },
   variants: {
     [Type.ComicSans]: {
-      fontFamily: Type.ComicSans
+      fontFamily: Type.ComicSans,
     },
     [Type.PresStart]: {
-      fontFamily: Type.PresStart
-    }
+      fontFamily: Type.PresStart,
+    },
+  },
+  defaultProps: {
+    size: "md",
+    variant: Type.PresStart
   }
-}
+};
 
-export default LinkStyle
+export default LinkStyle;

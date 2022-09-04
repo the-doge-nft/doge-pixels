@@ -6,18 +6,18 @@ import ViewerStore from "../Viewer.store";
 import Button, {ButtonVariant} from "../../../DSL/Button/Button";
 import PixelPane from "../../../DSL/PixelPane/PixelPane";
 import {SELECT_PIXEL} from "../../../services/mixins/eventable";
-import {useHistory} from "react-router-dom";
-import Icon from "../../../DSL/Icon/Icon";
 import AppStore from "../../../store/App.store";
 import Dev from "../../../common/Dev";
 import {isDevModeEnabled, isProduction} from "../../../environment/helpers";
+import Link from "../../../DSL/Link/Link";
 
 const SelectedPixelPane = observer(function SelectedPixelPane({store}: {store: ViewerStore}) {
-  const history = useHistory()
   return <Flex flexDirection={"column"} justifyContent={"space-between"} h={"full"}>
     <Box>
       <Box mt={4}>
         {store.selectedPupper && <PixelPane
+              showCoords
+              coordinates={AppStore.web3.pupperToPixelCoordsLocal(store.selectedPupper)}
               size={"lg"}
               pupper={store.selectedPupper}
               color={store.selectedPupperHEX}
@@ -40,18 +40,18 @@ const SelectedPixelPane = observer(function SelectedPixelPane({store}: {store: V
       <Box mt={8}>
         <Box>
           <Typography variant={TVariant.ComicSans18} mr={2}>
-            HEX:
+            Index:
           </Typography>
           <Typography variant={TVariant.ComicSans18}>
-            {store.selectedPupperHEX}
+            {store.selectedPupperIndex}
           </Typography>
         </Box>
         <Box>
           <Typography variant={TVariant.ComicSans18} mr={2}>
-            Coordinates:
+            HEX:
           </Typography>
           <Typography variant={TVariant.ComicSans18}>
-            ({store.selectedPixelX}, {store.selectedPixelY})
+            {store.selectedPupperHEX}
           </Typography>
         </Box>
         {store.tokenOwner && <Box mt={12}>
@@ -60,23 +60,17 @@ const SelectedPixelPane = observer(function SelectedPixelPane({store}: {store: V
           </Typography>
 
           <Flex alignItems={"center"} pt={AppStore.rwd.isMobile ? 3 : 0}>
-            <Icon icon={'person'} />
-
-            {AppStore.rwd.isMobile && <Box ml={3}>
+            {AppStore.rwd.isMobile && <Box>
                 <Typography block variant={TVariant.PresStart18}>
               {store.selectedTokenOwnerDisplayName}
             </Typography>
             </Box>}
 
-            {!AppStore.rwd.isMobile && <Button variant={ButtonVariant.Text} onClick={() => {
-              history.push({
-                pathname: `/park/${store.tokenOwner}/${store.selectedPupper}`,
-              })
-            }}>
-              <Typography block variant={TVariant.PresStart18}>
+            {!AppStore.rwd.isMobile && <Box mt={2}>
+              <Link isNav to={`/park/${store.tokenOwner}/${store.selectedPupper}`}>
                 {store.selectedTokenOwnerDisplayName}
-              </Typography>
-            </Button>}
+              </Link>
+            </Box>}
           </Flex>
 
           <Flex justifyContent={"center"} mt={6}>
@@ -91,7 +85,7 @@ const SelectedPixelPane = observer(function SelectedPixelPane({store}: {store: V
               }
               window.open(url, "_blank")
             }}>
-              <Typography block variant={TVariant.PresStart18} mt={2}>
+              <Typography block variant={TVariant.PresStart16} mt={2}>
                 View on Opensea
               </Typography>
             </Button>

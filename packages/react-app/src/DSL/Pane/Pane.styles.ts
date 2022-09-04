@@ -1,6 +1,6 @@
-import { colorModeType, darkModePrimary, lightOrDark } from "../Theme";
+import { colorModeType, darkModePrimary, lightOrDarkMode } from "../Theme";
 
-export const paneDropOffset = 14
+export const paneDropOffset = 14;
 
 const PaneStyle = {
   parts: ["container", "text"],
@@ -8,14 +8,14 @@ const PaneStyle = {
     container: {
       borderWidth: "1px",
       borderStyle: "solid",
-      borderColor: lightOrDark(colorMode, "black", "white"),
-      background: lightOrDark(colorMode, "yellow.50", darkModePrimary),
+      borderColor: lightOrDarkMode(colorMode, "black", "white"),
+      background: lightOrDarkMode(colorMode, "yellow.50", darkModePrimary),
       position: "relative",
       h: "full",
       p: 9,
       _after: {
         base: "none",
-        md :{
+        md: {
           zIndex: "-1",
           content: "''",
           position: "absolute",
@@ -25,13 +25,11 @@ const PaneStyle = {
           bottom: `-${paneDropOffset}px`,
           borderStyle: "solid",
           borderWidth: "1px",
-          borderColor: lightOrDark(colorMode, "black", "white")
-        }
-      }
+          borderColor: lightOrDarkMode(colorMode, "black", "white"),
+        },
+      },
     },
-    title: {
-
-    }
+    title: {},
   }),
   defaultProps: {},
 };

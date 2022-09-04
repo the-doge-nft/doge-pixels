@@ -1,19 +1,20 @@
-import React, {useEffect, useRef, useState} from "react";
+import React, { useEffect, useRef, useState } from "react";
 import * as THREE from "three";
-import {Object3D} from "three";
-import {Canvas, useLoader} from "@react-three/fiber";
-import Kobosu from "../../images/THE_ACTUAL_NFT_IMAGE.png"
-import {Box, useColorMode} from "@chakra-ui/react";
-import {createCanvasPixelSelectionSetter, getWorldPixelCoordinate, resizeCanvas} from "./helpers";
-import {onPixelSelectType} from "./Viewer.page";
+import { Object3D } from "three";
+import { Canvas, useLoader } from "@react-three/fiber";
+import Kobosu from "../../images/THE_ACTUAL_NFT_IMAGE.png";
+import { Box, useColorMode } from "@chakra-ui/react";
+import { createCanvasPixelSelectionSetter, getWorldPixelCoordinate, resizeCanvas } from "./helpers";
+import { onPixelSelectType } from "./Viewer.page";
 import ViewerStore from "./Viewer.store";
-import {SELECT_PIXEL} from "../../services/mixins/eventable";
-import Button, {ButtonVariant} from "../../DSL/Button/Button";
-import createPanZoom, {PanZoomReturn} from "../../services/three-map-js";
+import { SELECT_PIXEL } from "../../services/mixins/eventable";
+import Button, { ButtonVariant } from "../../DSL/Button/Button";
+import createPanZoom, { PanZoomReturn } from "../../services/three-map-js";
 import PixelPane from "../../DSL/PixelPane/PixelPane";
 import AppStore from "../../store/App.store";
-import {observer} from "mobx-react-lite";
+import { observer } from "mobx-react-lite";
 import Colors from "../../DSL/Colors/Colors";
+import Typography, { TVariant } from "../../DSL/Typography/Typography";
 
 interface ThreeSceneProps {
     onPixelSelect: onPixelSelectType;
@@ -29,7 +30,7 @@ export enum CameraPositionZ {
 export const IMAGE_WIDTH = 640
 export const IMAGE_HEIGHT = 480
 
-const ThreeScene = observer(({onPixelSelect, store}: ThreeSceneProps) => {
+const DogeExplorer = observer(({onPixelSelect, store}: ThreeSceneProps) => {
     const {colorMode} = useColorMode()
     //@ts-ignore
     const selectedPixelColor = colorMode === "light" ? Colors['red']["50"] : Colors['magenta']['50']
@@ -246,6 +247,31 @@ const ThreeScene = observer(({onPixelSelect, store}: ThreeSceneProps) => {
                 {showOwned && AppStore.web3.addressToPuppers && <>
                     {Object.keys(AppStore.web3.addressToPuppers).map((address: string) => {
                         const tokens = AppStore.web3.addressToPuppers?.[address].tokenIDs
+
+                        // @next -- add cool hovering pixel around the owned pixel
+
+                        // return tokens?.map(token => {
+                        //     const [x, y] = AppStore.web3.pupperToPixelCoordsLocal(token)
+                        //     const color = AppStore.web3.pupperToHexLocal(token)
+                        //     const xPos = x - (overlayLength / 2)
+                        //     const yPos = -1 * y - (overlayLength / 2)
+                        //
+                        //     const meshX = xPos + (overlayLength * 2)
+                        //     const meshY = yPos - (overlayLength*2)
+                        //     const meshZ = 0.0001
+                        //
+                        //     const width = overlayLength * 2
+                        //     const height = overlayLength * 2
+                        //
+                        //     return <group>
+                        //         <Line start={[meshX, meshX + 10]} end={[meshY, meshY + 10]}/>
+                        //         <mesh position={[meshX, meshY, meshZ]} visible={true}>
+                        //             <planeGeometry attach={"geometry"} args={[width, height]}/>
+                        //             <meshBasicMaterial attach={"material"} color={"red"} opacity={1} depthTest={false}/>
+                        //         </mesh>
+                        //     </group>
+                        // })
+
                         return tokens?.map(token => {
                             const [x, y] = AppStore.web3.pupperToPixelCoordsLocal(token)
                             const xPos = x - (overlayLength / 2)
@@ -263,22 +289,29 @@ const ThreeScene = observer(({onPixelSelect, store}: ThreeSceneProps) => {
               <Box ref={tooltipRef} position={"absolute"} zIndex={2} display={"none"} pointerEvents={"none"}>
                 <PixelPane size={"md"} pupper={0} color={"fff"} pupperIndex={0}/>
               </Box>}
-            <Box position={"absolute"} bottom={0} left={0}>
-                <Button size={"sm"}
-                        variant={ButtonVariant.Text}
-                        onClick={() => camera.position.z = (CameraPositionZ.close + CameraPositionZ.far) / 2}>+</Button>
-                <Button size={"sm"}
-                        variant={ButtonVariant.Text}
-                        onClick={() => camera.position.z = (CameraPositionZ.close + CameraPositionZ.far) / 5}>++</Button>
-                <Button size={"sm"}
-                        variant={ButtonVariant.Text}
-                        onClick={() => camera.position.z = CameraPositionZ.close + 50}>+++</Button>
-                <Button size={"sm"} variant={ButtonVariant.Text}
-                        onClick={() => setShowOwned(!showOwned)}>{showOwned ? "hide" : "show"} owned</Button>
+            <Box position={"absolute"} bottom={0} left={0} p={2}>
+                <Button size={"xs"} variant={ButtonVariant.Text}
+                        onClick={() => setShowOwned(!showOwned)}>
+                        {showOwned ? "hide" : "show"} owned
+                </Button>
             </Box>
         </Box>
     );
 });
 
 
-export default ThreeScene;
+const Line: React.FC<any> = ({ start, end }) => {
+    const ref = useRef<SVGLineElement | null>(null)
+    useEffect(() => {
+        //@ts-ignore
+        ref.current?.geometry.setFromPoints([start, end].map((point) => new THREE.Vector3(...point)))
+    }, [start, end])
+    return (
+      <line ref={ref}>
+          <bufferGeometry />
+          <lineBasicMaterial color="hotpink" />
+      </line>
+    )
+}
+
+export default DogeExplorer;

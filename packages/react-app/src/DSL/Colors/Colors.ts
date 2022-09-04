@@ -9,10 +9,8 @@ const Colors: ChakraColors = {
   },
   yellow: {
     "50": "#FFF8E4",
-    "75": "#CCC4AF",
-    "100": "#fde386",
+    "100": "#BEB793",
     "700": "#FFD335",
-    "800": "#BEB793"
   },
   purple: {
     "50": "#B467B6",

@@ -6,6 +6,7 @@ const {getAddressToOwnershipMap} = require("../../web3/px");
 const {ethers} = require("ethers");
 const axios = require("axios");
 const TokenNotMintedError = require("../../errors/TokenNotMintedError");
+const nomicsClient = require("../../../services/Nomics");
 
 const router = express.Router()
 
@@ -172,6 +173,22 @@ router.get(
       res.send({
         dog: EthersClient.DOGContract.address,
         pixel: EthersClient.PXContract.address
+      })
+    } catch (e) {
+      next(e)
+    }
+  }
+)
+
+router.get(
+  '/px/price',
+  async (req, res, next) => {
+    try {
+      const { data } = await nomicsClient.getDOGPrice()
+      const usdPrice = Number(data[0].price)
+      const dogPerPixel = 55239.89899
+      return res.send({
+        price: usdPrice * dogPerPixel
       })
     } catch (e) {
       next(e)

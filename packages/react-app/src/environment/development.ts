@@ -1,8 +1,8 @@
 import deployedContracts from "../contracts/hardhat_contracts.json"
 const developmentEnv = {
     api: {
-        baseURL: "https://dev.gainormather.xyz",
-        // proxyURL: "http://localhost:3003"
+        // baseURL: "https://dev.gainormather.xyz",
+        proxyURL: "http://localhost:3003"
     },
     app: {
         availableTokens: {

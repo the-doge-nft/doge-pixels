@@ -51,7 +51,7 @@ class EthersHandler {
     this.DOGContract = new ethers.Contract(this.dogContractInfo["address"], this.dogContractInfo["abi"], this.provider)
 
     // build initial map
-    this.getAddressMap()
+    // this.getAddressMap()
 
     const listenDebugString = `Listening to PX contract: ${this.PXContract.address} 👂`
     logger.info(listenDebugString)

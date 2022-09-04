@@ -85,3 +85,4 @@ tools/
 .github
 calebtools
 
+packages/nest_server/dist
