@@ -16,6 +16,8 @@ const SelectedPixelPane = observer(function SelectedPixelPane({store}: {store: V
     <Box>
       <Box mt={4}>
         {store.selectedPupper && <PixelPane
+              showCoords
+              coordinates={AppStore.web3.pupperToPixelCoordsLocal(store.selectedPupper)}
               size={"lg"}
               pupper={store.selectedPupper}
               color={store.selectedPupperHEX}
@@ -38,18 +40,18 @@ const SelectedPixelPane = observer(function SelectedPixelPane({store}: {store: V
       <Box mt={8}>
         <Box>
           <Typography variant={TVariant.ComicSans18} mr={2}>
-            HEX:
+            Index:
           </Typography>
           <Typography variant={TVariant.ComicSans18}>
-            {store.selectedPupperHEX}
+            {store.selectedPupperIndex}
           </Typography>
         </Box>
         <Box>
           <Typography variant={TVariant.ComicSans18} mr={2}>
-            Coordinates:
+            HEX:
           </Typography>
           <Typography variant={TVariant.ComicSans18}>
-            ({store.selectedPixelX}, {store.selectedPixelY})
+            {store.selectedPupperHEX}
           </Typography>
         </Box>
         {store.tokenOwner && <Box mt={12}>

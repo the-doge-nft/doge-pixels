@@ -70,7 +70,7 @@ const Footer = observer(() => {
         </Box>
         <Box>
           {AppStore.web3.usdPerPixel && <Typography variant={TVariant.ComicSans12}>
-            ${formatWithThousandsSeparators(AppStore.web3.usdPerPixel)} per pixel
+            ${formatWithThousandsSeparators(AppStore.web3.usdPerPixel)} / pixel
           </Typography>}
         </Box>
       </Flex>
