@@ -10,6 +10,22 @@ import { CanvasSize, PixelArtCanvas } from "./PixelArtCanvas";
 const MAX_ACTIONS_CN = 50;
 const CANVAS_ELEMENT_SIZE = 512;
 
+export class Sticker {
+    x: number;
+    y: number;
+    width: number;
+    height: number;
+    rotation: number;
+
+    constructor() {
+        this.x = 0;
+        this.y = 0;
+        this.width = 100;
+        this.height = 100;
+        this.rotation = 0;
+    }
+}
+
 class PixelArtPageStore extends Reactionable(EmptyClass) {
     @observable
     selectedAddress: string;
@@ -35,6 +51,9 @@ class PixelArtPageStore extends Reactionable(EmptyClass) {
     templateWidth: number;
     @observable 
     templateHeight: number;
+
+    @observable 
+    stickers: Sticker[];
 
     @observable
     isImportTemplateModalOpened: boolean;
@@ -63,6 +82,9 @@ class PixelArtPageStore extends Reactionable(EmptyClass) {
         this.templateTop = 0;
         this.templateWidth = CANVAS_ELEMENT_SIZE;
         this.templateHeight = CANVAS_ELEMENT_SIZE;
+
+        this.stickers = [];
+        this.stickers.push(new Sticker());
 
         this.isImportTemplateModalOpened = false;
         this.isCanvasPropertiesModalOpened = false;

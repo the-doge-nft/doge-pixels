@@ -3,7 +3,7 @@ import { observer } from "mobx-react-lite";
 import { useEffect, useMemo, useState } from "react";
 import Pane from "../../DSL/Pane/Pane";
 import Typography, { TVariant } from "../../DSL/Typography/Typography";
-import PixelArtPageStore from "./PixelArtPage.store";
+import PixelArtPageStore, { Sticker } from "./PixelArtPage.store";
 import Icon from "../../DSL/Icon/Icon";
 import { darkModeSecondary, lightModePrimary } from "../../DSL/Theme";
 import { ClearAction, PixelAction } from "./PixelArtActions";
@@ -11,6 +11,7 @@ import { PixelArtTool, pixelArtTools } from "./PixelArtTools";
 import { TRANSPARENT_PIXEL } from "./PixelArtCanvas";
 import ImportTemplateModal from "./ImportTemplateModal/ImportTemplateModal";
 import CanvasPropertiesModal from "./CanvasPropertiesModal/CanvasPropertiesModal";
+import DragResizeRotateComponent from "./DragResizeRotateComponent";
 
 const CANVAS_ELEMENT_SIZE = 512;
 
@@ -85,7 +86,6 @@ const ArtCanvasComponent = observer(({ store }: { store: PixelArtPageStore }) =>
 
         const color = pixelArtTools[store.selectedToolIndex].id === PixelArtTool.pen ? store.palette[store.selectedBrushPixelIndex] : TRANSPARENT_PIXEL;
         let action = new PixelAction(color);
-        console.log(action);
         let lastX = mouseDownEvent.clientX;
         let lastY = mouseDownEvent.clientY;
         updatePixel(mouseDownEvent.clientX, mouseDownEvent.clientY, action);
@@ -131,10 +131,10 @@ const ArtCanvasComponent = observer(({ store }: { store: PixelArtPageStore }) =>
         >
             <Box
                 position={'relative'}
-                top={store.templateTop+'px'}
-                left={store.templateLeft+'px'}
-                width={store.templateWidth+'px'}
-                height={store.templateHeight+'px'}
+                top={store.templateTop + 'px'}
+                left={store.templateLeft + 'px'}
+                width={store.templateWidth + 'px'}
+                height={store.templateHeight + 'px'}
                 backgroundImage={store.templateImage}
                 backgroundSize={'contain'}
                 backgroundPosition={'center'}
@@ -148,6 +148,22 @@ const ArtCanvasComponent = observer(({ store }: { store: PixelArtPageStore }) =>
                 }}
                 id='canvas' width={CANVAS_ELEMENT_SIZE} height={CANVAS_ELEMENT_SIZE} onMouseDown={onMouseDown}>
             </canvas>
+            <Box
+                position={'relative'}
+                top={-store.templateHeight-CANVAS_ELEMENT_SIZE}
+                width={CANVAS_ELEMENT_SIZE}
+                height={CANVAS_ELEMENT_SIZE}
+            >
+                {store.stickers.map((entry: Sticker, index: number) => {
+                    return <DragResizeRotateComponent
+                        top={100}
+                        left={100}
+                        width={300}
+                        height={200}
+                        rotation={0}
+                    />
+                })}
+            </Box>
         </Box>
     </Box>
 })
