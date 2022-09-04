@@ -1,8 +1,8 @@
 import { colorModeType, lightOrDarkMode } from "../Theme";
 
-const containerWidth = 130;
+const containerWidth = 115;
 const containerXPadding = 10;
-const handleSize = 35;
+const handleSize = 30;
 
 export const colorModeToggleSizes = {};
 
@@ -52,8 +52,6 @@ const ColorModeToggleStyle = {
       position: "relative",
       top: lightOrDarkMode(colorMode, "3px", "2px"),
       right: lightOrDarkMode(colorMode, "18px", "-2px"),
-      // position: "absolute",
-      // right: lightOrDark(colorMode, "2px", ""),
     },
     leftIcon: {
       left: `${containerXPadding}px`,
