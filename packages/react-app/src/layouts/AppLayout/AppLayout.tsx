@@ -1,18 +1,13 @@
 import React from "react";
-import { Box, Flex, Grid, GridItem, HStack, useColorMode, VStack } from "@chakra-ui/react";
-import Button from "../../DSL/Button/Button";
-import { matchPath, useHistory, useLocation } from "react-router-dom";
-import routes, { AppRouteInterface, NamedRoutes, route, SELECTED_PIXEL_PARAM } from "../../App.routes";
+import { Box, Flex, useColorMode } from "@chakra-ui/react";
 import { observer } from "mobx-react-lite";
 import AppStore from "../../store/App.store";
-import ColorModeToggle from "../../DSL/ColorModeToggle/ColorModeToggle";
 import Link from "../../DSL/Link/Link";
-import BigText from "../../DSL/BigText/BigText";
-import UserMenu from "../UserMenu";
 import Typography, { TVariant } from "../../DSL/Typography/Typography";
 import { Type } from "../../DSL/Fonts/Fonts";
 import NavLinks from "./NavLinks";
 import Header from "./Header";
+import { formatWithThousandsSeparators } from "../../helpers/numberFormatter";
 
 interface AppLayoutProps {
   children?: any;
@@ -72,6 +67,11 @@ const Footer = observer(() => {
               The Doge NFT
             </Link>
           </Typography>
+        </Box>
+        <Box>
+          {AppStore.web3.usdPerPixel && <Typography variant={TVariant.ComicSans12}>
+            ${formatWithThousandsSeparators(AppStore.web3.usdPerPixel)} per pixel
+          </Typography>}
         </Box>
       </Flex>
     </Box>

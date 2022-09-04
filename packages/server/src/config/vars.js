@@ -20,6 +20,7 @@ module.exports = {
   twitter_consumer_secret: process.env.TWITTER_CONSUMER_SECRET,
   twitter_access_token_key: process.env.TWITTER_ACCESS_TOKEN_KEY,
   twitter_access_token_secret: process.env.TWITTER_ACCESS_TOKEN_SECRET,
+  nomics_api_key: process.env.NOMICS_API_KEY,
   isProd: process.env.APP_ENV === "production"
 }
 

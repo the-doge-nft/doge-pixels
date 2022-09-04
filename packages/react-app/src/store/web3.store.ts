@@ -53,6 +53,9 @@ class Web3Store extends Web3providerStore {
     @observable
     cowStore: CowStore
 
+    @observable
+    usdPerPixel?: number
+
     constructor() {
         super()
         makeObservable(this)
@@ -80,6 +83,7 @@ class Web3Store extends Web3providerStore {
         }
         this.getPixelOwnershipMap()
         this.getShibaDimensions()
+        this.getUSDPerPixel()
     }
 
     async connect() {
@@ -292,6 +296,12 @@ class Web3Store extends Web3providerStore {
             return false
         }
         return true
+    }
+
+    getUSDPerPixel() {
+        return Http.get('/v1/px/price').then(({data}) => {
+            this.usdPerPixel = data.price
+        })
     }
 }
 
