@@ -34,14 +34,14 @@ COPY --chown=node:node prisma ./prisma/
 COPY --chown=node:node --from=development /usr/src/app/node_modules ./node_modules
 COPY --chown=node:node . .
 
-# Run the build command which creates the production bundle
-RUN yarn build
-
 # this is prod!
 ENV NODE_ENV production
 
 # install only prod deps: `prisma` is a prod dependecy since we need it for `prisma migrate` in the prod container
 RUN yarn install --frozen-lockfile --production
+
+# Run the build command which creates the production bundle
+RUN yarn build
 
 USER node
 
