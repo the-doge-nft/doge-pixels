@@ -21,7 +21,7 @@ const PixelArtPage = observer(function PixelArtPage() {
 
     useEffect(() => {
         document.addEventListener("keydown", handleHotkeys, false);
-        
+
         return () => {
             document.removeEventListener("keydown", handleHotkeys);
         };
@@ -174,12 +174,14 @@ const ArtCanvasComponent = observer(({ store }: { store: PixelArtPageStore }) =>
     </Box>
 })
 
+const PALETTE_HEIGHT = '74px';
+
 const PixelsPaletteComponent = observer(({ store }: { store: PixelArtPageStore }) => {
     const { colorMode } = useColorMode()
 
     return <Box margin={"10px"}>
         <GridItem display={"flex"} flexDirection={"row"} flexGrow={0}>
-            <Box display={"flex"} flexDirection={"column"} flexWrap={'wrap'} height={70}>
+            <Box display={"flex"} flexDirection={"column"} flexWrap={'wrap'} height={PALETTE_HEIGHT}>
                 {store.palette && store.selectedToolIndex !== PixelArtTool.erase && <Box
                     boxSize={'64px'}
                     border={"1px solid gray"}
@@ -194,22 +196,36 @@ const PixelsPaletteComponent = observer(({ store }: { store: PixelArtPageStore }
                     backgroundClip={'border-box, border-box'}
                     backgroundSize={'16px 16px, 16px 16px'} />}
                 <Box border={"1px solid gray"} m={'3px'} w={'1px'} h={'84%'} marginLeft={'5px'} />
-                {store.palette?.map((entry: any, index: number) => {
-                    return <Box
-                        key={index}
-                        p={1}
-                        bg={store.selectedBrushPixelIndex === index
-                            ? (colorMode === "light" ? lightModePrimary : darkModeSecondary)
-                            : "inherit"}
-                        _hover={{ bg: (colorMode === "light" ? lightModePrimary : darkModeSecondary) }}
-                        onClick={() => {
-                            store.selectedBrushPixelIndex = index;
-                            store.selectedToolIndex = PixelArtTool.pen;
-                        }}
+                <Box
+                    w={'450px'}
+                    overflowX={'auto'}
+                    overflowY={'hidden'}
+                >
+                    <Box
+                        display={"flex"}
+                        flexDirection={"column"}
+                        flexWrap={'wrap'}
+                        alignContent={'flex-start'}
+                        height={PALETTE_HEIGHT}
                     >
-                        <Box boxSize={'24px'} bgColor={entry} />
+                        {store.palette?.map((entry: any, index: number) => {
+                            return <Box
+                                key={index}
+                                p={1}
+                                bg={store.selectedBrushPixelIndex === index
+                                    ? (colorMode === "light" ? lightModePrimary : darkModeSecondary)
+                                    : "inherit"}
+                                _hover={{ bg: (colorMode === "light" ? lightModePrimary : darkModeSecondary) }}
+                                onClick={() => {
+                                    store.selectedBrushPixelIndex = index;
+                                    store.selectedToolIndex = PixelArtTool.pen;
+                                }}
+                            >
+                                <Box boxSize={'24px'} bgColor={entry} />
+                            </Box>
+                        })}
                     </Box>
-                })}
+                </Box>
             </Box>
         </GridItem>
     </Box>
