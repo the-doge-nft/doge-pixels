@@ -14,15 +14,17 @@ export class DiscordService implements OnModuleInit {
     ) {}
 
     onModuleInit() {
-        this.client = new Client({
-            intents: [
-                GatewayIntentBits.Guilds,
-                GatewayIntentBits.GuildMessages
-            ]
-        })
-        this.client.login(this.config.get("discord").secret)
-        this.client.once("ready", () => {
-            this.logger.log('discord bot is ready')
-        })
+        // this.client = new Client({
+        //     intents: [
+        //         GatewayIntentBits.Guilds,
+        //         GatewayIntentBits.GuildMessages
+        //     ]
+        // })
+        this.logger.log(`discord secret: ${this.config.get('discord').secret}`)
+
+        // this.client.login(this.config.get("discord").secret)
+        // this.client.once("ready", () => {
+        //     this.logger.log('discord bot is ready')
+        // })
     }
 }

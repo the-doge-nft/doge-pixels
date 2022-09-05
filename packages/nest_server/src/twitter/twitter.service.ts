@@ -6,13 +6,18 @@ import {EthersService} from "../ethers/ethers.service";
 import {OnEvent} from "@nestjs/event-emitter";
 import {Events, PixelMintOrBurnPayload} from "../events";
 import {PixelImageGeneratorService} from "../pixel-image-generator/pixel-image-generator.service";
+import {InjectSentry, SentryService} from "@travelerdev/nestjs-sentry";
 
 @Injectable()
 export class TwitterService implements OnModuleInit {
     private readonly logger = new Logger(TwitterService.name)
     private client: any
 
-    constructor(private config: ConfigService<Configuration>, private imageGenerator: PixelImageGeneratorService) {
+    constructor(
+        private config: ConfigService<Configuration>,
+        private imageGenerator: PixelImageGeneratorService,
+        @InjectSentry() private readonly sentryClient: SentryService,
+    ) {
     }
 
     async onModuleInit() {
@@ -34,9 +39,11 @@ export class TwitterService implements OnModuleInit {
         // todo: this should probably be implicity called from function below -- twitter should have no idea about this
         const txtImage = textContent.includes('minted') ? this.imageGenerator.mintedImage : this.imageGenerator.burnedImage
         await this.imageGenerator.createImageWithPointer(tokenId)
-        const base64Image = this.imageGenerator.generatePostImage(tokenId, txtImage, false)
-
+        const base64Image = await this.imageGenerator.generatePostImage(tokenId, txtImage, false)
         const mediaId = await this.uploadImageToTwitter(base64Image)
+
+        console.log('debug:: mediaid', mediaId)
+
         await this.tweet(mediaId, textContent)
     }
 
@@ -47,6 +54,9 @@ export class TwitterService implements OnModuleInit {
                     const mediaId = data.media_id_string;
                     this.logger.log(`Got media ID: ${mediaId}`)
                     resolve(mediaId)
+                } else {
+                    this.logger.error(JSON.stringify(err))
+                    this.sentryClient.instance().captureException(err)
                 }
             })
         })
@@ -63,5 +73,9 @@ export class TwitterService implements OnModuleInit {
                 this.logger.log(`Tweet successful`)
             }
         })
+    }
+
+    public testTweet() {
+        return this.tweetPixelEventImage({from: "0x0000000000000000000000000000000000000000", to: "0xd801d86C10e2185a8FCBccFB7D7baF0A6C5B6BD5", tokenId: 1191008})
     }
 }

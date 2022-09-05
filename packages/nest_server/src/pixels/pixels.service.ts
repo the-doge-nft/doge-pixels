@@ -7,7 +7,7 @@ import * as ABI from '../contracts/hardhat_contracts.json';
 import { ConfigService } from '@nestjs/config';
 import { Configuration } from '../config/configuration';
 import { PixelsRepository } from './pixels.repository';
-import KobosuJson from "../assets/images/kobosu.json";
+const KobosuJson = require("../assets/images/kobosu.json");
 import {InjectSentry, SentryService} from "@travelerdev/nestjs-sentry";
 
 @Injectable()

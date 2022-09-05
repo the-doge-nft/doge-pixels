@@ -4,6 +4,7 @@ import { ethers } from 'ethers';
 import { EthersService } from './ethers/ethers.service';
 import { HttpService } from '@nestjs/axios';
 import { PixelsRepository } from './pixels/pixels.repository';
+import {TwitterService} from "./twitter/twitter.service";
 
 @Controller('/v1')
 export class AppController {
@@ -14,6 +15,7 @@ export class AppController {
     private readonly pixelsRepository: PixelsRepository,
     private readonly ethersService: EthersService,
     private readonly httpService: HttpService,
+    private readonly twitter: TwitterService
   ) {}
 
   @Get('status')
@@ -106,5 +108,11 @@ export class AppController {
     const data = await this.httpService.get(tokenUri).toPromise();
     console.log(data.data);
     return true;
+  }
+
+  @Get('twitter/test')
+  async getTwitterBotTest() {
+    this.twitter.testTweet()
+    return {message: "testagain"}
   }
 }

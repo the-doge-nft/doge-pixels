@@ -1,6 +1,6 @@
 import {Injectable, Logger, OnModuleInit} from '@nestjs/common';
 const Jimp = require("jimp");
-import fs from "fs";
+import { writeFile } from "fs";
 import {PixelsService} from "../pixels/pixels.service";
 import {createCanvas} from "canvas";
 import {EthersService} from "../ethers/ethers.service";
@@ -122,10 +122,9 @@ export class PixelImageGeneratorService implements OnModuleInit {
             this.drawPointer(context, x, y, pixelOffsetX + 20, y1, pixelOffsetX + 45, y1);
             const buffer = canvas.toBuffer('image/png')
 
-
             this.logger.log(`starting to write file: ${tokenId}`)
             return new Promise ((resolve, reject) =>  {
-                fs.writeFile(`src/assets/images/pointer${tokenId}.png`, buffer, null, async () => {
+                writeFile(`src/assets/images/pointer${tokenId}.png`, buffer, null, async () => {
                     this.logger.log(`done writing file: ${tokenId}`)
                     resolve("success");
                 })
@@ -136,7 +135,7 @@ export class PixelImageGeneratorService implements OnModuleInit {
         }
     }
 
-    getPixelOffsets(y) {
+    getPixelOffsets(y: number) {
         if (y <= this.pixels.imageHeight / 2) {
             return [this.pixelOffsetX, this.bottomPixelOffsetY];
         } else {
@@ -187,7 +186,7 @@ export class PixelImageGeneratorService implements OnModuleInit {
         image = image.composite(txtImg, 400, 430);
 
         // print coordinates
-        const font = await Jimp.loadFont('../assets/fonts/PressStart2P-Regular.ttf.fnt');
+        const font = await Jimp.loadFont('src/assets/fonts/PressStart2P-Regular.ttf.fnt');
         image.print(font, pixelOffsetX + 5, pixelOffsetY + this.pixelHeight + 10, `(${x},${y})`);
 
         const base64image = await image.getBase64Async('image/png')

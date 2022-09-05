@@ -15,6 +15,7 @@ spacedEcho() {
 
 up() {
     spacedEcho "spinning up db"
+    rm -r dist/
     docker-compose up -d db
     sleep 5
     yarn compile_contracts
