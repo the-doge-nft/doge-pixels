@@ -121,6 +121,7 @@ export class AppController {
         this.logger.log(tokenNotMintedMessage)
         throw new Error(tokenNotMintedMessage)
       } else {
+        // todo instead of querying the contract -- query the DB first to ensure the token has been minted actually
         const tokenUri = await this.pixelService.getPixelURI(params.tokenId);
         const { data } = await this.httpService.get(tokenUri).toPromise();
         this.logger.log(`got metadata, setting to cache: ${JSON.stringify(data)}`)
