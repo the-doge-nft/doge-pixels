@@ -145,6 +145,8 @@ function addPointerImage(tokenId, content) {
       y1 = TOP_PIXEL_OFFSET_Y + PIXEL_HEIGHT + PIXEL_TEXT_HEIGHT;
     }
 
+    console.log('debug:: y1', y1)
+
     context = drawPointer(context, x, y, pixelOffsetX + 20, y1, pixelOffsetX + 45, y1);
     const buffer = canvas.toBuffer('image/png')
     logger.info(`starting to write file: ${tokenId}`)
@@ -169,7 +171,7 @@ async function generatePostImage(tokenId, txtImg, isDiscord) {
 
     logger.info(`reading image for compilation: ${tokenId}`)
     const pointerImg = await Jimp.read(`src/assets/images/${isDiscord ? "discord_pointer" : "pointer"}${tokenId}.png`);
-    
+
     backgroundImage = await Jimp.read('src/assets/images/background.png');
       logger.info(`writing pointer: ${tokenId}`)
       // merge pointer image with background image
@@ -263,7 +265,7 @@ async function tweetmessage(media_id, content) {
 async function tweet(from, to, tokenId, provider) {
   mintedImage = await Jimp.read('src/assets/images/mint.png');
   burnedImage = await Jimp.read('src/assets/images/burn.png');
-  
+
   logger.info(`Twitter listener triggered on transfer for token id: ${tokenId}`)
   try {
     if (from === ethers.constants.AddressZero || to === ethers.constants.AddressZero) {
@@ -296,11 +298,11 @@ module.exports = {
   TOP_PIXEL_OFFSET_Y,
   PIXEL_HEIGHT,
   PIXEL_TEXT_HEIGHT,
-  tweet, 
-  pupperToPixelCoordsLocal, 
-  pupperToHexLocal, 
+  tweet,
+  pupperToPixelCoordsLocal,
+  pupperToHexLocal,
   getPixelOffsets,
-  generateShadow, 
+  generateShadow,
   generatePostImage,
   drawPointer
 };
