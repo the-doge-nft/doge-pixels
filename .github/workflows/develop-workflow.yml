@@ -3,7 +3,7 @@ name: '[dev]: build, deploy'
 
 on:
   push:
-    branches: feat/nest
+    branches: dev
 
 defaults:
   run:
