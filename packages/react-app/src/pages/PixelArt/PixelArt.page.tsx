@@ -39,9 +39,6 @@ const PixelArtPage = observer(function PixelArtPage() {
     }
 
     return <Pane display={"flex"} flexDirection={"column"} padding={"0px"}>
-        <Typography variant={TVariant.PresStart10} m={2}>
-            {store.selectedAddress}
-        </Typography>
         <Grid templateColumns={"0fr 1fr"} flexGrow={0}>
             <GridItem display={"flex"} flexDirection={"column"} flexGrow={0}>
                 <MainMenuComponent store={store} />
@@ -71,7 +68,6 @@ const PixelArtPage = observer(function PixelArtPage() {
     </Pane>
 });
 
-let stickerAction: any;
 const ArtCanvasComponent = observer(({ store }: { store: PixelArtPageStore }) => {
 
     useEffect(() => {
@@ -171,7 +167,6 @@ const ArtCanvasComponent = observer(({ store }: { store: PixelArtPageStore }) =>
                         key={index}
                         store={store}
                         sticker={entry}
-                        bgColor={store.selectedToolIndex === PixelArtTool.stickers ? '#F008' : ''}
                     />
                 })}
             </Box>
@@ -280,7 +275,6 @@ const MainMenuComponent = observer(({ store }: { store: PixelArtPageStore }) => 
                 ext: 'png',
             })
         }).then(response => response.json()).then(data => {
-            console.log('twitter upload', data);
             if (data && data.id && data.location) {
                 const message = 'I just created pixel art with my doge pixels, check it out here';
                 const screenshotUrl = 'https://prod.hmstrs.com/twitter/' + data.id;

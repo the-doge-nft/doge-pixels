@@ -118,12 +118,11 @@ class PixelArtPageStore extends Reactionable(EmptyClass) {
 
     @action
     refreshStickers() {
-        this.stickers.splice(0, 0);
     }
 
     @action
     pushAction(action: ActionInterface) {
-        console.log('pushAction', action);
+        //console.log('pushAction', action);
         this.undoActions.push(action);
         this.redoActions = [];
         if (this.undoActions.length > MAX_ACTIONS_CN) {
@@ -136,7 +135,7 @@ class PixelArtPageStore extends Reactionable(EmptyClass) {
         if (this.undoActions.length) {
             const action: ActionInterface | undefined = this.undoActions.pop();
             if (action) {
-                console.log('undoAction', action);
+                //console.log('undoAction', action);
                 action.undo(this);
                 this.redoActions.push(action);
             }
@@ -147,7 +146,7 @@ class PixelArtPageStore extends Reactionable(EmptyClass) {
         if (this.redoActions.length) {
             const action: ActionInterface | undefined = this.redoActions.pop();
             if (action) {
-                console.log('redoAction', action);
+                //console.log('redoAction', action);
                 action.redo(this);
                 this.undoActions.push(action);
             }

@@ -1,8 +1,10 @@
 import { Box } from "@chakra-ui/react";
 import { observer } from "mobx-react-lite";
 import { useState } from "react";
+import Icon from "../../DSL/Icon/Icon";
 import { ChangeStickerAction, RemoveStickerAction } from "./PixelArtActions";
 import PixelArtPageStore, { Sticker } from "./PixelArtPage.store";
+import { PixelArtTool } from "./PixelArtTools";
 
 const SAFE_ZONE = 20;
 const MIN_SIZE = 50;
@@ -10,7 +12,6 @@ const MIN_SIZE = 50;
 interface StickerComponentProps {
     sticker: Sticker;
     store: PixelArtPageStore;
-    bgColor?: string;
 }
 
 const StickerComponent = observer(function StickerComponent(props: StickerComponentProps) {
@@ -124,7 +125,7 @@ const StickerComponent = observer(function StickerComponent(props: StickerCompon
     }
 
     return <Box
-        id='drag-resize'
+        id={'drag-resize'}
         key='drag-resize'
         position={'absolute'}
         style={{
@@ -136,23 +137,23 @@ const StickerComponent = observer(function StickerComponent(props: StickerCompon
             minHeight: MIN_SIZE,
             transform: rotationStr
         }}
-        w={100}
-        h={100}
-        bgColor={props.bgColor}
+        w={props.sticker.width}
+        h={props.sticker.height}
+        bgColor={props.store.selectedToolIndex === PixelArtTool.stickers ? '#F008' : ''}
         onMouseDown={onMouseDown}
         backgroundImage={props.sticker.image}
         backgroundSize={'contain'}
         backgroundPosition={'center'}
         backgroundRepeat={'no-repeat'}
     >
-        <Box
+        {props.store.selectedToolIndex === PixelArtTool.stickers && <Box
             position={'absolute'}
             bgColor={'#FFFF'}
             right={'0px'}
-            width={SAFE_ZONE+'px'}
-            height={SAFE_ZONE+'px'}
             onClick={removeSticker}
-        />
+        >
+            <Icon icon={"close"} boxSize={5} />
+        </Box>}
     </Box>
 });
 
