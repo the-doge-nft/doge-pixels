@@ -14,19 +14,27 @@ spacedEcho() {
 }
 
 up() {
-    spacedEcho "spinning up db"
+    spacedEcho "removing old dist"
     rm -r dist/
+
+    spacedEcho "spinning up db"
     docker-compose up -d db
     sleep 5
+
+    spacedEcho "compiling contracts"
     yarn compile_contracts
+
     spacedEcho "migrating local db"
     yarn run prisma migrate dev --name init
+
     spacedEcho "spinning up api"
     if [[ $1 = "--build" ]]; then
       docker-compose up --build -d api;
     else
       docker-compose up -d api
     fi;
+
+    spacedEcho "listening to logs"
     docker-compose logs -f
 }
 

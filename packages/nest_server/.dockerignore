@@ -1,6 +1,4 @@
-Dockerfile
-.dockerignore
+dog-pixels.Dockerfile
 node_modules
-./dist
-
-
+dist
+dev-local.sh

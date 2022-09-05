@@ -10,10 +10,10 @@ WORKDIR /usr/src/app
 COPY --chown=node:node package.json ./
 COPY --chown=node:node yarn.lock ./
 COPY --chown=node:node prisma ./prisma/
-
-RUN yarn
-
 COPY --chown=node:node . .
+
+# make sure we get dev deps installed
+RUN yarn install --production=false
 
 # generate prisma client
 RUN yarn prisma:generate
