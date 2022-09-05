@@ -145,6 +145,7 @@ export class PixelImageGeneratorService implements OnModuleInit {
         y1,
       );
       const buffer = canvas.toBuffer('image/png');
+      return buffer;
 
       this.logger.log(`starting to write file: ${tokenId}`);
       return new Promise((resolve, _) => {
@@ -191,19 +192,18 @@ export class PixelImageGeneratorService implements OnModuleInit {
     }
   }
 
-  async generatePostImage(tokenId, txtImg, isDiscord): Promise<string> {
+  async generatePostImage(
+    mintOrBurn: 'mint' | 'burn',
+    tokenId: number,
+    isDiscord: boolean,
+  ): Promise<string> {
+    const pointerBuffer = await this.createPointerImage(tokenId);
+    const pointerImg = await Jimp.read(pointerBuffer);
+
     const [x, y] = this.pixels.pixelToCoordsLocal(tokenId);
     const color = this.pixels.pixelToHexLocal(tokenId);
 
-    this.logger.log(`reading image for compilation: ${tokenId}`);
-    const pointerImg = await Jimp.read(
-      `src/assets/images/${
-        isDiscord ? 'discord_pointer' : 'pointer'
-      }${tokenId}.png`,
-    );
-
     const backgroundImage = await Jimp.read('src/assets/images/background.png');
-    this.logger.log(`writing pointer: ${tokenId}`);
 
     // merge pointer image with background image
     let image = backgroundImage.composite(pointerImg, 0, 0);
@@ -234,7 +234,11 @@ export class PixelImageGeneratorService implements OnModuleInit {
     );
 
     // merge minted text image with background image
-    image = image.composite(txtImg, 400, 430);
+    image = image.composite(
+      mintOrBurn === 'mint' ? this.mintedImage : this.burnedImage,
+      400,
+      430,
+    );
 
     // print coordinates
     const font = await Jimp.loadFont(

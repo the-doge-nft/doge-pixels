@@ -16,6 +16,7 @@ export class TwitterService implements OnModuleInit {
   constructor(
     private config: ConfigService<Configuration>,
     private imageGenerator: PixelImageGeneratorService,
+    private ethers: EthersService,
     @InjectSentry() private readonly sentryClient: SentryService,
   ) {}
 
@@ -38,14 +39,9 @@ export class TwitterService implements OnModuleInit {
       tokenId,
     );
 
-    // todo: this should probably be implicity called from function below -- twitter should have no idea about this
-    const txtImage = textContent.includes('minted')
-      ? this.imageGenerator.mintedImage
-      : this.imageGenerator.burnedImage;
-    await this.imageGenerator.createPointerImage(tokenId);
     const base64Image = await this.imageGenerator.generatePostImage(
+      from === this.ethers.zeroAddress ? 'mint' : 'burn',
       tokenId,
-      txtImage,
       false,
     );
     const mediaId = await this.uploadImageToTwitter(base64Image);
