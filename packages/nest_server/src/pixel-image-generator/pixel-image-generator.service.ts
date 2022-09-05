@@ -124,6 +124,7 @@ export class PixelImageGeneratorService implements OnModuleInit {
                 y1 = this.bottomPixelOffsetY + this.pixelHeight + this.pixelTextHeight;
             }
 
+            console.log('debug:: y1', y1)
 
             this.drawPointer(context, x, y, pixelOffsetX + 20, y1, pixelOffsetX + 45, y1);
             const buffer = canvas.toBuffer('image/png')
