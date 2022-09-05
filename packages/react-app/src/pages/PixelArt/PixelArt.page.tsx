@@ -254,6 +254,7 @@ const MainMenuComponent = observer(({ store }: { store: PixelArtPageStore }) => 
     }
     const downloadPFP = () => {
         let canvas: HTMLCanvasElement = document.getElementById('canvas') as HTMLCanvasElement;
+        //store.pixelsCanvas.drawStickers(store.stickers);
         var image = canvas.toDataURL("image/png").replace("image/png", "image/octet-stream");
 
         var link = document.getElementById('pfp-link');
@@ -262,6 +263,7 @@ const MainMenuComponent = observer(({ store }: { store: PixelArtPageStore }) => 
             link.setAttribute('href', image);
             link.click();
         }
+        store.pixelsCanvas.updateCanvas();
     }
 
     const postTweet = () => {

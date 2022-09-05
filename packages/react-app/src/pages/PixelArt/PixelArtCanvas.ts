@@ -1,4 +1,5 @@
 import { sha512 } from "ethers/lib/utils";
+import { Sticker } from "./PixelArtPage.store";
 
 export const TRANSPARENT_PIXEL = '#0000';
 
@@ -40,6 +41,30 @@ export class PixelArtCanvas {
             }
         }
         ctx.restore();
+    }
+
+    drawStickers(stickers: Sticker[]) {
+        console.log(stickers);
+        
+        if (!this.canvas) return;
+
+        let ctx = this.canvas.getContext('2d');
+        if (!ctx) return;
+        for (const sticker of stickers) {
+
+            if (sticker.image) {
+                ctx.save();
+
+                const b = sticker.rotation / 180 * Math.PI;
+                //let rotX = Math.cos(b) * sticker.x - Math.sin(b) * sticker.y;
+                //let rotY = Math.sin(b) * sticker.x + Math.cos(b) * sticker.y;
+        
+                ctx.translate(sticker.x, sticker.y);
+                ctx.rotate(b);
+                ctx.drawImage(sticker.image, 0, 0, sticker.width, sticker.height);
+                ctx.restore();    
+            }
+        }
     }
 
     generateIdenticon(text: string, colors: string[]) {
