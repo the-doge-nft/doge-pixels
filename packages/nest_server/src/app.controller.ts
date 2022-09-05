@@ -124,7 +124,6 @@ export class AppController {
         // todo instead of querying the contract -- query the DB first to ensure the token has been minted actually
         const tokenUri = await this.pixelService.getPixelURI(params.tokenId);
         const { data } = await this.httpService.get(tokenUri).toPromise();
-        this.logger.log(`got metadata, setting to cache: ${JSON.stringify(data)}`)
         await this.cacheManager.set(cacheKey, data)
         return data
       }
@@ -134,7 +133,6 @@ export class AppController {
         this.logger.log('known non-minted token, continuing')
       } else {
         const tokenNotMintedErrorString = "ERC721Metadata: URI query for nonexistent token"
-        this.logger.log(`GOT ERROR: ${JSON.stringify(e)}`)
         const errorMessage = e.reason
         const isTokenNotMinted = errorMessage === tokenNotMintedErrorString
         if (isTokenNotMinted) {
