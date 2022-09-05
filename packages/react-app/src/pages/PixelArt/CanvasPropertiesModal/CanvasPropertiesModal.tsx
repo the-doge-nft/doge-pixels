@@ -86,8 +86,13 @@ const CanvasPropertiesModal = observer((props: CanvasPropertiesModalProps) => {
                     </Box>
                 </Box>
             </Box>
-            <Button p={0} variant={ButtonVariant.Primary} onClick={onApply}>Apply</Button>
-            <Button p={0} variant={ButtonVariant.Primary} onClick={onReset}>Reset</Button>
+            <Box
+                display={'flex'}
+                justifyContent={'center'}
+            >
+                <Button p={0} margin={'0 auto'} variant={ButtonVariant.Primary} onClick={onApply}>Apply</Button>
+                <Button p={0} margin={'0 auto'} variant={ButtonVariant.Primary} onClick={onReset}>Cancel</Button>
+            </Box>
         </Box>
     </Modal >
 })

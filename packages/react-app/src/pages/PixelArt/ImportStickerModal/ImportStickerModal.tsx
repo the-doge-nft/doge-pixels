@@ -14,32 +14,33 @@ interface ImportStickerModalProps {
 }
 
 const ImportStickerModal = observer((props: ImportStickerModalProps) => {
-    const [image, setImage] = useState('');
+    const [imageBase64, setImageBase64] = useState('');
     const [imageWidth, setImageWidth] = useState(0);
     const [imageHeight, setImageHeight] = useState(0);
+    const [image] = useState(new Image());
 
     const onImageUpload = (event: any) => {
         if (event.target.files.length) {
-            let img = event.target.files[0];
-            let imgSrc = URL.createObjectURL(img);
-            let imageControl = new Image();
-            imageControl.src = imgSrc;
-            imageControl.onload = () => {
-                setImageWidth(imageControl.width);
-                setImageHeight(imageControl.height);
-                setImage(imgSrc);
+            let file = event.target.files[0];
+            let imgURL = URL.createObjectURL(file);
+            image.src = imgURL;
+            image.onload = () => {
+                setImageWidth(image.width);
+                setImageHeight(image.height);
+                setImageBase64(imgURL);
             }
         } else {
-            setImage('');
+            setImageBase64('');
         }
     }
 
     const onApply = () => {
-        if (image !== '') {
+        if (imageBase64 !== '') {
             let sticker = new Sticker();
-            sticker.image = image;
+            sticker.imageBase64 = imageBase64;
             sticker.width = imageWidth;
             sticker.height = imageHeight;
+            sticker.image = image;
             props.store.stickers.push(sticker);
             props.store.pushAction(new AddStickerAction(sticker));
         }
@@ -54,20 +55,36 @@ const ImportStickerModal = observer((props: ImportStickerModalProps) => {
         size={"lg"}
         isOpen={props.isOpen}
         onClose={props.onClose}
-        title={'Import Template'}
-        description={'Upload Image as Template'}
+        title={'Import Sticker'}
     >
         <Box pt={0} pb={6}>
             <Input
                 w={'full'}
                 h={100}
+                my={10}
+                borderRadius={0}
                 id="image"
                 type="file"
                 accept="image/*"
                 onChange={onImageUpload}
             />
-            <Button p={0} variant={ButtonVariant.Primary} onClick={onApply}>Apply</Button>
-            <Button p={0} variant={ButtonVariant.Primary} onClick={onReset}>Reset</Button>
+            {imageBase64 !== '' && <Box
+                position={'relative'}
+                w={256}
+                h={256}
+                mx={'auto'}
+                backgroundImage={imageBase64}
+                backgroundSize={'contain'}
+                backgroundPosition={'center'}
+                backgroundRepeat={'no-repeat'}
+            />}
+            <Box
+                display={'flex'}
+                justifyContent={'center'}
+            >
+                <Button p={0} margin={'0 auto'} variant={ButtonVariant.Primary} onClick={onApply}>Apply</Button>
+                <Button p={0} margin={'0 auto'} variant={ButtonVariant.Primary} onClick={onReset}>Cancel</Button>
+            </Box>
         </Box>
     </Modal>
 })

@@ -1,4 +1,4 @@
-import { PixelArtCanvas, TRANSPARENT_PIXEL } from "./PixelArtCanvas";
+import { TRANSPARENT_PIXEL } from "./PixelArtCanvas";
 import PixelArtPageStore, { Sticker } from "./PixelArtPage.store";
 
 export interface ActionInterface {

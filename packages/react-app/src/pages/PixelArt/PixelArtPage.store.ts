@@ -10,32 +10,24 @@ import { CanvasSize, PixelArtCanvas } from "./PixelArtCanvas";
 const MAX_ACTIONS_CN = 50;
 const CANVAS_ELEMENT_SIZE = 512;
 
-export class Sticker extends Reactionable(EmptyClass) {
-    @observable
+export class Sticker{
     x: number;
-    @observable
     y: number;
-    @observable
     width: number;
-    @observable
     height: number;
-    @observable
     rotation: number;
-    image: string;
+    imageBase64: string;
+    image?: HTMLImageElement;
 
     constructor() {
-        super()
-        makeObservable(this)
-
         this.x = 0;
         this.y = 0;
         this.width = 100;
         this.height = 100;
         this.rotation = 0;
-        this.image = '';
+        this.imageBase64 = '';
     }
 
-    @action
     set(x: number, y: number, width: number, height: number, rotation: number) {
         this.x = x;
         this.y = y;

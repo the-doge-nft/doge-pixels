@@ -141,7 +141,7 @@ const StickerComponent = observer(function StickerComponent(props: StickerCompon
         h={props.sticker.height}
         bgColor={props.store.selectedToolIndex === PixelArtTool.stickers ? '#F008' : ''}
         onMouseDown={onMouseDown}
-        backgroundImage={props.sticker.image}
+        backgroundImage={props.sticker.imageBase64}
         backgroundSize={'contain'}
         backgroundPosition={'center'}
         backgroundRepeat={'no-repeat'}

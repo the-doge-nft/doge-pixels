@@ -41,19 +41,35 @@ const ImportTemplateModal = observer((props: ImportTemplateModalProps) => {
         isOpen={props.isOpen}
         onClose={props.onClose}
         title={'Import Template'}
-        description={'Upload Image as Template'}
     >
         <Box pt={0} pb={6}>
             <Input
                 w={'full'}
                 h={100}
+                my={10}
+                borderRadius={0}
                 id="image"
                 type="file"
                 accept="image/*"
                 onChange={onImageUpload}
             />
-            <Button p={0} variant={ButtonVariant.Primary} onClick={onApply}>Apply</Button>
-            <Button p={0} variant={ButtonVariant.Primary} onClick={onReset}>Reset</Button>
+            {image !== '' && <Box
+                position={'relative'}
+                w={256}
+                h={256}
+                mx={'auto'}
+                backgroundImage={image}
+                backgroundSize={'contain'}
+                backgroundPosition={'center'}
+                backgroundRepeat={'no-repeat'}
+            />}
+            <Box
+                display={'flex'}
+                justifyContent={'center'}
+            >
+                <Button p={0} margin={'0 auto'} variant={ButtonVariant.Primary} onClick={onApply}>Apply</Button>
+                <Button p={0} margin={'0 auto'} variant={ButtonVariant.Primary} onClick={onReset}>Cancel</Button>
+            </Box>
         </Box>
     </Modal>
 })
