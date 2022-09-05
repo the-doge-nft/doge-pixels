@@ -29,6 +29,7 @@ export interface Configuration {
     secret: string;
     channelId: string;
   };
+  nomicsKey: string;
 }
 
 const configuration: Configuration = {
@@ -56,6 +57,7 @@ const configuration: Configuration = {
     secret: process.env.DISCORD_SECRET,
     channelId: process.env.DISCORD_CHANNEL_ID,
   },
+  nomicsKey: process.env.NOMICS_API_KEY,
 };
 
 export default configuration;

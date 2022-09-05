@@ -1,13 +1,18 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { CACHE_MANAGER, Inject, Injectable, Logger } from '@nestjs/common';
 import { PrismaService } from '../prisma.service';
 import { ethers } from 'ethers';
 import { EthersService } from '../ethers/ethers.service';
+import { Cache } from 'cache-manager';
 
 @Injectable()
 export class PixelsRepository {
   private readonly logger = new Logger(PixelsRepository.name);
 
-  constructor(private prisma: PrismaService, private ethers: EthersService) {}
+  constructor(
+    private prisma: PrismaService,
+    private ethers: EthersService,
+    @Inject(CACHE_MANAGER) private cacheManager: Cache,
+  ) {}
 
   findByTokenId(tokenId: number) {
     return this.prisma.pixels.findUnique({ where: { tokenId } });
@@ -49,7 +54,16 @@ export class PixelsRepository {
       if (map[item.ownerAddress]?.tokenIds) {
         map[item.ownerAddress].tokenIds.push(item.tokenId);
       } else {
-        const ens = await this.ethers.getEnsName(item.ownerAddress);
+        const cacheKey = `ens:${item.ownerAddress}`;
+
+        let ens = await this.cacheManager.get(cacheKey);
+        if (!ens) {
+          ens = await this.ethers.getEnsName(item.ownerAddress);
+          if (ens) {
+            await this.cacheManager.set(cacheKey, ens, { ttl: 60000 * 60 });
+          }
+        }
+
         map[item.ownerAddress] = {
           tokenIds: [item.tokenId],
           ens: ens,

@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { CacheModule, Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ConfigModule, ConfigService } from '@nestjs/config';
@@ -13,7 +13,8 @@ import { PixelsRepository } from './pixels/pixels.repository';
 import { TwitterService } from './twitter/twitter.service';
 import { DiscordService } from './discord/discord.service';
 import { PixelImageGeneratorService } from './pixel-image-generator/pixel-image-generator.service';
-import {SentryModule} from "@travelerdev/nestjs-sentry";
+import { SentryModule } from '@travelerdev/nestjs-sentry';
+import { NomicsService } from './nomics/nomics.service';
 
 @Module({
   imports: [
@@ -33,6 +34,7 @@ import {SentryModule} from "@travelerdev/nestjs-sentry";
       }),
       inject: [ConfigService],
     }),
+    CacheModule.register(),
   ],
   controllers: [AppController],
   providers: [
@@ -44,6 +46,7 @@ import {SentryModule} from "@travelerdev/nestjs-sentry";
     TwitterService,
     DiscordService,
     PixelImageGeneratorService,
+    NomicsService,
   ],
 })
 export class AppModule {}

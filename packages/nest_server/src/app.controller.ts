@@ -7,6 +7,7 @@ import { PixelsRepository } from './pixels/pixels.repository';
 import { TwitterService } from './twitter/twitter.service';
 import { ConfigService } from '@nestjs/config';
 import { DiscordService } from './discord/discord.service';
+import { NomicsService } from './nomics/nomics.service';
 
 @Controller('/v1')
 export class AppController {
@@ -17,6 +18,7 @@ export class AppController {
     private readonly pixelsRepository: PixelsRepository,
     private readonly ethersService: EthersService,
     private readonly httpService: HttpService,
+    private readonly nomics: NomicsService,
     private readonly twitter: TwitterService,
     private readonly discord: DiscordService,
     private readonly config: ConfigService,
@@ -112,6 +114,16 @@ export class AppController {
     const data = await this.httpService.get(tokenUri).toPromise();
     console.log(data.data);
     return true;
+  }
+
+  @Get('px/price')
+  async getPixelUSDPrice() {
+    const { data } = await this.nomics.getDOGPrice();
+    const usdPrice = Number(data[0].price);
+    const dogPerPixel = 55239.89899;
+    return {
+      price: usdPrice * dogPerPixel,
+    };
   }
 
   @Get('twitter/test')
