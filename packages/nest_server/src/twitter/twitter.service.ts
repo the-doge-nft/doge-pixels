@@ -1,5 +1,4 @@
 import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
-const Twitter = require('twitter');
 import { ConfigService } from '@nestjs/config';
 import { Configuration } from '../config/configuration';
 import { EthersService } from '../ethers/ethers.service';
@@ -7,6 +6,8 @@ import { OnEvent } from '@nestjs/event-emitter';
 import { Events, PixelMintOrBurnPayload } from '../events';
 import { PixelImageGeneratorService } from '../pixel-image-generator/pixel-image-generator.service';
 import { InjectSentry, SentryService } from '@travelerdev/nestjs-sentry';
+
+import * as Twitter from 'twitter';
 
 @Injectable()
 export class TwitterService implements OnModuleInit {
@@ -21,7 +22,6 @@ export class TwitterService implements OnModuleInit {
   ) {}
 
   async onModuleInit() {
-    this.logger.log(`init twitter client`);
     this.client = new Twitter({
       consumer_key: this.config.get('twitter').consumerKey,
       consumer_secret: this.config.get('twitter').consumerSecret,
@@ -32,32 +32,33 @@ export class TwitterService implements OnModuleInit {
 
   @OnEvent(Events.PIXEL_MINT_OR_BURN)
   async tweetPixelEventImage({ from, to, tokenId }: PixelMintOrBurnPayload) {
-    this.logger.log(`generating tweet: ${from} -- ${to} -- ${tokenId}`);
+    this.logger.log(`Posting to twitter:: (${tokenId}) ${from} -> ${to}`);
     const textContent = await this.imageGenerator.getTextContent(
       from,
       to,
       tokenId,
     );
 
-    const base64Image = await this.imageGenerator.generatePostImage(
+    const image = await this.imageGenerator.generatePostImage(
       from === this.ethers.zeroAddress ? 'mint' : 'burn',
       tokenId,
-      false,
     );
+
+    let base64Image = await image.getBase64Async('image/png');
+    base64Image = base64Image.replace('data:image/png;base64,', '');
+
     const mediaId = await this.uploadImageToTwitter(base64Image);
     await this.tweet(mediaId, textContent);
   }
 
   private uploadImageToTwitter(mediaData): Promise<string> {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve, _) => {
       this.client.post(
         'media/upload',
         { media_data: mediaData },
-        (err, data, response) => {
+        (err, data, _) => {
           if (!err) {
-            const mediaId = data.media_id_string;
-            this.logger.log(`Got media ID: ${mediaId}`);
-            resolve(mediaId);
+            return resolve(data.media_id_string);
           } else {
             this.logger.error(JSON.stringify(err));
             this.sentryClient.instance().captureException(err);
@@ -68,7 +69,7 @@ export class TwitterService implements OnModuleInit {
   }
 
   private tweet(media_id: string, status: string) {
-    this.client.post(
+    return this.client.post(
       'statuses/update',
       {
         status,
@@ -77,20 +78,24 @@ export class TwitterService implements OnModuleInit {
       (err) => {
         if (err) {
           this.logger.error(
-            `Error occurred updating status: ${JSON.stringify(err)}`,
+            `Error occurred tweeting status: ${JSON.stringify(err)}`,
           );
-        } else {
-          this.logger.log(`Tweet successful`);
         }
       },
     );
   }
 
-  public testTweet() {
-    return this.tweetPixelEventImage({
-      from: '0x0000000000000000000000000000000000000000',
-      to: '0xd801d86C10e2185a8FCBccFB7D7baF0A6C5B6BD5',
-      tokenId: 1191008,
-    });
+  public DEBUG_TEST() {
+    if (this.config.get('isDev')) {
+      return this.tweetPixelEventImage({
+        from: '0x0000000000000000000000000000000000000000',
+        to: '0xd801d86C10e2185a8FCBccFB7D7baF0A6C5B6BD5',
+        tokenId: 1191008,
+      });
+    } else {
+      this.logger.log(
+        `${arguments.callee.name} only available in development mode`,
+      );
+    }
   }
 }

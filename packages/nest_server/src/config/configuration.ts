@@ -9,6 +9,8 @@ export interface Configuration {
   port: number;
   appEnv: AppEnv;
   isProd: boolean;
+  isStaging: boolean;
+  isDev: boolean;
   infura: {
     projectId: string;
     secret: string;
@@ -32,7 +34,9 @@ export interface Configuration {
 const configuration: Configuration = {
   port: parseInt(process.env.PORT) || 3000,
   appEnv: (process.env.APP_ENV as AppEnv) || AppEnv.development,
-  isProd: process.env.APP_ENV as AppEnv === AppEnv.production,
+  isProd: (process.env.APP_ENV as AppEnv) === AppEnv.production,
+  isStaging: (process.env.APP_ENV as AppEnv) === AppEnv.staging,
+  isDev: (process.env.APP_ENV as AppEnv) === AppEnv.development,
   infura: {
     projectId: process.env.INFURA_PROJECT_ID,
     secret: process.env.INFURA_SECRET,

@@ -192,11 +192,7 @@ export class PixelImageGeneratorService implements OnModuleInit {
     }
   }
 
-  async generatePostImage(
-    mintOrBurn: 'mint' | 'burn',
-    tokenId: number,
-    isDiscord: boolean,
-  ): Promise<string> {
+  async generatePostImage(mintOrBurn: 'mint' | 'burn', tokenId: number) {
     const pointerBuffer = await this.createPointerImage(tokenId);
     const pointerImg = await Jimp.read(pointerBuffer);
 
@@ -251,7 +247,9 @@ export class PixelImageGeneratorService implements OnModuleInit {
       `(${x},${y})`,
     );
 
-    const base64image = await image.getBase64Async('image/png');
-    return base64image.replace('data:image/png;base64,', '');
+    // const base64image = await image.getBase64Async('image/png');
+    // return base64image.replace('data:image/png;base64,', '');
+
+    return image;
   }
 }

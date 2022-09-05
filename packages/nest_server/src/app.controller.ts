@@ -5,6 +5,8 @@ import { EthersService } from './ethers/ethers.service';
 import { HttpService } from '@nestjs/axios';
 import { PixelsRepository } from './pixels/pixels.repository';
 import { TwitterService } from './twitter/twitter.service';
+import { ConfigService } from '@nestjs/config';
+import { DiscordService } from './discord/discord.service';
 
 @Controller('/v1')
 export class AppController {
@@ -16,6 +18,8 @@ export class AppController {
     private readonly ethersService: EthersService,
     private readonly httpService: HttpService,
     private readonly twitter: TwitterService,
+    private readonly discord: DiscordService,
+    private readonly config: ConfigService,
   ) {}
 
   @Get('status')
@@ -112,7 +116,19 @@ export class AppController {
 
   @Get('twitter/test')
   async getTwitterBotTest() {
-    this.twitter.testTweet();
-    return { message: 'testagain' };
+    if (this.config.get('isDev')) {
+      await this.twitter.DEBUG_TEST();
+      return { success: true };
+    }
+    return { success: false };
+  }
+
+  @Get('discord/test')
+  async getDiscordBotTest() {
+    if (this.config.get('isDev')) {
+      await this.discord.DEBUG_TEST();
+      return { success: true };
+    }
+    return { success: false };
   }
 }

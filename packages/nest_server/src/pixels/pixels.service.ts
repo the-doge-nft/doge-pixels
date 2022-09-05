@@ -1,14 +1,14 @@
 import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
-import {EventEmitter2, OnEvent} from '@nestjs/event-emitter';
-import {Events, PixelMintOrBurnPayload} from '../events';
+import { EventEmitter2, OnEvent } from '@nestjs/event-emitter';
+import { Events, PixelMintOrBurnPayload } from '../events';
 import { ethers } from 'ethers';
 import { EthersService } from '../ethers/ethers.service';
 import * as ABI from '../contracts/hardhat_contracts.json';
 import { ConfigService } from '@nestjs/config';
 import { Configuration } from '../config/configuration';
 import { PixelsRepository } from './pixels.repository';
-import * as KobosuJson from '../assets/images/kobosu.json'
-import {InjectSentry, SentryService} from "@travelerdev/nestjs-sentry";
+import * as KobosuJson from '../assets/images/kobosu.json';
+import { InjectSentry, SentryService } from '@travelerdev/nestjs-sentry';
 
 @Injectable()
 export class PixelsService implements OnModuleInit {
@@ -29,7 +29,6 @@ export class PixelsService implements OnModuleInit {
   ) {}
 
   async onModuleInit() {
-    this.logger.log(`PIXELS SERVICE INIT`)
     if (!this.pxContract && !this.dogContract && this.ethersService.provider) {
       this.initContracts(this.ethersService.provider);
     }
@@ -75,8 +74,8 @@ export class PixelsService implements OnModuleInit {
   private initPixelListener() {
     this.pxContract.on('Transfer', async (from, to, tokenId, event) => {
       this.logger.log(`new transfer event hit: ${from} -- ${to} -- ${tokenId}`);
-      const payload: PixelMintOrBurnPayload = {from, to, tokenId}
-      this.eventEmitter.emit(Events.PIXEL_MINT_OR_BURN, payload)
+      const payload: PixelMintOrBurnPayload = { from, to, tokenId };
+      this.eventEmitter.emit(Events.PIXEL_MINT_OR_BURN, payload);
       this.pixelsRepository.updateOwner({ tokenId, ownerAddress: to });
     });
   }
@@ -151,16 +150,16 @@ export class PixelsService implements OnModuleInit {
   }
 
   pixelToIndexLocal(pixel: number) {
-    return pixel - this.pixelToIDOffset
+    return pixel - this.pixelToIDOffset;
   }
 
   pixelToCoordsLocal(pixel: number) {
-    const index = this.pixelToIndexLocal(pixel)
-    return [index % this.imageWidth, Math.floor(index / this.imageWidth)]
+    const index = this.pixelToIndexLocal(pixel);
+    return [index % this.imageWidth, Math.floor(index / this.imageWidth)];
   }
 
   pixelToHexLocal(pixel: number) {
-    const [x, y] = this.pixelToCoordsLocal(pixel)
-    return KobosuJson[y][x]
+    const [x, y] = this.pixelToCoordsLocal(pixel);
+    return KobosuJson[y][x];
   }
 }
