@@ -1,4 +1,4 @@
-import {CACHE_MANAGER, Controller, Get, Inject, Logger, Param} from '@nestjs/common';
+import {BadRequestException, CACHE_MANAGER, Controller, Get, Inject, Logger, Param} from '@nestjs/common';
 import { PixelsService } from './pixels/pixels.service';
 import { ethers } from 'ethers';
 import { EthersService } from './ethers/ethers.service';
@@ -83,7 +83,7 @@ export class AppController {
       Number(params.tokenId),
     );
     if (!token) {
-      throw new Error('Could not find token');
+      throw new BadRequestException('Could not find token');
     }
     return {
       address: token.ownerAddress,
@@ -113,28 +113,36 @@ export class AppController {
   async getPixelMetadata(@Param() params) {
     const { tokenId } = params
     const cacheKey = `METADATA:${tokenId}`
-    const notMintedCacheKey = 'NOT_MINTED'
+    const tokenNotMintedMessage = 'NOT_MINTED'
 
     try {
       const cache = await this.cacheManager.get(cacheKey)
-    } catch (e) {
-
-    }
-
-
-    try {
-      const tokenUri = await this.pixelService.getPixelURI(params.tokenId);
-      const data = await this.httpService.get(tokenUri).toPromise();
-      return data.data;
-      console.log(data.data);
-    } catch (e) {
-      if (e instanceof Error) {
-
+      if (cache === tokenNotMintedMessage) {
+        this.logger.log(tokenNotMintedMessage)
+        throw new Error(tokenNotMintedMessage)
+      } else {
+        const tokenUri = await this.pixelService.getPixelURI(params.tokenId);
+        const { data } = await this.httpService.get(tokenUri).toPromise();
+        this.logger.log(`got metadata, setting to cache: ${JSON.stringify(data)}`)
+        await this.cacheManager.set(cacheKey, data)
+        return data
       }
 
-      this.logger.error(e)
+    } catch (e) {
+      if (e.message === tokenNotMintedMessage) {
+        this.logger.log('known non-minted token, continuing')
+      } else {
+        const tokenNotMintedErrorString = "ERC721Metadata: URI query for nonexistent token"
+        this.logger.log(`GOT ERROR: ${JSON.stringify(e)}`)
+        const errorMessage = e.reason
+        const isTokenNotMinted = errorMessage === tokenNotMintedErrorString
+        if (isTokenNotMinted) {
+          this.logger.log("non minted token hit. setting cache to not-minted")
+          await this.cacheManager.set(cacheKey, tokenNotMintedMessage)
+        }
+      }
+      throw new BadRequestException('Could not get metadata')
     }
-
   }
 
   @Get('px/price')
