@@ -58,9 +58,10 @@ const SelectPixels = observer(({store}: { store: BurnPixelsModalStore}) => {
                             p={2}
                             display={"inline-block"}
                             bg={isPixelSelected ? (colorMode === "light" ? lightModePrimary : darkModeSecondary) : "inherit"}
-                            _touch={{
-                              bg: (colorMode === "light" ? lightModePrimary : darkModeSecondary)
-                            }}>
+                            // _touch={{
+                            //   bg: (colorMode === "light" ? lightModePrimary : darkModeSecondary)
+                            // }}
+                >
                   <PixelPane
                     size={"sm"}
                     pupper={px}
