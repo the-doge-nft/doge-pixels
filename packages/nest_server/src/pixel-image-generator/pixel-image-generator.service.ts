@@ -6,6 +6,7 @@ import {createCanvas} from "canvas";
 import {EthersService} from "../ethers/ethers.service";
 import {ConfigService} from "@nestjs/config";
 import {Configuration} from "../config/configuration";
+import {InjectSentry, SentryService} from "@travelerdev/nestjs-sentry";
 
 @Injectable()
 export class PixelImageGeneratorService implements OnModuleInit {
@@ -22,7 +23,12 @@ export class PixelImageGeneratorService implements OnModuleInit {
     public mintedImage: any
     public burnedImage: any
 
-    constructor(private pixels: PixelsService, private ethers: EthersService, private config: ConfigService<Configuration>) {
+    constructor(
+        private pixels: PixelsService,
+        private ethers: EthersService,
+        private config: ConfigService<Configuration>,
+        @InjectSentry() private readonly sentryClient: SentryService,
+    ) {
     }
 
     async onModuleInit() {
@@ -104,7 +110,7 @@ export class PixelImageGeneratorService implements OnModuleInit {
      * Creates pointer image for token
      * @param {token Id} tokenId
      */
-    createImageWithPointer(tokenId) {
+    createPointerImage(tokenId) {
         try {
             const [x, y] = this.pixels.pixelToCoordsLocal(tokenId)
             const [pixelOffsetX, pixelOffsetY] = this.getPixelOffsets(y);
@@ -131,7 +137,7 @@ export class PixelImageGeneratorService implements OnModuleInit {
             });
         } catch (error) {
             this.logger.error(error.message)
-            // sentryClient.captureMessage(`Failed to add pointer image ${error.message}`)
+            this.sentryClient.instance().captureMessage(error)
         }
     }
 

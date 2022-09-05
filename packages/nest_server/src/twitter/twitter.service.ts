@@ -35,15 +35,11 @@ export class TwitterService implements OnModuleInit {
         this.logger.log(`generating tweet: ${from} -- ${to} -- ${tokenId}`)
         const textContent = await this.imageGenerator.getTextContent(from, to , tokenId)
 
-
         // todo: this should probably be implicity called from function below -- twitter should have no idea about this
         const txtImage = textContent.includes('minted') ? this.imageGenerator.mintedImage : this.imageGenerator.burnedImage
-        await this.imageGenerator.createImageWithPointer(tokenId)
+        await this.imageGenerator.createPointerImage(tokenId)
         const base64Image = await this.imageGenerator.generatePostImage(tokenId, txtImage, false)
         const mediaId = await this.uploadImageToTwitter(base64Image)
-
-        console.log('debug:: mediaid', mediaId)
-
         await this.tweet(mediaId, textContent)
     }
 
