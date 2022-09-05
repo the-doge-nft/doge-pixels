@@ -10,7 +10,7 @@ import {abbreviate} from "../../helpers/strings";
 export interface PixelOwnerInfo {
   address: string;
   pixels: number[];
-  ens?: string
+  ens: string | null
 }
 
 class DogParkPageStore extends Reactionable(EmptyClass) {
@@ -59,7 +59,7 @@ class DogParkPageStore extends Reactionable(EmptyClass) {
   @computed
   get sortedPixelOwners(): PixelOwnerInfo[] {
     const tds = ObjectKeys(AppStore.web3.addressToPuppers).map((key, index, arr) => (
-      {address: key, pixels: AppStore.web3.addressToPuppers![key].tokenIDs, ens: AppStore.web3.addressToPuppers![key].ens}
+      {address: key, pixels: AppStore.web3.addressToPuppers![key].tokenIds, ens: AppStore.web3.addressToPuppers![key].ens}
     ))
     return tds
       .filter(dog => dog.address !== ethers.constants.AddressZero)

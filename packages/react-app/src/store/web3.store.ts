@@ -16,8 +16,8 @@ import CowStore from "./cow.store";
 
 interface AddressToPuppers {
     [k: string]: {
-        tokenIDs: number[],
-        ens?: string
+        tokenIds: number[],
+        ens: string | null
     }
 }
 
@@ -192,7 +192,7 @@ class Web3Store extends Web3providerStore {
     get puppersOwned() {
         let myPuppers: number[] = []
         if (this.address && this.address in this.addressToPuppers!) {
-            myPuppers = this.addressToPuppers![this.address].tokenIDs
+            myPuppers = this.addressToPuppers![this.address].tokenIds
         }
         return myPuppers
     }

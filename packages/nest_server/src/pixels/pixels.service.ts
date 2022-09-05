@@ -140,7 +140,7 @@ export class PixelsService implements OnModuleInit {
     const width = await this.pxContract.SHIBA_WIDTH();
     const height = await this.pxContract.SHIBA_HEIGHT();
     return {
-      widht: width.toNumber(),
+      width: width.toNumber(),
       height: height.toNumber(),
     };
   }

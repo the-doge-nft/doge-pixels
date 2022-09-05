@@ -1,4 +1,4 @@
-import { Controller, Get, Logger, Param } from '@nestjs/common';
+import {CACHE_MANAGER, Controller, Get, Inject, Logger, Param} from '@nestjs/common';
 import { PixelsService } from './pixels/pixels.service';
 import { ethers } from 'ethers';
 import { EthersService } from './ethers/ethers.service';
@@ -8,6 +8,7 @@ import { TwitterService } from './twitter/twitter.service';
 import { ConfigService } from '@nestjs/config';
 import { DiscordService } from './discord/discord.service';
 import { NomicsService } from './nomics/nomics.service';
+import { Cache } from 'cache-manager';
 
 @Controller('/v1')
 export class AppController {
@@ -22,6 +23,7 @@ export class AppController {
     private readonly twitter: TwitterService,
     private readonly discord: DiscordService,
     private readonly config: ConfigService,
+    @Inject(CACHE_MANAGER) private cacheManager: Cache,
   ) {}
 
   @Get('status')
@@ -109,11 +111,30 @@ export class AppController {
 
   @Get('px/metadata/:tokenId')
   async getPixelMetadata(@Param() params) {
-    const tokenUri = await this.pixelService.getPixelURI(params.tokenId);
-    this.logger.log(tokenUri);
-    const data = await this.httpService.get(tokenUri).toPromise();
-    console.log(data.data);
-    return true;
+    const { tokenId } = params
+    const cacheKey = `METADATA:${tokenId}`
+    const notMintedCacheKey = 'NOT_MINTED'
+
+    try {
+      const cache = await this.cacheManager.get(cacheKey)
+    } catch (e) {
+
+    }
+
+
+    try {
+      const tokenUri = await this.pixelService.getPixelURI(params.tokenId);
+      const data = await this.httpService.get(tokenUri).toPromise();
+      return data.data;
+      console.log(data.data);
+    } catch (e) {
+      if (e instanceof Error) {
+
+      }
+
+      this.logger.error(e)
+    }
+
   }
 
   @Get('px/price')

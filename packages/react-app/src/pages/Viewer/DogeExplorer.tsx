@@ -246,7 +246,7 @@ const DogeExplorer = observer(({onPixelSelect, store}: ThreeSceneProps) => {
 
                 {showOwned && AppStore.web3.addressToPuppers && <>
                     {Object.keys(AppStore.web3.addressToPuppers).map((address: string) => {
-                        const tokens = AppStore.web3.addressToPuppers?.[address].tokenIDs
+                        const tokens = AppStore.web3.addressToPuppers?.[address].tokenIds
 
                         // @next -- add cool hovering pixel around the owned pixel
 
