@@ -5,9 +5,31 @@ import PixelArtPageStore from "../PixelArtPage.store";
 import Button, { ButtonVariant } from "../../../DSL/Button/Button";
 import DragResizeComponent from "../DragResizeComponent";
 import { useEffect, useState } from "react";
+import Select from "../../../DSL/Select/Select";
+import Typography, { TVariant } from "../../../DSL/Typography/Typography";
 
 const CANVAS_ELEMENT_SIZE = 256;
+const CANVAS_ELEMENT_MARGIN = 80;
 const SCALE_FACTOR = 2;
+
+const ITEMS = [
+    {
+        id: 'S',
+        name: 'S',
+    },
+    {
+        id: 'M',
+        name: 'M',
+    },
+    {
+        id: 'L',
+        name: 'L',
+    },
+    {
+        id: 'XL',
+        name: 'XL',
+    },
+];
 
 interface CanvasPropertiesModalProps {
     isOpen: boolean;
@@ -22,6 +44,7 @@ const CanvasPropertiesModal = observer((props: CanvasPropertiesModalProps) => {
     const [height, setHeight] = useState(props.store.templateHeight);
     const [backgroundPos, setBackgroundPos] = useState('');
     const [backgroundSize, setBackgroundSize] = useState('');
+    const [canvasSize, setCanvasSize] = useState('S');
 
     useEffect(() => {
         const cellSize = CANVAS_ELEMENT_SIZE / props.store.pixelsCanvas.canvasSize;
@@ -54,14 +77,28 @@ const CanvasPropertiesModal = observer((props: CanvasPropertiesModalProps) => {
         onClose={props.onClose}
         title={'Canvas Properties'}
     >
-        <Box pt={0} pb={6}>
+        <Box pt={5} pb={6}>
+            <Box display={'flex'} justifyContent={'space-evenly'} alignItems={'center'}>
+                <Typography variant={TVariant.PresStart15}>
+                    Canvas Size:
+                </Typography>
+                <Box w={'150px'}>
+                    <Select items={ITEMS} value={canvasSize} onChange={(value: any) => { setCanvasSize(value) }} />
+                </Box>
+            </Box>
             <Box
-                width={CANVAS_ELEMENT_SIZE * 2} height={CANVAS_ELEMENT_SIZE * 2}
-            >
+                width={CANVAS_ELEMENT_SIZE + CANVAS_ELEMENT_MARGIN * 2} 
+                height={CANVAS_ELEMENT_SIZE + CANVAS_ELEMENT_MARGIN * 2}
+                margin={'10px auto'}
+                overflow={'hidden'}
+                border={"1px dotted gray"}
+                >
                 <Box
                     position={'relative'}
-                    width={CANVAS_ELEMENT_SIZE} height={CANVAS_ELEMENT_SIZE}
-                    top={CANVAS_ELEMENT_SIZE / 2} left={CANVAS_ELEMENT_SIZE / 2}
+                    width={CANVAS_ELEMENT_SIZE + 'px'} 
+                    height={CANVAS_ELEMENT_SIZE + 'px'}
+                    top={CANVAS_ELEMENT_MARGIN + 'px'} 
+                    left={CANVAS_ELEMENT_MARGIN + 'px'}
                 >
                     <DragResizeComponent
                         image={props.store.templateImage}
@@ -69,6 +106,8 @@ const CanvasPropertiesModal = observer((props: CanvasPropertiesModalProps) => {
                         left={props.store.templateLeft / SCALE_FACTOR}
                         width={props.store.templateWidth / SCALE_FACTOR}
                         height={props.store.templateHeight / SCALE_FACTOR}
+                        maxWidth={CANVAS_ELEMENT_SIZE + CANVAS_ELEMENT_MARGIN * 2}
+                        maxHeight={CANVAS_ELEMENT_SIZE + CANVAS_ELEMENT_MARGIN * 2}
                         onChange={onDrag} />
                     <Box
                         border={"1px solid gray"}

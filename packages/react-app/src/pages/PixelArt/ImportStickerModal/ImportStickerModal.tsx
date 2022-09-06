@@ -61,7 +61,7 @@ const ImportStickerModal = observer((props: ImportStickerModalProps) => {
             <Input
                 w={'full'}
                 h={100}
-                my={10}
+                my={5}
                 borderRadius={0}
                 id="image"
                 type="file"
@@ -73,6 +73,7 @@ const ImportStickerModal = observer((props: ImportStickerModalProps) => {
                 w={256}
                 h={256}
                 mx={'auto'}
+                my={5}
                 backgroundImage={imageBase64}
                 backgroundSize={'contain'}
                 backgroundPosition={'center'}

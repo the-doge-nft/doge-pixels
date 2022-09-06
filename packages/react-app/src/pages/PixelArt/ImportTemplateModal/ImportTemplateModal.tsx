@@ -46,7 +46,7 @@ const ImportTemplateModal = observer((props: ImportTemplateModalProps) => {
             <Input
                 w={'full'}
                 h={100}
-                my={10}
+                my={5}
                 borderRadius={0}
                 id="image"
                 type="file"
@@ -58,6 +58,7 @@ const ImportTemplateModal = observer((props: ImportTemplateModalProps) => {
                 w={256}
                 h={256}
                 mx={'auto'}
+                my={5}
                 backgroundImage={image}
                 backgroundSize={'contain'}
                 backgroundPosition={'center'}

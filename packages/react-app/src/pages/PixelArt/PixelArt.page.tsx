@@ -195,7 +195,7 @@ const PixelsPaletteComponent = observer(({ store }: { store: PixelArtPageStore }
                     transformOrigin={'0 0 0'}
                     backgroundClip={'border-box, border-box'}
                     backgroundSize={'16px 16px, 16px 16px'} />}
-                <Box border={"1px solid gray"} m={'3px'} w={'1px'} h={'84%'} marginLeft={'5px'} />
+                <Box border={"1px solid gray"} m={'3px'} w={'1px'} h={'78%'} marginLeft={'5px'} />
                 <Box
                     w={'450px'}
                     overflowX={'auto'}

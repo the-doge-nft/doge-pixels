@@ -11,6 +11,8 @@ interface DragResizeComponentProps {
     left: number;
     width: number;
     height: number;
+    maxWidth: number;
+    maxHeight: number;
     onChange?: (left: number, top: number, width: number, height: number) => void;
 }
 
@@ -59,6 +61,8 @@ const DragResizeComponent = observer(function DragResizeComponent(props: DragRes
                 x: x,
                 y: y,
             }))
+            w = Math.min(w, props.maxWidth);
+            h = Math.min(h, props.maxHeight);
             setSize(value => ({
                 x: w,
                 y: h,
