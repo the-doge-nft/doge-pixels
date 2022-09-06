@@ -32,8 +32,9 @@ export class PixelImageGeneratorService implements OnModuleInit {
   ) {}
 
   async onModuleInit() {
-    this.mintedImage = await Jimp.read('src/assets/images/mint.png');
-    this.burnedImage = await Jimp.read('src/assets/images/burn.png');
+    this.logger.log(`DIRNAME: ${__dirname}`);
+    this.mintedImage = await Jimp.read(`../assets/images/mint.png`);
+    this.burnedImage = await Jimp.read(`../assets/images/burn.png`);
   }
 
   /**

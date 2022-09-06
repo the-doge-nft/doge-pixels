@@ -25,12 +25,5 @@ services:
       - db
     restart: always
 
-  adminer:
-    image: adminer
-    restart: always
-    depends_on:
-      - postgres
-    ports:
-      - 8080:8080
 volumes:
   pixelsdb:

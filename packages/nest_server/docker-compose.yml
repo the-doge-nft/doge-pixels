@@ -19,7 +19,7 @@ services:
         target: development
     volumes:
       - .:/usr/src/app
-    # anonymous volume so container deps are not overwritten by host
+      # anonymous volume so container deps are not overwritten by host
       - /usr/src/app/node_modules
     env_file:
       - .env
