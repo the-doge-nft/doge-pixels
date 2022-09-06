@@ -14,6 +14,7 @@ fullShaTagFor() {
   echo "$(imageNameFor "$1"):${BUILD_ID}"
 }
 
+
 validateEnvs() {
     if [ "$BUILD_ID" == "" ]; then
       echo "BUILD_ID must be present in env"

@@ -7,6 +7,7 @@ import { ConfigService } from '@nestjs/config';
 import { Configuration } from '../config/configuration';
 import { InjectSentry, SentryService } from '@travelerdev/nestjs-sentry';
 
+const path = require('path');
 const Jimp = require('jimp');
 
 @Injectable()
@@ -32,9 +33,10 @@ export class PixelImageGeneratorService implements OnModuleInit {
   ) {}
 
   async onModuleInit() {
-    this.logger.log(`DIRNAME: ${__dirname}`);
-    this.mintedImage = await Jimp.read(`../assets/images/mint.png`);
-    this.burnedImage = await Jimp.read(`../assets/images/burn.png`);
+    const pathToMint = path.resolve(__dirname, '../assets/images/mint.png');
+    const pathToBurn = path.resolve(__dirname, '../assets/images/burn.png');
+    this.mintedImage = await Jimp.read(pathToMint);
+    this.burnedImage = await Jimp.read(pathToBurn);
   }
 
   /**
