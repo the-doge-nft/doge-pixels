@@ -1,4 +1,5 @@
 import { Type } from "../Fonts/Fonts";
+import { TVariant } from "./Typography";
 
 export const GlobalFont = `${Type.PresStart}, sans-serif`;
 
@@ -9,6 +10,11 @@ const TypographyStyle = {
     textDecorationColor: colorMode === "light" ? "black" : "white",
   }),
   variants: {
+    [TVariant.PresStart8]: {
+      fontFamily: Type.PresStart,
+      fontWeight: "normal",
+      fontSize: "8px",
+    },
     PresStart10: {
       fontFamily: Type.PresStart,
       fontWeight: "normal",
@@ -18,6 +24,11 @@ const TypographyStyle = {
       fontFamily: Type.PresStart,
       fontWeight: "normal",
       fontSize: "12px",
+    },
+    PresStart14: {
+      fontFamily: Type.PresStart,
+      fontWeight: "normal",
+      fontSize: "14px",
     },
     PresStart15: {
       fontFamily: Type.PresStart,
@@ -48,6 +59,11 @@ const TypographyStyle = {
       fontFamily: Type.PresStart,
       fontWeight: "normal",
       fontSize: "24px",
+    },
+    PresStart26: {
+      fontFamily: Type.PresStart,
+      fontWeight: "normal",
+      fontSize: "26px",
     },
     PresStart28: {
       fontFamily: Type.PresStart,

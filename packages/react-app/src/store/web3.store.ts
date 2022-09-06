@@ -5,22 +5,19 @@ import {showErrorToast} from "../DSL/Toast/Toast";
 import deployedContracts from "../contracts/hardhat_contracts.json"
 import {Signer} from "@ethersproject/abstract-signer";
 import {Provider} from "@ethersproject/abstract-provider";
-import {isDevModeEnabled, isProduction} from "../environment/helpers";
+import {isDevModeEnabled, isProduction, isStaging} from "../environment/helpers";
 import {DOG20, PX} from "../../../hardhat/types";
 import KobosuJson from "../images/kobosu.json"
 import {Http} from "../services";
 import Web3providerStore, {EthersContractError, Web3ProviderConnectionError} from "./web3provider.store";
 import * as Sentry from "@sentry/react";
 import {ContractInterface} from "@ethersproject/contracts/src.ts/index";
-import {SupportedChainId} from "@cowprotocol/cow-sdk/dist/constants/chains";
-import {CowSdk, OrderKind} from "@cowprotocol/cow-sdk";
-import AppStore from "./App.store";
 import CowStore from "./cow.store";
 
 interface AddressToPuppers {
     [k: string]: {
-        tokenIDs: number[],
-        ens?: string
+        tokenIds: number[],
+        ens: string | null
     }
 }
 
@@ -56,13 +53,16 @@ class Web3Store extends Web3providerStore {
     @observable
     cowStore: CowStore
 
+    @observable
+    usdPerPixel?: number
+
     constructor() {
         super()
         makeObservable(this)
         this.addressToPuppers = {}
         this.cowStore = new CowStore()
 
-        if (isDevModeEnabled()) {
+        if (isDevModeEnabled() || isStaging()) {
             this.pxContractAddress = deployedContracts["4"]["rinkeby"]["contracts"]["PX"]["address"]
             this.dogContractAddress = deployedContracts["4"]["rinkeby"]["contracts"]["DOG20"]["address"]
 
@@ -81,8 +81,9 @@ class Web3Store extends Web3providerStore {
         if (web3Modal.cachedProvider && !this.web3Provider?.connection) {
             this.connect()
         }
-        this.getPupperOwnershipMap()
+        this.getPixelOwnershipMap()
         this.getShibaDimensions()
+        this.getUSDPerPixel()
     }
 
     async connect() {
@@ -108,7 +109,7 @@ class Web3Store extends Web3providerStore {
         let pxABI: ContractInterface
         let dogABI: ContractInterface
 
-        if (isDevModeEnabled()) {
+        if (isDevModeEnabled() || isStaging()) {
             pxABI = deployedContracts["4"]["rinkeby"]["contracts"]["PX"].abi
             dogABI = deployedContracts["4"]["rinkeby"]["contracts"]["DOG20"].abi
         } else if (isProduction()) {
@@ -172,11 +173,11 @@ class Web3Store extends Web3providerStore {
         }
     }
 
-    getPupperOwnershipMap() {
+    getPixelOwnershipMap() {
         return Http.get("/v1/config").then(({data}) => this.addressToPuppers = data)
     }
 
-    refreshPupperOwnershipMap() {
+    refreshPixelOwnershipMap() {
         return Http.get("/v1/config/refresh").then(({data}) => this.addressToPuppers = data)
     }
 
@@ -191,7 +192,7 @@ class Web3Store extends Web3providerStore {
     get puppersOwned() {
         let myPuppers: number[] = []
         if (this.address && this.address in this.addressToPuppers!) {
-            myPuppers = this.addressToPuppers![this.address].tokenIDs
+            myPuppers = this.addressToPuppers![this.address].tokenIds
         }
         return myPuppers
     }
@@ -295,6 +296,12 @@ class Web3Store extends Web3providerStore {
             return false
         }
         return true
+    }
+
+    getUSDPerPixel() {
+        return Http.get('/v1/px/price').then(({data}) => {
+            this.usdPerPixel = data.price
+        })
     }
 }
 

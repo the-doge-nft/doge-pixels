@@ -77,7 +77,9 @@ class ViewerStore extends (Eventable(Reactionable(Navigable<ViewerView, Construc
     this.react(() => this.selectedPupper, async () => {
       if (this.selectedPupper) {
         this.getTokenOwner(this.selectedPupper)
-        this.getTokenMetadata(this.selectedPupper)
+        // Don't get token metadata for now -- all data is shown locally on the frontend
+        // we can put some caching mechanism in place if we want to query metadata directly
+        // this.getTokenMetadata(this.selectedPupper)
       }
     }, {fireImmediately: true})
   }

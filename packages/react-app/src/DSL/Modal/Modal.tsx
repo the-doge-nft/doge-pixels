@@ -1,16 +1,15 @@
 import React from "react";
-import {Box, Flex, useColorMode, useMultiStyleConfig,} from "@chakra-ui/react";
+import { Box, Flex, useColorMode, useMultiStyleConfig } from "@chakra-ui/react";
 import Icon from "../Icon/Icon";
-import {lightOrDark} from "../Theme";
 import Draggable from "react-draggable";
-import Typography, {TVariant} from "../Typography/Typography";
+import Typography, { TVariant } from "../Typography/Typography";
 import ReactModal from "react-modal";
-import "./Modal.css"
-
+import "./Modal.css";
+import { lightOrDarkMode } from "../Theme";
 
 export interface ModalProps extends ReactModal.Props {
   onClose: () => void;
-  size?: "xs" | "sm" | "md" | "lg" | "xl",
+  size?: "xs" | "sm" | "md" | "lg" | "xl";
   renderFooter?: () => JSX.Element;
   title?: string;
   name?: string;
@@ -18,14 +17,14 @@ export interface ModalProps extends ReactModal.Props {
   description?: string;
 }
 
-let styleOverrides: {overlay: object, content: object} = {
+let styleOverrides: { overlay: object; content: object } = {
   overlay: {
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
     background: "none",
     width: "100vw",
-    pointerEvents: "none"
+    pointerEvents: "none",
   },
   content: {
     bottom: "unset",
@@ -39,24 +38,24 @@ let styleOverrides: {overlay: object, content: object} = {
     display: "flex",
     justifyContent: "center",
     width: "100%",
-  }
+  },
 };
 
 const Modal = ({
-        isOpen,
-        onClose,
-        children,
-        size = "md",
-        title,
-        name,
-        description,
-        defaultPosition,
-        ...rest
+  isOpen,
+  onClose,
+  children,
+  size = "md",
+  title,
+  name,
+  description,
+  defaultPosition,
+  ...rest
 }: ModalProps) => {
-  const chakraStyles = useMultiStyleConfig("Modal", {size: size})
-  const { colorMode } = useColorMode()
+  const chakraStyles = useMultiStyleConfig("Modal", { size: size });
+  const { colorMode } = useColorMode();
 
-  ReactModal.setAppElement('#root');
+  ReactModal.setAppElement("#root");
   return (
     <ReactModal
       onRequestClose={onClose}
@@ -78,47 +77,47 @@ const Modal = ({
               <Flex
                 width={"100%"}
                 _hover={{
-                  cursor: "pointer"
+                  cursor: "pointer",
                 }}
                 _active={{
-                  cursor: "grabbing"
+                  cursor: "grabbing",
                 }}
                 className={"handle"}
                 justifyContent={"flex-end"}
                 borderBottom={"1px solid"}
-                borderColor={lightOrDark(colorMode, "black", "white")}
+                borderColor={lightOrDarkMode(colorMode, "black", "white")}
               />
               <Box
                 borderLeft={"1px solid"}
                 borderBottom={"1px solid"}
-                borderColor={lightOrDark(colorMode, "black", "white")}
+                borderColor={lightOrDarkMode(colorMode, "black", "white")}
               >
                 <Box
                   p={1}
-                  _hover={{cursor: "pointer"}}
-                  color={lightOrDark(colorMode, "black", "white")}
+                  _hover={{ cursor: "pointer" }}
+                  color={lightOrDarkMode(colorMode, "black", "white")}
                   onClick={onClose}
                   lineHeight={"normal"}
                 >
-                  <Icon icon={"close"} boxSize={5}/>
+                  <Icon icon={"close"} boxSize={5} />
                 </Box>
               </Box>
             </Flex>
             <Box __css={chakraStyles.body}>
-              {title && <Box __css={chakraStyles.title}>
-                  <Typography variant={TVariant.PresStart20}>
-                    {title}
-                  </Typography>
-              </Box>}
-              {description && <Box __css={chakraStyles.description}>
-                <Typography variant={TVariant.ComicSans18}>
-                  {description}
-                </Typography>
-              </Box>}
+              {title && (
+                <Box __css={chakraStyles.title}>
+                  <Typography variant={TVariant.PresStart18}>{title}</Typography>
+                </Box>
+              )}
+              {description && (
+                <Box __css={chakraStyles.description}>
+                  <Typography variant={TVariant.ComicSans16}>{description}</Typography>
+                </Box>
+              )}
               {children}
             </Box>
           </Box>
-          <Box sx={chakraStyles.drop}/>
+          <Box sx={chakraStyles.drop} />
         </Box>
       </Draggable>
     </ReactModal>

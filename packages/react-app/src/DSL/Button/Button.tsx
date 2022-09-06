@@ -24,7 +24,7 @@ type ButtonSize = "xs" | "sm" | "md" | "lg"
 const buttonTypographyMap: { [key in ButtonSize]: TVariant } = {
   xs: TVariant.PresStart10,
   sm: TVariant.PresStart12,
-  md: TVariant.PresStart15,
+  md: TVariant.PresStart14,
   lg: TVariant.PresStart28
 };
 
@@ -47,11 +47,13 @@ const Button = ({ submit, children, variant = ButtonVariant.Primary, size = "md"
         size={size}
         __css={styles.button}
         onClick={onClick}
-        // onTouchStart={onClick}
         isLoading={isLoading}
         onMouseEnter={() => setIsHover(true)}
         onMouseLeave={() => setIsHover(false)}
-        onTouchStart={() => setIsHover(true)}
+        onTouchStart={() => {
+          setIsHover(true)
+          onClick && onClick()
+        }}
         onTouchEnd={() => setIsHover(false)}
       >
         <Typography

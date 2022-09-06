@@ -7,6 +7,12 @@ import { EmptyClass } from "../../helpers/mixins";
 import {ethers} from "ethers";
 import {abbreviate} from "../../helpers/strings";
 
+export interface PixelOwnerInfo {
+  address: string;
+  pixels: number[];
+  ens: string | null
+}
+
 class DogParkPageStore extends Reactionable(EmptyClass) {
 
   @observable
@@ -16,7 +22,7 @@ class DogParkPageStore extends Reactionable(EmptyClass) {
   selectedAddress?: string
 
   @observable
-  selectedPupper: number | null = null
+  selectedPixel: number | null = null
 
   @observable
   lockedDog: number | null = null
@@ -31,7 +37,7 @@ class DogParkPageStore extends Reactionable(EmptyClass) {
     }
 
     if (selectedPupper) {
-      this.selectedPupper = selectedPupper
+      this.selectedPixel = selectedPupper
     }
 
     this.react(() => this.addressToSearch, (value, prevValue) => {
@@ -44,27 +50,24 @@ class DogParkPageStore extends Reactionable(EmptyClass) {
   }
 
   init() {
-    AppStore.web3.getDogLocked().then(balance => this.lockedDog = balance)
-    AppStore.web3.getPupperOwnershipMap()
-
-    if (AppStore.web3.web3Provider) {
-      AppStore.web3.refreshDogBalance()
-      AppStore.web3.refreshPupperBalance()
-    }
+    AppStore.web3.getDogLocked().then(balance => {
+      this.lockedDog = Number(balance)
+    })
+    AppStore.web3.getPixelOwnershipMap()
   }
 
   @computed
-  get topDogs(): {address: string, puppers: number[], ens?: string}[] {
+  get sortedPixelOwners(): PixelOwnerInfo[] {
     const tds = ObjectKeys(AppStore.web3.addressToPuppers).map((key, index, arr) => (
-      {address: key, puppers: AppStore.web3.addressToPuppers![key].tokenIDs, ens: AppStore.web3.addressToPuppers![key].ens}
+      {address: key, pixels: AppStore.web3.addressToPuppers![key].tokenIds, ens: AppStore.web3.addressToPuppers![key].ens}
     ))
     return tds
       .filter(dog => dog.address !== ethers.constants.AddressZero)
-      .filter(dog => dog.puppers.length > 0)
+      .filter(dog => dog.pixels.length > 0)
       .sort((a, b) => {
-        if (a.puppers.length > b.puppers.length) {
+        if (a.pixels.length > b.pixels.length) {
           return -1
-        } else if (a.puppers.length < b.puppers.length) {
+        } else if (a.pixels.length < b.pixels.length) {
           return 1
         } else {
           return 0
@@ -73,18 +76,18 @@ class DogParkPageStore extends Reactionable(EmptyClass) {
   }
 
   @computed
-  get filteredDogs() {
-    return arrayFuzzyFilterByKey(this.topDogs, this.addressToSearch, 'address').concat(arrayFuzzyFilterByKey(this.topDogs, this.addressToSearch, 'ens'))
+  get filteredOwners() {
+    return arrayFuzzyFilterByKey(this.sortedPixelOwners, this.addressToSearch, 'address').concat(arrayFuzzyFilterByKey(this.sortedPixelOwners, this.addressToSearch, 'ens'))
   }
 
   @computed
-  get selectedDogs() {
-    return this.topDogs.filter(dog => dog.address === this.selectedAddress)[0]
+  get selectedOwner(): PixelOwnerInfo | undefined {
+    return this.sortedPixelOwners.filter(dog => dog.address === this.selectedAddress)[0]
   }
 
   @computed
-  get selectedUserHasPuppers() {
-    return this.selectedDogs?.puppers.length > 0
+  get selectedUserHasPixels() {
+    return this.selectedOwner !== undefined && this.selectedOwner.pixels.length > 0
   }
 
   @computed
@@ -94,25 +97,25 @@ class DogParkPageStore extends Reactionable(EmptyClass) {
 
   @computed
   get isFilteredResultEmpty() {
-    return this.filteredDogs.length === 0
+    return this.filteredOwners.length === 0
   }
 
   @computed
-  get selectedPupperCoords() {
-    if (this.selectedPupper) {
-      return AppStore.web3.pupperToPixelCoordsLocal(this.selectedPupper)
+  get selectedPixelCoordinates() {
+    if (this.selectedPixel) {
+      return AppStore.web3.pupperToPixelCoordsLocal(this.selectedPixel)
     }
     return []
   }
 
   @computed
-  get selectedPupperHex() {
-    return AppStore.web3.pupperToHexLocal(this.selectedPupper!)
+  get selectedPixelHexColor() {
+    return AppStore.web3.pupperToHexLocal(this.selectedPixel!)
   }
 
   @computed
-  get seletedPupperIndex() {
-    return AppStore.web3.pupperToIndexLocal(this.selectedPupper!)
+  get seletedPixelIndex() {
+    return AppStore.web3.pupperToIndexLocal(this.selectedPixel!)
   }
 
   @computed
@@ -123,8 +126,8 @@ class DogParkPageStore extends Reactionable(EmptyClass) {
   @computed
   get selectedAddressDisplayName() {
     if (this.selectedAddress) {
-      if (this.selectedDogs?.ens) {
-        return this.selectedDogs.ens
+      if (this.selectedOwner?.ens) {
+        return this.selectedOwner.ens
       } else {
         return abbreviate(this.selectedAddress)
       }
@@ -132,6 +135,9 @@ class DogParkPageStore extends Reactionable(EmptyClass) {
     return "None"
   }
 
+  destroy() {
+    return this.disposeReactions()
+  }
 }
 
 export default DogParkPageStore

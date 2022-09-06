@@ -1,9 +1,9 @@
-import { colorModeType, lightOrDark } from "../Theme"
+import { colorModeType, lightOrDarkMode } from "../Theme";
 
 const IconStyle = {
-  baseStyle: ({colorMode}: {colorMode: colorModeType}) => ({
-    color: lightOrDark(colorMode, "black", "white")
-  })
-}
+  baseStyle: ({ colorMode }: { colorMode: colorModeType }) => ({
+    color: lightOrDarkMode(colorMode, "black", "white"),
+  }),
+};
 
-export default IconStyle
+export default IconStyle;

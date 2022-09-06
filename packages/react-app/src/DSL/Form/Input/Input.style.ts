@@ -1,25 +1,25 @@
 import { GlobalFont } from "../../Typography/Typography.style";
-import {colorModeType, lightOrDark} from "../../Theme";
+import { colorModeType, lightOrDarkMode } from "../../Theme";
 
 export const InputStyle = {
   parts: ["field", "addon"],
-  baseStyle: ({colorMode}: {colorMode: colorModeType}) => ({
+  baseStyle: ({ colorMode }: { colorMode: colorModeType }) => ({
     field: {
       fontFamily: GlobalFont,
       borderWidth: "1px",
       borderStyle: "style",
-      borderColor: lightOrDark(colorMode, "black", "white"),
-      color: lightOrDark(colorMode, "black", "white"),
+      borderColor: lightOrDarkMode(colorMode, "black", "white"),
+      color: lightOrDarkMode(colorMode, "black", "white"),
       _focus: {
         _placeholder: {
-          color: "transparent"
-        }
-      }
+          color: "transparent",
+        },
+      },
       // borderRadius: "0px"
     },
   }),
   variants: {
-    outline: ({colorMode}: {colorMode: colorModeType}) => ({
+    outline: ({ colorMode }: { colorMode: colorModeType }) => ({
       field: {
         px: 5,
         py: 6,
@@ -27,19 +27,19 @@ export const InputStyle = {
         borderRadius: "50px",
         boxShadow: "none",
         _hover: {
-          borderColor: lightOrDark(colorMode, "black", "white"),
+          borderColor: lightOrDarkMode(colorMode, "black", "white"),
           boxShadow: "none",
         },
         _focus: {
-          borderColor: lightOrDark(colorMode, "black", "white"),
+          borderColor: lightOrDarkMode(colorMode, "black", "white"),
           boxShadow: "none",
         },
         _placeholder: {
-          color: lightOrDark(colorMode, "black", "white")
-        }
+          color: lightOrDarkMode(colorMode, "black", "white"),
+        },
       },
-    })
-  }
+    }),
+  },
 };
 
 export default InputStyle;

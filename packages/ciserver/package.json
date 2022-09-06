@@ -1,0 +1,19 @@
+{
+  "name": "ciserver",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "dependencies": {
+    "@sentry/node": "^7.11.1",
+    "@sentry/tracing": "^7.11.1",
+    "dotenv": "^16.0.1",
+    "express": "^4.18.1",
+    "pm2": "^5.2.0"
+  },
+  "scripts": {
+    "start": "pm2 start ecosystem.config.js",
+    "stop": "pm2 stop ecosystem.config.js",
+    "restart": "pm2 restart ecosystem.config.js",
+    "logs": "pm2 logs ciserver"
+  }
+}
