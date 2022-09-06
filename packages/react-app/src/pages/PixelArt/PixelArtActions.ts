@@ -1,3 +1,4 @@
+import { sha512 } from "ethers/lib/utils";
 import { TRANSPARENT_PIXEL } from "./PixelArtCanvas";
 import PixelArtPageStore, { Sticker } from "./PixelArtPage.store";
 
@@ -155,6 +156,38 @@ export class ChangeStickerAction implements ActionInterface {
         this.newWidth = this.sticker.width;
         this.newHeight = this.sticker.height;
         this.newRotation = this.sticker.rotation;
+    }
+    isValid(): boolean {
+        return true;
+    }
+}
+
+export class IdenticonAction implements ActionInterface {
+    canvasPixels: string[];
+
+    constructor(store: PixelArtPageStore) {
+        this.canvasPixels = [...store.pixelsCanvas.canvasPixels];
+    }
+    do(store: PixelArtPageStore) {
+        const colors = store.palette;
+        const revString = '0x' + store.selectedAddress.substring(2).split('').reverse().join('');
+        let hashedText = sha512(store.selectedAddress) + sha512(revString);
+        hashedText = hashedText + hashedText.substring(2).split('').reverse().join('');
+        for (let cy = 0; cy < store.pixelsCanvas.canvasSize; ++cy) {
+            for (let cx = 0; cx < store.pixelsCanvas.canvasSize; ++cx) {
+                let i = cx + cy * store.pixelsCanvas.canvasSize;
+                i %= hashedText.length;
+                let code = hashedText.charCodeAt(i) - 32;
+                store.pixelsCanvas.setPixelColor(cx, cy, colors[code % colors.length]);
+            }
+        }
+    }
+    undo(store: PixelArtPageStore): void {
+        store.pixelsCanvas.canvasPixels = [...this.canvasPixels];
+        store.pixelsCanvas.updateCanvas();
+    }
+    redo(store: PixelArtPageStore): void {
+        this.do(store);
     }
     isValid(): boolean {
         return true;

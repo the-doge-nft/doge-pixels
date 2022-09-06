@@ -6,7 +6,7 @@ import Typography, { TVariant } from "../../DSL/Typography/Typography";
 import PixelArtPageStore, { Sticker } from "./PixelArtPage.store";
 import Icon from "../../DSL/Icon/Icon";
 import { darkModeSecondary, lightModePrimary } from "../../DSL/Theme";
-import { ClearCanvasAction, PixelAction } from "./PixelArtActions";
+import { ClearCanvasAction, IdenticonAction, PixelAction } from "./PixelArtActions";
 import { PixelArtTool, pixelArtTools } from "./PixelArtTools";
 import { CanvasSize, TRANSPARENT_PIXEL } from "./PixelArtCanvas";
 import ImportTemplateModal from "./ImportTemplateModal/ImportTemplateModal";
@@ -348,7 +348,9 @@ const MainMenuComponent = observer(({ store }: { store: PixelArtPageStore }) => 
     }
 
     const generateIdenticon = () => {
-        store.pixelsCanvas.generateIdenticon(store.selectedAddress, store.palette);
+        let action = new IdenticonAction(store);
+        action.do(store);
+        store.pushAction(action);
     }
 
     const canvasProperties = () => {

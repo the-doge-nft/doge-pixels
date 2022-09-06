@@ -105,20 +105,6 @@ export class PixelArtCanvas {
         }
     }
 
-    generateIdenticon(text: string, colors: string[]) {
-        const revString = '0x' + text.substring(2).split('').reverse().join('');
-        let hashedText = sha512(text) + sha512(revString);
-        hashedText = hashedText + hashedText.substring(2).split('').reverse().join('');
-        for (let cy = 0; cy < this.canvasSize; ++cy) {
-            for (let cx = 0; cx < this.canvasSize; ++cx) {
-                let i = cx + cy * this.canvasSize;
-                i %= hashedText.length;
-                let code = hashedText.charCodeAt(i) - 32;
-                this.setPixelColor(cx, cy, colors[code % colors.length]);
-            }
-        }
-    }
-
     drawPixel(x: number, y: number, color: string) {
         if (!this.canvas) return;
 
