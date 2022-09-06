@@ -1,6 +1,6 @@
 import React from "react";
 import { Text } from "@chakra-ui/react";
-import { TextProps } from "@chakra-ui/layout/dist/types/text";
+import { TextProps } from "@chakra-ui/react";
 
 export enum TVariant {
   PresStart8 = "PresStart8",

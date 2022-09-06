@@ -48,7 +48,8 @@ export function arrayFindByFieldOrFail<T, K extends keyof T>(array: T[], val: an
   const ret = arrayFindByField(array, val, field);
   if (!ret) {
     console.error("arrayFindByFieldOrFail data:", array, val, field);
-    throw new Error("Couldn't find object in array by field: " + field + "=" + val);
+    //@ts-ignore
+    throw new Error(`Couldn't find object in array by field: ` + field + "=" + val);
   }
   return ret;
 }

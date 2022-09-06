@@ -24,10 +24,10 @@ const CircleLineProgress = ({ items, activeIndex }: Stepper) => {
         top={"50%"}
         transform={"translateY(-50%)"}
         role={"progressbar"}
-        ariaValueMin={0}
-        ariaValueMax={100}
-        ariaValueNow={valueNow}
-        arivaValueText={`Progress: ${valueNow}`}
+        // ariaValueMin={0}
+        // ariaValueMax={100}
+        // ariaValueNow={valueNow}
+        // arivaValueText={`Progress: ${valueNow}`}
       >
         <Box h={"inherit"} bg={"blue.400"} w={`${valueNow}%`} />
       </Box>
