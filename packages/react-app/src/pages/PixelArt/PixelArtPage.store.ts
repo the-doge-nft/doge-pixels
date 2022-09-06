@@ -108,6 +108,39 @@ class PixelArtPageStore extends Reactionable(EmptyClass) {
         this.pixelsCanvas.updateCanvas();
     }
 
+    saveInfo() {
+        return {
+            meta: {
+                version: 0,
+            },
+            canvas: this.pixelsCanvas.saveInfo(),
+            stickers: this.saveStickersInfo(),
+            template: this.saveTemplateInfo()
+        }
+    }
+
+    saveStickersInfo() {
+        return this.stickers.map(value => {
+            return {
+                x: value.x,
+                y: value.y,
+                width: value.width,
+                height: value.height,
+                imageBase64: value.imageBase64,
+            }
+        });
+    }
+
+    saveTemplateInfo() {
+        return {
+            x: this.templateLeft,
+            y: this.templateTop,
+            width: this.templateWidth,
+            innerHeight: this.templateHeight,
+            imageBase64: this.templateImage,
+        }
+    }
+
     @action
     refreshStickers() {
     }

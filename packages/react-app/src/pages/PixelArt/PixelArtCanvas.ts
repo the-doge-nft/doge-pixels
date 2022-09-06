@@ -17,10 +17,10 @@ export interface CanvasSizeInfo {
 }
 
 export const CANVAS_SIZES = [
-    {id: 'S', name: 'S', value: CanvasSize.S},
-    {id: 'M', name: 'M', value: CanvasSize.M},
-    {id: 'L', name: 'L', value: CanvasSize.L},
-    {id: 'XL', name: 'XL', value: CanvasSize.XL},
+    { id: 'S', name: 'S', value: CanvasSize.S },
+    { id: 'M', name: 'M', value: CanvasSize.M },
+    { id: 'L', name: 'L', value: CanvasSize.L },
+    { id: 'XL', name: 'XL', value: CanvasSize.XL },
 ]
 
 export class PixelArtCanvas {
@@ -49,7 +49,16 @@ export class PixelArtCanvas {
         const entry = CANVAS_SIZES.find((entry) => {
             return entry.value === this.canvasSize;
         });
-        return entry ? entry :  CANVAS_SIZES[0];
+        return entry ? entry : CANVAS_SIZES[0];
+    }
+
+    saveInfo() {
+        return {
+            size: this.canvasSize,
+            pixels: this.canvasPixels.map(value => {
+                return value;
+            }),
+        }
     }
 
     updateCanvas() {

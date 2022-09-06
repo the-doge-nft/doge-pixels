@@ -286,6 +286,9 @@ const MainMenuComponent = observer(({ store }: { store: PixelArtPageStore }) => 
         store.pixelsCanvas.resize(CanvasSize.S);
         store.stickers = [];
     }
+    const saveFile = () => {
+        let payload = store.saveInfo();
+    }
     const undoAction = () => {
         store.undoAction();
     }
