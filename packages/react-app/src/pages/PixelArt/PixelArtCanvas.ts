@@ -10,6 +10,19 @@ export enum CanvasSize {
     XL = 128,
 }
 
+export interface CanvasSizeInfo {
+    id: string;
+    name: string;
+    value: CanvasSize;
+}
+
+export const CANVAS_SIZES = [
+    {id: 'S', name: 'S', value: CanvasSize.S},
+    {id: 'M', name: 'M', value: CanvasSize.M},
+    {id: 'L', name: 'L', value: CanvasSize.L},
+    {id: 'XL', name: 'XL', value: CanvasSize.XL},
+]
+
 export class PixelArtCanvas {
     canvas?: HTMLCanvasElement;
     canvasPixels: string[];
@@ -23,6 +36,21 @@ export class PixelArtCanvas {
         }
     }
 
+    resize(canvasSize: CanvasSize) {
+        this.canvasSize = canvasSize;
+        this.canvasPixels = [];
+        for (let cn = 0; cn < this.canvasSize * this.canvasSize; ++cn) {
+            this.canvasPixels.push(TRANSPARENT_PIXEL);
+        }
+        this.updateCanvas();
+    }
+
+    getSizeInfo() {
+        const entry = CANVAS_SIZES.find((entry) => {
+            return entry.value === this.canvasSize;
+        });
+        return entry ? entry :  CANVAS_SIZES[0];
+    }
 
     updateCanvas() {
         if (!this.canvas) return;

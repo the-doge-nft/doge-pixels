@@ -113,6 +113,12 @@ class PixelArtPageStore extends Reactionable(EmptyClass) {
     }
 
     @action
+    clearActions() {
+        this.undoActions = [];
+        this.redoActions = [];
+    }
+
+    @action
     pushAction(action: ActionInterface) {
         //console.log('pushAction', action);
         this.undoActions.push(action);
