@@ -45,7 +45,7 @@ export class PixelArtCanvas {
 
     drawStickers(stickers: Sticker[]) {
         console.log(stickers);
-        
+
         if (!this.canvas) return;
 
         let ctx = this.canvas.getContext('2d');
@@ -54,15 +54,16 @@ export class PixelArtCanvas {
 
             if (sticker.image) {
                 ctx.save();
-
                 const b = sticker.rotation / 180 * Math.PI;
-                //let rotX = Math.cos(b) * sticker.x - Math.sin(b) * sticker.y;
-                //let rotY = Math.sin(b) * sticker.x + Math.cos(b) * sticker.y;
-        
-                ctx.translate(sticker.x, sticker.y);
+                let rotX = Math.cos(b) * sticker.width / 2 - Math.sin(b) * sticker.height / 2;
+                let rotY = Math.sin(b) * sticker.width / 2 + Math.cos(b) * sticker.height / 2;
                 ctx.rotate(b);
+                let transform = ctx.getTransform();
+                transform.e = sticker.x - rotX + sticker.width / 2;
+                transform.f = sticker.y - rotY + sticker.height / 2;
+                ctx.setTransform(transform);
                 ctx.drawImage(sticker.image, 0, 0, sticker.width, sticker.height);
-                ctx.restore();    
+                ctx.restore();
             }
         }
     }

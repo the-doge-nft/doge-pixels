@@ -295,7 +295,7 @@ const MainMenuComponent = observer(({ store }: { store: PixelArtPageStore }) => 
     }
     const downloadPFP = () => {
         let canvas: HTMLCanvasElement = document.getElementById('canvas') as HTMLCanvasElement;
-        //store.pixelsCanvas.drawStickers(store.stickers);
+        store.pixelsCanvas.drawStickers(store.stickers);
         var image = canvas.toDataURL("image/png").replace("image/png", "image/octet-stream");
 
         var link = document.getElementById('pfp-link');
@@ -309,7 +309,9 @@ const MainMenuComponent = observer(({ store }: { store: PixelArtPageStore }) => 
 
     const postTweet = () => {
         const canvas: HTMLCanvasElement = document.getElementById('canvas') as HTMLCanvasElement;
+        store.pixelsCanvas.drawStickers(store.stickers);
         const data = canvas.toDataURL().replace('data:image/png;base64,', '');
+        store.pixelsCanvas.updateCanvas();
         fetch('https://prod.hmstrs.com/twitter/upload', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
