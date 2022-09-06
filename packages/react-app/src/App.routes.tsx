@@ -80,7 +80,7 @@ const routes: AppRouteInterface[] = [
     showOnDesktop: true,
     order: 1
   },
-  {
+  /*{
     path: "/art",
     name: NamedRoutes.PIXEL_ART,
     exact: true,
@@ -92,7 +92,7 @@ const routes: AppRouteInterface[] = [
     showOnDesktop: true,
     order: 1
   },
-  /*{
+  {
     path: "/snake",
     name: NamedRoutes.SNAKE_GAME,
     exact: true,
