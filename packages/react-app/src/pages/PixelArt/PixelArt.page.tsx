@@ -8,7 +8,7 @@ import Icon from "../../DSL/Icon/Icon";
 import { darkModeSecondary, lightModePrimary } from "../../DSL/Theme";
 import { ClearCanvasAction, PixelAction } from "./PixelArtActions";
 import { PixelArtTool, pixelArtTools } from "./PixelArtTools";
-import { TRANSPARENT_PIXEL } from "./PixelArtCanvas";
+import { CanvasSize, TRANSPARENT_PIXEL } from "./PixelArtCanvas";
 import ImportTemplateModal from "./ImportTemplateModal/ImportTemplateModal";
 import CanvasPropertiesModal from "./CanvasPropertiesModal/CanvasPropertiesModal";
 import StickerComponent from "./StickerComponent";
@@ -281,6 +281,11 @@ const ToolsComponent = observer(({ store }: { store: PixelArtPageStore }) => {
 })
 
 const MainMenuComponent = observer(({ store }: { store: PixelArtPageStore }) => {
+    const newFile = () => {
+        store.clearActions();
+        store.pixelsCanvas.resize(CanvasSize.S);
+        store.stickers = [];
+    }
     const undoAction = () => {
         store.undoAction();
     }
@@ -357,7 +362,7 @@ const MainMenuComponent = observer(({ store }: { store: PixelArtPageStore }) => 
                 </Typography>
             </MenuButton>
             <MenuList pt={0}>
-                <MenuItem>New File</MenuItem>
+                <MenuItem onClick={newFile}>New File</MenuItem>
                 <MenuItem>Save File</MenuItem>
                 <MenuItem onClick={downloadPFP}>Export</MenuItem>
                 <MenuItem onClick={postTweet}>Share</MenuItem>
