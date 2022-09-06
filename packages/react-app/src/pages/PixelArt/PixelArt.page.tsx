@@ -1,6 +1,6 @@
 import { Box, Grid, GridItem, Menu, MenuButton, MenuItem, MenuList, useColorMode } from "@chakra-ui/react";
 import { observer } from "mobx-react-lite";
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Pane from "../../DSL/Pane/Pane";
 import Typography, { TVariant } from "../../DSL/Typography/Typography";
 import PixelArtPageStore, { Sticker } from "./PixelArtPage.store";
@@ -13,6 +13,7 @@ import ImportTemplateModal from "./ImportTemplateModal/ImportTemplateModal";
 import CanvasPropertiesModal from "./CanvasPropertiesModal/CanvasPropertiesModal";
 import StickerComponent from "./StickerComponent";
 import ImportStickerModal from "./ImportStickerModal/ImportStickerModal";
+import AppStore from "../../store/App.store";
 
 const CANVAS_ELEMENT_SIZE = 512;
 
@@ -69,16 +70,26 @@ const PixelArtPage = observer(function PixelArtPage() {
 });
 
 const ArtCanvasComponent = observer(({ store }: { store: PixelArtPageStore }) => {
+    const [scale, setScale] = useState(1);
 
     useEffect(() => {
         let canvas: HTMLCanvasElement = document.getElementById('canvas') as HTMLCanvasElement;
         store.setCanvas(canvas);
+        setScale(getScale());
     });
+
+    useEffect(() => {
+        setScale(getScale());
+    }, [AppStore.rwd.isMobile]);
+
+    const getScale = () => {
+        return AppStore.rwd.isMobile ? 0.6 : 1;
+    }
 
     const updatePixel = (x: number, y: number, action: PixelAction) => {
         let canvas: HTMLCanvasElement = document.getElementById('canvas') as HTMLCanvasElement;
         const rect = canvas.getBoundingClientRect();
-        const canvasCellSize = CANVAS_ELEMENT_SIZE / store.pixelsCanvas.canvasSize;
+        const canvasCellSize = CANVAS_ELEMENT_SIZE * scale / store.pixelsCanvas.canvasSize;
         if (rect.left < x && rect.right > x &&
             rect.top < y && rect.bottom > y) {
             const canvasX = Math.floor((x - rect.x) / canvasCellSize);
@@ -133,15 +144,15 @@ const ArtCanvasComponent = observer(({ store }: { store: PixelArtPageStore }) =>
     >
         <Box
             overflow={'hidden'}
-            width={CANVAS_ELEMENT_SIZE}
-            height={CANVAS_ELEMENT_SIZE}
+            width={CANVAS_ELEMENT_SIZE * scale}
+            height={CANVAS_ELEMENT_SIZE * scale}
         >
             <Box
                 position={'relative'}
-                top={store.templateTop + 'px'}
-                left={store.templateLeft + 'px'}
-                width={store.templateWidth + 'px'}
-                height={store.templateHeight + 'px'}
+                top={store.templateTop * scale + 'px'}
+                left={store.templateLeft * scale + 'px'}
+                width={store.templateWidth * scale + 'px'}
+                height={store.templateHeight * scale + 'px'}
                 backgroundImage={store.templateImage}
                 backgroundSize={'contain'}
                 backgroundPosition={'center'}
@@ -151,33 +162,47 @@ const ArtCanvasComponent = observer(({ store }: { store: PixelArtPageStore }) =>
             <canvas
                 style={{
                     position: 'relative',
-                    top: -store.templateHeight,
+                    top: -store.templateHeight * scale,
                 }}
-                id='canvas' width={CANVAS_ELEMENT_SIZE} height={CANVAS_ELEMENT_SIZE} onMouseDown={onMouseDown}>
+                id='canvas' width={CANVAS_ELEMENT_SIZE * scale} height={CANVAS_ELEMENT_SIZE * scale} onMouseDown={onMouseDown}>
             </canvas>
             <Box
                 position={'relative'}
-                top={-store.templateHeight - CANVAS_ELEMENT_SIZE}
-                width={CANVAS_ELEMENT_SIZE}
-                height={CANVAS_ELEMENT_SIZE}
+                top={-store.templateHeight * scale - CANVAS_ELEMENT_SIZE * scale}
+                width={CANVAS_ELEMENT_SIZE * scale}
+                height={CANVAS_ELEMENT_SIZE * scale}
                 pointerEvents={store.selectedToolIndex === PixelArtTool.stickers ? 'all' : 'none'}
             >
                 {store.stickers.map((entry: Sticker, index: number) => {
                     return <StickerComponent
                         key={index}
                         store={store}
+                        scale={scale}
                         sticker={entry}
                     />
                 })}
             </Box>
         </Box>
-    </Box>
+    </Box >
 })
 
 const PALETTE_HEIGHT = '74px';
 
 const PixelsPaletteComponent = observer(({ store }: { store: PixelArtPageStore }) => {
     const { colorMode } = useColorMode()
+    const [scale, setScale] = useState(1);
+
+    useEffect(() => {
+        setScale(getScale());
+    });
+
+    useEffect(() => {
+        setScale(getScale());
+    }, [AppStore.rwd.isMobile]);
+
+    const getScale = () => {
+        return AppStore.rwd.isMobile ? 0.6 : 1;
+    }
 
     return <Box margin={"10px"}>
         <GridItem display={"flex"} flexDirection={"row"} flexGrow={0}>
@@ -197,7 +222,7 @@ const PixelsPaletteComponent = observer(({ store }: { store: PixelArtPageStore }
                     backgroundSize={'16px 16px, 16px 16px'} />}
                 <Box border={"1px solid gray"} m={'3px'} w={'1px'} h={'78%'} marginLeft={'5px'} />
                 <Box
-                    w={'450px'}
+                    w={450 * scale + 'px'}
                     overflowX={'auto'}
                     overflowY={'hidden'}
                 >

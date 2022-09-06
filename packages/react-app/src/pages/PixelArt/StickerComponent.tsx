@@ -11,12 +11,13 @@ const MIN_SIZE = 50;
 
 interface StickerComponentProps {
     sticker: Sticker;
+    scale: number;
     store: PixelArtPageStore;
 }
 
 const StickerComponent = observer(function StickerComponent(props: StickerComponentProps) {
-    const [position, setPosition] = useState({ x: props.sticker.x, y: props.sticker.y });
-    const [size, setSize] = useState({ x: props.sticker.width, y: props.sticker.height });
+    const [position, setPosition] = useState({ x: props.sticker.x * props.scale, y: props.sticker.y * props.scale });
+    const [size, setSize] = useState({ x: props.sticker.width * props.scale, y: props.sticker.height * props.scale });
     const [rotation, setRotation] = useState(props.sticker.rotation);
     const [rotationStr, setRotationStr] = useState(`rotate(${props.sticker.rotation}deg)`)
 
@@ -100,10 +101,10 @@ const StickerComponent = observer(function StickerComponent(props: StickerCompon
             setRotation(value => (a));
             setRotationStr(value => (`rotate(${a}deg)`));
 
-            props.sticker.x = x;
-            props.sticker.y = y;
-            props.sticker.width = w;
-            props.sticker.height = h;
+            props.sticker.x = x / props.scale;
+            props.sticker.y = y / props.scale;
+            props.sticker.width = w / props.scale;
+            props.sticker.height = h / props.scale;
             props.sticker.rotation = a;
         }
         function onMouseUp() {
@@ -137,8 +138,8 @@ const StickerComponent = observer(function StickerComponent(props: StickerCompon
             minHeight: MIN_SIZE,
             transform: rotationStr
         }}
-        w={props.sticker.width}
-        h={props.sticker.height}
+        //w={props.sticker.width * props.scale}
+        //h={props.sticker.height * props.scale}
         bgColor={props.store.selectedToolIndex === PixelArtTool.stickers ? '#F008' : ''}
         onMouseDown={onMouseDown}
         backgroundImage={props.sticker.imageBase64}

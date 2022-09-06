@@ -148,7 +148,7 @@ class PixelArtPageStore extends Reactionable(EmptyClass) {
     @computed
     get topDogs(): { address: string, puppers: number[], ens?: string }[] {
         const tds = ObjectKeys(AppStore.web3.addressToPuppers).map((key, index, arr) => (
-            { address: key, puppers: AppStore.web3.addressToPuppers![key].tokenIDs, ens: AppStore.web3.addressToPuppers![key].ens }
+            { address: key, puppers: AppStore.web3.addressToPuppers![key].tokenIds, ens: AppStore.web3.addressToPuppers![key].ens }
         ))
         return tds
             .filter(dog => dog.address !== ethers.constants.AddressZero)

@@ -7,6 +7,7 @@ import DragResizeComponent from "../DragResizeComponent";
 import { useEffect, useState } from "react";
 import Select from "../../../DSL/Select/Select";
 import Typography, { TVariant } from "../../../DSL/Typography/Typography";
+import AppStore from "../../../store/App.store";
 
 const CANVAS_ELEMENT_SIZE = 256;
 const CANVAS_ELEMENT_MARGIN = 80;
@@ -45,12 +46,22 @@ const CanvasPropertiesModal = observer((props: CanvasPropertiesModalProps) => {
     const [backgroundPos, setBackgroundPos] = useState('');
     const [backgroundSize, setBackgroundSize] = useState('');
     const [canvasSize, setCanvasSize] = useState('S');
+    const [scale, setScale] = useState(1);
 
     useEffect(() => {
         const cellSize = CANVAS_ELEMENT_SIZE / props.store.pixelsCanvas.canvasSize;
         setBackgroundPos(`0px 0px, ${cellSize}px ${cellSize}px`);
         setBackgroundSize(`${cellSize * 2}px ${cellSize * 2}px, ${cellSize * 2}px ${cellSize * 2}px`);
+        setScale(getScale());
     });
+
+    useEffect(() => {
+        setScale(getScale());
+    }, [AppStore.rwd.isMobile]);
+
+    const getScale = () => {
+        return AppStore.rwd.isMobile ? 0.75 : 1;
+    }
 
     const onApply = () => {
         props.store.templateLeft = left;
@@ -65,10 +76,10 @@ const CanvasPropertiesModal = observer((props: CanvasPropertiesModalProps) => {
     }
 
     const onDrag = (left: number, top: number, width: number, height: number) => {
-        setLeft(left * SCALE_FACTOR);
-        setTop(top * SCALE_FACTOR);
-        setWidth(width * SCALE_FACTOR);
-        setHeight(height * SCALE_FACTOR);
+        setLeft(left * SCALE_FACTOR / scale);
+        setTop(top * SCALE_FACTOR / scale);
+        setWidth(width * SCALE_FACTOR / scale);
+        setHeight(height * SCALE_FACTOR / scale);
     }
 
     return <Modal
@@ -87,27 +98,28 @@ const CanvasPropertiesModal = observer((props: CanvasPropertiesModalProps) => {
                 </Box>
             </Box>
             <Box
-                width={CANVAS_ELEMENT_SIZE + CANVAS_ELEMENT_MARGIN * 2} 
-                height={CANVAS_ELEMENT_SIZE + CANVAS_ELEMENT_MARGIN * 2}
-                margin={'10px auto'}
+                width={(CANVAS_ELEMENT_SIZE + CANVAS_ELEMENT_MARGIN * 2) * scale}
+                height={(CANVAS_ELEMENT_SIZE + CANVAS_ELEMENT_MARGIN * 2) * scale}
+                mx={'auto'}
+                my={'5px'}
                 overflow={'hidden'}
                 border={"1px dotted gray"}
-                >
+            >
                 <Box
                     position={'relative'}
-                    width={CANVAS_ELEMENT_SIZE + 'px'} 
-                    height={CANVAS_ELEMENT_SIZE + 'px'}
-                    top={CANVAS_ELEMENT_MARGIN + 'px'} 
-                    left={CANVAS_ELEMENT_MARGIN + 'px'}
+                    width={CANVAS_ELEMENT_SIZE * scale + 'px'}
+                    height={CANVAS_ELEMENT_SIZE * scale + 'px'}
+                    top={CANVAS_ELEMENT_MARGIN * scale + 'px'}
+                    left={CANVAS_ELEMENT_MARGIN * scale + 'px'}
                 >
                     <DragResizeComponent
                         image={props.store.templateImage}
-                        top={props.store.templateTop / SCALE_FACTOR}
-                        left={props.store.templateLeft / SCALE_FACTOR}
-                        width={props.store.templateWidth / SCALE_FACTOR}
-                        height={props.store.templateHeight / SCALE_FACTOR}
-                        maxWidth={CANVAS_ELEMENT_SIZE + CANVAS_ELEMENT_MARGIN * 2}
-                        maxHeight={CANVAS_ELEMENT_SIZE + CANVAS_ELEMENT_MARGIN * 2}
+                        top={props.store.templateTop / SCALE_FACTOR * scale}
+                        left={props.store.templateLeft / SCALE_FACTOR * scale}
+                        width={props.store.templateWidth / SCALE_FACTOR * scale}
+                        height={props.store.templateHeight / SCALE_FACTOR * scale}
+                        maxWidth={(CANVAS_ELEMENT_SIZE + CANVAS_ELEMENT_MARGIN * 2) * scale}
+                        maxHeight={(CANVAS_ELEMENT_SIZE + CANVAS_ELEMENT_MARGIN * 2) * scale}
                         onChange={onDrag} />
                     <Box
                         border={"1px solid gray"}
@@ -118,8 +130,9 @@ const CanvasPropertiesModal = observer((props: CanvasPropertiesModalProps) => {
                         backgroundClip={'border-box, border-box'}
                         backgroundSize={backgroundSize}
                         position={'relative'}
-                        width={CANVAS_ELEMENT_SIZE} height={CANVAS_ELEMENT_SIZE}
-                        top={-height / SCALE_FACTOR}
+                        width={CANVAS_ELEMENT_SIZE * scale} 
+                        height={CANVAS_ELEMENT_SIZE * scale}
+                        top={-height / SCALE_FACTOR * scale + 'px'}
                         pointerEvents={'none'}
                     >
                     </Box>
