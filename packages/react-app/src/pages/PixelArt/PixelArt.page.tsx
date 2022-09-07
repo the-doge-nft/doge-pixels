@@ -5,7 +5,7 @@ import Pane from "../../DSL/Pane/Pane";
 import Typography, { TVariant } from "../../DSL/Typography/Typography";
 import PixelArtPageStore, { Sticker } from "./PixelArtPage.store";
 import Icon from "../../DSL/Icon/Icon";
-import { darkModeSecondary, lightModePrimary } from "../../DSL/Theme";
+import { darkModeSecondary, lightModePrimary, lightOrDarkMode } from "../../DSL/Theme";
 import { ClearCanvasAction, IdenticonAction, PixelAction } from "./PixelArtActions";
 import { PixelArtTool, pixelArtTools } from "./PixelArtTools";
 import { CanvasSize, TRANSPARENT_PIXEL } from "./PixelArtCanvas";
@@ -153,7 +153,7 @@ const ArtCanvasComponent = observer(({ store }: { store: PixelArtPageStore }) =>
                 left={store.templateLeft * scale + 'px'}
                 width={store.templateWidth * scale + 'px'}
                 height={store.templateHeight * scale + 'px'}
-                backgroundImage={store.templateImage}
+                backgroundImage={store.isTemplateVisible ? store.templateImage : ''}
                 backgroundSize={'contain'}
                 backgroundPosition={'center'}
                 backgroundRepeat={'no-repeat'}
@@ -273,9 +273,22 @@ const ToolsComponent = observer(({ store }: { store: PixelArtPageStore }) => {
                         store.selectedToolIndex = index;
                     }}
                 >
-                    <Icon icon={entry.icon} boxSize={6} />
+                    <Icon icon={entry.icon} boxSize={7} fill={lightOrDarkMode(colorMode, 'black', 'white')} />
                 </Box>
             })}
+            <Box border={"1px solid gray"} m={'3px'} h={'1px'} w={'90%'} marginTop={'5px'} />
+            <Box
+                p={1}
+                bg={store.isTemplateVisible
+                    ? (colorMode === "light" ? lightModePrimary : darkModeSecondary)
+                    : "inherit"}
+                _hover={{ bg: (colorMode === "light" ? lightModePrimary : darkModeSecondary) }}
+                onClick={() => {
+                    store.isTemplateVisible = !store.isTemplateVisible;
+                }}
+            >
+                <Icon icon={'templateToggle'} boxSize={7} fill={lightOrDarkMode(colorMode, 'black', 'white')} />
+            </Box>
         </GridItem>
     </Box>
 })

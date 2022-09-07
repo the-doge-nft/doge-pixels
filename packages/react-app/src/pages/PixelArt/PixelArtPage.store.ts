@@ -62,6 +62,8 @@ class PixelArtPageStore extends Reactionable(EmptyClass) {
     templateWidth: number;
     @observable
     templateHeight: number;
+    @observable
+    isTemplateVisible: boolean;
 
     @observable
     stickers: Sticker[];
@@ -97,6 +99,7 @@ class PixelArtPageStore extends Reactionable(EmptyClass) {
         this.templateTop = 0;
         this.templateWidth = CANVAS_ELEMENT_SIZE;
         this.templateHeight = CANVAS_ELEMENT_SIZE;
+        this.isTemplateVisible = true;
 
         this.stickers = [];
         this.stickersHack = 0;

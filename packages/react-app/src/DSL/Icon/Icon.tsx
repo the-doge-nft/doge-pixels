@@ -12,6 +12,7 @@ import Cowswap from "./custom/Cowswap";
 import ToolPen from "./custom/ToolPen";
 import ToolErase from "./custom/ToolErase";
 import ToolStickers from "./custom/ToolStickers";
+import TemplateToggle from "./custom/TemplateToggle";
 
 export type ReactIconName =
   | "chevron-up"
@@ -29,8 +30,9 @@ type CustomIconName =
   | "toolPen"
   | "toolErase"
   | "toolStickers"
+  | "templateToggle"
 
-const customIcons: CustomIconName[] = ['person', 'search', 'sun', 'moon', 'close', 'back', 'cowswap', 'toolPen', 'toolErase', 'toolStickers']
+const customIcons: CustomIconName[] = ['person', 'search', 'sun', 'moon', 'close', 'back', 'cowswap', 'toolPen', 'toolErase', 'toolStickers', 'templateToggle']
 
 const iconStringToComponentMap = {
   "chevron-up": VscChevronUp,
@@ -49,6 +51,7 @@ const customIconStringToComponentMap = {
   toolPen: ToolPen,
   toolErase: ToolErase,
   toolStickers: ToolStickers,
+  templateToggle: TemplateToggle,
 }
 
 interface IconProps extends ChakraIconProps {
