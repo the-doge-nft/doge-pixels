@@ -160,9 +160,12 @@ export class IdenticonAction implements ActionInterface {
     }
     do(store: PixelArtPageStore) {
         const colors = store.palette;
-        const revString = '0x' + store.selectedAddress.substring(2).split('').reverse().join('');
-        let hashedText = sha512(store.selectedAddress) + sha512(revString);
-        hashedText = hashedText + hashedText.substring(2).split('').reverse().join('');
+        let text = store.selectedAddress;
+        let hashedText = '';
+        for (let cn = 0; cn < 128; ++cn) {
+            text = sha512(text);
+            hashedText += text;
+        }
         for (let cy = 0; cy < store.pixelsCanvas.canvasSize; ++cy) {
             for (let cx = 0; cx < store.pixelsCanvas.canvasSize; ++cx) {
                 let i = cx + cy * store.pixelsCanvas.canvasSize;
