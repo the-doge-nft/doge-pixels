@@ -17,7 +17,7 @@ class MobileHomeStore {
   }
 
   init() {
-    AppStore.web3.refreshPupperOwnershipMap()
+    AppStore.web3.refreshPixelOwnershipMap()
   }
   
   share(type: string) {

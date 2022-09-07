@@ -20,6 +20,9 @@ module.exports = {
   twitter_consumer_secret: process.env.TWITTER_CONSUMER_SECRET,
   twitter_access_token_key: process.env.TWITTER_ACCESS_TOKEN_KEY,
   twitter_access_token_secret: process.env.TWITTER_ACCESS_TOKEN_SECRET,
+  nomics_api_key: process.env.NOMICS_API_KEY,
+  discord_token: process.env.DISCORD_SECRET,
+  discord_channel_id: process.env.DISCORD_CHANNEL_ID,
   aws_bucket_name: process.env.AWS_S3_BUCKET_NAME,
   isProd: process.env.APP_ENV === "production"
 }

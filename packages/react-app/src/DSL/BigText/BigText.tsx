@@ -12,7 +12,7 @@ interface BigTextProps {
 
 
 const sizeToTypeMap = {
-  sm: TVariant.PresStart28,
+  sm: TVariant.PresStart26,
   md: TVariant.PresStart45,
   lg: TVariant.PresStart65
 }

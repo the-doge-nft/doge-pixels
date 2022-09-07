@@ -26,7 +26,7 @@ const BurnPixelsDialog = observer(({store, onCompleteClose, onSuccess, showShare
   useEffect(() => {
     if (store.currentView === BurnPixelsModalView.Complete) {
       onSuccess && onSuccess(store.selectedPixels)
-      AppStore.web3.refreshPupperOwnershipMap()
+      AppStore.web3.refreshPixelOwnershipMap()
       AppStore.web3.refreshPupperBalance()
       AppStore.web3.refreshDogBalance()
     }
@@ -59,9 +59,10 @@ const SelectPixels = observer(({store}: { store: BurnPixelsModalStore}) => {
                             p={2}
                             display={"inline-block"}
                             bg={isPixelSelected ? (colorMode === "light" ? lightModePrimary : darkModeSecondary) : "inherit"}
-                            _touch={{
-                              bg: (colorMode === "light" ? lightModePrimary : darkModeSecondary)
-                            }}>
+                            // _touch={{
+                            //   bg: (colorMode === "light" ? lightModePrimary : darkModeSecondary)
+                            // }}
+                >
                   <PixelPane
                     size={"sm"}
                     pupper={px}
@@ -120,13 +121,13 @@ const Complete = observer(({onSuccess, txHash, showShareModal}: {onSuccess: () =
     <Typography variant={TVariant.PresStart28} textAlign={"center"} mt={4} block>
       🔥🔥🔥
     </Typography>
-    <Flex justifyContent={"center"} mt={10} 
+    <Flex justifyContent={"center"} mt={10}
             _hover={{
             cursor: "pointer",
             textDecoration: "underline",
             }}
         >
-            {txHash &&  
+            {txHash &&
             <Typography variant={TVariant.PresStart16} textAlign={"center"} block onClick={(e) =>showShareModal()}>
                 Share
             </Typography>

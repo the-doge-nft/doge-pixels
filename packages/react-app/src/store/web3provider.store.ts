@@ -4,7 +4,7 @@ import {Network} from "@ethersproject/networks";
 import {web3Modal} from "../services/web3Modal";
 import {providers, Signer} from "ethers";
 import {showDebugToast, showErrorToast} from "../DSL/Toast/Toast";
-import {isDevModeEnabled, isProduction} from "../environment/helpers";
+import {isDevModeEnabled, isProduction, isStaging} from "../environment/helpers";
 import {Http} from "../services";
 import {abbreviate} from "../helpers/strings";
 import AppStore from "./App.store";
@@ -65,7 +65,7 @@ class Web3providerStore {
 
   async validateNetwork() {
       if (this.network?.name) {
-          if (isDevModeEnabled()) {
+          if (isDevModeEnabled() || isStaging()) {
               if (this.network.name !== "rinkeby") {
                   showErrorToast("Please connect to Rinkeby.")
                   await this.disconnect()

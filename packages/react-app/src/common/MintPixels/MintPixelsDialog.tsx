@@ -37,7 +37,7 @@ const MintPixelsDialog = observer(({store, onSuccess, onGoToPixelsClick, showSha
     useEffect(() => {
         if (store.currentView === MintModalView.Complete) {
             onSuccess && onSuccess()
-            AppStore.web3.refreshPupperOwnershipMap()
+            AppStore.web3.refreshPixelOwnershipMap()
             AppStore.web3.refreshPupperBalance()
             AppStore.web3.refreshDogBalance()
         }

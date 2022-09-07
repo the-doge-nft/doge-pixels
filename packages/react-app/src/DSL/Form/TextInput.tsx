@@ -1,10 +1,11 @@
 import Control from "./Control";
-import { FormErrorMessage, InputGroup, InputRightElement } from "@chakra-ui/react";
+import { FormErrorMessage, InputGroup, InputRightElement, useColorMode } from "@chakra-ui/react";
 import React from "react";
 import { AllowedStyleProps, BaseInputProps } from "./interfaces";
 import { Input } from "./Input/Input";
 import { useControlledFormField, useFormField } from "./useFormField";
 import Icon from "../Icon/Icon";
+import { lightOrDarkMode } from "../Theme";
 
 interface TextInputProps extends BaseInputProps, AllowedStyleProps {
   rightIcon?: any
@@ -27,12 +28,15 @@ const TextInput = ({
 
   const rightIconWidth = "60px"
 
+  const {colorMode} = useColorMode()
+
   return (
     <Control name={name} isRequired={isRequired} label={label} horizontal={horizontal}>
       <InputGroup>
         <Input
           id={name}
           placeholder={placeholder}
+          _placeholder={{color: lightOrDarkMode(colorMode, "yellow.100", "gray.100")}}
           {...restInput}
           {...rest}
           onChange={e => {

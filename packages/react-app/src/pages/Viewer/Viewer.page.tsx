@@ -1,8 +1,8 @@
-import React, {Suspense, useCallback, useEffect, useMemo} from "react";
-import {Box, Flex, Grid, GridItem} from "@chakra-ui/react";
-import ThreeScene from "./ThreeScene";
-import ViewerStore, {ViewerView} from "./Viewer.store";
-import {observer} from "mobx-react-lite";
+import React, { Suspense, useCallback, useEffect, useMemo } from "react";
+import { Box, Flex, Grid, GridItem } from "@chakra-ui/react";
+import DogeExplorer from "./DogeExplorer";
+import ViewerStore, { ViewerView } from "./Viewer.store";
+import { observer } from "mobx-react-lite";
 import Pane from "../../DSL/Pane/Pane";
 import BurnPixelsModal from "./BurnPixelsModal/BurnPixelsModal";
 import ManagePane from "./Panes/ManagePane";
@@ -12,13 +12,15 @@ import SelectedPixelPane from "./Panes/SelectedPixelPane";
 import AppStore from "../../store/App.store";
 import Icon from "../../DSL/Icon/Icon";
 import Loading from "../../DSL/Loading/Loading";
-import ScrollHelperModal from "./ScrollHelperModal/ScrollHelperModal";
-import Typography, {TVariant} from "../../DSL/Typography/Typography";
-import MemeModal from "./MemeModal";
+import ScrollHelperModal from "../../DSL/Modal/ScrollHelperModal";
+import Typography, { TVariant } from "../../DSL/Typography/Typography";
+import MemeModal from "../../DSL/Modal/MemeModal";
 import Drawer from "../../DSL/Drawer/Drawer";
 import {useLocation, useParams} from "react-router-dom";
 import {NamedRoutes, route, SELECTED_PIXEL_PARAM} from "../../App.routes";
 import SharePixelsModal from "./SharePixelsModal/SharePixelsModal";
+import { useLocation, useParams } from "react-router-dom";
+import { NamedRoutes, route, SELECTED_PIXEL_PARAM } from "../../App.routes";
 
 /*
   Hack to reload page even if we are already on the route that renders this page
@@ -26,90 +28,90 @@ import SharePixelsModal from "./SharePixelsModal/SharePixelsModal";
  */
 const ReloadViewerPage = () => {
   const location = useLocation();
-  return <ViewerPage key={location.key}/>
-}
+  return <ViewerPage key={location.key} />;
+};
 
 export type onPixelSelectType = (x: number, y: number) => void;
 
 const ViewerPage = observer(function ViewerPage() {
-  const params = useParams<any>()
-  let defaultPixel: number | null = null
+  const params = useParams<any>();
+  let defaultPixel: number | null = null;
   if (SELECTED_PIXEL_PARAM in params) {
     if (AppStore.web3.isPixelIDValid(Number(params[SELECTED_PIXEL_PARAM]))) {
-      defaultPixel = Number(params[SELECTED_PIXEL_PARAM])
+      defaultPixel = Number(params[SELECTED_PIXEL_PARAM]);
     }
   }
   const store = useMemo(() => new ViewerStore(defaultPixel), [defaultPixel]);
 
   useEffect(() => {
-    store.init()
+    store.init();
     return () => {
-      store.destroy()
-    }
+      store.destroy();
+    };
     // eslint-disable-next-line
-  }, [])
+  }, []);
 
   // Hack to re-render page even if we are already on said page
-  const location = useLocation()
-  useEffect(() => {
-  }, [location.key])
+  const location = useLocation();
+  useEffect(() => {}, [location.key]);
 
   const onPixelSelect: onPixelSelectType = useCallback((x: number, y: number) => {
     store.selectedPupper = AppStore.web3.coordinateToPupperLocal(x, y);
-    window.history.pushState({}, "", route(NamedRoutes.PIXELS, {[SELECTED_PIXEL_PARAM]: store.selectedPupper}))
+    window.history.pushState({}, "", route(NamedRoutes.PIXELS, { [SELECTED_PIXEL_PARAM]: store.selectedPupper }));
 
     if (store.currentView !== ViewerView.Selected) {
-      store.pushNavigation(ViewerView.Selected)
+      store.pushNavigation(ViewerView.Selected);
     }
     if (AppStore.rwd.isMobile) {
-      store.isSelectedDrawerOpen = true
+      store.isSelectedDrawerOpen = true;
     }
     // eslint-disable-next-line
   }, []);
   return (
     <>
-      <Grid templateColumns={{base: "2fr 2fr", sm: "2fr 1.5fr", lg: "2fr 0.8fr"}} templateRows={"1fr"} flexGrow={1}>
-        <GridItem mr={{base: 0, md: 5}} colSpan={{base: 3, md: 1}} zIndex={2}>
+      <Grid templateColumns={{ base: "2fr 2fr", sm: "2fr 1.5fr", lg: "2fr 0.8fr" }} templateRows={"1fr"} flexGrow={1}>
+        <GridItem mr={{ base: 0, md: 5 }} colSpan={{ base: 3, md: 1 }} zIndex={2}>
           <Pane w={"100%"} h={"100%"} p={0}>
-            <Suspense fallback={<Flex
-              justifyContent={"center"}
-              alignItems={"center"}
-              position={"absolute"}
-              w={"full"}
-              h={"full"}>
-              <Loading/>
-            </Flex>}>
-              <ThreeScene
-                onPixelSelect={onPixelSelect}
-                store={store}
-              />
+            <Suspense
+              fallback={
+                <Flex justifyContent={"center"} alignItems={"center"} position={"absolute"} w={"full"} h={"full"}>
+                  <Loading />
+                </Flex>
+              }
+            >
+              <DogeExplorer onPixelSelect={onPixelSelect} store={store} />
             </Suspense>
           </Pane>
         </GridItem>
-        <GridItem ml={5} colSpan={{base: 0, md: 1}} display={{base: "none", md: "block"}}>
+        <GridItem ml={5} colSpan={{ base: 0, md: 1 }} display={{ base: "none", md: "block" }}>
           <Pane
             display={"flex"}
             flexDirection={"column"}
             justifyContent={"space-between"}
-            title={store.currentView === ViewerView.Index &&
-              <Typography variant={TVariant.PresStart20}>Own the Doge</Typography>}>
-              {store.showGoBack && <Box position={"relative"} left={"-20px"} top={"-20px"}>
-                  <Box
-                    p={0}
-                    size={"sm"}
-                    _hover={{cursor: "pointer"}}
-                    _active={{transform: "translate(4px, 4px)"}}
-                    onClick={() => {
-                      store.popNavigation()
-                      store.clearSelectedPupper()
-                    }}
-                  >
-                    <Icon icon={"back"} boxSize={7}/>
+            title={
+              store.currentView === ViewerView.Index && (
+                <Typography variant={TVariant.PresStart16}>Own the Doge</Typography>
+              )
+            }
+          >
+            {store.showGoBack && (
+              <Box position={"relative"} left={"-20px"} top={"-20px"}>
+                <Box
+                  p={0}
+                  _hover={{ cursor: "pointer" }}
+                  _active={{ transform: "translate(4px, 4px)" }}
+                  onClick={() => {
+                    store.popNavigation();
+                    store.clearSelectedPupper();
+                  }}
+                >
+                  <Icon icon={"back"} boxSize={6} />
                 </Box>
-              </Box>}
-            {store.currentView === ViewerView.Index && <IndexPane store={store}/>}
-            {store.currentView === ViewerView.Manage && <ManagePane store={store}/>}
-            {store.currentView === ViewerView.Selected && <SelectedPixelPane store={store}/>}
+              </Box>
+            )}
+            {store.currentView === ViewerView.Index && <IndexPane store={store} />}
+            {store.currentView === ViewerView.Manage && <ManagePane store={store} />}
+            {store.currentView === ViewerView.Selected && <SelectedPixelPane store={store} />}
           </Pane>
         </GridItem>
       </Grid>
@@ -134,10 +136,10 @@ const ViewerPage = observer(function ViewerPage() {
         onClose={() => store.modals.isShareModalOpen = false}
       />}
       {store.modals.isBurnModalOpen && <BurnPixelsModal
+        showShareModal={() => store.modals.isShareModalOpen = true}
         defaultPixel={store.selectedPupper}
         isOpen={store.modals.isBurnModalOpen}
         onClose={() => store.modals.isBurnModalOpen = false}
-        showShareModal={() => store.modals.isShareModalOpen = true}
         onSuccess={(burnedPixelIDs) => {
           store.modals.isBurnMemeModalOpen = true
           if (store.selectedPupper) {

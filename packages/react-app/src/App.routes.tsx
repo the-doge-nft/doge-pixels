@@ -1,19 +1,25 @@
 import {generatePath} from "react-router-dom";
 import {RouteMiddleware} from "./services/middleware";
 import {FC} from "react";
-import AppLayout from "./layouts/AppLayout";
+import AppLayout from "./layouts/AppLayout/AppLayout";
 import ViewerPage from "./pages/Viewer/Viewer.page";
 import DSLPage from "./pages/DSL.page";
 import DogParkPage from "./pages/DogPark/DogPark.page";
 import {isDevModeEnabled} from "./environment/helpers";
 import MobileHomePage from "./pages/MobileHome/MobileHome.page";
+import PixelArtPage from "./pages/PixelArt/PixelArt.page";
+//import SnakeGamePage from "./pages/SnakeGame/SnakeGame.page";
+import PerksPage from "./pages/Perks/Perks.page";
 
 export enum NamedRoutes {
   VIEWER = "viewer",
   DOG_PARK = "park",
+  PIXEL_ART = "art",
+  SNAKE_GAME = "snake",
   DSL = "dsl",
   MOBILE_HOME = "mobile",
-  PIXELS = "pixels"
+  PIXELS = "pixels",
+  PERKS = "perks"
 }
 
 export interface AppRouteInterface {
@@ -51,17 +57,53 @@ export const SELECTED_PIXEL_PARAM = "id_with_offset"
 */
 const routes: AppRouteInterface[] = [
   {
+    path: "/perks",
+    name: NamedRoutes.PERKS,
+    exact: true,
+    layout: AppLayout,
+    component: PerksPage,
+    desktopName: "Perks",
+    mobileName: "Perks",
+    showOnMobile: true,
+    showOnDesktop: true,
+    order: 2
+  },
+  {
     path: "/park/:address?/:tokenID?",
     name: NamedRoutes.DOG_PARK,
     exact: true,
     layout: AppLayout,
     component: DogParkPage,
-    desktopName: "Dog park",
+    desktopName: "Park",
     mobileName: "Park",
     showOnMobile: false,
     showOnDesktop: true,
     order: 1
   },
+  /*{
+    path: "/art",
+    name: NamedRoutes.PIXEL_ART,
+    exact: true,
+    layout: AppLayout,
+    component: PixelArtPage,
+    desktopName: "Pixel art",
+    mobileName: "ART",
+    showOnMobile: true,
+    showOnDesktop: true,
+    order: 1
+  },
+  {
+    path: "/snake",
+    name: NamedRoutes.SNAKE_GAME,
+    exact: true,
+    layout: AppLayout,
+    component: SnakeGamePage,
+    desktopName: "Snake",
+    mobileName: "Snake",
+    showOnMobile: false,
+    showOnDesktop: true,
+    order: 1
+  },*/
   {
     path: "/pixels",
     name: NamedRoutes.MOBILE_HOME,
@@ -109,9 +151,9 @@ if (isDevModeEnabled()) {
     component: DSLPage,
     desktopName: "DSL",
     mobileName: "DSL",
-    showOnMobile: false,
-    showOnDesktop: false,
-    order: 1
+    showOnMobile: true,
+    showOnDesktop: true,
+    order: 4
   })
 }
 

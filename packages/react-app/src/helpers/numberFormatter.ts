@@ -66,7 +66,6 @@ export function bytesToHumanReadable(bytes: number, decimals = 2) {
 
 
 export function convertToAbbreviation(val: number) {
-
   // thousands, millions, billions etc..
   var s = ["", "K", "M", "B", "T"];
 
@@ -75,12 +74,12 @@ export function convertToAbbreviation(val: number) {
 
   // calculating the precised value.
   // eslint-disable-next-line
-  var sVal = parseFloat((sNum != 0 ? (val / Math.pow(1000, sNum)) : val).toPrecision(2));
+  var sVal = parseFloat((sNum != 0 ? (val / Math.pow(1000, sNum)) : val).toPrecision(3));
 
   // eslint-disable-next-line
   if (sVal % 1 != 0) {
     //@ts-ignore
-    sVal = sVal.toFixed(1);
+    sVal = sVal.toFixed(3);
   }
 
   // appending the letter to precised val.

@@ -7,10 +7,9 @@ const routes = require('../api/routes/v1');
 const logger = require("./config");
 const Sentry = require("@sentry/node");
 const {sentryClient} = require("../services/Sentry");
-const tweet = require('../services/twitterBot');
+require('../services/discordBot');
 
 const app = express();
-
 app.use(morgan(logs));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
