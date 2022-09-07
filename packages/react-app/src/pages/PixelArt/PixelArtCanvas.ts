@@ -62,15 +62,20 @@ export class PixelArtCanvas {
     }
 
     updateCanvas() {
-        if (!this.canvas) return;
+        this.updateCanvasEx(this.canvas);
+    }
 
-        let ctx = this.canvas.getContext('2d');
+    updateCanvasEx(canvas: HTMLCanvasElement) {
+        if (!canvas)
+            return;
+
+        let ctx = canvas.getContext('2d');
         if (!ctx) return;
 
-        const cellSize = this.canvas.width / this.canvasSize;
+        const cellSize = canvas.width / this.canvasSize;
 
         ctx.save();
-        ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
         for (let cy = 0; cy < this.canvasSize; ++cy) {
             for (let cx = 0; cx < this.canvasSize; ++cx) {
                 ctx.fillStyle = this.canvasPixels[cx + cy * this.canvasSize];

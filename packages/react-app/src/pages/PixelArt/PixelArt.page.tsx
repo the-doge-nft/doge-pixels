@@ -157,8 +157,8 @@ const ArtCanvasComponent = observer(({ store }: { store: PixelArtPageStore }) =>
                 backgroundSize={'contain'}
                 backgroundPosition={'center'}
                 backgroundRepeat={'no-repeat'}
-            >
-            </Box>
+                opacity={0.5}
+            />
             <canvas
                 style={{
                     position: 'relative',

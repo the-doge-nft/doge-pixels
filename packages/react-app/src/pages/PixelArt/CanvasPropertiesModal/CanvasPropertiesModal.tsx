@@ -4,7 +4,7 @@ import { Box } from "@chakra-ui/react";
 import PixelArtPageStore from "../PixelArtPage.store";
 import Button, { ButtonVariant } from "../../../DSL/Button/Button";
 import DragResizeComponent from "../DragResizeComponent";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Select from "../../../DSL/Select/Select";
 import Typography, { TVariant } from "../../../DSL/Typography/Typography";
 import AppStore from "../../../store/App.store";
@@ -29,6 +29,7 @@ const CanvasPropertiesModal = observer((props: CanvasPropertiesModalProps) => {
     const [backgroundSize, setBackgroundSize] = useState('');
     const [canvasSize, setCanvasSize] = useState(props.store.pixelsCanvas.getSizeInfo().id);
     const [scale, setScale] = useState(1);
+    const canvas = useRef<HTMLCanvasElement>();
 
     useEffect(() => {
         const cellSize = CANVAS_ELEMENT_SIZE / props.store.pixelsCanvas.canvasSize;
@@ -36,6 +37,13 @@ const CanvasPropertiesModal = observer((props: CanvasPropertiesModalProps) => {
         setBackgroundSize(`${cellSize * 2}px ${cellSize * 2}px, ${cellSize * 2}px ${cellSize * 2}px`);
         setScale(getScale());
     }, []);
+
+    useEffect(() => {
+        console.log(canvas);
+        if (canvas.current) {
+            props.store.pixelsCanvas.updateCanvasEx(canvas.current);
+        }
+    })
 
     useEffect(() => {
         let size = CANVAS_SIZES.find(value => {
@@ -138,8 +146,20 @@ const CanvasPropertiesModal = observer((props: CanvasPropertiesModalProps) => {
                         height={CANVAS_ELEMENT_SIZE * scale}
                         top={-height / SCALE_FACTOR * scale + 'px'}
                         pointerEvents={'none'}
-                    >
-                    </Box>
+                    />
+                    <canvas
+                        style={{
+                            position: 'relative',
+                            top: -height / SCALE_FACTOR * scale - CANVAS_ELEMENT_SIZE * scale + 'px',
+                            pointerEvents: 'none',
+                            opacity: 0.5,
+                        }}
+                        ref={canvas}
+                        id='canvas-preview'
+                        width={CANVAS_ELEMENT_SIZE * scale}
+                        height={CANVAS_ELEMENT_SIZE * scale}
+                    />
+
                 </Box>
             </Box>
             <Box
