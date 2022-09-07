@@ -3,7 +3,7 @@ import * as THREE from "three";
 import { Object3D } from "three";
 import { Canvas, useLoader } from "@react-three/fiber";
 import Kobosu from "../../images/THE_ACTUAL_NFT_IMAGE.png";
-import { Box, useColorMode } from "@chakra-ui/react";
+import { Box, Flex, Input, useColorMode } from "@chakra-ui/react";
 import { createCanvasPixelSelectionSetter, getWorldPixelCoordinate, resizeCanvas } from "./helpers";
 import { onPixelSelectType } from "./Viewer.page";
 import ViewerStore from "./Viewer.store";
@@ -15,6 +15,7 @@ import AppStore from "../../store/App.store";
 import { observer } from "mobx-react-lite";
 import Colors from "../../DSL/Colors/Colors";
 import Typography, { TVariant } from "../../DSL/Typography/Typography";
+import Icon from "../../DSL/Icon/Icon";
 
 interface ThreeSceneProps {
   onPixelSelect: onPixelSelectType;
@@ -62,6 +63,9 @@ const DogeExplorer = observer(({ onPixelSelect, store }: ThreeSceneProps) => {
   const imageWorldUnitsArea = imageWorldUnitsWidth * imageWorldUnitsHeight;
   const worldUnitsPixelArea = imageWorldUnitsArea / (texture.image.width * texture.image.height);
   const overlayLength = Math.sqrt(worldUnitsPixelArea);
+
+  const [x, setX] = useState(0);
+  const [y, setY] = useState(0);
 
   // Create camera
   const zClippingSafetyBuffer = 3;
@@ -120,6 +124,10 @@ const DogeExplorer = observer(({ onPixelSelect, store }: ThreeSceneProps) => {
       }
     }
   };
+
+  const search = () => {
+    
+  }
 
   return (
     <Box w={"100%"} h={"100%"} position={"absolute"} zIndex={2} _focus={{ boxShadow: "none", borderColor: "inherit" }}>
@@ -325,6 +333,39 @@ const DogeExplorer = observer(({ onPixelSelect, store }: ThreeSceneProps) => {
           <PixelPane size={"md"} pupper={0} color={"fff"} pupperIndex={0} />
         </Box>
       )}
+        <Box  p={2} fontSize={10} position="absolute" bottom={55}>
+          X: <Input
+                  w={10}
+                  h={5}
+                  fontSize={8}
+                  padding={0}
+                  textAlign="center"
+                  zIndex={9999}
+                  borderRadius={0}
+                  id="image"
+                  type="text"
+                  onChange={(e: any) => setX(e.target.value)}
+              />
+          </Box>
+        <Box  p={2} fontSize={10} position="absolute" bottom={25}>
+          Y: <Input
+                  w={10}
+                  h={5}
+                  fontSize={8}
+                  padding={0}
+                  textAlign="center"
+                  zIndex={9999}
+                  borderRadius={0}
+                  id="image"
+                  type="text"
+                  onChange={(e: any) => setY(e.target.value)}
+              />
+        </Box>
+        <Box position={"absolute"} bottom={35} left={55} p={2} cursor="pointer" onClick={() => search()}>
+          <Icon
+                icon={"search"}
+                boxSize={5}/>
+        </Box>
       <Box position={"absolute"} bottom={0} left={0} p={2}>
         <Button size={"xs"} variant={ButtonVariant.Text} onClick={() => setShowOwned(!showOwned)}>
           {showOwned ? "hide" : "show"} owned
