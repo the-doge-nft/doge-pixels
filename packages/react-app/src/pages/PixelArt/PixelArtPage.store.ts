@@ -65,6 +65,8 @@ class PixelArtPageStore extends Reactionable(EmptyClass) {
 
     @observable
     stickers: Sticker[];
+    @observable
+    stickersHack: number;
 
     @observable
     isImportTemplateModalOpened: boolean;
@@ -97,6 +99,7 @@ class PixelArtPageStore extends Reactionable(EmptyClass) {
         this.templateHeight = CANVAS_ELEMENT_SIZE;
 
         this.stickers = [];
+        this.stickersHack = 0;
 
         this.isImportTemplateModalOpened = false;
         this.isCanvasPropertiesModalOpened = false;
@@ -143,6 +146,8 @@ class PixelArtPageStore extends Reactionable(EmptyClass) {
 
     @action
     refreshStickers() {
+        this.stickersHack = (this.stickersHack + 1) % 10;
+        //console.log('refreshStickers', this.stickersHack);
     }
 
     @action

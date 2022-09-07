@@ -134,20 +134,10 @@ export class ChangeStickerAction implements ActionInterface {
     }
     undo(store: PixelArtPageStore): void {
         this.sticker.set(this.oldX, this.oldY, this.oldWidth, this.oldHeight, this.oldRotation);
-        /*this.sticker.x = this.oldX;
-        this.sticker.y = this.oldY;
-        this.sticker.width = this.oldWidth;
-        this.sticker.height = this.oldHeight;
-        this.sticker.rotation = this.oldRotation;*/
         store.refreshStickers();
     }
     redo(store: PixelArtPageStore): void {
         this.sticker.set(this.newX, this.newY, this.newWidth, this.newHeight, this.newRotation);
-        /*this.sticker.x = this.newX;
-        this.sticker.y = this.newY;
-        this.sticker.width = this.newWidth;
-        this.sticker.height = this.newHeight;
-        this.sticker.rotation = this.newRotation;*/
         store.refreshStickers();
     }
     update(): void {

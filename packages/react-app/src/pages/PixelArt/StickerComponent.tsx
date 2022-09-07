@@ -1,6 +1,6 @@
 import { Box } from "@chakra-ui/react";
 import { observer } from "mobx-react-lite";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Icon from "../../DSL/Icon/Icon";
 import { ChangeStickerAction, RemoveStickerAction } from "./PixelArtActions";
 import PixelArtPageStore, { Sticker } from "./PixelArtPage.store";
@@ -20,6 +20,14 @@ const StickerComponent = observer(function StickerComponent(props: StickerCompon
     const [size, setSize] = useState({ x: props.sticker.width * props.scale, y: props.sticker.height * props.scale });
     const [rotation, setRotation] = useState(props.sticker.rotation);
     const [rotationStr, setRotationStr] = useState(`rotate(${props.sticker.rotation}deg)`)
+
+    useEffect(() => {
+        //console.log('StickerComponent.useEffect', props.store.stickersHack);
+        setPosition({ x: props.sticker.x * props.scale, y: props.sticker.y * props.scale });
+        setSize({ x: props.sticker.width * props.scale, y: props.sticker.height * props.scale });
+        setRotation(props.sticker.rotation);
+        setRotationStr(`rotate(${props.sticker.rotation}deg)`);
+    }, [props.store.stickersHack]);
 
     const onMouseDown = (mouseDownEvent: any) => {
         let action: any = null;
