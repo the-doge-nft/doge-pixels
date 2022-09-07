@@ -126,7 +126,17 @@ const DogeExplorer = observer(({ onPixelSelect, store }: ThreeSceneProps) => {
   };
 
   const search = () => {
-    
+    if (x < 640 && x >= 0 && y < 480 && y >= 0) {
+      const indexX = Math.floor(x );
+      const indexY = Math.floor((-1) * y );
+      onPixelSelect(indexX, -1 * indexY);
+      if (selectedPixelOverlayRef.current) {
+        selectedPixelOverlayRef.current.visible = true;
+        [selectedPixelOverlayRef.current.position.x, selectedPixelOverlayRef.current.position.y] = [x, -1 * y];
+        selectedPixelOverlayRef.current.position.z = 0.001;
+      }
+      PixelSelectionTools.selectPixel([x, y]);
+    }
   }
 
   return (
@@ -342,6 +352,7 @@ const DogeExplorer = observer(({ onPixelSelect, store }: ThreeSceneProps) => {
                   textAlign="center"
                   zIndex={9999}
                   borderRadius={0}
+                  // value= {x}
                   id="image"
                   type="text"
                   onChange={(e: any) => setX(e.target.value)}
@@ -354,6 +365,7 @@ const DogeExplorer = observer(({ onPixelSelect, store }: ThreeSceneProps) => {
                   fontSize={8}
                   padding={0}
                   textAlign="center"
+                  // value={y}
                   zIndex={9999}
                   borderRadius={0}
                   id="image"
