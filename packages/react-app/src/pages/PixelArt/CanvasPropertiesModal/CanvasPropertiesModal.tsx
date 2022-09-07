@@ -152,7 +152,7 @@ const CanvasPropertiesModal = observer((props: CanvasPropertiesModalProps) => {
                             position: 'relative',
                             top: -height / SCALE_FACTOR * scale - CANVAS_ELEMENT_SIZE * scale + 'px',
                             pointerEvents: 'none',
-                            opacity: 0.5,
+                            opacity: 0.25,
                         }}
                         ref={canvas}
                         id='canvas-preview'
