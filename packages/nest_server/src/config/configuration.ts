@@ -29,6 +29,11 @@ export interface Configuration {
     secret: string;
     channelId: string;
   };
+  aws: {
+    accessKeyId: string;
+    accessKeySecret: string;
+    bucketName: string;
+  };
   nomicsKey: string;
 }
 
@@ -56,6 +61,11 @@ const configuration: Configuration = {
   discord: {
     secret: process.env.DISCORD_SECRET,
     channelId: process.env.DISCORD_CHANNEL_ID,
+  },
+  aws: {
+    accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+    accessKeySecret: process.env.AWS_ACCESS_KEY_SECRET,
+    bucketName: process.env.AWS_S3_BUCKET_NAME,
   },
   nomicsKey: process.env.NOMICS_API_KEY,
 };
