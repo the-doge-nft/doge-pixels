@@ -72,6 +72,7 @@ export class PixelsService implements OnModuleInit {
   }
 
   private initPixelListener() {
+    this.logger.log(`Listening to transfer events`)
     this.pxContract.on('Transfer', async (from, to, tokenId, event) => {
       this.logger.log(`new transfer event hit: ${from} -- ${to} -- ${tokenId}`);
       const payload: PixelMintOrBurnPayload = { from, to, tokenId };
@@ -81,6 +82,7 @@ export class PixelsService implements OnModuleInit {
   }
 
   async syncTransfers() {
+    this.logger.log('Syncing pixel transfers')
     const logs = await this.getAllPixelTransferLogs();
 
     for (const log of logs) {

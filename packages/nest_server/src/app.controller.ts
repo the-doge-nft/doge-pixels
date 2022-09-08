@@ -115,7 +115,11 @@ export class AppController {
 
   @Get('ens/:address')
   async getEnsAddress(@Param() params) {
-    const ens = await this.ethersService.getEnsName(params.address);
+    const { address } = params
+    if (!this.ethersService.getIsValidEthereumAddress(address)) {
+      throw new BadRequestException("Invalid Ethereum address")
+    }
+    const ens = await this.ethersService.getEnsName(address);
     return { ens };
   }
 

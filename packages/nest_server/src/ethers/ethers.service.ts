@@ -112,4 +112,13 @@ export class EthersService implements OnModuleInit {
   getEnsName(address: string) {
     return this.provider.lookupAddress(address);
   }
+
+  getIsValidEthereumAddress(address: string) {
+    try {
+      ethers.utils.getAddress(address);
+      return true
+    } catch (e) {
+      return false
+    }
+  }
 }
