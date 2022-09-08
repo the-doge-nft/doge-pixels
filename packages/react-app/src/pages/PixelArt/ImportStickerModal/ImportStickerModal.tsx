@@ -22,12 +22,16 @@ const ImportStickerModal = observer((props: ImportStickerModalProps) => {
     const onImageUpload = (event: any) => {
         if (event.target.files.length) {
             let file = event.target.files[0];
-            let imgURL = URL.createObjectURL(file);
-            image.src = imgURL;
-            image.onload = () => {
-                setImageWidth(image.width);
-                setImageHeight(image.height);
-                setImageBase64(imgURL);
+            let reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onloadend = () => {
+                const data = reader.result;
+                image.src = data as string;
+                image.onload = () => {
+                    setImageWidth(image.width);
+                    setImageHeight(image.height);
+                    setImageBase64(data as string);
+                }    
             }
         } else {
             setImageBase64('');

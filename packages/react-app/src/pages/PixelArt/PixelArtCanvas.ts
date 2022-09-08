@@ -55,9 +55,17 @@ export class PixelArtCanvas {
     saveInfo() {
         return {
             size: this.canvasSize,
-            pixels: this.canvasPixels.map(value => {
-                return value;
-            }),
+            pixels: [...this.canvasPixels],
+        }
+    }
+
+    loadInfo(info: any) {
+        //console.log(info);
+        this.resize(info.size);
+        if (info.pixels && this.canvasPixels.length === info.pixels.length) {
+            for(let cn = 0; cn < info.pixels.length; ++cn) {
+                this.canvasPixels[cn] = info.pixels[cn];
+            }
         }
     }
 
@@ -86,7 +94,7 @@ export class PixelArtCanvas {
     }
 
     drawStickers(stickers: Sticker[]) {
-        console.log(stickers);
+        //console.log(stickers);
 
         if (!this.canvas) return;
 

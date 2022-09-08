@@ -17,8 +17,13 @@ const ImportTemplateModal = observer((props: ImportTemplateModalProps) => {
 
     const onImageUpload = (event: any) => {
         if (event.target.files.length) {
-            let img = event.target.files[0];
-            setImage(URL.createObjectURL(img));
+            let file = event.target.files[0];
+            let reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onloadend = () => {
+                const data = reader.result;
+                setImage(data as string);
+            }
         } else {
             setImage('');
         }

@@ -39,7 +39,7 @@ const CanvasPropertiesModal = observer((props: CanvasPropertiesModalProps) => {
     }, []);
 
     useEffect(() => {
-        console.log(canvas);
+        //console.log(canvas);
         if (canvas.current) {
             props.store.pixelsCanvas.updateCanvasEx(canvas.current);
         }
