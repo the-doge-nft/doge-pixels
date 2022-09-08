@@ -11,20 +11,21 @@ const MIN_SIZE = 50;
 
 interface StickerComponentProps {
     sticker: Sticker;
-    scale: number;
+    width: number;
+    height: number;
     store: PixelArtPageStore;
 }
 
 const StickerComponent = observer(function StickerComponent(props: StickerComponentProps) {
-    const [position, setPosition] = useState({ x: props.sticker.x * props.scale, y: props.sticker.y * props.scale });
-    const [size, setSize] = useState({ x: props.sticker.width * props.scale, y: props.sticker.height * props.scale });
+    const [position, setPosition] = useState({ x: props.sticker.x, y: props.sticker.y });
+    const [size, setSize] = useState({ x: props.sticker.width, y: props.sticker.height });
     const [rotation, setRotation] = useState(props.sticker.rotation);
     const [rotationStr, setRotationStr] = useState(`rotate(${props.sticker.rotation}deg)`)
 
     useEffect(() => {
         //console.log('StickerComponent.useEffect', props.store.stickersHack);
-        setPosition({ x: props.sticker.x * props.scale, y: props.sticker.y * props.scale });
-        setSize({ x: props.sticker.width * props.scale, y: props.sticker.height * props.scale });
+        setPosition({ x: props.sticker.x, y: props.sticker.y });
+        setSize({ x: props.sticker.width, y: props.sticker.height });
         setRotation(props.sticker.rotation);
         setRotationStr(`rotate(${props.sticker.rotation}deg)`);
     }, [props.store.stickersHack]);
@@ -32,8 +33,8 @@ const StickerComponent = observer(function StickerComponent(props: StickerCompon
     const onMouseDown = (mouseDownEvent: any) => {
         let action: any = null;
 
-        const startSize = size;
-        const startPosition = position;
+        const startSize = {x: size.x * props.width, y: size.y * props.height};
+        const startPosition = {x: position.x * props.width, y: position.y * props.height};
 
         let rect = mouseDownEvent.target.getBoundingClientRect();
         let clientX = mouseDownEvent.clientX - rect.x - rect.width / 2;
@@ -99,20 +100,20 @@ const StickerComponent = observer(function StickerComponent(props: StickerCompon
             }
 
             setPosition(value => ({
-                x: x,
-                y: y,
+                x: x / props.width,
+                y: y / props.height,
             }))
             setSize(value => ({
-                x: w,
-                y: h,
+                x: w / props.width,
+                y: h / props.height,
             }));
             setRotation(value => (a));
             setRotationStr(value => (`rotate(${a}deg)`));
 
-            props.sticker.x = x / props.scale;
-            props.sticker.y = y / props.scale;
-            props.sticker.width = w / props.scale;
-            props.sticker.height = h / props.scale;
+            props.sticker.x = x / props.width;
+            props.sticker.y = y / props.height;
+            props.sticker.width = w / props.width;
+            props.sticker.height = h / props.height;
             props.sticker.rotation = a;
         }
         function onMouseUp() {
@@ -138,10 +139,10 @@ const StickerComponent = observer(function StickerComponent(props: StickerCompon
         key='drag-resize'
         position={'absolute'}
         style={{
-            left: position.x,
-            top: position.y,
-            width: size.x,
-            height: size.y,
+            left: position.x * props.width,
+            top: position.y * props.height,
+            width: size.x * props.width,
+            height: size.y * props.height,
             minWidth: MIN_SIZE,
             minHeight: MIN_SIZE,
             transform: rotationStr

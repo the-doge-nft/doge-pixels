@@ -3,16 +3,15 @@ import Modal from "../../../DSL/Modal/Modal";
 import { Box } from "@chakra-ui/react";
 import PixelArtPageStore from "../PixelArtPage.store";
 import Button, { ButtonVariant } from "../../../DSL/Button/Button";
-import DragResizeComponent from "../DragResizeComponent";
 import { useEffect, useRef, useState } from "react";
 import Select from "../../../DSL/Select/Select";
 import Typography, { TVariant } from "../../../DSL/Typography/Typography";
 import AppStore from "../../../store/App.store";
 import { CANVAS_SIZES } from "../PixelArtCanvas";
+import TemplateComponent from "../TemplateComponent";
 
 const CANVAS_ELEMENT_SIZE = 256;
 const CANVAS_ELEMENT_MARGIN = 80;
-const SCALE_FACTOR = 2;
 
 interface CanvasPropertiesModalProps {
     isOpen: boolean;
@@ -88,10 +87,10 @@ const CanvasPropertiesModal = observer((props: CanvasPropertiesModalProps) => {
     }
 
     const onDrag = (left: number, top: number, width: number, height: number) => {
-        setLeft(left * SCALE_FACTOR / scale);
-        setTop(top * SCALE_FACTOR / scale);
-        setWidth(width * SCALE_FACTOR / scale);
-        setHeight(height * SCALE_FACTOR / scale);
+        setLeft(left);
+        setTop(top);
+        setWidth(width);
+        setHeight(height);
     }
 
     return <Modal
@@ -124,14 +123,10 @@ const CanvasPropertiesModal = observer((props: CanvasPropertiesModalProps) => {
                     top={CANVAS_ELEMENT_MARGIN * scale + 'px'}
                     left={CANVAS_ELEMENT_MARGIN * scale + 'px'}
                 >
-                    <DragResizeComponent
-                        image={props.store.templateImage}
-                        top={props.store.templateTop / SCALE_FACTOR * scale}
-                        left={props.store.templateLeft / SCALE_FACTOR * scale}
-                        width={props.store.templateWidth / SCALE_FACTOR * scale}
-                        height={props.store.templateHeight / SCALE_FACTOR * scale}
-                        maxWidth={(CANVAS_ELEMENT_SIZE + CANVAS_ELEMENT_MARGIN * 2) * scale}
-                        maxHeight={(CANVAS_ELEMENT_SIZE + CANVAS_ELEMENT_MARGIN * 2) * scale}
+                    <TemplateComponent
+                        store={props.store}
+                        width={CANVAS_ELEMENT_SIZE * scale}
+                        height={CANVAS_ELEMENT_SIZE * scale}
                         onChange={onDrag} />
                     <Box
                         border={"1px solid gray"}
@@ -144,13 +139,13 @@ const CanvasPropertiesModal = observer((props: CanvasPropertiesModalProps) => {
                         position={'relative'}
                         width={CANVAS_ELEMENT_SIZE * scale}
                         height={CANVAS_ELEMENT_SIZE * scale}
-                        top={-height / SCALE_FACTOR * scale + 'px'}
+                        top={-height * scale * CANVAS_ELEMENT_SIZE + 'px'}
                         pointerEvents={'none'}
                     />
                     <canvas
                         style={{
                             position: 'relative',
-                            top: -height / SCALE_FACTOR * scale - CANVAS_ELEMENT_SIZE * scale + 'px',
+                            top: -height * scale * CANVAS_ELEMENT_SIZE - CANVAS_ELEMENT_SIZE * scale + 'px',
                             pointerEvents: 'none',
                             opacity: 0.25,
                         }}

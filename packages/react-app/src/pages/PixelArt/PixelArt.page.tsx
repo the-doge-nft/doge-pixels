@@ -97,6 +97,7 @@ const ArtCanvasComponent = observer(({ store }: { store: PixelArtPageStore }) =>
 
     useEffect(() => {
         setScale(getScale());
+        store.pixelsCanvas.updateCanvas();
     }, [AppStore.rwd.isMobile]);
 
     const getScale = () => {
@@ -166,10 +167,10 @@ const ArtCanvasComponent = observer(({ store }: { store: PixelArtPageStore }) =>
             <Box overflow={"hidden"} width={CANVAS_ELEMENT_SIZE * scale} height={CANVAS_ELEMENT_SIZE * scale}>
                 <Box
                     position={"relative"}
-                    top={store.templateTop * scale + "px"}
-                    left={store.templateLeft * scale + "px"}
-                    width={store.templateWidth * scale + "px"}
-                    height={store.templateHeight * scale + "px"}
+                    top={store.templateTop * CANVAS_ELEMENT_SIZE * scale + "px"}
+                    left={store.templateLeft * CANVAS_ELEMENT_SIZE * scale + "px"}
+                    width={store.templateWidth * CANVAS_ELEMENT_SIZE * scale + "px"}
+                    height={store.templateHeight * CANVAS_ELEMENT_SIZE * scale + "px"}
                     backgroundImage={store.isTemplateVisible ? store.templateImage : ""}
                     backgroundSize={"contain"}
                     backgroundPosition={"center"}
@@ -179,7 +180,7 @@ const ArtCanvasComponent = observer(({ store }: { store: PixelArtPageStore }) =>
                 <canvas
                     style={{
                         position: "relative",
-                        top: -store.templateHeight * scale,
+                        top: -store.templateHeight * scale * CANVAS_ELEMENT_SIZE,
                     }}
                     id="canvas"
                     width={CANVAS_ELEMENT_SIZE * scale}
@@ -188,13 +189,19 @@ const ArtCanvasComponent = observer(({ store }: { store: PixelArtPageStore }) =>
                 ></canvas>
                 <Box
                     position={"relative"}
-                    top={-store.templateHeight * scale - CANVAS_ELEMENT_SIZE * scale}
+                    top={-store.templateHeight * scale * CANVAS_ELEMENT_SIZE - CANVAS_ELEMENT_SIZE * scale}
                     width={CANVAS_ELEMENT_SIZE * scale}
                     height={CANVAS_ELEMENT_SIZE * scale}
                     pointerEvents={store.selectedToolIndex === PixelArtTool.stickers ? "all" : "none"}
                 >
                     {store.stickers.map((entry: Sticker, index: number) => {
-                        return <StickerComponent key={index} store={store} scale={scale} sticker={entry} />;
+                        return <StickerComponent
+                            key={index}
+                            store={store}
+                            width={CANVAS_ELEMENT_SIZE * scale}
+                            height={CANVAS_ELEMENT_SIZE * scale}
+                            sticker={entry}
+                        />;
                     })}
                 </Box>
             </Box>

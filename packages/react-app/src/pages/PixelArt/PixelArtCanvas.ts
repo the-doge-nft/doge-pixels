@@ -87,7 +87,7 @@ export class PixelArtCanvas {
         for (let cy = 0; cy < this.canvasSize; ++cy) {
             for (let cx = 0; cx < this.canvasSize; ++cx) {
                 ctx.fillStyle = this.canvasPixels[cx + cy * this.canvasSize];
-                ctx.fillRect(cx * cellSize, cy * cellSize, cellSize, cellSize);
+                ctx.fillRect(Math.floor(cx * cellSize), Math.floor(cy * cellSize), Math.ceil(cellSize), Math.ceil(cellSize));
             }
         }
         ctx.restore();
@@ -127,10 +127,12 @@ export class PixelArtCanvas {
         const cellSize = this.canvas.width / this.canvasSize;
 
         if (color === TRANSPARENT_PIXEL) {
-            ctx.clearRect(x * cellSize, y * cellSize, cellSize, cellSize);
+            ctx.clearRect(Math.floor(x * cellSize), Math.floor(y * cellSize), Math.ceil(cellSize), Math.ceil(cellSize));
+            //ctx.clearRect(x * cellSize, y * cellSize, cellSize, cellSize);
         } else {
             ctx.fillStyle = color;
-            ctx.fillRect(x * cellSize, y * cellSize, cellSize, cellSize);
+            ctx.fillRect(Math.floor(x * cellSize), Math.floor(y * cellSize), Math.ceil(cellSize), Math.ceil(cellSize));
+            //ctx.fillRect(x * cellSize, y * cellSize, cellSize, cellSize);
         }
     }
 

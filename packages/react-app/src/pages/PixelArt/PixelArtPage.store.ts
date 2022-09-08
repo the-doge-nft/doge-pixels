@@ -8,7 +8,6 @@ import { ActionInterface } from "./PixelArtActions";
 import { CanvasSize, PixelArtCanvas } from "./PixelArtCanvas";
 
 const MAX_ACTIONS_CN = 50;
-const CANVAS_ELEMENT_SIZE = 512;
 
 export class Sticker {
     x: number;
@@ -22,8 +21,8 @@ export class Sticker {
     constructor() {
         this.x = 0;
         this.y = 0;
-        this.width = 100;
-        this.height = 100;
+        this.width = 1;
+        this.height = 1;
         this.rotation = 0;
         this.imageBase64 = '';
     }
@@ -97,8 +96,8 @@ class PixelArtPageStore extends Reactionable(EmptyClass) {
         this.templateImage = '';
         this.templateLeft = 0;
         this.templateTop = 0;
-        this.templateWidth = CANVAS_ELEMENT_SIZE;
-        this.templateHeight = CANVAS_ELEMENT_SIZE;
+        this.templateWidth = 1;
+        this.templateHeight = 1;
         this.isTemplateVisible = true;
 
         this.stickers = [];
