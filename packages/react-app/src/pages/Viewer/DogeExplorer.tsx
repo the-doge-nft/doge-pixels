@@ -3,7 +3,7 @@ import * as THREE from "three";
 import { Object3D } from "three";
 import { Canvas, useLoader } from "@react-three/fiber";
 import Kobosu from "../../images/THE_ACTUAL_NFT_IMAGE.png";
-import { Box, useColorMode } from "@chakra-ui/react";
+import { Box, Flex, Input, useColorMode } from "@chakra-ui/react";
 import { createCanvasPixelSelectionSetter, getWorldPixelCoordinate, resizeCanvas } from "./helpers";
 import { onPixelSelectType } from "./Viewer.page";
 import ViewerStore from "./Viewer.store";
@@ -15,6 +15,7 @@ import AppStore from "../../store/App.store";
 import { observer } from "mobx-react-lite";
 import Colors from "../../DSL/Colors/Colors";
 import Typography, { TVariant } from "../../DSL/Typography/Typography";
+import Icon from "../../DSL/Icon/Icon";
 
 interface ThreeSceneProps {
   onPixelSelect: onPixelSelectType;
@@ -62,6 +63,9 @@ const DogeExplorer = observer(({ onPixelSelect, store }: ThreeSceneProps) => {
   const imageWorldUnitsArea = imageWorldUnitsWidth * imageWorldUnitsHeight;
   const worldUnitsPixelArea = imageWorldUnitsArea / (texture.image.width * texture.image.height);
   const overlayLength = Math.sqrt(worldUnitsPixelArea);
+
+  const [x, setX] = useState(0);
+  const [y, setY] = useState(0);
 
   // Create camera
   const zClippingSafetyBuffer = 3;
@@ -118,6 +122,20 @@ const DogeExplorer = observer(({ onPixelSelect, store }: ThreeSceneProps) => {
         [selectedPixelOverlayRef.current.position.x, selectedPixelOverlayRef.current.position.y] = [pixelX, pixelY];
         selectedPixelOverlayRef.current.position.z = 0.001;
       }
+    }
+  };
+
+  const search = () => {
+    if (x < 640 && x >= 0 && y < 480 && y >= 0) {
+      const indexX = Math.floor(x);
+      const indexY = Math.floor(-1 * y);
+      onPixelSelect(indexX, -1 * indexY);
+      if (selectedPixelOverlayRef.current) {
+        selectedPixelOverlayRef.current.visible = true;
+        [selectedPixelOverlayRef.current.position.x, selectedPixelOverlayRef.current.position.y] = [x, -1 * y];
+        selectedPixelOverlayRef.current.position.z = 0.001;
+      }
+      PixelSelectionTools.selectPixel([x, y]);
     }
   };
 
@@ -326,9 +344,46 @@ const DogeExplorer = observer(({ onPixelSelect, store }: ThreeSceneProps) => {
         </Box>
       )}
       <Box position={"absolute"} bottom={0} left={0} p={2}>
-        <Button size={"xs"} variant={ButtonVariant.Text} onClick={() => setShowOwned(!showOwned)}>
-          {showOwned ? "hide" : "show"} owned
-        </Button>
+        <Flex flexDir={"column"} gap={2}>
+          <Button size={"xs"} variant={ButtonVariant.Text} onClick={() => setShowOwned(!showOwned)}>
+            {showOwned ? "hide" : "show"} owned
+          </Button>
+          <Flex alignItems={"center"} gap={2}>
+            <Box>
+              <Typography variant={TVariant.PresStart10}>X:</Typography>
+              <Input
+                w={10}
+                h={5}
+                fontSize={8}
+                padding={0}
+                textAlign="center"
+                zIndex={9999}
+                borderRadius={0}
+                id="image"
+                type="text"
+                onChange={(e: any) => setX(e.target.value)}
+              />
+            </Box>
+            <Box>
+              <Typography variant={TVariant.PresStart10}>Y:</Typography>
+              <Input
+                w={10}
+                h={5}
+                fontSize={8}
+                padding={0}
+                textAlign="center"
+                zIndex={9999}
+                borderRadius={0}
+                id="image"
+                type="text"
+                onChange={(e: any) => setY(e.target.value)}
+              />
+            </Box>
+            <Box cursor="pointer" onClick={() => search()}>
+              <Icon icon={"search"} boxSize={4} />
+            </Box>
+          </Flex>
+        </Flex>
       </Box>
     </Box>
   );
