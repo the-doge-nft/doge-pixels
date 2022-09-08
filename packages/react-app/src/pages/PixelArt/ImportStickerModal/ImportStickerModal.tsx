@@ -36,10 +36,15 @@ const ImportStickerModal = observer((props: ImportStickerModalProps) => {
 
     const onApply = () => {
         if (imageBase64 !== '') {
+            const sizeLimit = props.store.pixelsCanvas.canvas.width;
+            const maxSize = Math.max(imageWidth, imageHeight);
+            const scale = Math.min(1, sizeLimit / maxSize)
             let sticker = new Sticker();
             sticker.imageBase64 = imageBase64;
-            sticker.width = imageWidth;
-            sticker.height = imageHeight;
+            sticker.width = imageWidth * scale;
+            sticker.height = imageHeight * scale;
+            sticker.x = (sizeLimit - sticker.width) / 2;
+            sticker.y = (sizeLimit - sticker.height) / 2;
             sticker.image = image;
             props.store.stickers.push(sticker);
             props.store.pushAction(new AddStickerAction(sticker));

@@ -62,9 +62,13 @@ class PixelArtPageStore extends Reactionable(EmptyClass) {
     templateWidth: number;
     @observable
     templateHeight: number;
+    @observable
+    isTemplateVisible: boolean;
 
     @observable
     stickers: Sticker[];
+    @observable
+    stickersHack: number;
 
     @observable
     isImportTemplateModalOpened: boolean;
@@ -95,8 +99,10 @@ class PixelArtPageStore extends Reactionable(EmptyClass) {
         this.templateTop = 0;
         this.templateWidth = CANVAS_ELEMENT_SIZE;
         this.templateHeight = CANVAS_ELEMENT_SIZE;
+        this.isTemplateVisible = true;
 
         this.stickers = [];
+        this.stickersHack = 0;
 
         this.isImportTemplateModalOpened = false;
         this.isCanvasPropertiesModalOpened = false;
@@ -108,8 +114,49 @@ class PixelArtPageStore extends Reactionable(EmptyClass) {
         this.pixelsCanvas.updateCanvas();
     }
 
+    saveInfo() {
+        return {
+            meta: {
+                version: 0,
+            },
+            canvas: this.pixelsCanvas.saveInfo(),
+            stickers: this.saveStickersInfo(),
+            template: this.saveTemplateInfo()
+        }
+    }
+
+    saveStickersInfo() {
+        return this.stickers.map(value => {
+            return {
+                x: value.x,
+                y: value.y,
+                width: value.width,
+                height: value.height,
+                imageBase64: value.imageBase64,
+            }
+        });
+    }
+
+    saveTemplateInfo() {
+        return {
+            x: this.templateLeft,
+            y: this.templateTop,
+            width: this.templateWidth,
+            innerHeight: this.templateHeight,
+            imageBase64: this.templateImage,
+        }
+    }
+
     @action
     refreshStickers() {
+        this.stickersHack = (this.stickersHack + 1) % 10;
+        //console.log('refreshStickers', this.stickersHack);
+    }
+
+    @action
+    clearActions() {
+        this.undoActions = [];
+        this.redoActions = [];
     }
 
     @action

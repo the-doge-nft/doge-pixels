@@ -1,3 +1,4 @@
+import { sha512 } from "ethers/lib/utils";
 import { TRANSPARENT_PIXEL } from "./PixelArtCanvas";
 import PixelArtPageStore, { Sticker } from "./PixelArtPage.store";
 
@@ -133,20 +134,10 @@ export class ChangeStickerAction implements ActionInterface {
     }
     undo(store: PixelArtPageStore): void {
         this.sticker.set(this.oldX, this.oldY, this.oldWidth, this.oldHeight, this.oldRotation);
-        /*this.sticker.x = this.oldX;
-        this.sticker.y = this.oldY;
-        this.sticker.width = this.oldWidth;
-        this.sticker.height = this.oldHeight;
-        this.sticker.rotation = this.oldRotation;*/
         store.refreshStickers();
     }
     redo(store: PixelArtPageStore): void {
         this.sticker.set(this.newX, this.newY, this.newWidth, this.newHeight, this.newRotation);
-        /*this.sticker.x = this.newX;
-        this.sticker.y = this.newY;
-        this.sticker.width = this.newWidth;
-        this.sticker.height = this.newHeight;
-        this.sticker.rotation = this.newRotation;*/
         store.refreshStickers();
     }
     update(): void {
@@ -155,6 +146,41 @@ export class ChangeStickerAction implements ActionInterface {
         this.newWidth = this.sticker.width;
         this.newHeight = this.sticker.height;
         this.newRotation = this.sticker.rotation;
+    }
+    isValid(): boolean {
+        return true;
+    }
+}
+
+export class IdenticonAction implements ActionInterface {
+    canvasPixels: string[];
+
+    constructor(store: PixelArtPageStore) {
+        this.canvasPixels = [...store.pixelsCanvas.canvasPixels];
+    }
+    do(store: PixelArtPageStore) {
+        const colors = store.palette;
+        let text = store.selectedAddress;
+        let hashedText = '';
+        for (let cn = 0; cn < 128; ++cn) {
+            text = sha512(text);
+            hashedText += text;
+        }
+        for (let cy = 0; cy < store.pixelsCanvas.canvasSize; ++cy) {
+            for (let cx = 0; cx < store.pixelsCanvas.canvasSize; ++cx) {
+                let i = cx + cy * store.pixelsCanvas.canvasSize;
+                i %= hashedText.length;
+                let code = hashedText.charCodeAt(i) - 32;
+                store.pixelsCanvas.setPixelColor(cx, cy, colors[code % colors.length]);
+            }
+        }
+    }
+    undo(store: PixelArtPageStore): void {
+        store.pixelsCanvas.canvasPixels = [...this.canvasPixels];
+        store.pixelsCanvas.updateCanvas();
+    }
+    redo(store: PixelArtPageStore): void {
+        this.do(store);
     }
     isValid(): boolean {
         return true;

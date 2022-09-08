@@ -23,7 +23,7 @@ const DragResizeComponent = observer(function DragResizeComponent(props: DragRes
     const onMouseDown = (mouseDownEvent: any) => {
         const startSize = size;
         const startPosition = position;
-        
+
         let rect = mouseDownEvent.target.getBoundingClientRect();
         let clientX = mouseDownEvent.clientX - rect.x;
         let clientY = mouseDownEvent.clientY - rect.y;
@@ -100,6 +100,42 @@ const DragResizeComponent = observer(function DragResizeComponent(props: DragRes
         backgroundPosition={'center'}
         backgroundRepeat={'no-repeat'}
     >
+        <Box
+            backgroundImage={'linear-gradient(135deg, #FFF 12.5%, transparent 12.5%, transparent 25%, #FFF 25%, #FFF 37.5%, transparent 37.5%, transparent)'}
+            backgroundSize={`${SAFE_ZONE}px ${SAFE_ZONE}px`}
+            position={'absolute'}
+            width={SAFE_ZONE + 'px'}
+            height={SAFE_ZONE + 'px'}
+            pointerEvents={'none'}
+        />
+        <Box
+            backgroundImage={'linear-gradient(45deg, #FFF 12.5%, transparent 12.5%, transparent 25%, #FFF 25%, #FFF 37.5%, transparent 37.5%, transparent)'}
+            backgroundSize={`${SAFE_ZONE}px ${SAFE_ZONE}px`}
+            position={'absolute'}
+            width={SAFE_ZONE + 'px'}
+            height={SAFE_ZONE + 'px'}
+            bottom={0}
+            pointerEvents={'none'}
+        />
+        <Box
+            backgroundImage={'linear-gradient(-45deg, #FFF 12.5%, transparent 12.5%, transparent 25%, #FFF 25%, #FFF 37.5%, transparent 37.5%, transparent)'}
+            backgroundSize={`${SAFE_ZONE}px ${SAFE_ZONE}px`}
+            position={'absolute'}
+            width={SAFE_ZONE + 'px'}
+            height={SAFE_ZONE + 'px'}
+            right={0}
+            bottom={0}
+            pointerEvents={'none'}
+        />
+        <Box
+            backgroundImage={'linear-gradient(-135deg, #FFF 12.5%, transparent 12.5%, transparent 25%, #FFF 25%, #FFF 37.5%, transparent 37.5%, transparent)'}
+            backgroundSize={`${SAFE_ZONE}px ${SAFE_ZONE}px`}
+            position={'absolute'}
+            width={SAFE_ZONE + 'px'}
+            height={SAFE_ZONE + 'px'}
+            right={0}
+            pointerEvents={'none'}
+        />
     </Box>
 });
 
