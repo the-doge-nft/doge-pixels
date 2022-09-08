@@ -85,7 +85,7 @@ const routes: AppRouteInterface[] = [
     exact: true,
     layout: AppLayout,
     component: PixelArtPage,
-    desktopName: "Pixel art",
+    desktopName: "Art",
     mobileName: "ART",
     showOnMobile: true,
     showOnDesktop: true,
