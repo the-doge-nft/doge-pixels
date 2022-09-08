@@ -1,32 +1,49 @@
 import { Box } from "@chakra-ui/react";
 import { observer } from "mobx-react-lite";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import PixelArtPageStore from "./PixelArtPage.store";
 
 const SAFE_ZONE = 20;
 const MIN_SIZE = 50;
 
-interface DragResizeComponentProps {
-    image?: string;
-    top: number;
-    left: number;
+interface TemplateComponentProps {
+    store: PixelArtPageStore;
     width: number;
     height: number;
-    maxWidth: number;
-    maxHeight: number;
     onChange?: (left: number, top: number, width: number, height: number) => void;
 }
 
-const DragResizeComponent = observer(function DragResizeComponent(props: DragResizeComponentProps) {
-    const [position, setPosition] = useState({ x: props.left, y: props.top });
-    const [size, setSize] = useState({ x: props.width, y: props.height });
+const TemplateComponent = observer(function DragResizeComponent(props: TemplateComponentProps) {
+    const [position, setPosition] = useState({ x: props.store.templateLeft, y: props.store.templateTop });
+    const [size, setSize] = useState({ x: props.store.templateWidth, y: props.store.templateHeight });
 
     const onMouseDown = (mouseDownEvent: any) => {
-        const startSize = size;
-        const startPosition = position;
+        const startSize = {x: size.x * props.width, y: size.y * props.height};
+        const startPosition = {x: position.x * props.width, y: position.y * props.height};
+
+        let clientX = mouseDownEvent.clientX;
+        let clientY = mouseDownEvent.clientY;
+        let pageX = mouseDownEvent.pageX;
+        let pageY = mouseDownEvent.pageY;
+
+        if (mouseDownEvent.changedTouches) {
+            let ourTouch = false;
+            for(let touch of mouseDownEvent.changedTouches) {
+                if (touch.identifier === 0) {
+                    clientX = touch.clientX;
+                    clientY = touch.clientY;
+                    pageX = touch.pageX;
+                    pageY = touch.pageY;
+                    ourTouch = true;
+                    break;
+                }
+            }
+            if (!ourTouch) return;
+        }
 
         let rect = mouseDownEvent.target.getBoundingClientRect();
-        let clientX = mouseDownEvent.clientX - rect.x;
-        let clientY = mouseDownEvent.clientY - rect.y;
+        clientX = clientX - rect.x;
+        clientY = clientY - rect.y;
         let cornerX = 0;
         let cornerY = 0;
 
@@ -35,11 +52,29 @@ const DragResizeComponent = observer(function DragResizeComponent(props: DragRes
         if (clientY < SAFE_ZONE) cornerY = -1;
         if (clientY >= rect.height - SAFE_ZONE) cornerY = 1;
 
-        const capture = { x: mouseDownEvent.pageX, y: mouseDownEvent.pageY };
+        const capture = { x: pageX, y: pageY };
 
         function onMouseMove(mouseMoveEvent: any) {
-            let dx = capture.x - mouseMoveEvent.pageX;
-            let dy = capture.y - mouseMoveEvent.pageY;
+            let pageX = mouseMoveEvent.pageX;
+            let pageY = mouseMoveEvent.pageY;
+
+            if (mouseMoveEvent.changedTouches) {
+                let ourTouch = false;
+                for(let touch of mouseMoveEvent.changedTouches) {
+                    if (touch.identifier === 0) {
+                        clientX = touch.clientX;
+                        clientY = touch.clientY;
+                        pageX = touch.pageX;
+                        pageY = touch.pageY;
+                        ourTouch = true;
+                        break;
+                    }
+                }
+                if (!ourTouch) return;
+            }
+
+            let dx = capture.x - pageX;
+            let dy = capture.y - pageY;
             let x = startPosition.x;
             let y = startPosition.y;
             let w = startSize.x;
@@ -57,26 +92,31 @@ const DragResizeComponent = observer(function DragResizeComponent(props: DragRes
             if (cornerX === 0) x -= dx;
             if (cornerY === 0) y -= dy;
 
+            w = Math.min(w, props.width * 1.5);
+            h = Math.min(h, props.height * 1.5);
+
             setPosition(value => ({
-                x: x,
-                y: y,
+                x: x / props.width,
+                y: y / props.height,
             }))
-            w = Math.min(w, props.maxWidth);
-            h = Math.min(h, props.maxHeight);
             setSize(value => ({
-                x: w,
-                y: h,
+                x: w / props.width,
+                y: h / props.height,
             }));
             if (props.onChange) {
-                props.onChange(x, y, w, h);
+                props.onChange(x / props.width, y / props.height, w / props.width, h / props.height);
             }
         }
         function onMouseUp() {
             document.body.removeEventListener("mousemove", onMouseMove);
+            window.removeEventListener("touchmove", onMouseMove);
         }
 
         document.body.addEventListener("mousemove", onMouseMove);
         document.body.addEventListener("mouseup", onMouseUp, { once: true });
+
+        window.addEventListener("touchmove", onMouseMove);
+        window.addEventListener("touchend", onMouseUp, { once: true });
     };
 
     return <Box
@@ -84,10 +124,10 @@ const DragResizeComponent = observer(function DragResizeComponent(props: DragRes
         key='drag-resize'
         position={'relative'}
         style={{
-            left: position.x,
-            top: position.y,
-            width: size.x,
-            height: size.y,
+            left: position.x * props.width,
+            top: position.y * props.height,
+            width: size.x * props.width,
+            height: size.y * props.height,
             minWidth: MIN_SIZE,
             minHeight: MIN_SIZE,
         }}
@@ -95,7 +135,8 @@ const DragResizeComponent = observer(function DragResizeComponent(props: DragRes
         h={100}
         bgColor={'#F008'}
         onMouseDown={onMouseDown}
-        backgroundImage={props.image}
+        onTouchStart={onMouseDown}
+        backgroundImage={props.store.templateImage}
         backgroundSize={'contain'}
         backgroundPosition={'center'}
         backgroundRepeat={'no-repeat'}
@@ -139,4 +180,4 @@ const DragResizeComponent = observer(function DragResizeComponent(props: DragRes
     </Box>
 });
 
-export default DragResizeComponent;
+export default TemplateComponent;

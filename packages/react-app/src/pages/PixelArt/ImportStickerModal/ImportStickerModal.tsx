@@ -22,12 +22,16 @@ const ImportStickerModal = observer((props: ImportStickerModalProps) => {
     const onImageUpload = (event: any) => {
         if (event.target.files.length) {
             let file = event.target.files[0];
-            let imgURL = URL.createObjectURL(file);
-            image.src = imgURL;
-            image.onload = () => {
-                setImageWidth(image.width);
-                setImageHeight(image.height);
-                setImageBase64(imgURL);
+            let reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onloadend = () => {
+                const data = reader.result;
+                image.src = data as string;
+                image.onload = () => {
+                    setImageWidth(image.width);
+                    setImageHeight(image.height);
+                    setImageBase64(data as string);
+                }    
             }
         } else {
             setImageBase64('');
@@ -41,10 +45,10 @@ const ImportStickerModal = observer((props: ImportStickerModalProps) => {
             const scale = Math.min(1, sizeLimit / maxSize)
             let sticker = new Sticker();
             sticker.imageBase64 = imageBase64;
-            sticker.width = imageWidth * scale;
-            sticker.height = imageHeight * scale;
-            sticker.x = (sizeLimit - sticker.width) / 2;
-            sticker.y = (sizeLimit - sticker.height) / 2;
+            sticker.width = imageWidth * scale / sizeLimit;
+            sticker.height = imageHeight * scale / sizeLimit;
+            sticker.x = (sizeLimit - imageWidth * scale) / 2 / sizeLimit;
+            sticker.y = (sizeLimit - imageHeight * scale) / 2 / sizeLimit;
             sticker.image = image;
             props.store.stickers.push(sticker);
             props.store.pushAction(new AddStickerAction(sticker));
