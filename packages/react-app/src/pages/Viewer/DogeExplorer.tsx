@@ -127,8 +127,8 @@ const DogeExplorer = observer(({ onPixelSelect, store }: ThreeSceneProps) => {
 
   const search = () => {
     if (x < 640 && x >= 0 && y < 480 && y >= 0) {
-      const indexX = Math.floor(x );
-      const indexY = Math.floor((-1) * y );
+      const indexX = Math.floor(x);
+      const indexY = Math.floor(-1 * y);
       onPixelSelect(indexX, -1 * indexY);
       if (selectedPixelOverlayRef.current) {
         selectedPixelOverlayRef.current.visible = true;
@@ -137,7 +137,7 @@ const DogeExplorer = observer(({ onPixelSelect, store }: ThreeSceneProps) => {
       }
       PixelSelectionTools.selectPixel([x, y]);
     }
-  }
+  };
 
   return (
     <Box w={"100%"} h={"100%"} position={"absolute"} zIndex={2} _focus={{ boxShadow: "none", borderColor: "inherit" }}>
@@ -343,45 +343,47 @@ const DogeExplorer = observer(({ onPixelSelect, store }: ThreeSceneProps) => {
           <PixelPane size={"md"} pupper={0} color={"fff"} pupperIndex={0} />
         </Box>
       )}
-        <Box  p={2} fontSize={10} position="absolute" bottom={55}>
-          X: <Input
-                  w={10}
-                  h={5}
-                  fontSize={8}
-                  padding={0}
-                  textAlign="center"
-                  zIndex={9999}
-                  borderRadius={0}
-                  // value= {x}
-                  id="image"
-                  type="text"
-                  onChange={(e: any) => setX(e.target.value)}
-              />
-          </Box>
-        <Box  p={2} fontSize={10} position="absolute" bottom={25}>
-          Y: <Input
-                  w={10}
-                  h={5}
-                  fontSize={8}
-                  padding={0}
-                  textAlign="center"
-                  // value={y}
-                  zIndex={9999}
-                  borderRadius={0}
-                  id="image"
-                  type="text"
-                  onChange={(e: any) => setY(e.target.value)}
-              />
-        </Box>
-        <Box position={"absolute"} bottom={35} left={55} p={2} cursor="pointer" onClick={() => search()}>
-          <Icon
-                icon={"search"}
-                boxSize={5}/>
-        </Box>
       <Box position={"absolute"} bottom={0} left={0} p={2}>
-        <Button size={"xs"} variant={ButtonVariant.Text} onClick={() => setShowOwned(!showOwned)}>
-          {showOwned ? "hide" : "show"} owned
-        </Button>
+        <Flex flexDir={"column"} gap={2}>
+          <Button size={"xs"} variant={ButtonVariant.Text} onClick={() => setShowOwned(!showOwned)}>
+            {showOwned ? "hide" : "show"} owned
+          </Button>
+          <Flex alignItems={"center"} gap={2}>
+            <Box>
+              <Typography variant={TVariant.PresStart10}>X:</Typography>
+              <Input
+                w={10}
+                h={5}
+                fontSize={8}
+                padding={0}
+                textAlign="center"
+                zIndex={9999}
+                borderRadius={0}
+                id="image"
+                type="text"
+                onChange={(e: any) => setX(e.target.value)}
+              />
+            </Box>
+            <Box>
+              <Typography variant={TVariant.PresStart10}>Y:</Typography>
+              <Input
+                w={10}
+                h={5}
+                fontSize={8}
+                padding={0}
+                textAlign="center"
+                zIndex={9999}
+                borderRadius={0}
+                id="image"
+                type="text"
+                onChange={(e: any) => setY(e.target.value)}
+              />
+            </Box>
+            <Box cursor="pointer" onClick={() => search()}>
+              <Icon icon={"search"} boxSize={4} />
+            </Box>
+          </Flex>
+        </Flex>
       </Box>
     </Box>
   );
