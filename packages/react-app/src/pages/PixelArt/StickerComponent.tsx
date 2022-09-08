@@ -28,7 +28,7 @@ const StickerComponent = observer(function StickerComponent(props: StickerCompon
         setSize({ x: props.sticker.width, y: props.sticker.height });
         setRotation(props.sticker.rotation);
         setRotationStr(`rotate(${props.sticker.rotation}deg)`);
-    }, [props.store.stickersHack]);
+    }, [props.store.stickersHack, props.sticker]);
 
     const onMouseDown = (mouseDownEvent: any) => {
         let action: any = null;
