@@ -51,13 +51,7 @@ const DogParkPage = observer(function DogParkPage() {
     );
   };
   return (
-    <Grid templateColumns={"0.5fr 1fr"} flexGrow={1}>
-      <GridItem display={"flex"} flexDirection={"column"} flexGrow={1}>
-        <TopDogs store={store} />
-        <Box mt={8}>
-          <DogKennel store={store} />
-        </Box>
-      </GridItem>
+    <Flex flexDirection={"column"}>
       <GridItem ml={16}>
         <Flex height={"full"} flexDirection={"column"}>
           <Box mb={8}>
@@ -88,58 +82,14 @@ const DogParkPage = observer(function DogParkPage() {
                     </Box>
                 </Box>}
                 {store.selectedUserHasPixels && (
-                  <Grid
-                    templateRows={{base: "1fr 1fr", "xl": "1fr"}}
-                    templateColumns={{base: "1fr", "xl": "1fr 1fr"}}
-                    h={"full"}>
-                    <GridItem order={{base: 2, xl: 1}} display={"flex"}>
-                      <Box overflowY={"auto"} flexGrow={1}>
-                        <Flex flexWrap={{base: "nowrap", xl: "wrap"}} maxHeight={"300px"}>
-                          {store.selectedOwner?.pixels.map(px => {
-                            console.log('debug:: px', px)
-                            const hex = AppStore.web3.pupperToHexLocal(px);
-                            const index = AppStore.web3.pupperToIndexLocal(px);
-                            return (
-                              <Box
-                                key={`user-dog-${px}`}
-                                bg={
-                                  store.selectedPixel === px
-                                    ? colorMode === "light"
-                                      ? lightModePrimary
-                                      : darkModeSecondary
-                                    : "inherit"
-                                }
-                                p={2}
-                                mt={0}
-                                _hover={{ bg: colorMode === "light" ? lightModePrimary : darkModeSecondary }}
-                              >
-                                <PixelPane
-                                  showCoords={true}
-                                  size={"sm"}
-                                  key={`top_dog_${px}`}
-                                  pupper={px}
-                                  color={hex}
-                                  pupperIndex={index}
-                                  coordinates={AppStore.web3.pupperToPixelCoordsLocal(px)}
-                                  onClick={px => {
-                                    store.selectedPixel = px;
-                                    window.history.pushState(
-                                      {},
-                                      "",
-                                      route(NamedRoutes.DOG_PARK, {
-                                        address: store.selectedAddress,
-                                        tokenID: store.selectedPixel,
-                                      }),
-                                    );
-                                  }}
-                                />
-                              </Box>
-                            );
-                          })}
-                        </Flex>
-                      </Box>
-                    </GridItem>
-                    <GridItem order={{base: 1, xl: 2}} display={"flex"} justifyContent={"center"} mx={4}>
+                  <Flex
+                    // templateRows={"max-content 1fr"}
+                    // templateColumns={"repeat(2, 1fr)"}
+                    flexWrap={"wrap"}
+                    maxHeight="650px"
+                    justifyContent={"center"}
+                     >
+                    <GridItem   display={"flex"} justifyContent={"center"} mx={4} >
                       {store.selectedOwner && (
                         <Box maxWidth={"fit-content"} mt={2}>
                           <Flex flexDirection={"column"}>
@@ -196,14 +146,67 @@ const DogParkPage = observer(function DogParkPage() {
                         </Box>
                       )}
                     </GridItem>
-                  </Grid>
+                    <GridItem  display={"flex"}>
+                      <Box overflowY={"auto"} flexGrow={1}>
+                        <Flex flexWrap={{base: "nowrap", xl: "wrap"}} maxHeight={"300px"} justifyContent={"center"}>
+                          {store.selectedOwner?.pixels.map(px => {
+                            console.log('debug:: px', px)
+                            const hex = AppStore.web3.pupperToHexLocal(px);
+                            const index = AppStore.web3.pupperToIndexLocal(px);
+                            return (
+                              <Box
+                                key={`user-dog-${px}`}
+                                bg={
+                                  store.selectedPixel === px
+                                    ? colorMode === "light"
+                                      ? lightModePrimary
+                                      : darkModeSecondary
+                                    : "inherit"
+                                }
+                                p={2}
+                                mt={0}
+                                _hover={{ bg: colorMode === "light" ? lightModePrimary : darkModeSecondary }}
+                              >
+                                <PixelPane
+                                  showCoords={true}
+                                  size={"sm"}
+                                  key={`top_dog_${px}`}
+                                  pupper={px}
+                                  color={hex}
+                                  pupperIndex={index}
+                                  coordinates={AppStore.web3.pupperToPixelCoordsLocal(px)}
+                                  onClick={px => {
+                                    store.selectedPixel = px;
+                                    window.history.pushState(
+                                      {},
+                                      "",
+                                      route(NamedRoutes.DOG_PARK, {
+                                        address: store.selectedAddress,
+                                        tokenID: store.selectedPixel,
+                                      }),
+                                    );
+                                  }}
+                                />
+                              </Box>
+                            );
+                          })}
+                        </Flex>
+                      </Box>
+                    </GridItem>
+                  </Flex>
                 )}
               </>
             )}
           </Flex>
         </Flex>
       </GridItem>
-    </Grid>
+      <GridItem display={"flex"} flexDirection={"column"} flexGrow={1}>
+        <TopDogs store={store} />
+        <Box mt={8}>
+          <DogKennel store={store} />
+        </Box>
+      </GridItem>
+    </Flex>
   );
 });
 
