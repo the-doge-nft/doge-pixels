@@ -118,26 +118,58 @@ const ArtCanvasComponent = observer(({ store }: { store: PixelArtPageStore }) =>
     const onMouseDown = (mouseDownEvent: any) => {
         if (!store.palette || !store.palette.length) return;
 
+        let clientX = mouseDownEvent.clientX;
+        let clientY = mouseDownEvent.clientY;
+
+        if (mouseDownEvent.changedTouches) {
+            let ourTouch = false;
+            for(let touch of mouseDownEvent.changedTouches) {
+                if (touch.identifier === 0) {
+                    clientX = touch.clientX;
+                    clientY = touch.clientY;
+                    ourTouch = true;
+                    break;
+                }
+            }
+            if (!ourTouch) return;
+        }
+
         const color =
             pixelArtTools[store.selectedToolIndex].id === PixelArtTool.pen
                 ? store.palette[store.selectedBrushPixelIndex]
                 : TRANSPARENT_PIXEL;
         let action = new PixelAction(color);
-        let lastX = mouseDownEvent.clientX;
-        let lastY = mouseDownEvent.clientY;
-        updatePixel(mouseDownEvent.clientX, mouseDownEvent.clientY, action);
+        let lastX = clientX;
+        let lastY = clientY;
+        updatePixel(clientX, clientY, action);
 
         function onMouseMove(mouseMoveEvent: any) {
+            let clientX = mouseMoveEvent.clientX;
+            let clientY = mouseMoveEvent.clientY;
+    
+            if (mouseMoveEvent.changedTouches) {
+                let ourTouch = false;
+                for(let touch of mouseMoveEvent.changedTouches) {
+                    if (touch.identifier === 0) {
+                        clientX = touch.clientX;
+                        clientY = touch.clientY;
+                        ourTouch = true;
+                        break;
+                    }
+                }
+                if (!ourTouch) return;
+            }
+
             const cn = 10;
-            let dx = (mouseMoveEvent.clientX - lastX) / cn;
-            let dy = (mouseMoveEvent.clientY - lastY) / cn;
+            let dx = (clientX - lastX) / cn;
+            let dy = (clientY - lastY) / cn;
             for (let cd = 0; cd < cn; ++cd) {
                 const x = lastX + dx * cd;
                 const y = lastY + dy * cd;
                 updatePixel(x, y, action);
             }
-            lastX = mouseMoveEvent.clientX;
-            lastY = mouseMoveEvent.clientY;
+            lastX = clientX;
+            lastY = clientY;
         }
         function onMouseUp() {
             if (action.isValid()) {
@@ -145,10 +177,15 @@ const ArtCanvasComponent = observer(({ store }: { store: PixelArtPageStore }) =>
             }
 
             document.body.removeEventListener("mousemove", onMouseMove);
+            window.removeEventListener("touchmove", onMouseMove);
         }
 
         document.body.addEventListener("mousemove", onMouseMove);
         document.body.addEventListener("mouseup", onMouseUp, { once: true });
+
+        window.addEventListener("touchmove", onMouseMove);
+        window.addEventListener("touchend", onMouseUp, { once: true });
+
     };
 
     return (
@@ -181,11 +218,13 @@ const ArtCanvasComponent = observer(({ store }: { store: PixelArtPageStore }) =>
                     style={{
                         position: "relative",
                         top: -store.templateHeight * scale * CANVAS_ELEMENT_SIZE,
+                        //touchAction: 'none'
                     }}
                     id="canvas"
                     width={CANVAS_ELEMENT_SIZE * scale}
                     height={CANVAS_ELEMENT_SIZE * scale}
                     onMouseDown={onMouseDown}
+                    onTouchStart={onMouseDown}
                 ></canvas>
                 <Box
                     position={"relative"}
@@ -332,9 +371,7 @@ const ToolsComponent = observer(({ store }: { store: PixelArtPageStore }) => {
 
 const MainMenuComponent = observer(({ store }: { store: PixelArtPageStore }) => {
     const newFile = () => {
-        store.clearActions();
-        store.pixelsCanvas.resize(CanvasSize.S);
-        store.stickers = [];
+        store.newProject();
     };
     const saveFile = () => {
         store.saveProject();

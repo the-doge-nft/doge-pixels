@@ -21,9 +21,29 @@ const TemplateComponent = observer(function DragResizeComponent(props: TemplateC
         const startSize = {x: size.x * props.width, y: size.y * props.height};
         const startPosition = {x: position.x * props.width, y: position.y * props.height};
 
+        let clientX = mouseDownEvent.clientX;
+        let clientY = mouseDownEvent.clientY;
+        let pageX = mouseDownEvent.pageX;
+        let pageY = mouseDownEvent.pageY;
+
+        if (mouseDownEvent.changedTouches) {
+            let ourTouch = false;
+            for(let touch of mouseDownEvent.changedTouches) {
+                if (touch.identifier === 0) {
+                    clientX = touch.clientX;
+                    clientY = touch.clientY;
+                    pageX = touch.pageX;
+                    pageY = touch.pageY;
+                    ourTouch = true;
+                    break;
+                }
+            }
+            if (!ourTouch) return;
+        }
+
         let rect = mouseDownEvent.target.getBoundingClientRect();
-        let clientX = mouseDownEvent.clientX - rect.x;
-        let clientY = mouseDownEvent.clientY - rect.y;
+        clientX = clientX - rect.x;
+        clientY = clientY - rect.y;
         let cornerX = 0;
         let cornerY = 0;
 
@@ -32,11 +52,29 @@ const TemplateComponent = observer(function DragResizeComponent(props: TemplateC
         if (clientY < SAFE_ZONE) cornerY = -1;
         if (clientY >= rect.height - SAFE_ZONE) cornerY = 1;
 
-        const capture = { x: mouseDownEvent.pageX, y: mouseDownEvent.pageY };
+        const capture = { x: pageX, y: pageY };
 
         function onMouseMove(mouseMoveEvent: any) {
-            let dx = capture.x - mouseMoveEvent.pageX;
-            let dy = capture.y - mouseMoveEvent.pageY;
+            let pageX = mouseMoveEvent.pageX;
+            let pageY = mouseMoveEvent.pageY;
+
+            if (mouseMoveEvent.changedTouches) {
+                let ourTouch = false;
+                for(let touch of mouseMoveEvent.changedTouches) {
+                    if (touch.identifier === 0) {
+                        clientX = touch.clientX;
+                        clientY = touch.clientY;
+                        pageX = touch.pageX;
+                        pageY = touch.pageY;
+                        ourTouch = true;
+                        break;
+                    }
+                }
+                if (!ourTouch) return;
+            }
+
+            let dx = capture.x - pageX;
+            let dy = capture.y - pageY;
             let x = startPosition.x;
             let y = startPosition.y;
             let w = startSize.x;
@@ -71,10 +109,14 @@ const TemplateComponent = observer(function DragResizeComponent(props: TemplateC
         }
         function onMouseUp() {
             document.body.removeEventListener("mousemove", onMouseMove);
+            window.removeEventListener("touchmove", onMouseMove);
         }
 
         document.body.addEventListener("mousemove", onMouseMove);
         document.body.addEventListener("mouseup", onMouseUp, { once: true });
+
+        window.addEventListener("touchmove", onMouseMove);
+        window.addEventListener("touchend", onMouseUp, { once: true });
     };
 
     return <Box
@@ -93,6 +135,7 @@ const TemplateComponent = observer(function DragResizeComponent(props: TemplateC
         h={100}
         bgColor={'#F008'}
         onMouseDown={onMouseDown}
+        onTouchStart={onMouseDown}
         backgroundImage={props.store.templateImage}
         backgroundSize={'contain'}
         backgroundPosition={'center'}

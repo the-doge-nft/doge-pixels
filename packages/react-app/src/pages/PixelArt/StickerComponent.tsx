@@ -33,12 +33,32 @@ const StickerComponent = observer(function StickerComponent(props: StickerCompon
     const onMouseDown = (mouseDownEvent: any) => {
         let action: any = null;
 
+        let clientX = mouseDownEvent.clientX;
+        let clientY = mouseDownEvent.clientY;
+        let pageX = mouseDownEvent.pageX;
+        let pageY = mouseDownEvent.pageY;
+
+        if (mouseDownEvent.changedTouches) {
+            let ourTouch = false;
+            for(let touch of mouseDownEvent.changedTouches) {
+                if (touch.identifier === 0) {
+                    clientX = touch.clientX;
+                    clientY = touch.clientY;
+                    pageX = touch.pageX;
+                    pageY = touch.pageY;
+                    ourTouch = true;
+                    break;
+                }
+            }
+            if (!ourTouch) return;
+        }
+
         const startSize = {x: size.x * props.width, y: size.y * props.height};
         const startPosition = {x: position.x * props.width, y: position.y * props.height};
 
         let rect = mouseDownEvent.target.getBoundingClientRect();
-        let clientX = mouseDownEvent.clientX - rect.x - rect.width / 2;
-        let clientY = mouseDownEvent.clientY - rect.y - rect.height / 2;
+        clientX = clientX - rect.x - rect.width / 2;
+        clientY = clientY - rect.y - rect.height / 2;
 
         const captureVector = {
             x: clientX,
@@ -60,14 +80,33 @@ const StickerComponent = observer(function StickerComponent(props: StickerCompon
         if (Math.abs(rotX) >= startSize.x / 2 - SAFE_ZONE) isCorner = true;
         if (Math.abs(rotY) >= startSize.y / 2 - SAFE_ZONE) isCorner = true;
 
-        const capture = { x: mouseDownEvent.pageX, y: mouseDownEvent.pageY };
+        const capture = { x: pageX, y: pageY };
 
         function onMouseMove(mouseMoveEvent: any) {
+            let pageX = mouseMoveEvent.pageX;
+            let pageY = mouseMoveEvent.pageY;
+    
+            if (mouseMoveEvent.changedTouches) {
+                let ourTouch = false;
+                for(let touch of mouseMoveEvent.changedTouches) {
+                    if (touch.identifier === 0) {
+                        clientX = touch.clientX;
+                        clientY = touch.clientY;
+                        pageX = touch.pageX;
+                        pageY = touch.pageY;
+                        ourTouch = true;
+                        break;
+                    }
+                }
+                if (!ourTouch) return;
+            }
+
             if (!action) {
                 action = new ChangeStickerAction(props.sticker);
             }
-            let dx = capture.x - mouseMoveEvent.pageX;
-            let dy = capture.y - mouseMoveEvent.pageY;
+
+            let dx = capture.x - pageX;
+            let dy = capture.y - pageY;
 
             let x = startPosition.x;
             let y = startPosition.y;
@@ -122,10 +161,14 @@ const StickerComponent = observer(function StickerComponent(props: StickerCompon
                 props.store.pushAction(action);
             }
             document.body.removeEventListener("mousemove", onMouseMove);
+            window.removeEventListener("touchmove", onMouseMove);
         }
 
         document.body.addEventListener("mousemove", onMouseMove);
         document.body.addEventListener("mouseup", onMouseUp, { once: true });
+
+        window.addEventListener("touchmove", onMouseMove);
+        window.addEventListener("touchend", onMouseUp, { once: true });
     };
 
     const removeSticker = () => {
@@ -151,6 +194,7 @@ const StickerComponent = observer(function StickerComponent(props: StickerCompon
         //h={props.sticker.height * props.scale}
         bgColor={props.store.selectedToolIndex === PixelArtTool.stickers ? '#F008' : ''}
         onMouseDown={onMouseDown}
+        onTouchStart={onMouseDown}
         backgroundImage={props.sticker.imageBase64}
         backgroundSize={'contain'}
         backgroundPosition={'center'}

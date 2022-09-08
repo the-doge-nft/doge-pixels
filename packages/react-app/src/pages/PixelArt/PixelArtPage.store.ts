@@ -115,6 +115,20 @@ class PixelArtPageStore extends Reactionable(EmptyClass) {
         this.pixelsCanvas.updateCanvas();
     }
 
+    newProject() {
+        this.clearActions();
+        this.pixelsCanvas.resize(CanvasSize.S);
+        this.stickers = [];
+        this.templateImage = '';
+        this.templateLeft = 0;
+        this.templateTop = 0;
+        this.templateWidth = 1;
+        this.templateHeight = 1;
+        this.selectedBrushPixelIndex = 0;
+        this.selectedToolIndex = 0;
+        localStorage.removeItem('art-prj');
+    }
+
     saveProject() {
         let info = {
             meta: {
