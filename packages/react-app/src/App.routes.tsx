@@ -1,11 +1,11 @@
-import {generatePath} from "react-router-dom";
-import {RouteMiddleware} from "./services/middleware";
-import {FC} from "react";
+import { generatePath } from "react-router-dom";
+import { RouteMiddleware } from "./services/middleware";
+import { FC } from "react";
 import AppLayout from "./layouts/AppLayout/AppLayout";
 import ViewerPage from "./pages/Viewer/Viewer.page";
 import DSLPage from "./pages/DSL.page";
 import DogParkPage from "./pages/DogPark/DogPark.page";
-import {isDevModeEnabled} from "./environment/helpers";
+import { isDevModeEnabled } from "./environment/helpers";
 import MobileHomePage from "./pages/MobileHome/MobileHome.page";
 import PixelArtPage from "./pages/PixelArt/PixelArt.page";
 //import SnakeGamePage from "./pages/SnakeGame/SnakeGame.page";
@@ -19,7 +19,7 @@ export enum NamedRoutes {
   DSL = "dsl",
   MOBILE_HOME = "mobile",
   PIXELS = "pixels",
-  PERKS = "perks"
+  PERKS = "perks",
 }
 
 export interface AppRouteInterface {
@@ -30,12 +30,11 @@ export interface AppRouteInterface {
   component: FC | any;
   middleware?: RouteMiddleware;
   desktopName: string;
-  mobileName: string
+  mobileName: string;
   showOnMobile: boolean;
   showOnDesktop: boolean;
   order: number;
 }
-
 
 export const route = (name: NamedRoutes, params?: {}) => {
   const route = routes.find(item => item.name === name);
@@ -49,7 +48,7 @@ export const route = (name: NamedRoutes, params?: {}) => {
   }
 };
 
-export const SELECTED_PIXEL_PARAM = "id_with_offset"
+export const SELECTED_PIXEL_PARAM = "id_with_offset";
 
 /*
   NOTE: Ordering here is specific. Since selected pixels have the route '/<pixel_id_here>'
@@ -66,7 +65,7 @@ const routes: AppRouteInterface[] = [
     mobileName: "Perks",
     showOnMobile: true,
     showOnDesktop: true,
-    order: 2
+    order: 2,
   },
   {
     path: "/park/:address?/:tokenID?",
@@ -78,9 +77,9 @@ const routes: AppRouteInterface[] = [
     mobileName: "Park",
     showOnMobile: false,
     showOnDesktop: true,
-    order: 1
+    order: 1,
   },
-  /*{
+  {
     path: "/art",
     name: NamedRoutes.PIXEL_ART,
     exact: true,
@@ -90,9 +89,9 @@ const routes: AppRouteInterface[] = [
     mobileName: "ART",
     showOnMobile: true,
     showOnDesktop: true,
-    order: 1
+    order: 1,
   },
-  {
+  /*{
     path: "/snake",
     name: NamedRoutes.SNAKE_GAME,
     exact: true,
@@ -114,7 +113,7 @@ const routes: AppRouteInterface[] = [
     mobileName: "PIXELS",
     showOnMobile: true,
     showOnDesktop: false,
-    order: 0
+    order: 0,
   },
   {
     path: `/px/:${SELECTED_PIXEL_PARAM}`,
@@ -126,7 +125,7 @@ const routes: AppRouteInterface[] = [
     mobileName: "Portal",
     showOnDesktop: false,
     showOnMobile: false,
-    order: 0
+    order: 0,
   },
   {
     path: "/",
@@ -138,7 +137,7 @@ const routes: AppRouteInterface[] = [
     mobileName: "DOGE",
     showOnMobile: true,
     showOnDesktop: true,
-    order: 0
+    order: 0,
   },
 ];
 
@@ -153,8 +152,8 @@ if (isDevModeEnabled()) {
     mobileName: "DSL",
     showOnMobile: true,
     showOnDesktop: true,
-    order: 4
-  })
+    order: 4,
+  });
 }
 
 export default routes;
