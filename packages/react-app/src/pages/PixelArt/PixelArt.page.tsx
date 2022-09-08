@@ -1,4 +1,4 @@
-import { Box, Flex, Grid, GridItem, Menu, MenuButton, MenuItem, MenuList, useColorMode } from "@chakra-ui/react";
+import { Box, Grid, GridItem, Menu, MenuButton, MenuItem, MenuList, useColorMode } from "@chakra-ui/react";
 import { observer } from "mobx-react-lite";
 import { useEffect, useMemo, useState } from "react";
 import Pane from "../../DSL/Pane/Pane";
@@ -8,12 +8,13 @@ import Icon from "../../DSL/Icon/Icon";
 import { darkModeSecondary, lightModePrimary, lightOrDarkMode } from "../../DSL/Theme";
 import { ClearCanvasAction, IdenticonAction, PixelAction } from "./PixelArtActions";
 import { PixelArtTool, pixelArtTools } from "./PixelArtTools";
-import { CanvasSize, TRANSPARENT_PIXEL } from "./PixelArtCanvas";
+import { TRANSPARENT_PIXEL } from "./PixelArtCanvas";
 import ImportTemplateModal from "./ImportTemplateModal/ImportTemplateModal";
 import CanvasPropertiesModal from "./CanvasPropertiesModal/CanvasPropertiesModal";
 import StickerComponent from "./StickerComponent";
 import ImportStickerModal from "./ImportStickerModal/ImportStickerModal";
 import AppStore from "../../store/App.store";
+import { isProduction } from "../../environment/helpers";
 
 const CANVAS_ELEMENT_SIZE = 512;
 
@@ -21,12 +22,20 @@ const PixelArtPage = observer(function PixelArtPage() {
     const store = useMemo(() => new PixelArtPageStore(), []);
 
     useEffect(() => {
+        if (isProduction())
+            store.selectedAddress = AppStore.web3.address ? AppStore.web3.address : '';
+
         document.addEventListener("keydown", handleHotkeys, false);
 
         return () => {
             document.removeEventListener("keydown", handleHotkeys);
         };
     });
+
+    useEffect(() => {
+        if (isProduction())
+            store.selectedAddress = AppStore.web3.address ? AppStore.web3.address : '';
+    }, [AppStore.web3.address])
 
     const handleHotkeys = (e: KeyboardEvent) => {
         const ctrlPressed = window.navigator.platform.match("Mac") ? e.metaKey : e.ctrlKey;
@@ -36,52 +45,86 @@ const PixelArtPage = observer(function PixelArtPage() {
         } else if (ctrlPressed && e.code === "KeyZ") {
             e.preventDefault();
             store.undoAction();
+        } else if (ctrlPressed && e.code === "KeyS") {
+            e.preventDefault();
+            store.saveProject();
         }
     };
 
     return (
         <Pane mt={6} margin={"auto"} maxW={"fit-content"} display={"flex"} flexDirection={"column"} padding={"0px"}>
-            <Grid templateColumns={"0fr 1fr"} flexGrow={0}>
-                <GridItem display={"flex"} flexDirection={"column"} flexGrow={0}>
-                    <MainMenuComponent store={store} />
-                    <Box border={"0.5px solid gray"} mx={"10px"} marginBottom={"5px"} />
-                    <GridItem display={"flex"} flexDirection={"row"} flexGrow={0}>
-                        <ToolsComponent store={store} />
-                        {/*<Box h={'97%'} border={'0.5px solid gray'} my={'10px'}/>*/}
-                        <ArtCanvasComponent store={store} />
-                    </GridItem>
-                    <Box border={"0.5px solid gray"} mx={"10px"} />
-                    <PixelsPaletteComponent store={store} />
-                </GridItem>
-            </Grid>
-            <a id={"pfp-link"} />
-            {store.isImportTemplateModalOpened && (
-                <ImportTemplateModal
-                    store={store}
-                    isOpen={store.isImportTemplateModalOpened}
-                    onClose={() => {
-                        store.isImportTemplateModalOpened = false;
-                    }}
-                />
-            )}
-            {store.isImportStickerModalOpened && (
-                <ImportStickerModal
-                    store={store}
-                    isOpen={store.isImportStickerModalOpened}
-                    onClose={() => {
-                        store.isImportStickerModalOpened = false;
-                    }}
-                />
-            )}
-            {store.isCanvasPropertiesModalOpened && (
-                <CanvasPropertiesModal
-                    store={store}
-                    isOpen={store.isCanvasPropertiesModalOpened}
-                    onClose={() => {
-                        store.isCanvasPropertiesModalOpened = false;
-                    }}
-                />
-            )}
+            {
+                store.selectedAddress === '' &&
+                <Box>
+                    <Typography align='center' variant={TVariant.PresStart20}>
+                        <Box m={10} mb={5}>
+                            Please connect your wallet
+                        </Box>
+                        <Box mb={10}>
+                            to generate art
+                        </Box>
+                    </Typography>
+                </Box>
+            }
+            {
+                store.selectedAddress !== '' && (!store.palette || !store.palette.length) &&
+                <Box>
+                    <Typography align='center' variant={TVariant.PresStart20}>
+                        <Box m={10} mb={5}>
+                            Please buy pixels
+                        </Box>
+                        <Box mb={10}>
+                            to generate art
+                        </Box>
+                    </Typography>
+                </Box>
+            }
+            {
+                store.selectedAddress !== '' && store.palette && store.palette.length > 0 &&
+                <Box>
+                    <Grid templateColumns={"0fr 1fr"} flexGrow={0}>
+                        <GridItem display={"flex"} flexDirection={"column"} flexGrow={0}>
+                            <MainMenuComponent store={store} />
+                            <Box border={"0.5px solid gray"} mx={"10px"} marginBottom={"5px"} />
+                            <GridItem display={"flex"} flexDirection={"row"} flexGrow={0}>
+                                <ToolsComponent store={store} />
+                                {/*<Box h={'97%'} border={'0.5px solid gray'} my={'10px'}/>*/}
+                                <ArtCanvasComponent store={store} />
+                            </GridItem>
+                            <Box border={"0.5px solid gray"} mx={"10px"} />
+                            <PixelsPaletteComponent store={store} />
+                        </GridItem>
+                    </Grid>
+                    <a id={"pfp-link"} />
+                    {store.isImportTemplateModalOpened && (
+                        <ImportTemplateModal
+                            store={store}
+                            isOpen={store.isImportTemplateModalOpened}
+                            onClose={() => {
+                                store.isImportTemplateModalOpened = false;
+                            }}
+                        />
+                    )}
+                    {store.isImportStickerModalOpened && (
+                        <ImportStickerModal
+                            store={store}
+                            isOpen={store.isImportStickerModalOpened}
+                            onClose={() => {
+                                store.isImportStickerModalOpened = false;
+                            }}
+                        />
+                    )}
+                    {store.isCanvasPropertiesModalOpened && (
+                        <CanvasPropertiesModal
+                            store={store}
+                            isOpen={store.isCanvasPropertiesModalOpened}
+                            onClose={() => {
+                                store.isCanvasPropertiesModalOpened = false;
+                            }}
+                        />
+                    )}
+                </Box>
+            }
         </Pane>
     );
 });
@@ -123,7 +166,7 @@ const ArtCanvasComponent = observer(({ store }: { store: PixelArtPageStore }) =>
 
         if (mouseDownEvent.changedTouches) {
             let ourTouch = false;
-            for(let touch of mouseDownEvent.changedTouches) {
+            for (let touch of mouseDownEvent.changedTouches) {
                 if (touch.identifier === 0) {
                     clientX = touch.clientX;
                     clientY = touch.clientY;
@@ -146,10 +189,10 @@ const ArtCanvasComponent = observer(({ store }: { store: PixelArtPageStore }) =>
         function onMouseMove(mouseMoveEvent: any) {
             let clientX = mouseMoveEvent.clientX;
             let clientY = mouseMoveEvent.clientY;
-    
+
             if (mouseMoveEvent.changedTouches) {
                 let ourTouch = false;
-                for(let touch of mouseMoveEvent.changedTouches) {
+                for (let touch of mouseMoveEvent.changedTouches) {
                     if (touch.identifier === 0) {
                         clientX = touch.clientX;
                         clientY = touch.clientY;
