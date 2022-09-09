@@ -5,7 +5,6 @@ import AppStore from "../../store/App.store";
 import {showDebugToast, showErrorToast} from "../../DSL/Toast/Toast";
 import {ethers} from "ethers";
 import * as Sentry from "@sentry/react";
-import DiffPixelsStore from "../DiffPixels.store";
 import {MintModalView} from "../MintPixels/MintPixelsDialog.store";
 import {Http} from "../../services";
 
