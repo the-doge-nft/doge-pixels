@@ -8,6 +8,7 @@ import { PixelImageGeneratorService } from '../pixel-image-generator/pixel-image
 import { InjectSentry, SentryService } from '@travelerdev/nestjs-sentry';
 
 import * as Twitter from 'twitter';
+import {AwsService} from "../aws/aws.service";
 
 @Injectable()
 export class TwitterService implements OnModuleInit {
@@ -18,6 +19,7 @@ export class TwitterService implements OnModuleInit {
     private config: ConfigService<Configuration>,
     private imageGenerator: PixelImageGeneratorService,
     private ethers: EthersService,
+    private aws: AwsService,
     @InjectSentry() private readonly sentryClient: SentryService,
   ) {}
 
@@ -83,6 +85,16 @@ export class TwitterService implements OnModuleInit {
         }
       },
     );
+  }
+
+  public async manualShareTweet(data: string) {
+    const filename = 'test'
+    const res = await this.aws.uploadToS3(filename, data)
+    console.log('debug:: res', res)
+    const twitterLink = `https://pixels.gainormather.com/twitter`
+    return {
+
+    }
   }
 
   public DEBUG_TEST() {

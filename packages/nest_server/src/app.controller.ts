@@ -1,12 +1,12 @@
 import {
-  BadRequestException,
+  BadRequestException, Body,
   CACHE_MANAGER,
   Controller,
   Get,
   Header,
   Inject,
   Logger,
-  Param, Render,
+  Param, Post, Render,
   Response
 } from '@nestjs/common';
 import { PixelsService } from './pixels/pixels.service';
@@ -178,27 +178,27 @@ export class AppController {
     return `User-agent: Twitterbot\nDisallow\n\nUser-agent:*\nDisallow: /`
   }
 
+
   @Get('twitter/share/:id')
   @Render('twitter-share')
   async getTwitterShare(
       @Param() params,
   ) {
     const { id } = params
-
-    try {
       const title = 'Doge Pixel Art'
       const description = 'Pixel Art created from Doge Pixels'
-      const imageUrl = 'https://lh3.googleusercontent.com/2hDpuTi-0AMKvoZJGd-yKWvK4tKdQr_kLIpB_qSeMau2TNGCNidAosMEvrEXFO9G6tmlFlPQplpwiqirgrIPWnCKMvElaYgI-HiVvXc=s168'
-      const url = 'https://test.com'
-
+      const imageUrl = `https://pixels.gainormather.com/twitter` + id + '.png'
       return {
-        title, description, imageUrl, url
+        title, description, imageUrl, url: imageUrl
       }
-    } catch (e) {
-
-    }
   }
 
+  @Post('twitter/upload')
+  postToTwitter(
+      @Body() body: any
+  ) {
+    return this.twitter.manualShareTweet(body)
+  }
 
   @Get('twitter/test')
   async getTwitterBotTest() {
