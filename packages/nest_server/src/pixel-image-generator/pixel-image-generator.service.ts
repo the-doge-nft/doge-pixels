@@ -38,11 +38,11 @@ export class PixelImageGeneratorService implements OnModuleInit {
     const pathToMint = path.join(__dirname, '..', 'assets/images/mint.png');
     const pathToBurn = path.join(__dirname, '..', 'assets/images/burn.png');
     const pathToBackground = path.join(__dirname, '..', 'assets/images/background.png')
-    const pathToFont = path.join(__dirname, '..', 'assets/fonts/PressStart2P-Regular.ttf.fnt')
+    // const pathToFont = path.join(__dirname, '..', 'assets/fonts/PressStart2P-Regular.ttf.fnt')
     this.mintedImage = await Jimp.read(pathToMint);
     this.burnedImage = await Jimp.read(pathToBurn);
     this.backgroundImage = await Jimp.read(pathToBackground)
-    this.font = await Jimp.loadFont(pathToFont)
+    this.font = await Jimp.loadFont(Jimp.FONT_SANS_32_BLACK)
   }
 
   /**
