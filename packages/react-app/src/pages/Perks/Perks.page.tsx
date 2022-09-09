@@ -8,12 +8,13 @@ import { lightOrDarkMode } from "../../DSL/Theme";
 
 const PerksPage = observer(() => {
   const store = useMemo(() => new PerksStore(), [])
-  return <Box w={"full"}>
+  return <Box w={"full"} p={{base: 8, md: 0}}>
     <Flex justifyContent={"center"}>
       <Box maxW={"3xl"}>
         <Box textAlign={"center"}>
           <Typography variant={TVariant.ComicSans16}>
-            Pixels give holders access to drops. Find them here.
+            Wondering what a pixel gets you & how is it your first class ticket to Doge entertainment? Think no further,
+            checkout the past and present of our Pixel Perks below.
           </Typography>
         </Box>
         <Flex flexDirection={"column"} sx={{gap: "20px"}} mt={8}>

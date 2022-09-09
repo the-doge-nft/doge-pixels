@@ -1,5 +1,6 @@
-import {makeObservable, observable} from "mobx";
+import {computed, makeObservable, observable} from "mobx";
 import AppStore from "../../store/App.store";
+import {PixelOwnerInfo} from "../DogPark/DogParkPage.store";
 
 class MobileHomeStore {
 
@@ -9,12 +10,20 @@ class MobileHomeStore {
   @observable
   isBurnDrawerOpen = false
 
+  @observable
+  selectedPixel: number | null = null
+
   constructor() {
     makeObservable(this)
   }
 
   init() {
     AppStore.web3.refreshPixelOwnershipMap()
+  }
+
+  @computed
+  get selectedOwner(): PixelOwnerInfo | undefined {
+    return AppStore.web3.sortedPixelOwners.filter(dog => dog.address === AppStore.web3.address)[0]
   }
 }
 

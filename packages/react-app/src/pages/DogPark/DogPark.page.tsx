@@ -262,12 +262,12 @@ const TopDogs = observer(({ store }: { store: DogParkPageStore }) => {
           block
           color={lightOrDarkMode(colorMode, "yellow.100", "gray.300")}
         >
-          ({store.sortedPixelOwners.length})
+          ({AppStore.web3.sortedPixelOwners.length})
         </Typography>
       </Flex>
       <Box overflowY={"auto"} flexGrow={1}>
         <Flex flexWrap={"wrap"} maxHeight={"300px"} sx={{flexGap: "10px"}}>
-          {store.sortedPixelOwners.map(owner => (
+          {AppStore.web3.sortedPixelOwners.map(owner => (
             <UserCard isSelected={store.selectedOwner && store.selectedOwner.address === owner.address} key={`top-dog-${owner.address}`} store={store} pixelOwner={owner}>
                   {AppStore.web3?.address === owner.address && (
                     <Typography color={lightOrDarkMode(colorMode, "yellow.100", "gray.300")} variant={TVariant.PresStart12} ml={4}>
