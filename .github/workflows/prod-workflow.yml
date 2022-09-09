@@ -3,7 +3,7 @@ name: '[prod]: build, deploy'
 
 on:
   push:
-    branches: prod
+    branches: master
 
 defaults:
   run:
