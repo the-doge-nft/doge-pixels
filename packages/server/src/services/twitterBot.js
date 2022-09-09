@@ -145,6 +145,8 @@ function addPointerImage(tokenId, content) {
       y1 = TOP_PIXEL_OFFSET_Y + PIXEL_HEIGHT + PIXEL_TEXT_HEIGHT;
     }
 
+    console.log('debug:: y1', y1)
+
     context = drawPointer(context, x, y, pixelOffsetX + 20, y1, pixelOffsetX + 45, y1);
     const buffer = canvas.toBuffer('image/png')
     logger.info(`starting to write file: ${tokenId}`)
@@ -163,25 +165,13 @@ function addPointerImage(tokenId, content) {
   }
 }
 
-/**
- * merge background with pixel image and pointer image, and upload twitter
- * @param {token Id} tokenId
- * @param {tweet message} content
- */
-async function uploadImageToTwitter(tokenId, content) {
-  try {
+async function generatePostImage(tokenId, txtImg, isDiscord) {
     const [x, y] = pupperToPixelCoordsLocal(tokenId)
     const color = pupperToHexLocal(tokenId);
 
     logger.info(`reading image for compilation: ${tokenId}`)
-    const pointerImg = await Jimp.read(`src/assets/images/pointer${tokenId}.png`);
-    let txtImg;
+    const pointerImg = await Jimp.read(`src/assets/images/${isDiscord ? "discord_pointer" : "pointer"}${tokenId}.png`);
 
-    if (content.includes('minted')) {
-      txtImg = mintedImage;
-    } else {
-      txtImg = burnedImage;
-    }
     backgroundImage = await Jimp.read('src/assets/images/background.png');
       logger.info(`writing pointer: ${tokenId}`)
       // merge pointer image with background image
@@ -204,6 +194,24 @@ async function uploadImageToTwitter(tokenId, content) {
       // print coordinates
       const font = await Jimp.loadFont('src/assets/fonts/PressStart2P-Regular.ttf.fnt');
       image.print(font, pixelOffsetX + 5, pixelOffsetY + PIXEL_HEIGHT + 10, `(${x},${y})`);
+
+      return image;
+}
+/**
+ * merge background with pixel image and pointer image, and upload twitter
+ * @param {token Id} tokenId
+ * @param {tweet message} content
+ */
+async function uploadImageToTwitter(tokenId, content) {
+  try {
+      let txtImg;
+
+      if (content.includes('minted')) {
+        txtImg = mintedImage;
+      } else {
+        txtImg = burnedImage;
+      }
+      const image = await generatePostImage(tokenId, txtImg);
 
       // get base64 image
       let base64image = await image.getBase64Async('image/png');
@@ -257,7 +265,7 @@ async function tweetmessage(media_id, content) {
 async function tweet(from, to, tokenId, provider) {
   mintedImage = await Jimp.read('src/assets/images/mint.png');
   burnedImage = await Jimp.read('src/assets/images/burn.png');
-  
+
   logger.info(`Twitter listener triggered on transfer for token id: ${tokenId}`)
   try {
     if (from === ethers.constants.AddressZero || to === ethers.constants.AddressZero) {
@@ -283,5 +291,19 @@ async function tweet(from, to, tokenId, provider) {
   }
 }
 
-module.exports = tweet;
+module.exports = {
+  WIDTH,
+  HEIGHT,
+  BOTTOM_PIXEL_OFFSET_Y,
+  TOP_PIXEL_OFFSET_Y,
+  PIXEL_HEIGHT,
+  PIXEL_TEXT_HEIGHT,
+  tweet,
+  pupperToPixelCoordsLocal,
+  pupperToHexLocal,
+  getPixelOffsets,
+  generateShadow,
+  generatePostImage,
+  drawPointer
+};
 

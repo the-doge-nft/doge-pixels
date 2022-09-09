@@ -11,15 +11,17 @@ interface PixelPaneProps {
     variant?: "solid" | "shadow";
     size?: "sm" | "md" | "lg";
     isNew?: boolean;
+    showCoords?: boolean,
+    coordinates?: number[]
 }
 
 const sizeToTypeMap = {
-    sm: TVariant.PresStart10,
+    sm: TVariant.PresStart8,
     md: TVariant.PresStart10,
-    lg: TVariant.PresStart16
+    lg: TVariant.PresStart14
 }
 
-const PixelPane = ({pupper, color, onClick, pupperIndex, variant = "solid", size = "md", isNew = false}: PixelPaneProps) => {
+const PixelPane = ({pupper, color, onClick, pupperIndex, showCoords, coordinates, variant = "solid", size = "md", isNew = false}: PixelPaneProps) => {
     const styles = useMultiStyleConfig("PixelPane", {size: size, variant: variant})
     return <Box
           __css={styles.container}
@@ -38,7 +40,7 @@ const PixelPane = ({pupper, color, onClick, pupperIndex, variant = "solid", size
             />
             <Box __css={styles.textContainer}>
                 <Typography variant={sizeToTypeMap[size]}>
-                    # {pupperIndex}
+                    {showCoords && coordinates ? `(${coordinates[0]},${coordinates[1]})` : `# ${pupperIndex}`}
                 </Typography>
             </Box>
         <Box __css={styles.drop}/>

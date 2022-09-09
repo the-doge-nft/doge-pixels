@@ -34,7 +34,7 @@ const MobileHomePage = observer(() => {
             onClick={() => {
           AppStore.web3.connect()
         }}>
-            Connect Wallet
+            Connect
         </Button>
       </Flex>}
     {AppStore.web3.web3Provider &&
@@ -73,7 +73,7 @@ const MobileHomePage = observer(() => {
                 <PixelPane
                   key={`mobile-home-pixels-${pupper}`}
                   onClick={() => history.push(route(NamedRoutes.PIXELS, {[SELECTED_PIXEL_PARAM]: pupper}))}
-                  size={"md"}
+                  size={"sm"}
                   pupper={pupper}
                   color={hex}
                   pupperIndex={index}

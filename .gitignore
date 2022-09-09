@@ -82,6 +82,7 @@ packages/validation-tool
 tools/
 
 # ignore all workflows for now
-.github
 calebtools
 
+packages/nest_server/dist
+packages/nest_server/src/assets/images/*pointer

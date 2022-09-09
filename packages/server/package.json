@@ -11,6 +11,7 @@
     "canvas": "^2.9.3",
     "cors": "^2.8.5",
     "cross-env": "^7.0.3",
+    "discord.js": "^14.3.0",
     "dotenv-safe": "^8.2.0",
     "ethers": "^5.5.1",
     "express": "^4.17.1",

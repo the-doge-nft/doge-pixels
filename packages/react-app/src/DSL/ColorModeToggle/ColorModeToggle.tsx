@@ -65,10 +65,10 @@ const ColorModeToggle = (props: ColorModeToggleProps) => {
         </AnimatePresence>
       </motion.div>
       <Box __css={styles.leftIcon}>
-        <Icon icon={"sun"} boxSize={6}/>
+        <Icon icon={"sun"} boxSize={5}/>
       </Box>
       <Box __css={styles.rightIcon}>
-        <Icon icon={"moon"} boxSize={6}/>
+        <Icon icon={"moon"} boxSize={5}/>
       </Box>
     </Box>
     <Box __css={styles.drop}/>

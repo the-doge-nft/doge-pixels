@@ -1,5 +1,5 @@
 import React, {useEffect, useState } from "react";
-import Modal from "../../DSL/Modal/Modal";
+import Modal from "./Modal";
 import { Image } from "@chakra-ui/react";
 import PixelDoge from "../../images/meme/mint/pixel.png"
 import VibinDoge from "../../images/meme/mint/vibin.gif"

@@ -1,4 +1,4 @@
-import { Colors as ChakraColors } from "@chakra-ui/theme/dist/types/theme.types";
+import { Colors as ChakraColors } from "@chakra-ui/react";
 
 const Colors: ChakraColors = {
   black: "#000000",
@@ -9,10 +9,8 @@ const Colors: ChakraColors = {
   },
   yellow: {
     "50": "#FFF8E4",
-    "75": "#CCC4AF",
-    "100": "#fde386",
+    "100": "#BEB793",
     "700": "#FFD335",
-    "800": "#BEB793"
   },
   purple: {
     "50": "#B467B6",
@@ -20,7 +18,7 @@ const Colors: ChakraColors = {
     "700": "#180E30",
   },
   magenta: {
-    "50": "#ff00e5"
+    "50": "#ff00e5",
   },
   gray: {
     "50": "#F1F2F3",
@@ -37,7 +35,7 @@ const Colors: ChakraColors = {
   whiteAlpha: {},
   blackAlpha: {},
   red: {
-    "50": "#FF0000"
+    "50": "#FF0000",
   },
   orange: {},
   green: {},

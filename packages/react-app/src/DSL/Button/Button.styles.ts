@@ -1,24 +1,24 @@
-import {colorModeType, darkModeGradient, darkModePrimary, lightOrDark} from "../Theme";
+import { colorModeType, darkModeGradient, darkModePrimary, lightOrDarkMode } from "../Theme";
 
 const ButtonStyle = {
   parts: ["container", "button", "drop"],
   baseStyle: ({ colorMode }: { colorMode: colorModeType }) => ({
     container: {
       _focus: {
-        boxShadow: "none"
+        boxShadow: "none",
       },
       _active: {
-        boxShadow: "none"
-      }
+        boxShadow: "none",
+      },
     },
     button: {
-      color: lightOrDark(colorMode, "black", "white"),
-      textDecorationColor: lightOrDark(colorMode, "black", "white"),
+      color: lightOrDarkMode(colorMode, "black", "white"),
+      textDecorationColor: lightOrDarkMode(colorMode, "black", "white"),
       borderWidth: "1px",
       cursor: "pointer",
       display: "flex",
       justifyContent: "center",
-      alignItems: "center"
+      alignItems: "center",
     },
     drop: {
       zIndex: -1,
@@ -29,15 +29,15 @@ const ButtonStyle = {
       h: "full",
       borderStyle: "solid",
       borderWidth: "1px",
-      borderColor: lightOrDark(colorMode, "black", "white")
-    }
+      borderColor: lightOrDarkMode(colorMode, "black", "white"),
+    },
   }),
   variants: {
     primary: ({ colorMode }: { colorMode: colorModeType }) => ({
       button: {
-        bg: lightOrDark(colorMode, "yellow.50", darkModePrimary),
-        borderColor: lightOrDark(colorMode, "black", "white"),
-        color: lightOrDark(colorMode, "black", "white"),
+        bg: lightOrDarkMode(colorMode, "yellow.50", darkModePrimary),
+        borderColor: lightOrDarkMode(colorMode, "black", "white"),
+        color: lightOrDarkMode(colorMode, "black", "white"),
         borderRadius: "0px",
         borderStyle: "solid",
         boxShadow: "none",
@@ -45,13 +45,13 @@ const ButtonStyle = {
         transition: "background 0s ease",
         w: "full",
         _hover: {
-          bg: lightOrDark(colorMode, "yellow.700", darkModeGradient),
-          borderImageSource: lightOrDark(colorMode, "none", darkModeGradient),
+          bg: lightOrDarkMode(colorMode, "yellow.700", darkModeGradient),
+          borderImageSource: lightOrDarkMode(colorMode, "none", darkModeGradient),
           borderImageSlice: "1 1",
           _disabled: {
-            color: lightOrDark(colorMode, "#d6ceb6", "#482e84"),
-            borderColor: lightOrDark(colorMode, "#d6ceb6", "#482e84"),
-            bg: lightOrDark(colorMode, "yellow.50", "purple.700")
+            color: lightOrDarkMode(colorMode, "#d6ceb6", "#482e84"),
+            borderColor: lightOrDarkMode(colorMode, "#d6ceb6", "#482e84"),
+            bg: lightOrDarkMode(colorMode, "yellow.50", "purple.700"),
           },
         },
         _focus: {
@@ -62,21 +62,21 @@ const ButtonStyle = {
           boxShadow: "none",
           _disabled: {
             boxShadow: "none",
-            transform: "translate(1px, 1px)"
+            transform: "translate(1px, 1px)",
           },
           _focus: {
-            boxShadow: "none"
-          }
+            boxShadow: "none",
+          },
         },
         _disabled: {
-          color: lightOrDark(colorMode, "#d6ceb6", "#482e84"),
-          borderColor: lightOrDark(colorMode, "#d6ceb6", "#482e84"),
-        }
+          color: lightOrDarkMode(colorMode, "#d6ceb6", "#482e84"),
+          borderColor: lightOrDarkMode(colorMode, "#d6ceb6", "#482e84"),
+        },
       },
       drop: {
         borderImageSlice: "1 1",
-        bg: lightOrDark(colorMode, "black", "none")
-      }
+        bg: lightOrDarkMode(colorMode, "black", "none"),
+      },
     }),
     text: ({ colorMode }: { colorMode: colorModeType }) => ({
       button: {
@@ -88,48 +88,48 @@ const ButtonStyle = {
         boxShadow: "none",
         _active: {
           boxShadow: "none",
-          transform: "translate(2px, 2px)"
+          transform: "translate(2px, 2px)",
         },
         _hover: {
           boxShadow: "none",
           textDecoration: "underline",
         },
         _focus: {
-          boxShadow: "none"
+          boxShadow: "none",
         },
         _disabled: {
-          color: lightOrDark(colorMode, "#d6ceb6", "#482e84")
-        }
+          color: lightOrDarkMode(colorMode, "#d6ceb6", "#482e84"),
+        },
       },
       drop: {
-        display: "none"
-      }
+        display: "none",
+      },
     }),
   },
   sizes: {
     xs: {
       button: {
-        p: '0px'
-      }
+        p: "0px",
+      },
     },
     sm: {
       button: {
         p: "14px",
-        height: "inherit"
-      }
+        height: "inherit",
+      },
     },
     md: {
       button: {
         p: "14px",
-        height: "inherit"
-      }
+        height: "inherit",
+      },
     },
     lg: {
       button: {
         p: "22px",
-        height: "inherit"
-      }
-    }
+        height: "inherit",
+      },
+    },
   },
   defaultProps: {},
 };
