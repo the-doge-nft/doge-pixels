@@ -48,7 +48,8 @@ const pullImage = (hash) => {
     log(`docker up result: ${up.toString()}`);
 
     // current servers are pretty small so we'll prune after each deploy
-    const pruneSysmte = childProcess.execSync('docker system prune --all')
+    const pruneSystem = childProcess.execSync('docker system prune --all -f')
+    log(`docker prune system ${pruneSystem.toString()}`)
   }
 };
 
