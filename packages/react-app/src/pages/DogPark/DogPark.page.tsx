@@ -51,9 +51,9 @@ const DogParkPage = observer(function DogParkPage() {
     );
   };
   return (
-    <Grid 
-      // templateColumns={"0.5fr 1fr"} 
-      // flexGrow={1} 
+    <Grid
+      // templateColumns={"0.5fr 1fr"}
+      // flexGrow={1}
       templateRows={{base: "1fr 1fr", "xl": "1fr"}}
       templateColumns={{base: "1fr", "xl": "0.5fr 1fr"}}
                     >
@@ -63,8 +63,8 @@ const DogParkPage = observer(function DogParkPage() {
           <DogKennel store={store} />
         </Box>
       </GridItem>
-      <Flex ml={16} order={{base: 1, xl: 3}}   maxHeight="500px">
-        <Flex height={"full"} flexDirection={"column"}>
+      <Flex ml={16} order={{base: 1, xl: 3}} maxHeight="500px">
+        <Flex height={"full"} flexDirection={"column"} w={"full"}>
           <Box mb={8}>
             <Form onSubmit={async () => {}}>
               <TextInput
