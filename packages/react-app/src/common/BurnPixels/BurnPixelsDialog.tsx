@@ -14,6 +14,8 @@ import Loading from "../../DSL/Loading/Loading";
 import BurnPixelsDialogStore, {BurnPixelsModalView} from "./BurnPixelsDialog.store";
 import Link from "../../DSL/Link/Link";
 import {getEtherscanURL} from "../../helpers/links";
+import SharePixelsDialog from "../SharePixelsDialog/SharePixelsDialog";
+import jsonify from "../../helpers/jsonify";
 
 interface BurnPixelsDialogProps {
   store: BurnPixelsDialogStore;
@@ -25,7 +27,6 @@ const BurnPixelsDialog = observer(({store, onCompleteClose, onSuccess}: BurnPixe
   useEffect(() => {
     if (store.currentView === BurnPixelsModalView.Complete) {
       onSuccess && onSuccess(store.selectedPixels)
-      AppStore.web3.refreshPixelOwnershipMap()
       AppStore.web3.refreshPupperBalance()
       AppStore.web3.refreshDogBalance()
     }
@@ -35,7 +36,7 @@ const BurnPixelsDialog = observer(({store, onCompleteClose, onSuccess}: BurnPixe
   return <>
     {store.currentView === BurnPixelsModalView.Select && <SelectPixels store={store}/>}
     {store.currentView === BurnPixelsModalView.LoadingBurning && <LoadingBurning store={store}/>}
-    {store.currentView === BurnPixelsModalView.Complete && <Complete onSuccess={onCompleteClose} txHash={store.txHash}/>}
+    {store.currentView === BurnPixelsModalView.Complete && <Complete store={store} txHash={store.txHash}/>}
   </>
 })
 
@@ -63,6 +64,8 @@ const SelectPixels = observer(({store}: { store: BurnPixelsModalStore}) => {
                             // }}
                 >
                   <PixelPane
+                    showCoords
+                    coordinates={AppStore.web3.pupperToPixelCoordsLocal(px)}
                     size={"sm"}
                     pupper={px}
                     color={hex}
@@ -112,7 +115,7 @@ const LoadingBurning = observer(({store}: {store: BurnPixelsModalStore}) => {
   )
 })
 
-const Complete = observer(({onSuccess, txHash}: {onSuccess: () => void, txHash: string | null}) => {
+const Complete = observer(({store, txHash}: {store: BurnPixelsDialogStore, txHash: string | null}) => {
   return <Box>
     <Typography variant={TVariant.PresStart28} textAlign={"center"} block>
       Pixels Burned
@@ -123,6 +126,9 @@ const Complete = observer(({onSuccess, txHash}: {onSuccess: () => void, txHash: 
     <Flex justifyContent={"center"} mt={10}>
       {txHash && <Link href={getEtherscanURL(txHash, "tx")} isExternal>View tx</Link>}
     </Flex>
+    <Box mt={4}>
+      <SharePixelsDialog action={"mint"} pixelOwner={{address: AppStore.web3.address, pixels: store.diffPixels, ens: AppStore.web3.ens}}/>
+    </Box>
   </Box>
 })
 

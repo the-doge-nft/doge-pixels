@@ -75,36 +75,25 @@ export class PixelsService implements OnModuleInit {
     this.logger.log(`Listening to transfer events`)
     this.pxContract.on('Transfer', async (from, to, tokenId, event) => {
       this.logger.log(`new transfer event hit: ${from} -- ${to} -- ${tokenId}`);
-      const payload: PixelMintOrBurnPayload = { from, to, tokenId };
+      const payload: PixelMintOrBurnPayload = { from, to, tokenId: tokenId.toNumber() };
       this.eventEmitter.emit(Events.PIXEL_MINT_OR_BURN, payload);
-      this.pixelsRepository.updateOwner({ tokenId, ownerAddress: to });
+      await this.pixelsRepository.upsert({ tokenId: tokenId.toNumber(), ownerAddress: to });
     });
   }
 
   async syncTransfers() {
-    this.logger.log('Syncing pixel transfers')
+    this.logger.log('dropping all')
+    await this.pixelsRepository.deleteAll()
+    this.logger.log('Getting pixel transfer logs')
     const logs = await this.getAllPixelTransferLogs();
-
+    this.logger.log(`Got logs of length: ${logs.length}`)
+    this.logger.log('Syncing transfers in db')
     for (const log of logs) {
-      const { transactionHash: txHash, args } = log;
+      const { args } = log;
       const { from, to, tokenId } = args;
-
-      const pixel = await this.pixelsRepository.findByTokenId(
-        tokenId.toNumber(),
-      );
-      if (!pixel) {
-        await this.pixelsRepository.create({
-          from,
-          to,
-          tokenId: tokenId.toNumber(),
-        });
-      } else {
-        await this.pixelsRepository.updateOwner({
-          tokenId: tokenId.toNumber(),
-          ownerAddress: to,
-        });
-      }
+      await this.pixelsRepository.upsert({tokenId: tokenId.toNumber(), ownerAddress: to})
     }
+    this.logger.log('Done syncing pixels')
   }
 
   async getAllPixelTransferLogs() {
@@ -145,6 +134,10 @@ export class PixelsService implements OnModuleInit {
       width: width.toNumber(),
       height: height.toNumber(),
     };
+  }
+
+  async getPixelOwner(tokenId: number) {
+    return this.pxContract.ownerOf(tokenId)
   }
 
   getPixelBalanceByAddress(address: string) {

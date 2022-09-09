@@ -18,6 +18,8 @@ import NewMintPixelsInput from "./NewMintPixelsInput";
 import CowLogo from "../../images/cowlogo.svg";
 import Icon from "../../DSL/Icon/Icon";
 import CowStore from "../../store/cow.store";
+import SharePixelsDialog from "../SharePixelsDialog/SharePixelsDialog";
+import jsonify from "../../helpers/jsonify";
 
 interface MintPixelsDialogProps {
     store: MintPixelsDialogStore;
@@ -36,7 +38,6 @@ const MintPixelsDialog = observer(({store, onSuccess, onGoToPixelsClick}: MintPi
     useEffect(() => {
         if (store.currentView === MintModalView.Complete) {
             onSuccess && onSuccess()
-            AppStore.web3.refreshPixelOwnershipMap()
             AppStore.web3.refreshPupperBalance()
             AppStore.web3.refreshDogBalance()
         }
@@ -52,7 +53,7 @@ const MintPixelsDialog = observer(({store, onSuccess, onGoToPixelsClick}: MintPi
         {store.currentView === MintModalView.LoadingDogApproval && <LoadingDOGApproval store={store}/>}
         {store.currentView === MintModalView.MintPixels && <MintPixels store={store}/>}
         {store.currentView === MintModalView.Complete &&
-        <Complete onSuccess={onGoToPixelsClick} txHash={store.txHash}/>}
+        <Complete store={store} txHash={store.txHash}/>}
     </>
 })
 
@@ -264,7 +265,7 @@ const CowSwap: React.FC<{ store: MintPixelsDialogStore }> = observer(({store}) =
     )
 })
 
-const Complete = observer(({onSuccess, txHash}: { onSuccess: () => void, txHash: string | null }) => {
+const Complete = observer(({store, txHash}: { store: MintPixelsDialogStore, txHash: string | null }) => {
     return <Box>
         <Typography variant={TVariant.PresStart28} textAlign={"center"} block>
             Pixels Minted
@@ -272,12 +273,12 @@ const Complete = observer(({onSuccess, txHash}: { onSuccess: () => void, txHash:
         <Typography variant={TVariant.PresStart28} textAlign={"center"} mt={4} block>
             🌟🦄💫🐸🐕🚀
         </Typography>
-        <Flex justifyContent={"center"} mt={12}>
-            <Button onClick={() => onSuccess()}>Go to pixels</Button>
-        </Flex>
         <Flex justifyContent={"center"} mt={10}>
             {txHash && <Link href={getEtherscanURL(txHash, "tx")} isExternal>View tx</Link>}
         </Flex>
+        <Box mt={4}>
+            <SharePixelsDialog action={"mint"} pixelOwner={{address: AppStore.web3.address, pixels: store.diffPixels, ens: AppStore.web3.ens}}/>
+        </Box>
     </Box>
 })
 

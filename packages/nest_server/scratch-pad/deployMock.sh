@@ -14,15 +14,15 @@ buildApi() {
 }
 
 upApi() {
-  docker compose -f "$SCRIPT_DIR/../docker-compose-deployment.yml" up api
+  docker-compose -f "$SCRIPT_DIR/../docker-compose-deployment.yml" up api
 }
 
 upDb() {
-  docker compose -f "$SCRIPT_DIR/../docker-compose-deployment.yml" up -d db
+  docker-compose -f "$SCRIPT_DIR/../docker-compose-deployment.yml" up -d db
 }
 
 downDb() {
-  docker compose -f "$SCRIPT_DIR/../docker-compose-deployment.yml" down --remove-orphans -v
+  docker-compose -f "$SCRIPT_DIR/../docker-compose-deployment.yml" down --remove-orphans -v
 }
 
 removeAllImages() {

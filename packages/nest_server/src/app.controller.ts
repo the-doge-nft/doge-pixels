@@ -92,6 +92,10 @@ export class AppController {
     const token = await this.pixelsRepository.findByTokenId(
       Number(params.tokenId),
     );
+
+    // const contractRes = await this.pixelService.getPixelOwner(Number(params.tokenId))
+    // console.log(contractRes)
+
     if (!token) {
       throw new BadRequestException('Could not find token');
     }
@@ -211,10 +215,12 @@ export class AppController {
     return { success: false };
   }
 
-  @Get('discord/test')
-  async getDiscordBotTest() {
+  @Get('discord/test/:tokenId')
+  async getDiscordBotTest(
+      @Param() params: { tokenId: number }
+  ) {
     if (this.config.get('isDev')) {
-      await this.discord.DEBUG_TEST();
+      await this.discord.DEBUG_TEST(params.tokenId);
       return { success: true };
     }
     return { success: false };

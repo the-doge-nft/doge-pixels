@@ -96,7 +96,6 @@ const DogParkPage = observer(function DogParkPage() {
                       <Box overflowY={"auto"} flexGrow={1}>
                         <Flex flexWrap={{base: "nowrap", xl: "wrap"}} maxHeight={"300px"}>
                           {store.selectedOwner?.pixels.map(px => {
-                            console.log('debug:: px', px)
                             const hex = AppStore.web3.pupperToHexLocal(px);
                             const index = AppStore.web3.pupperToIndexLocal(px);
                             return (
@@ -144,6 +143,7 @@ const DogParkPage = observer(function DogParkPage() {
                         <Box maxWidth={"fit-content"} mt={2}>
                           <Flex flexDirection={"column"}>
                             <ParkPixels
+                              id={'dog-park-pixels'}
                               selectedPixel={store.selectedPixel ? store.selectedPixel : -1}
                               pixelOwner={store.selectedOwner}
                               onPupperClick={setPupper}
@@ -262,12 +262,12 @@ const TopDogs = observer(({ store }: { store: DogParkPageStore }) => {
           block
           color={lightOrDarkMode(colorMode, "yellow.100", "gray.300")}
         >
-          ({store.sortedPixelOwners.length})
+          ({AppStore.web3.sortedPixelOwners.length})
         </Typography>
       </Flex>
       <Box overflowY={"auto"} flexGrow={1}>
         <Flex flexWrap={"wrap"} maxHeight={"300px"} sx={{flexGap: "10px"}}>
-          {store.sortedPixelOwners.map(owner => (
+          {AppStore.web3.sortedPixelOwners.map(owner => (
             <UserCard isSelected={store.selectedOwner && store.selectedOwner.address === owner.address} key={`top-dog-${owner.address}`} store={store} pixelOwner={owner}>
                   {AppStore.web3?.address === owner.address && (
                     <Typography color={lightOrDarkMode(colorMode, "yellow.100", "gray.300")} variant={TVariant.PresStart12} ml={4}>

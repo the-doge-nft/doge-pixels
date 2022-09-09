@@ -1,4 +1,4 @@
-import {Box, Flex} from "@chakra-ui/react";
+import {Box, Flex, useColorMode} from "@chakra-ui/react";
 import {observer} from "mobx-react-lite";
 import React, {useEffect, useMemo} from "react";
 import Button, {ButtonVariant} from "../../DSL/Button/Button";
@@ -12,6 +12,8 @@ import MobileHomeStore from "./MobileHome.store";
 import MintPixelsDrawer from "./MintPixelsDrawer/MintPixelsDrawer";
 import BurnPixelsDrawer from "./BurnPixelsDrawer/BurnPixelsDrawer";
 import {NamedRoutes, route, SELECTED_PIXEL_PARAM} from "../../App.routes";
+import ParkPixels from "../DogPark/ParkPixels";
+import {darkModeSecondary, lightModePrimary} from "../../DSL/Theme";
 
 const MobileHomePage = observer(() => {
   const history = useHistory()
@@ -27,6 +29,8 @@ const MobileHomePage = observer(() => {
     }
     // eslint-disable-next-line
   }, [AppStore.rwd.isMobile])
+
+  const { colorMode } = useColorMode()
 
   return <Flex flexGrow={1} px={4}>
       {!AppStore.web3.web3Provider && <Flex justifyContent={"center"} alignItems={"center"} w={"full"}>
@@ -54,6 +58,17 @@ const MobileHomePage = observer(() => {
             </Flex>
         </Flex>
 
+        <Flex justifyContent={"center"} alignItems={"center"} mt={14}>
+          {store.selectedOwner && <ParkPixels
+              id={'home-pixels'}
+              selectedPixel={store.selectedPixel ? store.selectedPixel : -1}
+              pixelOwner={store.selectedOwner}
+              onPupperClick={(pupper) => {
+                store.selectedPixel = pupper
+              }}
+          />}
+        </Flex>
+
         <Flex
             my={10}
             flexGrow={1}
@@ -66,20 +81,38 @@ const MobileHomePage = observer(() => {
               alignItems={"center"}
               flexWrap={"wrap"}
           >
-            {AppStore.web3.puppersOwned.map(pupper => {
-              const hex = AppStore.web3.pupperToHexLocal(pupper)
-              const index = AppStore.web3.pupperToIndexLocal(pupper)
-              return <Box p={2}>
-                <PixelPane
-                  key={`mobile-home-pixels-${pupper}`}
-                  onClick={() => history.push(route(NamedRoutes.PIXELS, {[SELECTED_PIXEL_PARAM]: pupper}))}
-                  size={"sm"}
-                  pupper={pupper}
-                  color={hex}
-                  pupperIndex={index}
-                />
-              </Box>
-            })}
+              {AppStore.web3.puppersOwned.map(px => {
+                const hex = AppStore.web3.pupperToHexLocal(px);
+                const index = AppStore.web3.pupperToIndexLocal(px);
+                return (
+                    <Box
+                        key={`user-dog-${px}`}
+                        bg={
+                          store.selectedPixel === px
+                              ? colorMode === "light"
+                                  ? lightModePrimary
+                                  : darkModeSecondary
+                              : "inherit"
+                        }
+                        p={2}
+                        mt={0}
+                        _hover={{ bg: colorMode === "light" ? lightModePrimary : darkModeSecondary }}
+                    >
+                      <PixelPane
+                          showCoords={true}
+                          size={"sm"}
+                          key={`top_dog_${px}`}
+                          pupper={px}
+                          color={hex}
+                          pupperIndex={index}
+                          coordinates={AppStore.web3.pupperToPixelCoordsLocal(px)}
+                          onClick={px => {
+                            store.selectedPixel = px;
+                          }}
+                      />
+                    </Box>
+                );
+              })}
           </Flex>
         </Flex>
 

@@ -102,7 +102,7 @@ export class TwitterService implements OnModuleInit {
       return this.tweetPixelEventImage({
         from: '0x0000000000000000000000000000000000000000',
         to: '0xd801d86C10e2185a8FCBccFB7D7baF0A6C5B6BD5',
-        tokenId: 1191008,
+        tokenId: 1191000,
       });
     } else {
       this.logger.log(

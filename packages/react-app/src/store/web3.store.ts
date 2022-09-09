@@ -1,6 +1,6 @@
 import {computed, makeObservable, observable} from "mobx";
 import {web3Modal} from "../services/web3Modal";
-import {BigNumber, Contract} from "ethers";
+import {BigNumber, Contract, ethers} from "ethers";
 import {showErrorToast} from "../DSL/Toast/Toast";
 import deployedContracts from "../contracts/hardhat_contracts.json"
 import {Signer} from "@ethersproject/abstract-signer";
@@ -13,6 +13,10 @@ import Web3providerStore, {EthersContractError, Web3ProviderConnectionError} fro
 import * as Sentry from "@sentry/react";
 import {ContractInterface} from "@ethersproject/contracts/src.ts/index";
 import CowStore from "./cow.store";
+import {ObjectKeys} from "../helpers/objects";
+import AppStore from "./App.store";
+import {PixelOwnerInfo} from "../pages/DogPark/DogParkPage.store";
+import {Reactionable} from "../services/mixins/reactionable";
 
 interface AddressToPuppers {
     [k: string]: {
@@ -21,7 +25,7 @@ interface AddressToPuppers {
     }
 }
 
-class Web3Store extends Web3providerStore {
+class Web3Store extends Reactionable(Web3providerStore) {
     D20_PRECISION = BigNumber.from("1000000000000000000")
     DOG_TO_PIXEL_SATOSHIS = BigNumber.from("55239898990000000000000")
     PIXEL_TO_ID_OFFSET = 1000000
@@ -302,6 +306,25 @@ class Web3Store extends Web3providerStore {
         return Http.get('/v1/px/price').then(({data}) => {
             this.usdPerPixel = data.price
         })
+    }
+
+    @computed
+    get sortedPixelOwners(): PixelOwnerInfo[] {
+        const tds = ObjectKeys(this.addressToPuppers).map((key, index, arr) => (
+            {address: key, pixels: this.addressToPuppers![key].tokenIds, ens: this.addressToPuppers![key].ens}
+        ))
+        return tds
+            .filter(dog => dog.address !== ethers.constants.AddressZero)
+            .filter(dog => dog.pixels.length > 0)
+            .sort((a, b) => {
+                if (a.pixels.length > b.pixels.length) {
+                    return -1
+                } else if (a.pixels.length < b.pixels.length) {
+                    return 1
+                } else {
+                    return 0
+                }
+            })
     }
 }
 
