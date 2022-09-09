@@ -82,7 +82,7 @@ const PixelArtPage = observer(function PixelArtPage() {
             {
                 store.selectedAddress !== '' && store.palette && store.palette.length > 0 &&
                 <Box>
-                    <Grid templateColumns={"0fr 1fr"} flexGrow={0}>
+                    <Grid>
                         <GridItem display={"flex"} flexDirection={"column"} flexGrow={0}>
                             <MainMenuComponent store={store} />
                             <Box border={"0.5px solid gray"} mx={"10px"} marginBottom={"5px"} />
