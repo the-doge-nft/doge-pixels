@@ -24,6 +24,8 @@ export class PixelImageGeneratorService implements OnModuleInit {
 
   public mintedImage: any;
   public burnedImage: any;
+  public backgroundImage: any;
+  public font: any
 
   constructor(
     private pixels: PixelsService,
@@ -33,10 +35,14 @@ export class PixelImageGeneratorService implements OnModuleInit {
   ) {}
 
   async onModuleInit() {
-    const pathToMint = path.resolve(__dirname, '../assets/images/mint.png');
-    const pathToBurn = path.resolve(__dirname, '../assets/images/burn.png');
+    const pathToMint = path.join(__dirname, '..', 'assets/images/mint.png');
+    const pathToBurn = path.join(__dirname, '..', 'assets/images/burn.png');
+    const pathToBackground = path.join(__dirname, '..', 'assets/images/background.png')
+    const pathToFont = path.join(__dirname, '..', 'fonts/PressStart2P-Regular.ttf.fnt')
     this.mintedImage = await Jimp.read(pathToMint);
     this.burnedImage = await Jimp.read(pathToBurn);
+    this.backgroundImage = await Jimp.read(pathToBackground)
+    this.font = await Jimp.loadFont(pathToFont)
   }
 
   /**
@@ -149,19 +155,6 @@ export class PixelImageGeneratorService implements OnModuleInit {
       );
       const buffer = canvas.toBuffer('image/png');
       return buffer;
-
-      this.logger.log(`starting to write file: ${tokenId}`);
-      return new Promise((resolve, _) => {
-        writeFile(
-          `src/assets/images/pointer${tokenId}.png`,
-          buffer,
-          null,
-          async () => {
-            this.logger.log(`done writing file: ${tokenId}`);
-            resolve('success');
-          },
-        );
-      });
     } catch (error) {
       this.logger.error(error.message);
       this.sentryClient.instance().captureMessage(error);
@@ -202,10 +195,8 @@ export class PixelImageGeneratorService implements OnModuleInit {
     const [x, y] = this.pixels.pixelToCoordsLocal(tokenId);
     const color = this.pixels.pixelToHexLocal(tokenId);
 
-    const backgroundImage = await Jimp.read('src/assets/images/background.png');
-
     // merge pointer image with background image
-    let image = backgroundImage.composite(pointerImg, 0, 0);
+    let image = this.backgroundImage.composite(pointerImg, 0, 0);
 
     // merge pixel image with background image
     const pixelImage = this.generatePixelImage(color);
@@ -240,19 +231,12 @@ export class PixelImageGeneratorService implements OnModuleInit {
     );
 
     // print coordinates
-    const font = await Jimp.loadFont(
-      'src/assets/fonts/PressStart2P-Regular.ttf.fnt',
-    );
     image.print(
-      font,
+      this.font,
       pixelOffsetX + 5,
       pixelOffsetY + this.pixelHeight + 10,
       `(${x},${y})`,
     );
-
-    // const base64image = await image.getBase64Async('image/png');
-    // return base64image.replace('data:image/png;base64,', '');
-
     return image;
   }
 }
