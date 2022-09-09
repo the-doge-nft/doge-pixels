@@ -8,9 +8,8 @@ import { ActionInterface } from "./PixelArtActions";
 import { CanvasSize, PixelArtCanvas } from "./PixelArtCanvas";
 
 const MAX_ACTIONS_CN = 50;
-const CANVAS_ELEMENT_SIZE = 512;
 
-export class Sticker{
+export class Sticker {
     x: number;
     y: number;
     width: number;
@@ -22,8 +21,8 @@ export class Sticker{
     constructor() {
         this.x = 0;
         this.y = 0;
-        this.width = 100;
-        this.height = 100;
+        this.width = 1;
+        this.height = 1;
         this.rotation = 0;
         this.imageBase64 = '';
     }
@@ -97,8 +96,8 @@ class PixelArtPageStore extends Reactionable(EmptyClass) {
         this.templateImage = '';
         this.templateLeft = 0;
         this.templateTop = 0;
-        this.templateWidth = CANVAS_ELEMENT_SIZE;
-        this.templateHeight = CANVAS_ELEMENT_SIZE;
+        this.templateWidth = 1;
+        this.templateHeight = 1;
         this.isTemplateVisible = true;
 
         this.stickers = [];
@@ -107,6 +106,8 @@ class PixelArtPageStore extends Reactionable(EmptyClass) {
         this.isImportTemplateModalOpened = false;
         this.isCanvasPropertiesModalOpened = false;
         this.isImportStickerModalOpened = false;
+
+        this.tryLoadProject();
     }
 
     setCanvas(canvas: HTMLCanvasElement) {
@@ -114,14 +115,41 @@ class PixelArtPageStore extends Reactionable(EmptyClass) {
         this.pixelsCanvas.updateCanvas();
     }
 
-    saveInfo() {
-        return {
+    newProject() {
+        this.clearActions();
+        this.pixelsCanvas.resize(CanvasSize.S);
+        this.stickers = [];
+        this.templateImage = '';
+        this.templateLeft = 0;
+        this.templateTop = 0;
+        this.templateWidth = 1;
+        this.templateHeight = 1;
+        this.selectedBrushPixelIndex = 0;
+        this.selectedToolIndex = 0;
+        localStorage.removeItem('art-prj');
+    }
+
+    saveProject() {
+        let info = {
             meta: {
                 version: 0,
             },
             canvas: this.pixelsCanvas.saveInfo(),
             stickers: this.saveStickersInfo(),
             template: this.saveTemplateInfo()
+        }
+        localStorage.setItem('art-prj', JSON.stringify(info));
+    }
+
+    tryLoadProject() {
+        const data: any = localStorage.getItem('art-prj');
+        if (data) {
+            const info = JSON.parse(data);
+            //console.log(data.length);
+            //console.log(info);
+            this.pixelsCanvas.loadInfo(info.canvas);
+            this.loadStickersInfo(info.stickers);
+            this.loadTeamplateInfo(info.template);
         }
     }
 
@@ -132,9 +160,25 @@ class PixelArtPageStore extends Reactionable(EmptyClass) {
                 y: value.y,
                 width: value.width,
                 height: value.height,
+                rotation: value.rotation,
                 imageBase64: value.imageBase64,
             }
         });
+    }
+
+    loadStickersInfo(info: any) {
+        //console.log(info);
+        this.stickers = [];
+        for (let entry of info) {
+            let sticker = new Sticker();
+            sticker.x = entry.x;
+            sticker.y = entry.y;
+            sticker.width = entry.width;
+            sticker.height = entry.height;
+            sticker.rotation = entry.rotation;
+            sticker.imageBase64 = entry.imageBase64;
+            this.stickers.push(sticker);
+        }
     }
 
     saveTemplateInfo() {
@@ -142,9 +186,20 @@ class PixelArtPageStore extends Reactionable(EmptyClass) {
             x: this.templateLeft,
             y: this.templateTop,
             width: this.templateWidth,
-            innerHeight: this.templateHeight,
+            height: this.templateHeight,
             imageBase64: this.templateImage,
+            isVisible: this.isTemplateVisible,
         }
+    }
+
+    loadTeamplateInfo(info: any) {
+        //console.log(info);
+        this.templateLeft = info.x;
+        this.templateTop = info.y;
+        this.templateWidth = info.width;
+        this.templateHeight = info.height;
+        this.templateImage = info.imageBase64;
+        this.isTemplateVisible = info.isVisible;
     }
 
     @action

@@ -55,9 +55,17 @@ export class PixelArtCanvas {
     saveInfo() {
         return {
             size: this.canvasSize,
-            pixels: this.canvasPixels.map(value => {
-                return value;
-            }),
+            pixels: [...this.canvasPixels],
+        }
+    }
+
+    loadInfo(info: any) {
+        //console.log(info);
+        this.resize(info.size);
+        if (info.pixels && this.canvasPixels.length === info.pixels.length) {
+            for(let cn = 0; cn < info.pixels.length; ++cn) {
+                this.canvasPixels[cn] = info.pixels[cn];
+            }
         }
     }
 
@@ -79,14 +87,14 @@ export class PixelArtCanvas {
         for (let cy = 0; cy < this.canvasSize; ++cy) {
             for (let cx = 0; cx < this.canvasSize; ++cx) {
                 ctx.fillStyle = this.canvasPixels[cx + cy * this.canvasSize];
-                ctx.fillRect(cx * cellSize, cy * cellSize, cellSize, cellSize);
+                ctx.fillRect(Math.floor(cx * cellSize), Math.floor(cy * cellSize), Math.ceil(cellSize), Math.ceil(cellSize));
             }
         }
         ctx.restore();
     }
 
     drawStickers(stickers: Sticker[]) {
-        console.log(stickers);
+        //console.log(stickers);
 
         if (!this.canvas) return;
 
@@ -97,14 +105,14 @@ export class PixelArtCanvas {
             if (sticker.image) {
                 ctx.save();
                 const b = sticker.rotation / 180 * Math.PI;
-                let rotX = Math.cos(b) * sticker.width / 2 - Math.sin(b) * sticker.height / 2;
-                let rotY = Math.sin(b) * sticker.width / 2 + Math.cos(b) * sticker.height / 2;
+                let rotX = Math.cos(b) * sticker.width * this.canvas.width / 2 - Math.sin(b) * sticker.height * this.canvas.height / 2;
+                let rotY = Math.sin(b) * sticker.width * this.canvas.width / 2 + Math.cos(b) * sticker.height * this.canvas.height / 2;
                 ctx.rotate(b);
                 let transform = ctx.getTransform();
-                transform.e = sticker.x - rotX + sticker.width / 2;
-                transform.f = sticker.y - rotY + sticker.height / 2;
+                transform.e = sticker.x * this.canvas.width - rotX + sticker.width * this.canvas.width / 2;
+                transform.f = sticker.y * this.canvas.height - rotY + sticker.height * this.canvas.height / 2;
                 ctx.setTransform(transform);
-                ctx.drawImage(sticker.image, 0, 0, sticker.width, sticker.height);
+                ctx.drawImage(sticker.image, 0, 0, sticker.width * this.canvas.width, sticker.height * this.canvas.height);
                 ctx.restore();
             }
         }
@@ -119,10 +127,12 @@ export class PixelArtCanvas {
         const cellSize = this.canvas.width / this.canvasSize;
 
         if (color === TRANSPARENT_PIXEL) {
-            ctx.clearRect(x * cellSize, y * cellSize, cellSize, cellSize);
+            ctx.clearRect(Math.floor(x * cellSize), Math.floor(y * cellSize), Math.ceil(cellSize), Math.ceil(cellSize));
+            //ctx.clearRect(x * cellSize, y * cellSize, cellSize, cellSize);
         } else {
             ctx.fillStyle = color;
-            ctx.fillRect(x * cellSize, y * cellSize, cellSize, cellSize);
+            ctx.fillRect(Math.floor(x * cellSize), Math.floor(y * cellSize), Math.ceil(cellSize), Math.ceil(cellSize));
+            //ctx.fillRect(x * cellSize, y * cellSize, cellSize, cellSize);
         }
     }
 
