@@ -51,14 +51,19 @@ const DogParkPage = observer(function DogParkPage() {
     );
   };
   return (
-    <Grid templateColumns={"0.5fr 1fr"} flexGrow={1}>
-      <GridItem display={"flex"} flexDirection={"column"} flexGrow={1}>
+    <Grid 
+      // templateColumns={"0.5fr 1fr"} 
+      // flexGrow={1} 
+      templateRows={{base: "1fr 1fr", "xl": "1fr"}}
+      templateColumns={{base: "1fr", "xl": "0.5fr 1fr"}}
+                    >
+      <GridItem display={"flex"} flexDirection={"column"} flexGrow={1} order={{base: 2, xl: 1}}>
         <TopDogs store={store} />
         <Box mt={8}>
           <DogKennel store={store} />
         </Box>
       </GridItem>
-      <GridItem ml={16}>
+      <Flex ml={16} order={{base: 1, xl: 3}}   maxHeight="500px">
         <Flex height={"full"} flexDirection={"column"}>
           <Box mb={8}>
             <Form onSubmit={async () => {}}>
@@ -88,13 +93,14 @@ const DogParkPage = observer(function DogParkPage() {
                     </Box>
                 </Box>}
                 {store.selectedUserHasPixels && (
-                  <Grid
-                    templateRows={{base: "1fr 1fr", "xl": "1fr"}}
-                    templateColumns={{base: "1fr", "xl": "1fr 1fr"}}
+                  <Flex
+                  // flexWrap={"wrap"}
+                    // templateRows={{base: "1fr 1fr", "xl": "1fr"}}
+                    // templateColumns={{base: "1fr", "xl": "1fr 1fr"}}
                     h={"full"}>
                     <GridItem order={{base: 2, xl: 1}} display={"flex"}>
                       <Box overflowY={"auto"} flexGrow={1}>
-                        <Flex flexWrap={{base: "nowrap", xl: "wrap"}} maxHeight={"300px"}>
+                        <Flex flexWrap={"wrap"} maxHeight={"380px"} overflow="auto">
                           {store.selectedOwner?.pixels.map(px => {
                             console.log('debug:: px', px)
                             const hex = AppStore.web3.pupperToHexLocal(px);
@@ -196,13 +202,13 @@ const DogParkPage = observer(function DogParkPage() {
                         </Box>
                       )}
                     </GridItem>
-                  </Grid>
+                  </Flex>
                 )}
               </>
             )}
           </Flex>
         </Flex>
-      </GridItem>
+      </Flex>
     </Grid>
   );
 });
