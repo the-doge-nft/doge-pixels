@@ -12,6 +12,8 @@ import env from "../../environment";
 import erc20 from "../../contracts/erc20.json"
 import {formatUnits} from "ethers/lib/utils";
 import {sleep} from "../../helpers/sleep";
+import DiffPixelsStore from "../DiffPixels.store";
+import {Http} from "../../services";
 
 export const GPv2VaultRelayerAddress = "0xC92E8bdf79f0507f65a392b0ab4667716BFE0110"
 
@@ -87,13 +89,16 @@ class MintPixelsDialogStore extends Reactionable((Navigable<MintModalView, Const
   @observable
   private _pollOrdersTick = 0
 
+  @observable
+  diffPixelsStore: DiffPixelsStore
+
   constructor() {
     super();
     makeObservable(this);
+    this.diffPixelsStore = new DiffPixelsStore()
   }
 
   init() {
-    console.log('debug:: init called')
     this.pushNavigation(MintModalView.Form);
     this.react(() => [this.srcCurrency, this.pixelCount], async () => {
       if (Number(this.pixelCount) > 0) {
@@ -251,9 +256,15 @@ class MintPixelsDialogStore extends Reactionable((Navigable<MintModalView, Const
 
       this.hasUserSignedTx = true
       showDebugToast(`minting ${this.pixelCount!} pixel`)
+      // listen out for different pixels
+      this.diffPixelsStore.listenForDiffPixels(() => {
+        this.pushNavigation(MintModalView.Complete)
+      })
       const receipt = await tx.wait()
       this.txHash = receipt.transactionHash
-      this.pushNavigation(MintModalView.Complete)
+
+      // trigger refresh
+      Http.get('/v1/config/refresh')
     } catch (e) {
       Sentry.captureException(e)
       showErrorToast("error minting")
@@ -388,6 +399,7 @@ class MintPixelsDialogStore extends Reactionable((Navigable<MintModalView, Const
   }
 
   destroy() {
+    this.diffPixelsStore.destroy()
     return this.disposeReactions()
   }
 }

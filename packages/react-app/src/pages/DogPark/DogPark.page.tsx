@@ -96,7 +96,6 @@ const DogParkPage = observer(function DogParkPage() {
                       <Box overflowY={"auto"} flexGrow={1}>
                         <Flex flexWrap={{base: "nowrap", xl: "wrap"}} maxHeight={"300px"}>
                           {store.selectedOwner?.pixels.map(px => {
-                            console.log('debug:: px', px)
                             const hex = AppStore.web3.pupperToHexLocal(px);
                             const index = AppStore.web3.pupperToIndexLocal(px);
                             return (
@@ -144,6 +143,7 @@ const DogParkPage = observer(function DogParkPage() {
                         <Box maxWidth={"fit-content"} mt={2}>
                           <Flex flexDirection={"column"}>
                             <ParkPixels
+                              id={'dog-park-pixels'}
                               selectedPixel={store.selectedPixel ? store.selectedPixel : -1}
                               pixelOwner={store.selectedOwner}
                               onPupperClick={setPupper}

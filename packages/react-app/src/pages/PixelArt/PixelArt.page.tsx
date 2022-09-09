@@ -16,6 +16,7 @@ import ImportStickerModal from "./ImportStickerModal/ImportStickerModal";
 import AppStore from "../../store/App.store";
 import {isDevModeEnabled, isProduction, isStaging} from "../../environment/helpers";
 import {Http} from "../../services";
+import shareToTwitter from "../../helpers/shareToTwitter";
 
 const CANVAS_ELEMENT_SIZE = 512;
 
@@ -451,47 +452,7 @@ const MainMenuComponent = observer(({ store }: { store: PixelArtPageStore }) => 
         store.pixelsCanvas.drawStickers(store.stickers);
         const data = canvas.toDataURL().replace("data:image/png;base64,", "");
         store.pixelsCanvas.updateCanvas();
-
-        // @next implement pixels api twitter sharing
-        // Http.post('/v1/twitter/upload/image', {
-        //     data,
-        //     contentType: "png"
-        // }).then(({ data }) => {
-        //     if (data && data.id && data.location) {
-        //         const message = "I just created pixel art with my Doge Pixels. Check it out here."
-        //         const localScreenshotUrl = 'http://localhost:3003'
-        //         const devScreenshotUrl = 'https://dev.gainormather.xyz'
-        //         const prodScreenshotUrl = 'https://pixels.gainormather.xyz'
-        //
-        //         const screenshotUrl = localScreenshotUrl + '/twitter/share/' + data.id
-        //         const text = encodeURIComponent(`${message}\n${screenshotUrl}`)
-        //         console.log('debug::', message, screenshotUrl, text)
-        //         window.open(`https://twitter.com/intent/tweet?text=${text}`, "_blank")
-        //     }
-        // }).catch((e) => {
-        //     console.error(e)
-        // })
-
-        fetch("https://prod.hmstrs.com/twitter/upload", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-                data,
-                ext: "png",
-            }),
-        })
-            .then(response => response.json())
-            .then(data => {
-                if (data && data.id && data.location) {
-                    const message = "I just created pixel art with my doge pixels, check it out here";
-                    const screenshotUrl = "https://prod.hmstrs.com/twitter/" + data.id;
-                    const text = encodeURIComponent(`${message}\n${screenshotUrl}`);
-                    window.open(`https://twitter.com/intent/tweet?text=${text}`, "_blank");
-                }
-            })
-            .catch(err => {
-                console.error(err);
-            });
+        shareToTwitter(data, "I just created pixel art with my doge pixels, check it out here")
     };
 
     const importTemplate = () => {

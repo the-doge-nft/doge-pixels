@@ -16,6 +16,7 @@ import CowStore from "./cow.store";
 import {ObjectKeys} from "../helpers/objects";
 import AppStore from "./App.store";
 import {PixelOwnerInfo} from "../pages/DogPark/DogParkPage.store";
+import {Reactionable} from "../services/mixins/reactionable";
 
 interface AddressToPuppers {
     [k: string]: {
@@ -24,7 +25,7 @@ interface AddressToPuppers {
     }
 }
 
-class Web3Store extends Web3providerStore {
+class Web3Store extends Reactionable(Web3providerStore) {
     D20_PRECISION = BigNumber.from("1000000000000000000")
     DOG_TO_PIXEL_SATOSHIS = BigNumber.from("55239898990000000000000")
     PIXEL_TO_ID_OFFSET = 1000000

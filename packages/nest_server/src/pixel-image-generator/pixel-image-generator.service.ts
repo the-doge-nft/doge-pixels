@@ -27,22 +27,29 @@ export class PixelImageGeneratorService implements OnModuleInit {
   public backgroundImage: any;
   public font: any
 
+  private pathToBgImage: string
+  private pathToMintImage: string
+  private pathToBurnImage: string
+  private pathToFont: string
+
+
   constructor(
     private pixels: PixelsService,
     private ethers: EthersService,
     private config: ConfigService<Configuration>,
     @InjectSentry() private readonly sentryClient: SentryService,
-  ) {}
+  ) {
+    this.pathToMintImage = path.join(__dirname, '..', 'assets/images/mint.png');
+    this.pathToBurnImage = path.join(__dirname, '..', 'assets/images/burn.png');
+    this.pathToBgImage = path.join(__dirname, '..', 'assets/images/background.png')
+    this.pathToFont = path.join(__dirname, '..', 'assets/fonts/PressStart2P-Regular.ttf.fnt')
+  }
 
   async onModuleInit() {
-    const pathToMint = path.join(__dirname, '..', 'assets/images/mint.png');
-    const pathToBurn = path.join(__dirname, '..', 'assets/images/burn.png');
-    const pathToBackground = path.join(__dirname, '..', 'assets/images/background.png')
-    const pathToFont = path.join(__dirname, '..', 'assets/fonts/PressStart2P-Regular.ttf.fnt')
-    this.mintedImage = await Jimp.read(pathToMint);
-    this.burnedImage = await Jimp.read(pathToBurn);
-    this.backgroundImage = await Jimp.read(pathToBackground)
-    this.font = await Jimp.loadFont(pathToFont)
+    this.mintedImage = await Jimp.read(this.pathToMintImage);
+    this.burnedImage = await Jimp.read(this.pathToBurnImage);
+    this.backgroundImage = await Jimp.read(this.pathToBgImage)
+    this.font = await Jimp.loadFont(this.pathToFont)
   }
 
   /**
@@ -196,7 +203,8 @@ export class PixelImageGeneratorService implements OnModuleInit {
     const color = this.pixels.pixelToHexLocal(tokenId);
 
     // merge pointer image with background image
-    let image = this.backgroundImage.composite(pointerImg, 0, 0);
+    let _image = await Jimp.read(this.pathToBgImage)
+    let image = _image.composite(pointerImg, 0, 0);
 
     // merge pixel image with background image
     const pixelImage = this.generatePixelImage(color);

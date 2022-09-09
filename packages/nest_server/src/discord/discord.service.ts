@@ -68,12 +68,12 @@ export class DiscordService implements OnModuleInit {
     }
   }
 
-  async DEBUG_TEST() {
+  async DEBUG_TEST(id: number) {
     if (this.config.get('isDev')) {
       return this.discordBot({
         from: '0x0000000000000000000000000000000000000000',
         to: '0xd801d86C10e2185a8FCBccFB7D7baF0A6C5B6BD5',
-        tokenId: 1191008,
+        tokenId: id,
       });
     } else {
       this.logger.log(

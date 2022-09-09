@@ -5,6 +5,9 @@ import AppStore from "../../store/App.store";
 import {showErrorToast} from "../../DSL/Toast/Toast";
 import {ethers} from "ethers";
 import * as Sentry from "@sentry/react";
+import DiffPixelsStore from "../DiffPixels.store";
+import {MintModalView} from "../MintPixels/MintPixelsDialog.store";
+import {Http} from "../../services";
 
 export enum BurnPixelsModalView {
   Select = "select",
@@ -23,6 +26,9 @@ class BurnPixelsDialogStore extends Navigable<BurnPixelsModalView, Constructor>(
   @observable
   txHash: string | null = null
 
+  @observable
+  diffPixelsStore: DiffPixelsStore
+
   constructor(defaultPixel: number | null) {
     super();
     makeObservable(this)
@@ -30,6 +36,7 @@ class BurnPixelsDialogStore extends Navigable<BurnPixelsModalView, Constructor>(
     if (defaultPixel !== null) {
       this.selectedPixels.push(defaultPixel)
     }
+    this.diffPixelsStore = new DiffPixelsStore()
   }
 
   get stepperItems() {
@@ -57,9 +64,14 @@ class BurnPixelsDialogStore extends Navigable<BurnPixelsModalView, Constructor>(
         throw Error("burnSelectedPixels called with incorrect selectedPixels length")
       }
       this.hasUserSignedTx = true
+      // listen out for different pixels
+      this.diffPixelsStore.listenForDiffPixels(() => {
+        this.pushNavigation(BurnPixelsModalView.Complete)
+      })
       const receipt = await tx.wait()
-      this.txHash = receipt.transactionHash
-      this.pushNavigation(BurnPixelsModalView.Complete)
+      this.txHash = receipt
+
+      Http.get('/v1/config/refresh')
     } catch (e) {
       Sentry.captureException(e)
       console.error(e)
