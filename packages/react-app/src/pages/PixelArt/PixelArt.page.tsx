@@ -1,4 +1,4 @@
-import { Box, Grid, GridItem, Menu, MenuButton, MenuItem, MenuList, useColorMode } from "@chakra-ui/react";
+import { Box, Grid, GridItem, Img, Menu, MenuButton, MenuItem, MenuList, useColorMode } from "@chakra-ui/react";
 import { observer } from "mobx-react-lite";
 import { useEffect, useMemo, useState } from "react";
 import Pane from "../../DSL/Pane/Pane";
@@ -15,6 +15,7 @@ import StickerComponent from "./StickerComponent";
 import ImportStickerModal from "./ImportStickerModal/ImportStickerModal";
 import AppStore from "../../store/App.store";
 import { isProduction } from "../../environment/helpers";
+import Link from "../../DSL/Link/Link";
 
 const CANVAS_ELEMENT_SIZE = 512;
 
@@ -64,6 +65,9 @@ const PixelArtPage = observer(function PixelArtPage() {
                             to generate art
                         </Box>
                     </Typography>
+                    <Box m={10}> 
+                        <Img m={'auto'} maxHeight={400} src="./pixel-art.png"/>
+                    </Box>
                 </Box>
             }
             {
@@ -71,12 +75,24 @@ const PixelArtPage = observer(function PixelArtPage() {
                 <Box>
                     <Typography align='center' variant={TVariant.PresStart20}>
                         <Box m={10} mb={5}>
-                            Please buy pixels
+                            Please{" "}
+                            <a
+                                target="_blank"
+                                href={"https://opensea.io/collection/doge-pixels"}
+                                style={{
+                                    textDecoration: 'underline'
+                                }}
+                            >
+                                mint Doge Pixels
+                            </a>
                         </Box>
                         <Box mb={10}>
                             to generate art
                         </Box>
                     </Typography>
+                    <Box m={10}> 
+                        <Img m={'auto'} maxHeight={400} src="./pixel-art.png"/>
+                    </Box>
                 </Box>
             }
             {
