@@ -33,14 +33,15 @@ export class AwsService implements OnModuleInit {
 
     onModuleInit() {}
 
-    async uploadToS3(fileName: string, body: any) {
+    async uploadToS3(fileName: string, body: any, contentType: string) {
         const params = {
             Bucket: this.config.get('aws').bucketName,
             Key: fileName,
             Body: body,
             CreateBucketConfiguration: {
                 LocationConstraint: this.config.get('aws').region
-            }
+            },
+            ContentType: contentType
         }
         return new Promise((resolve, reject) => {
             this.s3Client.upload(params, (err, data) => {
@@ -52,5 +53,4 @@ export class AwsService implements OnModuleInit {
             })
         })
     }
-
 }

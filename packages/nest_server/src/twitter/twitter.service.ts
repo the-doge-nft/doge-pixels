@@ -6,6 +6,8 @@ import { OnEvent } from '@nestjs/event-emitter';
 import { Events, PixelMintOrBurnPayload } from '../events';
 import { PixelImageGeneratorService } from '../pixel-image-generator/pixel-image-generator.service';
 import { InjectSentry, SentryService } from '@travelerdev/nestjs-sentry';
+import { Blob } from 'node:buffer';
+
 
 import * as Twitter from 'twitter';
 import {AwsService} from "../aws/aws.service";
@@ -87,14 +89,12 @@ export class TwitterService implements OnModuleInit {
     );
   }
 
-  public async manualShareTweet(data: string) {
-    const filename = 'test'
-    const res = await this.aws.uploadToS3(filename, data)
+  public async uploadImageToS3(data: string) {
+    const filename = `doge-pixel-share-${new Date().toISOString()}`
+    const _data = new Buffer(data, 'base64')
+    const res = await this.aws.uploadToS3(filename, _data, 'image/png')
     console.log('debug:: res', res)
-    const twitterLink = `https://pixels.gainormather.com/twitter`
-    return {
-
-    }
+    return res
   }
 
   public DEBUG_TEST() {

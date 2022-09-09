@@ -170,13 +170,13 @@ export class AppController {
     };
   }
 
-  @Get('robots.txt')
-  @Header('Content-Type', 'text/plain')
-  robotsTxt(
-      @Response() res: Response,
-  ) {
-    return `User-agent: Twitterbot\nDisallow\n\nUser-agent:*\nDisallow: /`
-  }
+  // @Get('robots.txt')
+  // @Header('Content-Type', 'text/plain')
+  // robotsTxt(
+  //     @Response() res: Response,
+  // ) {
+  //   return `User-agent: Twitterbot\nDisallow\n\nUser-agent:*\nDisallow: /`
+  // }
 
 
   @Get('twitter/share/:id')
@@ -184,20 +184,22 @@ export class AppController {
   async getTwitterShare(
       @Param() params,
   ) {
-    const { id } = params
-      const title = 'Doge Pixel Art'
-      const description = 'Pixel Art created from Doge Pixels'
-      const imageUrl = `https://pixels.gainormather.com/twitter` + id + '.png'
-      return {
-        title, description, imageUrl, url: imageUrl
-      }
+    throw new BadRequestException('Not implemented yet')
+    // const { id } = params
+    //   const title = 'Doge Pixel Art'
+    //   const description = 'Pixel Art created from Doge Pixels'
+    //   const imageUrl = `https://pixels.gainormather.com/twitter` + id + '.png'
+    //   return {
+    //     title, description, imageUrl, url: imageUrl
+    //   }
   }
 
-  @Post('twitter/upload')
+  @Post('twitter/upload/image')
   postToTwitter(
       @Body() body: any
   ) {
-    return this.twitter.manualShareTweet(body)
+    throw new BadRequestException('Not implemented yet')
+    // return this.twitter.uploadImageToS3(body.data)
   }
 
   @Get('twitter/test')
