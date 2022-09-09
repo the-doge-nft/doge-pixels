@@ -18,13 +18,24 @@ export class PixelsRepository {
     return this.prisma.pixels.findUnique({ where: { tokenId } });
   }
 
-  create({ from, to, tokenId }) {
+  create({ to, tokenId }) {
     return this.prisma.pixels.create({
       data: {
         ownerAddress: to,
         tokenId,
       },
     });
+  }
+
+  upsert({tokenId, ownerAddress}: {tokenId: number, ownerAddress: string}) {
+    return this.prisma.pixels.upsert({
+      where: {tokenId},
+      update: {ownerAddress},
+      create: {
+        tokenId,
+        ownerAddress
+      }
+    })
   }
 
   updateOwner({

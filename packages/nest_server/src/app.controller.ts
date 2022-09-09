@@ -92,6 +92,10 @@ export class AppController {
     const token = await this.pixelsRepository.findByTokenId(
       Number(params.tokenId),
     );
+
+    // const contractRes = await this.pixelService.getPixelOwner(Number(params.tokenId))
+    // console.log(contractRes)
+
     if (!token) {
       throw new BadRequestException('Could not find token');
     }

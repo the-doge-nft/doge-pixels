@@ -1,8 +1,8 @@
-import {action, computed, makeObservable, observable} from "mobx";
+import {action, computed, makeObservable, observable, toJS} from "mobx";
 import {Navigable} from "../../services/mixins/navigable";
 import {Constructor, EmptyClass} from "../../helpers/mixins";
 import AppStore from "../../store/App.store";
-import {showErrorToast} from "../../DSL/Toast/Toast";
+import {showDebugToast, showErrorToast} from "../../DSL/Toast/Toast";
 import {ethers} from "ethers";
 import * as Sentry from "@sentry/react";
 import DiffPixelsStore from "../DiffPixels.store";
@@ -27,7 +27,10 @@ class BurnPixelsDialogStore extends Navigable<BurnPixelsModalView, Constructor>(
   txHash: string | null = null
 
   @observable
-  diffPixelsStore: DiffPixelsStore
+  oldPixels: number[] = []
+
+  @observable
+  diffPixels: number[] = []
 
   constructor(defaultPixel: number | null) {
     super();
@@ -36,7 +39,6 @@ class BurnPixelsDialogStore extends Navigable<BurnPixelsModalView, Constructor>(
     if (defaultPixel !== null) {
       this.selectedPixels.push(defaultPixel)
     }
-    this.diffPixelsStore = new DiffPixelsStore()
   }
 
   get stepperItems() {
@@ -64,14 +66,27 @@ class BurnPixelsDialogStore extends Navigable<BurnPixelsModalView, Constructor>(
         throw Error("burnSelectedPixels called with incorrect selectedPixels length")
       }
       this.hasUserSignedTx = true
-      // listen out for different pixels
-      this.diffPixelsStore.listenForDiffPixels(() => {
-        this.pushNavigation(BurnPixelsModalView.Complete)
-      })
+      this.oldPixels = toJS(AppStore.web3.puppersOwned)
+      showDebugToast(`burning pixels`)
       const receipt = await tx.wait()
       this.txHash = receipt
 
-      Http.get('/v1/config/refresh')
+      await AppStore.web3.refreshPixelOwnershipMap()
+      const newPixels = toJS(AppStore.web3.puppersOwned)
+      const mintedPixels = newPixels.filter(pixel => {
+        if (!this.oldPixels.includes(pixel)) {
+          return 1
+        }
+        return 0
+      })
+      const burnedPixels = this.oldPixels.filter(pixel => {
+        if (!newPixels.includes(pixel)) {
+          return 1
+        }
+        return 0
+      })
+      this.diffPixels = mintedPixels.concat(burnedPixels)
+      this.pushNavigation(BurnPixelsModalView.Complete)
     } catch (e) {
       Sentry.captureException(e)
       console.error(e)

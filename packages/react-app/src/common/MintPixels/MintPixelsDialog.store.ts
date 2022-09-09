@@ -1,4 +1,4 @@
-import {computed, makeObservable, observable} from "mobx";
+import {computed, makeObservable, observable, toJS} from "mobx";
 import {Navigable} from "../../services/mixins/navigable";
 import {Reactionable} from "../../services/mixins/reactionable";
 import {Constructor, EmptyClass} from "../../helpers/mixins";
@@ -90,12 +90,14 @@ class MintPixelsDialogStore extends Reactionable((Navigable<MintModalView, Const
   private _pollOrdersTick = 0
 
   @observable
-  diffPixelsStore: DiffPixelsStore
+  oldPixels: number[] = []
+
+  @observable
+  diffPixels: number[] = []
 
   constructor() {
     super();
     makeObservable(this);
-    this.diffPixelsStore = new DiffPixelsStore()
   }
 
   init() {
@@ -255,16 +257,27 @@ class MintPixelsDialogStore extends Reactionable((Navigable<MintModalView, Const
       const tx = await AppStore.web3.mintPuppers(amount, estimatedGas.add(gasLimitSafetyOffset))
 
       this.hasUserSignedTx = true
+      this.oldPixels = toJS(AppStore.web3.puppersOwned)
       showDebugToast(`minting ${this.pixelCount!} pixel`)
-      // listen out for different pixels
-      this.diffPixelsStore.listenForDiffPixels(() => {
-        this.pushNavigation(MintModalView.Complete)
-      })
       const receipt = await tx.wait()
       this.txHash = receipt.transactionHash
 
-      // trigger refresh
-      Http.get('/v1/config/refresh')
+      await AppStore.web3.refreshPixelOwnershipMap()
+      const newPixels = toJS(AppStore.web3.puppersOwned)
+      const mintedPixels = newPixels.filter(pixel => {
+        if (!this.oldPixels.includes(pixel)) {
+          return 1
+        }
+        return 0
+      })
+      const burnedPixels = this.oldPixels.filter(pixel => {
+        if (!newPixels.includes(pixel)) {
+          return 1
+        }
+        return 0
+      })
+      this.diffPixels = mintedPixels.concat(burnedPixels)
+      this.pushNavigation(MintModalView.Complete)
     } catch (e) {
       Sentry.captureException(e)
       showErrorToast("error minting")
@@ -399,7 +412,6 @@ class MintPixelsDialogStore extends Reactionable((Navigable<MintModalView, Const
   }
 
   destroy() {
-    this.diffPixelsStore.destroy()
     return this.disposeReactions()
   }
 }

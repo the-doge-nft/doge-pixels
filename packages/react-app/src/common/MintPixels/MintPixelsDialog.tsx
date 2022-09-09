@@ -38,7 +38,6 @@ const MintPixelsDialog = observer(({store, onSuccess, onGoToPixelsClick}: MintPi
     useEffect(() => {
         if (store.currentView === MintModalView.Complete) {
             onSuccess && onSuccess()
-            AppStore.web3.refreshPixelOwnershipMap()
             AppStore.web3.refreshPupperBalance()
             AppStore.web3.refreshDogBalance()
         }
@@ -278,7 +277,7 @@ const Complete = observer(({store, txHash}: { store: MintPixelsDialogStore, txHa
             {txHash && <Link href={getEtherscanURL(txHash, "tx")} isExternal>View tx</Link>}
         </Flex>
         <Box mt={4}>
-            <SharePixelsDialog action={"mint"} pixelOwner={{address: AppStore.web3.address, pixels: store.diffPixelsStore.diffPixels, ens: AppStore.web3.ens}}/>
+            <SharePixelsDialog action={"mint"} pixelOwner={{address: AppStore.web3.address, pixels: store.diffPixels, ens: AppStore.web3.ens}}/>
         </Box>
     </Box>
 })
