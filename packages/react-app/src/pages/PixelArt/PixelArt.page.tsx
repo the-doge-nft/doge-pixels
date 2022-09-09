@@ -14,7 +14,6 @@ import CanvasPropertiesModal from "./CanvasPropertiesModal/CanvasPropertiesModal
 import StickerComponent from "./StickerComponent";
 import ImportStickerModal from "./ImportStickerModal/ImportStickerModal";
 import AppStore from "../../store/App.store";
-import { isProduction } from "../../environment/helpers";
 import Link from "../../DSL/Link/Link";
 import {isDevModeEnabled, isProduction, isStaging} from "../../environment/helpers";
 import {Http} from "../../services";
