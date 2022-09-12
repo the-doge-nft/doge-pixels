@@ -62,7 +62,7 @@ const routes: AppRouteInterface[] = [
     layout: AppLayout,
     component: PerksPage,
     desktopName: "Perks",
-    mobileName: "Perks",
+    mobileName: "PERKS",
     showOnMobile: true,
     showOnDesktop: true,
     order: 2,
