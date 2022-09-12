@@ -109,7 +109,7 @@ const routes: AppRouteInterface[] = [
     exact: true,
     layout: AppLayout,
     component: MobileHomePage,
-    desktopName: "Pixels",
+    desktopName: "PIXELS",
     mobileName: "PIXELS",
     showOnMobile: true,
     showOnDesktop: false,
