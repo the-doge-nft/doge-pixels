@@ -68,10 +68,12 @@ export class PixelsRepository {
         const cacheKey = `ens:${item.ownerAddress}`;
 
         let ens = await this.cacheManager.get(cacheKey);
+        this.logger.log(`could not find ens in cache: ${cacheKey}`);
         if (!ens) {
+          this.logger.log(`querying fresh ens name: ${item.ownerAddress}`);
           ens = await this.ethers.getEnsName(item.ownerAddress);
           if (ens) {
-            await this.cacheManager.set(cacheKey, ens, { ttl: 600000 * 60 });
+            await this.cacheManager.set(cacheKey, ens, { ttl: 60 * 60 * 10 });
           }
         }
 
