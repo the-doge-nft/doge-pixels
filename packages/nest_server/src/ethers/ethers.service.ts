@@ -120,32 +120,44 @@ export class EthersService implements OnModuleInit {
   }
 
   async getEnsName(address: string, withCache = true) {
-    const cacheKey = `ens: ${address}`;
+    const cacheKey = `ens:${address}`;
     const cacheSeconds = 60 * 60 * 5;
     const noEns = 'NOENS';
     if (withCache) {
+      this.logger.log(`1 (${cacheKey}): query from cache`);
       const ens = await this.cacheManager.get(cacheKey);
-      this.logger.log(`getting ens name: ${cacheKey} -- ${ens}`);
+      this.logger.log(`2 (${cacheKey}): got from cache:: ${ens}`);
 
       if (ens === undefined) {
+        this.logger.log(`3 (${cacheKey}) ens undefined, querying fresh`);
         // does not exist in cache
         const freshEns = await this.queryEnsName(address);
+        this.logger.log(`4 (${cacheKey}) fresh ens:: ${freshEns}`);
         if (freshEns) {
-          await this.cacheManager.set(cacheKey, freshEns, {
+          this.logger.log(`5 (${cacheKey}) setting to cache:: ${freshEns}`);
+          const res = await this.cacheManager.set(cacheKey, freshEns, {
             ttl: cacheSeconds,
           });
+          this.logger.log(
+            `6 (${cacheKey}) return from setting cache: ${freshEns} - ${cacheSeconds} - ${res}`,
+          );
           return freshEns;
         } else {
+          this.logger.log(
+            `7 (${cacheKey}) no ens found: ${noEns} - ${cacheSeconds}`,
+          );
           await this.cacheManager.set(cacheKey, noEns, { ttl: cacheSeconds });
           return null;
         }
       } else if (ens === noEns) {
+        this.logger.log(`8 (${cacheKey}) no ens found returning nulul`);
         // user does not have an ens name
         return null;
       }
       return ens;
+    } else {
+      return this.queryEnsName(address);
     }
-    return this.queryEnsName(address);
   }
 
   private queryEnsName(address: string) {

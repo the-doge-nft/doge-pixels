@@ -15,7 +15,7 @@ import { DiscordService } from './discord/discord.service';
 import { PixelImageGeneratorService } from './pixel-image-generator/pixel-image-generator.service';
 import { SentryModule } from '@travelerdev/nestjs-sentry';
 import { NomicsService } from './nomics/nomics.service';
-import {AwsService} from "./aws/aws.service";
+import { AwsService } from './aws/aws.service';
 
 @Module({
   imports: [
@@ -48,7 +48,7 @@ import {AwsService} from "./aws/aws.service";
     DiscordService,
     PixelImageGeneratorService,
     NomicsService,
-    AwsService
+    AwsService,
   ],
 })
 export class AppModule {}
