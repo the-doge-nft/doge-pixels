@@ -1,10 +1,17 @@
-import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
+import {
+  CACHE_MANAGER,
+  Inject,
+  Injectable,
+  Logger,
+  OnModuleInit,
+} from '@nestjs/common';
 import { ethers } from 'ethers';
 import { ConfigService } from '@nestjs/config';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { Events } from '../events';
 import { AppEnv } from '../config/configuration';
-import {InjectSentry, SentryService} from "@travelerdev/nestjs-sentry";
+import { InjectSentry, SentryService } from '@travelerdev/nestjs-sentry';
+import { Cache } from 'cache-manager';
 
 @Injectable()
 export class EthersService implements OnModuleInit {
@@ -12,7 +19,7 @@ export class EthersService implements OnModuleInit {
 
   public network: string;
   public provider: ethers.providers.WebSocketProvider;
-  public zeroAddress = ethers.constants.AddressZero
+  public zeroAddress = ethers.constants.AddressZero;
 
   constructor(
     private configService: ConfigService<{
@@ -21,6 +28,7 @@ export class EthersService implements OnModuleInit {
     }>,
     private eventEmitter: EventEmitter2,
     @InjectSentry() private readonly sentryClient: SentryService,
+    @Inject(CACHE_MANAGER) private cacheManager: Cache,
   ) {
     const appEnv = this.configService.get('appEnv');
     if (appEnv === AppEnv.production) {
@@ -109,16 +117,31 @@ export class EthersService implements OnModuleInit {
     });
   }
 
-  getEnsName(address: string) {
+  async getEnsName(address: string, withCache = true) {
+    const cacheKey = `ens: ${address}`;
+    const cacheSeconds = 60 * 60 * 10;
+    if (withCache) {
+      const ens = await this.cacheManager.get(cacheKey);
+      if (ens) {
+        return ens;
+      } else {
+        const freshEns = await this.queryEnsName(address);
+        await this.cacheManager.set(cacheKey, freshEns, { ttl: cacheSeconds });
+      }
+    }
+    return this.queryEnsName(address);
+  }
+
+  private queryEnsName(address: string) {
     return this.provider.lookupAddress(address);
   }
 
   getIsValidEthereumAddress(address: string) {
     try {
       ethers.utils.getAddress(address);
-      return true
+      return true;
     } catch (e) {
-      return false
+      return false;
     }
   }
 }

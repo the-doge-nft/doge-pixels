@@ -65,18 +65,7 @@ export class PixelsRepository {
       if (map[item.ownerAddress]?.tokenIds) {
         map[item.ownerAddress].tokenIds.push(item.tokenId);
       } else {
-        const cacheKey = `ens:${item.ownerAddress}`;
-
-        let ens = await this.cacheManager.get(cacheKey);
-        this.logger.log(`could not find ens in cache: ${cacheKey}`);
-        if (!ens) {
-          this.logger.log(`querying fresh ens name: ${item.ownerAddress}`);
-          ens = await this.ethers.getEnsName(item.ownerAddress);
-          if (ens) {
-            await this.cacheManager.set(cacheKey, ens, { ttl: 60 * 60 * 10 });
-          }
-        }
-
+        const ens = await this.ethers.getEnsName(item.ownerAddress);
         map[item.ownerAddress] = {
           tokenIds: [item.tokenId],
           ens: ens,
