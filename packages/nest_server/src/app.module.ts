@@ -35,7 +35,10 @@ import { AwsService } from './aws/aws.service';
       }),
       inject: [ConfigService],
     }),
-    CacheModule.register(),
+    CacheModule.register({
+      ttl: 10,
+      max: 1000,
+    }),
   ],
   controllers: [AppController],
   providers: [
