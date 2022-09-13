@@ -42,8 +42,10 @@ export class EthersService implements OnModuleInit {
     }
   }
 
-  onModuleInit() {
+  async onModuleInit() {
     this.initWS();
+    this.logger.log('resetting api cache');
+    await this.cacheManager.reset();
   }
 
   initWS() {
@@ -119,19 +121,29 @@ export class EthersService implements OnModuleInit {
 
   async getEnsName(address: string, withCache = true) {
     const cacheKey = `ens: ${address}`;
-    const cacheSeconds = 60 * 60 * 10;
+    const cacheSeconds = 60 * 60 * 5;
+    const noEns = 'NOENS';
     if (withCache) {
       const ens = await this.cacheManager.get(cacheKey);
       this.logger.log(`getting ens name: ${cacheKey} -- ${ens}`);
-      if (ens !== undefined) {
-        return ens;
-      } else {
-        this.logger.log(`querying fresh ens: ${cacheKey}`);
+
+      if (ens === undefined) {
+        // does not exist in cache
         const freshEns = await this.queryEnsName(address);
-        this.logger.log(`got fresh ens: ${cacheKey} -- ${freshEns}`);
-        await this.cacheManager.set(cacheKey, freshEns, { ttl: cacheSeconds });
-        return freshEns;
+        if (freshEns) {
+          await this.cacheManager.set(cacheKey, freshEns, {
+            ttl: cacheSeconds,
+          });
+          return freshEns;
+        } else {
+          await this.cacheManager.set(cacheKey, noEns, { ttl: cacheSeconds });
+          return null;
+        }
+      } else if (ens === noEns) {
+        // user does not have an ens name
+        return null;
       }
+      return ens;
     }
     return this.queryEnsName(address);
   }
