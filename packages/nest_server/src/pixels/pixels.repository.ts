@@ -27,15 +27,15 @@ export class PixelsRepository {
     });
   }
 
-  upsert({tokenId, ownerAddress}: {tokenId: number, ownerAddress: string}) {
+  upsert({ tokenId, ownerAddress }: { tokenId: number; ownerAddress: string }) {
     return this.prisma.pixels.upsert({
-      where: {tokenId},
-      update: {ownerAddress},
+      where: { tokenId },
+      update: { ownerAddress },
       create: {
         tokenId,
-        ownerAddress
-      }
-    })
+        ownerAddress,
+      },
+    });
   }
 
   updateOwner({
@@ -71,7 +71,7 @@ export class PixelsRepository {
         if (!ens) {
           ens = await this.ethers.getEnsName(item.ownerAddress);
           if (ens) {
-            await this.cacheManager.set(cacheKey, ens, { ttl: 60000 * 60 });
+            await this.cacheManager.set(cacheKey, ens, { ttl: 600000 * 60 });
           }
         }
 
