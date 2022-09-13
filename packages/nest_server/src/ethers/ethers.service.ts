@@ -122,10 +122,13 @@ export class EthersService implements OnModuleInit {
     const cacheSeconds = 60 * 60 * 10;
     if (withCache) {
       const ens = await this.cacheManager.get(cacheKey);
-      if (ens) {
+      this.logger.log(`getting ens name: ${cacheKey} -- ${ens}`);
+      if (ens !== undefined) {
         return ens;
       } else {
+        this.logger.log(`querying fresh ens: ${cacheKey}`);
         const freshEns = await this.queryEnsName(address);
+        this.logger.log(`got fresh ens: ${cacheKey} -- ${freshEns}`);
         await this.cacheManager.set(cacheKey, freshEns, { ttl: cacheSeconds });
       }
     }
