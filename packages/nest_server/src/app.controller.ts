@@ -208,19 +208,13 @@ export class AppController {
 
   @Get('twitter/test')
   async getTwitterBotTest() {
-    if (this.config.get('isDev')) {
-      await this.twitter.DEBUG_TEST();
-      return { success: true };
-    }
-    return { success: false };
+    await this.twitter.DEBUG_TEST();
+    return { success: true };
   }
 
   @Get('discord/test/:tokenId')
   async getDiscordBotTest(@Param() params: { tokenId: number }) {
-    // if (this.config.get('isDev')) {
     await this.discord.DEBUG_TEST(params.tokenId);
     return { success: true };
-    // }
-    // return { success: false };
   }
 }

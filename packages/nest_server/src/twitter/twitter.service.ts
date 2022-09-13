@@ -8,9 +8,8 @@ import { PixelImageGeneratorService } from '../pixel-image-generator/pixel-image
 import { InjectSentry, SentryService } from '@travelerdev/nestjs-sentry';
 import { Blob } from 'node:buffer';
 
-
 import * as Twitter from 'twitter';
-import {AwsService} from "../aws/aws.service";
+import { AwsService } from '../aws/aws.service';
 
 @Injectable()
 export class TwitterService implements OnModuleInit {
@@ -90,11 +89,11 @@ export class TwitterService implements OnModuleInit {
   }
 
   public async uploadImageToS3(data: string) {
-    const filename = `doge-pixel-share-${new Date().toISOString()}`
-    const _data = new Buffer(data, 'base64')
-    const res = await this.aws.uploadToS3(filename, _data, 'image/png')
-    console.log('debug:: res', res)
-    return res
+    const filename = `doge-pixel-share-${new Date().toISOString()}`;
+    const _data = new Buffer(data, 'base64');
+    const res = await this.aws.uploadToS3(filename, _data, 'image/png');
+    console.log('debug:: res', res);
+    return res;
   }
 
   public DEBUG_TEST() {
@@ -105,9 +104,7 @@ export class TwitterService implements OnModuleInit {
         tokenId: 1191000,
       });
     } else {
-      this.logger.log(
-        `${arguments.callee.name} only available in development mode`,
-      );
+      this.logger.log(`DEBUG TEST only available in development mode`);
     }
   }
 }
