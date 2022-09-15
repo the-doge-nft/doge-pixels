@@ -171,11 +171,20 @@ export class AppController {
 
   @Get('px/price')
   async getPixelUSDPrice() {
-    const { data } = await this.nomics.getDOGPrice();
-    const usdPrice = Number(data[0].price);
+    const cacheKey = 'NOMICS:DOG';
+    let usdPrice = await this.cacheManager.get(cacheKey);
+    this.logger.log(`got cache: ${usdPrice}`);
+    if (!usdPrice) {
+      const { data } = await this.nomics.getDOGPrice();
+      usdPrice = Number(data[0].price);
+      this.logger.log(`setting cache: ${usdPrice}`);
+      await this.cacheManager.set(cacheKey, usdPrice, { ttl: 60 });
+    }
+
     const dogPerPixel = 55239.89899;
+    const price = Number(usdPrice) * dogPerPixel;
     return {
-      price: usdPrice * dogPerPixel,
+      price,
     };
   }
 
