@@ -85,6 +85,7 @@ export class PixelsService implements OnModuleInit {
         tokenId: tokenId.toNumber(),
         ownerAddress: to,
       });
+      await this.pixelsRepository.addTransferEvent({tokenId: tokenId.toNumber(), from, to, blockNumber: event.blockNumber});
     });
   }
 
@@ -165,4 +166,29 @@ export class PixelsService implements OnModuleInit {
     const [x, y] = this.pixelToCoordsLocal(pixel);
     return KobosuJson[y][x];
   }
+
+  async getTranserEvents(
+    {filter, sort}: 
+    {
+      filter?: { 
+        tokenId?: number, 
+        from?: string, 
+        to?: string, 
+        fromBlockNumber?: number, 
+        toBlockNumber?: number, 
+        fromDate?: string, 
+        toDate?: string 
+      }, 
+      sort?: { 
+        tokenId?: 'ASC' | 'DESC',
+        blockNumber?: 'ASC' | 'DESC',
+        insertedAt?: 'ASC' | 'DESC',
+      }
+    }
+  ) {
+      return this.pixelsRepository.getTransferEvents(filter, sort)
+  }
+
+
+  
 }

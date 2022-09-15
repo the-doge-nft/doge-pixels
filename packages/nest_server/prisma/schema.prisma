@@ -18,3 +18,13 @@ model Pixels {
   ownerAddress      String
   tokenId           Int @unique
 }
+
+model PixelTransfers {
+  id                Int @id @default(autoincrement())
+  blockNumber       Int
+  insertedAt        DateTime @default(now())
+  updatedAt         DateTime @default(now())
+  from              String
+  to                String
+  tokenId           Int @unique
+}

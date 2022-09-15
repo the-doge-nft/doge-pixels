@@ -10,6 +10,7 @@ import {
   Param,
   Post,
   Render,
+  Req,
   Response,
 } from '@nestjs/common';
 import { PixelsService } from './pixels/pixels.service';
@@ -22,6 +23,7 @@ import { ConfigService } from '@nestjs/config';
 import { DiscordService } from './discord/discord.service';
 import { NomicsService } from './nomics/nomics.service';
 import { Cache } from 'cache-manager';
+import { Request } from 'express';
 
 @Controller('/v1')
 export class AppController {
@@ -75,6 +77,14 @@ export class AppController {
   async getConfigRefreshed() {
     await this.pixelService.syncTransfers();
     return this.pixelsRepository.getOwnershipMap();
+  }
+
+  @Get('transferEvents')
+  async getTransferEvents(@Req() request: Request) {
+    const filter = request.body.filter as {};
+    const sort = request.body.sort as {};
+    this.logger.log(`getTransferEvents: ${JSON.stringify(request.query)}`);
+    return await this.pixelService.getTranserEvents({filter, sort});
   }
 
   @Get('px/dimensions')

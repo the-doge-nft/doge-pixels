@@ -76,4 +76,82 @@ export class PixelsRepository {
     delete map[ethers.constants.AddressZero];
     return map;
   }
+
+  addTransferEvent({ tokenId, from, to, blockNumber }: { tokenId: number; from: string; to: string; blockNumber: number }) {
+    return this.prisma.pixelTransfers.create({
+      data: {
+        tokenId,
+        from,
+        to,
+        blockNumber
+      },
+    });
+  }
+
+  generateFilterQuery(filter) {
+    const filterQuery = {};
+    if (filter?.from) {
+      filterQuery['from'] = {
+        equals: filter.from,
+        mode: 'insensitive',
+      }
+    }
+
+    if (filter?.to) {
+      filterQuery['to'] = {
+        equals: filter.to,
+        mode: 'insensitive',
+      }
+    }
+
+    if (filter?.tokenId) {
+      filterQuery['tokenId'] = {
+        equals: filter.tokenId,
+      }
+    }
+
+    if (filter?.fromBlockNumber) {
+      filterQuery['blockNumber'] = {
+        gte: filter.fromBlockNumber,
+      }
+    }
+    if (filter?.toBlockNumber) {
+      filterQuery['blockNumber'] = {
+        lte: filter.toBlockNumber,
+      }
+    }
+    if (filter?.fromDate) {
+      filterQuery['insertedAt'] = {
+        gte: new Date(filter.fromDate),
+      }
+    }
+    if (filter?.toDate) {
+      filterQuery['insertedAt'] = {
+        lte: new Date(filter.toDate),
+      }
+    }
+    return filterQuery;
+  }
+
+  generateSortQuery(sort) {
+    const sortQuery = {};
+    for(const key in sort) {
+      sortQuery[key] = sort[key].toLowerCase();
+    }
+    
+    return sortQuery;
+  }
+  async getTransferEvents(filter, sort) {
+    const filterQuery = this.generateFilterQuery(filter);
+    const sortQuery = this.generateSortQuery(sort);
+
+    this.logger.log("filterQuery", filterQuery);
+    this.logger.log("sortQuery", sortQuery);
+    const data = await this.prisma.pixelTransfers.findMany({
+      where: filterQuery,
+      orderBy: sortQuery,
+    });
+     
+    return data;
+  }
 }
