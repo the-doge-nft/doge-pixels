@@ -72,28 +72,36 @@ export class PixelsService implements OnModuleInit {
   }
 
   private initPixelListener() {
-    this.logger.log(`Listening to transfer events`)
+    this.logger.log(`Listening to transfer events`);
     this.pxContract.on('Transfer', async (from, to, tokenId, event) => {
       this.logger.log(`new transfer event hit: ${from} -- ${to} -- ${tokenId}`);
-      const payload: PixelMintOrBurnPayload = { from, to, tokenId: tokenId.toNumber() };
+      const payload: PixelMintOrBurnPayload = {
+        from,
+        to,
+        tokenId: tokenId.toNumber(),
+      };
       this.eventEmitter.emit(Events.PIXEL_MINT_OR_BURN, payload);
-      await this.pixelsRepository.upsert({ tokenId: tokenId.toNumber(), ownerAddress: to });
+      await this.pixelsRepository.upsert({
+        tokenId: tokenId.toNumber(),
+        ownerAddress: to,
+      });
     });
   }
 
   async syncTransfers() {
-    this.logger.log('dropping all')
-    await this.pixelsRepository.deleteAll()
-    this.logger.log('Getting pixel transfer logs')
+    this.logger.log('Getting pixel transfer logs');
     const logs = await this.getAllPixelTransferLogs();
-    this.logger.log(`Got logs of length: ${logs.length}`)
-    this.logger.log('Syncing transfers in db')
+    this.logger.log(`Got logs of length: ${logs.length}`);
+    this.logger.log('Syncing transfers in db');
     for (const log of logs) {
       const { args } = log;
       const { from, to, tokenId } = args;
-      await this.pixelsRepository.upsert({tokenId: tokenId.toNumber(), ownerAddress: to})
+      await this.pixelsRepository.upsert({
+        tokenId: tokenId.toNumber(),
+        ownerAddress: to,
+      });
     }
-    this.logger.log('Done syncing pixels')
+    this.logger.log('Done syncing pixels');
   }
 
   async getAllPixelTransferLogs() {
@@ -137,7 +145,7 @@ export class PixelsService implements OnModuleInit {
   }
 
   async getPixelOwner(tokenId: number) {
-    return this.pxContract.ownerOf(tokenId)
+    return this.pxContract.ownerOf(tokenId);
   }
 
   getPixelBalanceByAddress(address: string) {
