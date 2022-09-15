@@ -1,9 +1,8 @@
 import React from "react";
-import { isDevModeEnabled } from "../environment/helpers";
-
+import { isDevModeEnabled, isStaging } from "../environment/helpers";
 
 const Dev: React.FC<any> = ({ children }) => {
-  if (isDevModeEnabled()) {
+  if (isDevModeEnabled() || isStaging()) {
     return <>{children && children}</>;
   } else {
     return <></>;
