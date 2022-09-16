@@ -78,9 +78,7 @@ export class PixelsRepository {
   }
 
   async getOwnershipBalances() {
-    const query = {
-
-    }
+    
     const data = await this.prisma.pixelTransfers.findMany({
       distinct: ['tokenId'],
       orderBy: {
@@ -182,5 +180,25 @@ export class PixelsRepository {
     });
      
     return data;
+  }
+
+  async upsertEvent({ tokenId, from, to, blockNumber }: { tokenId: number; from: string, to: string, blockNumber: number }) {
+    const event = await this.prisma.pixelTransfers.findFirst({
+      where: { 
+        tokenId,
+        from: {
+          equals: from,
+          mode: 'insensitive',
+        },
+        to: {
+          equals: to,
+          mode: 'insensitive',
+        },
+       },
+    });
+    this.logger.log("Event", event)
+    if (!event) {
+      return this.addTransferEvent({ tokenId, from, to, blockNumber });
+    }
   }
 }

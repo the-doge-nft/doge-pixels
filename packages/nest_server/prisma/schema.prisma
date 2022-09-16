@@ -26,5 +26,5 @@ model PixelTransfers {
   updatedAt         DateTime @default(now())
   from              String
   to                String
-  tokenId           Int @unique
+  tokenId           Int
 }

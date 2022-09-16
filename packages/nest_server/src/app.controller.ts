@@ -84,6 +84,12 @@ export class AppController {
     return this.pixelsRepository.getOwnershipMap();
   }
 
+  @Get('config/refreshEvents')
+  async getConfigRefreshedEvents() {
+    await this.pixelService.syncTransferEvents();
+    return this.pixelsRepository.getOwnershipBalances();
+  }
+
   @Get('transferEvents')
   async getTransferEvents(@Req() request: Request) {
     const filter = request.body.filter as {};

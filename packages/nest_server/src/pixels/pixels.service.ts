@@ -104,6 +104,24 @@ export class PixelsService implements OnModuleInit {
     }
     this.logger.log('Done syncing pixels');
   }
+  
+  async syncTransferEvents() {
+    this.logger.log('Getting pixel transfer logs');
+    const logs = await this.getAllPixelTransferLogs();
+    this.logger.log(`Got logs of length: ${logs.length}`);
+    this.logger.log('Syncing transfers in db');
+    for (const log of logs) {
+      const { args } = log;
+      const { from, to, tokenId } = args;
+      await this.pixelsRepository.upsertEvent({
+        tokenId: tokenId.toNumber(),
+        from,
+        to: to,
+        blockNumber: log.blockNumber,
+      });
+    }
+    this.logger.log('Done syncing pixels');
+  }
 
   async getAllPixelTransferLogs() {
     const filter = this.pxContract.filters.Transfer(null, null);
