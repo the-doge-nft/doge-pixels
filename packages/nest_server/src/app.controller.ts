@@ -73,6 +73,11 @@ export class AppController {
     return this.pixelsRepository.getOwnershipMap();
   }
 
+  @Get('balances')
+  async getOwnershipBalances() {
+    return this.pixelsRepository.getOwnershipBalances();
+  }
+
   @Get('config/refresh')
   async getConfigRefreshed() {
     await this.pixelService.syncTransfers();

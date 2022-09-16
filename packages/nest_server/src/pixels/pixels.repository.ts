@@ -77,6 +77,35 @@ export class PixelsRepository {
     return map;
   }
 
+  async getOwnershipBalances() {
+    const query = {
+
+    }
+    const data = await this.prisma.pixelTransfers.findMany({
+      distinct: ['tokenId'],
+      orderBy: {
+        insertedAt: 'desc',
+      },
+    });
+    const map = {};
+
+    for (const item of data) {
+      if (item.to === ethers.constants.AddressZero) {
+        continue;
+      }
+      if (map[item.to]?.tokenIds) {
+        map[item.to].tokenIds.push(item.tokenId);
+      } else {
+        const ens = await this.ethers.getEnsName(item.to);
+        map[item.to] = {
+          tokenIds: [item.tokenId],
+          ens: ens,
+        };
+      }
+    }
+    return map;
+  }
+
   addTransferEvent({ tokenId, from, to, blockNumber }: { tokenId: number; from: string; to: string; blockNumber: number }) {
     return this.prisma.pixelTransfers.create({
       data: {
