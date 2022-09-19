@@ -33,9 +33,9 @@ const SharePixelsDialog = observer(({action, pixelOwner}: {action: 'mint' | 'bur
                     }
                 }}
             />
-            {/*<Flex justifyContent={"center"} my={4}>*/}
-            {/*    <Button onClick={postTweet}>Share</Button>*/}
-            {/*</Flex>*/}
+            <Flex justifyContent={"center"} my={4}>
+                <Button onClick={postTweet}>Share</Button>
+            </Flex>
         </Box>
     </Flex>
 })
