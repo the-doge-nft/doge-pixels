@@ -12,11 +12,8 @@ import env from "../../environment";
 import erc20 from "../../contracts/erc20.json"
 import {formatUnits} from "ethers/lib/utils";
 import {sleep} from "../../helpers/sleep";
-import {Http} from "../../services";
 
 export const GPv2VaultRelayerAddress = "0xC92E8bdf79f0507f65a392b0ab4667716BFE0110"
-
-const TEST_ADDRESS = "0xe961C0A8a86E4CB3Aa32380D67A45DcE46Bd573C"
 
 export enum MintModalView {
   Form = "mint",

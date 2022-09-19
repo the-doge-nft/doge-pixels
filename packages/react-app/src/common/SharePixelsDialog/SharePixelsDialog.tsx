@@ -2,7 +2,7 @@ import ParkPixels from "../../pages/DogPark/ParkPixels";
 import {observer} from "mobx-react-lite";
 import {Box, Flex} from "@chakra-ui/react";
 import Button from "../../DSL/Button/Button";
-import shareToTwitter from "../../helpers/shareToTwitter";
+import shareToTwitter, {TwitterShareType} from "../../helpers/shareToTwitter";
 import {PixelOwnerInfo} from "../../pages/DogPark/DogParkPage.store";
 import {useState} from "react";
 
@@ -12,9 +12,14 @@ const SharePixelsDialog = observer(({action, pixelOwner}: {action: 'mint' | 'bur
 
     // @next sync with PixelArt functionality
     const postTweet = () => {
+        let description = "I just minted Doge Pixels. Check them out here."
+        if (action === "burn") {
+            description = "I just burned Doge Pixels. See which ones I let go here."
+        }
+
         const canvas: HTMLCanvasElement = document.getElementById(id) as HTMLCanvasElement;
         const data = canvas.toDataURL().replace("data:image/png;base64,", "");
-        shareToTwitter(data, `I just ${action === 'mint' ? 'minted' : 'burned'} Doge Pixels. Check them out here.`)
+        shareToTwitter(data, description, action === "mint" ? TwitterShareType.Mint : TwitterShareType.Burn)
     }
 
     const [selectedPixel, setSelectedPixel] = useState(-1)
@@ -33,9 +38,9 @@ const SharePixelsDialog = observer(({action, pixelOwner}: {action: 'mint' | 'bur
                     }
                 }}
             />
-            {/*<Flex justifyContent={"center"} my={4}>*/}
-            {/*    <Button onClick={postTweet}>Share</Button>*/}
-            {/*</Flex>*/}
+            <Flex justifyContent={"center"} mt={6} mb={7}>
+                <Button onClick={postTweet}>Share</Button>
+            </Flex>
         </Box>
     </Flex>
 })

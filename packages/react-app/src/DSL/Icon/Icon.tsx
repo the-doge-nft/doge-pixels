@@ -1,6 +1,6 @@
 import React from "react";
 import {Icon as ChakraIcon, IconProps as ChakraIconProps, useStyleConfig} from "@chakra-ui/react";
-import {VscArrowRight, VscChevronDown, VscChevronUp} from "react-icons/all";
+import {VscArrowRight, VscChevronDown, VscChevronUp, BsTwitter, FaDiscord} from "react-icons/all";
 
 import User from "./custom/User";
 import Search from "./custom/Search";
@@ -18,6 +18,8 @@ export type ReactIconName =
   | "chevron-up"
   | "chevron-down"
   | "arrow-right"
+  | "discord"
+  | "twitter"
 
 type CustomIconName =
   | "person"
@@ -37,7 +39,9 @@ const customIcons: CustomIconName[] = ['person', 'search', 'sun', 'moon', 'close
 const iconStringToComponentMap = {
   "chevron-up": VscChevronUp,
   "chevron-down": VscChevronDown,
-  "arrow-right": VscArrowRight
+  "arrow-right": VscArrowRight,
+  "discord": FaDiscord,
+  "twitter": BsTwitter
 };
 
 const customIconStringToComponentMap = {

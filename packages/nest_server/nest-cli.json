@@ -7,7 +7,8 @@
       "assets/images/*.png",
       "assets/fonts/*.ttf.fnt",
       "assets/fonts/*.ttf_0.png",
-      "views/*.hbs"
+      "views/*.hbs",
+      "public/*.txt"
     ]
   }
 }

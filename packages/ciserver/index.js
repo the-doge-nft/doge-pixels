@@ -53,9 +53,14 @@ const pullImage = (hash) => {
   }
 };
 
-app.get("status", (req, res) => {
+app.get("/status", (req, res) => {
   res.send("🏃‍️");
 });
+
+app.get("/logs", (req, res) => {
+  const logs = childProcess.execSync('pm2 logs ciserver --lines 250 --nostream')
+  return res.send(logs)
+})
 
 app.get("/" + ciEndpoint, async (req, res, next) => {
   const hash = req.query.SHA1;
