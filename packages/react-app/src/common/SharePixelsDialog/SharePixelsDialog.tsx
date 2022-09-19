@@ -12,9 +12,14 @@ const SharePixelsDialog = observer(({action, pixelOwner}: {action: 'mint' | 'bur
 
     // @next sync with PixelArt functionality
     const postTweet = () => {
+        let description = "I just minted Doge Pixels. Check them out here."
+        if (action === "burn") {
+            description = "I just burned Doge Pixels. See which ones I let go here."
+        }
+
         const canvas: HTMLCanvasElement = document.getElementById(id) as HTMLCanvasElement;
         const data = canvas.toDataURL().replace("data:image/png;base64,", "");
-        shareToTwitter(data, `I just ${action === 'mint' ? 'minted' : 'burned'} Doge Pixels. Check them out here.`, action === "mint" ? TwitterShareType.Mint : TwitterShareType.Burn)
+        shareToTwitter(data, description, action === "mint" ? TwitterShareType.Mint : TwitterShareType.Burn)
     }
 
     const [selectedPixel, setSelectedPixel] = useState(-1)
@@ -33,7 +38,7 @@ const SharePixelsDialog = observer(({action, pixelOwner}: {action: 'mint' | 'bur
                     }
                 }}
             />
-            <Flex justifyContent={"center"} my={4}>
+            <Flex justifyContent={"center"} mt={6} mb={7}>
                 <Button onClick={postTweet}>Share</Button>
             </Flex>
         </Box>

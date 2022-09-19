@@ -271,11 +271,11 @@ const Complete = observer(({store, txHash}: { store: MintPixelsDialogStore, txHa
         <Typography variant={TVariant.PresStart28} textAlign={"center"} mt={4} block>
             🌟🦄💫🐸🐕🚀
         </Typography>
-        <Flex justifyContent={"center"} mt={10}>
-            {txHash && <Link href={getEtherscanURL(txHash, "tx")} isExternal>View tx</Link>}
-        </Flex>
         <Box mt={4}>
             <SharePixelsDialog action={"mint"} pixelOwner={{address: AppStore.web3.address, pixels: store.diffPixels, ens: AppStore.web3.ens}}/>
+            <Flex justifyContent={"center"}>
+                {txHash && <Link href={getEtherscanURL(txHash, "tx")} isExternal>View tx</Link>}
+            </Flex>
         </Box>
     </Box>
 })

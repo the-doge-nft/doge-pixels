@@ -469,7 +469,7 @@ const MainMenuComponent = observer(({ store }: { store: PixelArtPageStore }) => 
         store.pixelsCanvas.drawStickers(store.stickers);
         const data = canvas.toDataURL().replace("data:image/png;base64,", "");
         store.pixelsCanvas.updateCanvas();
-        shareToTwitter(data, "I just created pixel art with my Doge Pixels, check it out here", TwitterShareType.Art)
+        shareToTwitter(data, "I just created pixel art with my Doge Pixels. Check it out here.", TwitterShareType.Art)
     };
 
     const importTemplate = () => {
