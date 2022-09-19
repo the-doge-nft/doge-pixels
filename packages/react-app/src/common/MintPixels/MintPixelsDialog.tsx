@@ -15,11 +15,9 @@ import {getEtherscanURL} from "../../helpers/links";
 import MintPixelsDialogStore, {MintModalView} from "./MintPixelsDialog.store";
 import AppStore from "../../store/App.store";
 import NewMintPixelsInput from "./NewMintPixelsInput";
-import CowLogo from "../../images/cowlogo.svg";
 import Icon from "../../DSL/Icon/Icon";
 import CowStore from "../../store/cow.store";
 import SharePixelsDialog from "../SharePixelsDialog/SharePixelsDialog";
-import jsonify from "../../helpers/jsonify";
 
 interface MintPixelsDialogProps {
     store: MintPixelsDialogStore;

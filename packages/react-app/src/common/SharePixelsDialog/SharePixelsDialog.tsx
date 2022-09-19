@@ -2,7 +2,7 @@ import ParkPixels from "../../pages/DogPark/ParkPixels";
 import {observer} from "mobx-react-lite";
 import {Box, Flex} from "@chakra-ui/react";
 import Button from "../../DSL/Button/Button";
-import shareToTwitter from "../../helpers/shareToTwitter";
+import shareToTwitter, {TwitterShareType} from "../../helpers/shareToTwitter";
 import {PixelOwnerInfo} from "../../pages/DogPark/DogParkPage.store";
 import {useState} from "react";
 
@@ -14,7 +14,7 @@ const SharePixelsDialog = observer(({action, pixelOwner}: {action: 'mint' | 'bur
     const postTweet = () => {
         const canvas: HTMLCanvasElement = document.getElementById(id) as HTMLCanvasElement;
         const data = canvas.toDataURL().replace("data:image/png;base64,", "");
-        shareToTwitter(data, `I just ${action === 'mint' ? 'minted' : 'burned'} Doge Pixels. Check them out here.`)
+        shareToTwitter(data, `I just ${action === 'mint' ? 'minted' : 'burned'} Doge Pixels. Check them out here.`, action === "mint" ? TwitterShareType.Mint : TwitterShareType.Burn)
     }
 
     const [selectedPixel, setSelectedPixel] = useState(-1)

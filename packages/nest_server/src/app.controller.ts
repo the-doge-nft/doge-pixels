@@ -183,23 +183,39 @@ export class AppController {
     };
   }
 
-  @Get('twitter/share/:id')
+  @Get('twitter/share/:type/:id')
   @Render('twitter-share')
   async getTwitterShare(@Param() params) {
-    const { id } = params
-    const title = 'Doge Pixel Art'
-    const description = 'Pixel Art created from Doge Pixels'
+    const { id, type } = params
+
+    if (!["mint", "burn", "art"].includes(type)) {
+      throw new BadRequestException("Unknown type of twitter share")
+    }
+
+    const typeToTwitterDataMap = {
+      "mint": {
+        title: 'Doge Pixel Mint',
+        description: 'Doge Pixels minted'
+      },
+      "burn": {
+        title: 'Doge Pixel Burn',
+        description: 'Doge Pixels burned'
+      },
+      "art": {
+        title: 'Doge Pixel Art',
+        description: 'Pixel Art created from Doge Pixels'
+      }
+    }
+
     const imageUrl = `https://s3.amazonaws.com/share.ownthedoge.com/${id}.png`
     return {
-      title, description, imageUrl, url: imageUrl
+      title: typeToTwitterDataMap[type].title, description: typeToTwitterDataMap[type].description, imageUrl, url: imageUrl
     }
   }
 
   @Post('twitter/upload/image')
   async postToTwitter(@Body() body: { data: string }) {
-    // throw new BadRequestException('Not implemented yet');
     const { uuid } = await this.twitter.uploadImageToS3(body.data)
-    // console.log('debug:: response', response)
     return {id: uuid}
   }
 
