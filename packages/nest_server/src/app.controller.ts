@@ -210,9 +210,13 @@ export class AppController {
   }
 
   @Post('twitter/upload/image')
-  postToTwitter(@Body() body: any) {
-    throw new BadRequestException('Not implemented yet');
-    // return this.twitter.uploadImageToS3(body.data)
+  async postToTwitter(@Body() body: { data: string }) {
+    // throw new BadRequestException('Not implemented yet');
+    const response = await this.twitter.uploadImageToS3(body.data)
+
+    console.log('debug:: response', response)
+
+    return response
   }
 
   @Get('twitter/test')

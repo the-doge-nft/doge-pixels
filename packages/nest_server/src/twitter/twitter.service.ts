@@ -89,7 +89,7 @@ export class TwitterService implements OnModuleInit {
   }
 
   public async uploadImageToS3(data: string) {
-    const filename = `doge-pixel-share-${new Date().toISOString()}`;
+    const filename = `doge-pixel-share-${new Date().toISOString()}.png`;
     const _data = new Buffer(data, 'base64');
     const res = await this.aws.uploadToS3(filename, _data, 'image/png');
     console.log('debug:: res', res);
