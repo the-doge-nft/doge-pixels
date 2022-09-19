@@ -186,7 +186,6 @@ export class AppController {
   @Get('twitter/share/:id')
   @Render('twitter-share')
   async getTwitterShare(@Param() params) {
-    throw new BadRequestException('Not implemented yet');
     const { id } = params
     const title = 'Doge Pixel Art'
     const description = 'Pixel Art created from Doge Pixels'
