@@ -16,9 +16,14 @@ import { PixelImageGeneratorService } from './pixel-image-generator/pixel-image-
 import { SentryModule } from '@travelerdev/nestjs-sentry';
 import { NomicsService } from './nomics/nomics.service';
 import { AwsService } from './aws/aws.service';
+import { ServeStaticModule } from "@nestjs/serve-static";
+import { join } from 'path'
 
 @Module({
   imports: [
+      ServeStaticModule.forRoot({
+        rootPath: join(__dirname, 'public')
+      }),
     ConfigModule.forRoot({
       load: [() => configuration],
     }),
