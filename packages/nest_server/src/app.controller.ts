@@ -117,9 +117,6 @@ export class AppController {
       Number(params.tokenId),
     );
 
-    // const contractRes = await this.pixelService.getPixelOwner(Number(params.tokenId))
-    // console.log(contractRes)
-
     if (!token) {
       throw new BadRequestException('Could not find token');
     }
@@ -194,11 +191,9 @@ export class AppController {
   async getPixelUSDPrice() {
     const cacheKey = 'NOMICS:DOG';
     let usdPrice = await this.cacheManager.get(cacheKey);
-    this.logger.log(`got cache: ${usdPrice}`);
     if (!usdPrice) {
       const { data } = await this.nomics.getDOGPrice();
       usdPrice = Number(data[0].price);
-      this.logger.log(`setting cache: ${usdPrice}`);
       await this.cacheManager.set(cacheKey, usdPrice, { ttl: 60 });
     }
 
@@ -209,31 +204,40 @@ export class AppController {
     };
   }
 
-  // @Get('robots.txt')
-  // @Header('Content-Type', 'text/plain')
-  // robotsTxt(
-  //     @Response() res: Response,
-  // ) {
-  //   return `User-agent: Twitterbot\nDisallow\n\nUser-agent:*\nDisallow: /`
-  // }
-
-  @Get('twitter/share/:id')
+  @Get('twitter/share/:type/:id')
   @Render('twitter-share')
   async getTwitterShare(@Param() params) {
-    throw new BadRequestException('Not implemented yet');
-    // const { id } = params
-    //   const title = 'Doge Pixel Art'
-    //   const description = 'Pixel Art created from Doge Pixels'
-    //   const imageUrl = `https://pixels.gainormather.com/twitter` + id + '.png'
-    //   return {
-    //     title, description, imageUrl, url: imageUrl
-    //   }
+    const { id, type } = params
+
+    if (!["mint", "burn", "art"].includes(type)) {
+      throw new BadRequestException("Unknown type of twitter share")
+    }
+
+    const typeToTwitterDataMap = {
+      "mint": {
+        title: 'Doge Pixel Mint',
+        description: 'Doge Pixels minted'
+      },
+      "burn": {
+        title: 'Doge Pixel Burn',
+        description: 'Doge Pixels burned'
+      },
+      "art": {
+        title: 'Doge Pixel Art',
+        description: 'Pixel Art created from Doge Pixels'
+      }
+    }
+
+    const imageUrl = `https://s3.amazonaws.com/share.ownthedoge.com/${id}.png`
+    return {
+      title: typeToTwitterDataMap[type].title, description: typeToTwitterDataMap[type].description, imageUrl, url: imageUrl
+    }
   }
 
   @Post('twitter/upload/image')
-  postToTwitter(@Body() body: any) {
-    throw new BadRequestException('Not implemented yet');
-    // return this.twitter.uploadImageToS3(body.data)
+  async postToTwitter(@Body() body: { data: string }) {
+    const { uuid } = await this.twitter.uploadImageToS3(body.data)
+    return {id: uuid}
   }
 
   @Get('twitter/test')

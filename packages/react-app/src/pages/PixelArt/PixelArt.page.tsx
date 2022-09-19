@@ -17,7 +17,7 @@ import AppStore from "../../store/App.store";
 import Link from "../../DSL/Link/Link";
 import {isDevModeEnabled, isProduction, isStaging} from "../../environment/helpers";
 import {Http} from "../../services";
-import shareToTwitter from "../../helpers/shareToTwitter";
+import shareToTwitter, {TwitterShareType} from "../../helpers/shareToTwitter";
 
 const CANVAS_ELEMENT_SIZE = 512;
 
@@ -449,6 +449,7 @@ const MainMenuComponent = observer(({ store }: { store: PixelArtPageStore }) => 
             store.pushAction(clearAction);
         }
     };
+
     const downloadPFP = () => {
         let canvas: HTMLCanvasElement = document.getElementById("canvas") as HTMLCanvasElement;
         store.pixelsCanvas.drawStickers(store.stickers);
@@ -468,7 +469,7 @@ const MainMenuComponent = observer(({ store }: { store: PixelArtPageStore }) => 
         store.pixelsCanvas.drawStickers(store.stickers);
         const data = canvas.toDataURL().replace("data:image/png;base64,", "");
         store.pixelsCanvas.updateCanvas();
-        shareToTwitter(data, "I just created pixel art with my doge pixels, check it out here")
+        shareToTwitter(data, "I just created pixel art with my Doge Pixels. Check it out here.", TwitterShareType.Art)
     };
 
     const importTemplate = () => {

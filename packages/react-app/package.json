@@ -69,7 +69,11 @@
     "cross-env": "^7.0.3",
     "customize-cra": "^1.0.0",
     "react-app-rewired": "^2.1.8",
+    "react-error-overlay": "6.0.9",
     "surge": "^0.21.5"
+  },
+  "resolutions": {
+    "react-error-overlay": "6.0.9"
   },
   "eslintConfig": {
     "extends": "react-app"
