@@ -96,9 +96,6 @@ export class AppController {
       Number(params.tokenId),
     );
 
-    // const contractRes = await this.pixelService.getPixelOwner(Number(params.tokenId))
-    // console.log(contractRes)
-
     if (!token) {
       throw new BadRequestException('Could not find token');
     }
@@ -173,11 +170,9 @@ export class AppController {
   async getPixelUSDPrice() {
     const cacheKey = 'NOMICS:DOG';
     let usdPrice = await this.cacheManager.get(cacheKey);
-    this.logger.log(`got cache: ${usdPrice}`);
     if (!usdPrice) {
       const { data } = await this.nomics.getDOGPrice();
       usdPrice = Number(data[0].price);
-      this.logger.log(`setting cache: ${usdPrice}`);
       await this.cacheManager.set(cacheKey, usdPrice, { ttl: 60 });
     }
 
@@ -187,14 +182,6 @@ export class AppController {
       price,
     };
   }
-
-  // @Get('robots.txt')
-  // @Header('Content-Type', 'text/plain')
-  // robotsTxt(
-  //     @Response() res: Response,
-  // ) {
-  //   return `User-agent: Twitterbot\nDisallow\n\nUser-agent:*\nDisallow: /`
-  // }
 
   @Get('twitter/share/:id')
   @Render('twitter-share')
