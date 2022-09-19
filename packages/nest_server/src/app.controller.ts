@@ -200,23 +200,21 @@ export class AppController {
   @Render('twitter-share')
   async getTwitterShare(@Param() params) {
     throw new BadRequestException('Not implemented yet');
-    // const { id } = params
-    //   const title = 'Doge Pixel Art'
-    //   const description = 'Pixel Art created from Doge Pixels'
-    //   const imageUrl = `https://pixels.gainormather.com/twitter` + id + '.png'
-    //   return {
-    //     title, description, imageUrl, url: imageUrl
-    //   }
+    const { id } = params
+    const title = 'Doge Pixel Art'
+    const description = 'Pixel Art created from Doge Pixels'
+    const imageUrl = `https://s3.amazonaws.com/share.ownthedoge.com/${id}.png`
+    return {
+      title, description, imageUrl, url: imageUrl
+    }
   }
 
   @Post('twitter/upload/image')
   async postToTwitter(@Body() body: { data: string }) {
     // throw new BadRequestException('Not implemented yet');
-    const response = await this.twitter.uploadImageToS3(body.data)
-
-    console.log('debug:: response', response)
-
-    return response
+    const { uuid } = await this.twitter.uploadImageToS3(body.data)
+    // console.log('debug:: response', response)
+    return {id: uuid}
   }
 
   @Get('twitter/test')

@@ -6,10 +6,10 @@ import { OnEvent } from '@nestjs/event-emitter';
 import { Events, PixelMintOrBurnPayload } from '../events';
 import { PixelImageGeneratorService } from '../pixel-image-generator/pixel-image-generator.service';
 import { InjectSentry, SentryService } from '@travelerdev/nestjs-sentry';
-import { Blob } from 'node:buffer';
 
 import * as Twitter from 'twitter';
 import { AwsService } from '../aws/aws.service';
+import * as crypto from 'crypto'
 
 @Injectable()
 export class TwitterService implements OnModuleInit {
@@ -89,11 +89,12 @@ export class TwitterService implements OnModuleInit {
   }
 
   public async uploadImageToS3(data: string) {
-    const filename = `doge-pixel-share-${new Date().toISOString()}.png`;
+    const uuid = crypto.randomUUID()
+    const filename = `${uuid}.png`;
     const _data = new Buffer(data, 'base64');
     const res = await this.aws.uploadToS3(filename, _data, 'image/png');
     console.log('debug:: res', res);
-    return res;
+    return {uuid};
   }
 
   public DEBUG_TEST() {

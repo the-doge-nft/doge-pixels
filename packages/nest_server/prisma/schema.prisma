@@ -18,3 +18,15 @@ model Pixels {
   ownerAddress      String
   tokenId           Int @unique
 }
+
+// @next-add a uploadedBy column here and require users to sign the payload
+// when they are uploading to this table
+model Media {
+    id              Int @id @default(autoincrement())
+    s3Id            String @unique
+    s3filename      String
+    fileSize        Int
+    mimetype        String
+    insertedAt      DateTime @default(now())
+    updatedAt       DateTime @default(now())
+}

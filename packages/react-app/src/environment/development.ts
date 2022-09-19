@@ -1,7 +1,7 @@
 import deployedContracts from "../contracts/hardhat_contracts.json";
 const developmentEnv = {
   api: {
-    baseURL: "https://dev.gainormather.xyz",
+    baseURL: "https://staging.api.ownthedoge.com",
     // proxyURL: "http://localhost:3003",
   },
   app: {

@@ -449,6 +449,7 @@ const MainMenuComponent = observer(({ store }: { store: PixelArtPageStore }) => 
             store.pushAction(clearAction);
         }
     };
+
     const downloadPFP = () => {
         let canvas: HTMLCanvasElement = document.getElementById("canvas") as HTMLCanvasElement;
         store.pixelsCanvas.drawStickers(store.stickers);

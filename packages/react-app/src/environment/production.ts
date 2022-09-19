@@ -1,6 +1,6 @@
 const productionEnv = {
     api: {
-        baseURL: "https://pixels.gainormather.xyz",
+        baseURL: "https://api.ownthedoge.com",
     },
     app: {
         availableTokens: {
