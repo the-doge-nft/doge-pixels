@@ -53,7 +53,7 @@ const pullImage = (hash) => {
   }
 };
 
-app.get("status", (req, res) => {
+app.get("/status", (req, res) => {
   res.send("🏃‍️");
 });
 
