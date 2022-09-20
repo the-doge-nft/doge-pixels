@@ -1,7 +1,5 @@
-import React from "react";
-import {Box, Flex, HStack, useColorMode} from "@chakra-ui/react";
 import React, { useState } from "react";
-import { Box, Flex, useColorMode } from "@chakra-ui/react";
+import {Box, Flex, HStack, useColorMode} from "@chakra-ui/react";
 import { observer } from "mobx-react-lite";
 import { slide as Menu } from "react-burger-menu";
 import AppStore from "../../store/App.store";
