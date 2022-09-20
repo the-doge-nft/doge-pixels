@@ -1,14 +1,18 @@
+import React from "react";
+import {Box, Flex, HStack, useColorMode} from "@chakra-ui/react";
 import React, { useState } from "react";
 import { Box, Flex, useColorMode } from "@chakra-ui/react";
 import { observer } from "mobx-react-lite";
 import { slide as Menu } from "react-burger-menu";
 import AppStore from "../../store/App.store";
-import Link from "../../DSL/Link/Link";
 import Typography, { TVariant } from "../../DSL/Typography/Typography";
 import { Type } from "../../DSL/Fonts/Fonts";
 import NavLinks from "./NavLinks";
 import Header from "./Header";
 import { formatWithThousandsSeparators } from "../../helpers/numberFormatter";
+import Icon from "../../DSL/Icon/Icon";
+import {Link} from "react-router-dom";
+
 
 interface AppLayoutProps {
   children?: any;
@@ -30,52 +34,18 @@ const AppLayout = observer(function AppLayout({ children }: AppLayoutProps) {
 });
 
 const Footer = observer(() => {
-  const contributers: { name: string; socialLink: string }[] = [
-    { name: "coldplunge", socialLink: "https://twitter.com/xcoldplunge" },
-    { name: "gainormather", socialLink: "https://twitter.com/gainormather" },
-    { name: "partyka1", socialLink: "https://github.com/partyka1" },
-    { name: "nemochips", socialLink: "https://twitter.com/nemo__chips" },
-  ];
   return (
-    <Box w={"full"} mt={5}>
-      <Flex justifyContent={"space-between"}>
-        <Box>
-          <Typography variant={TVariant.ComicSans10}>
-            Built by
-            {contributers.map((person, index, arr) => (
-              <Link
-                size={"sm"}
-                key={`${person.name}`}
-                fontWeight={"bold"}
-                variant={Type.ComicSans}
-                mx={1}
-                href={person.socialLink}
-                isExternal
-              >
-                {person.name}
-                {index === arr.length - 1 ? "" : ","}
-              </Link>
-            ))}
-            with support from
-            <Link
-              size={"sm"}
-              fontWeight={"bold"}
-              variant={Type.ComicSans}
-              mx={1}
-              href={"https://twitter.com/ownthedoge"}
-              isExternal
-            >
-              The Doge NFT
-            </Link>
-          </Typography>
-        </Box>
-        <Box>
-          {AppStore.web3.usdPerPixel && <Typography variant={TVariant.ComicSans12}>
-            ${formatWithThousandsSeparators(AppStore.web3.usdPerPixel)} / pixel
-          </Typography>}
-        </Box>
-      </Flex>
-    </Box>
+      <HStack mt={5} justifyContent={'flex-end'} alignItems={'center'} spacing={2}>
+        <a target={"_blank"} href={"https://discord.com/invite/thedogenft"} style={{ display: 'flex', alignItems: 'center' }}>
+          <Icon icon={'discord'} boxSize={5}/>
+        </a>
+        <a target={"_blank"} href={"https://twitter.com/ownthedoge"} style={{ display: 'flex', alignItems: 'center' }}>
+          <Icon icon={'twitter'} boxSize={4}/>
+        </a>
+        {AppStore.web3.usdPerPixel && <Typography variant={TVariant.ComicSans14}>
+          ${formatWithThousandsSeparators(AppStore.web3.usdPerPixel, 2)} / pixel
+        </Typography>}
+      </HStack>
   );
 });
 

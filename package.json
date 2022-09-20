@@ -3,9 +3,7 @@
   "version": "1.0.0",
   "keywords": [
     "ethereum",
-    "react",
-    "workspaces",
-    "yarn"
+    "react"
   ],
   "private": true,
   "scripts": {
@@ -34,19 +32,6 @@
     "fundedwallet": "cd packages/hardhat && npx hardhat fundedwallet",
     "clean": "cd packages/hardhat && npx hardhat clean",
     "fund-account": "yarn workspace @dog/hardhat fund-account"
-  },
-  "workspaces": {
-    "packages": [
-      "packages/*"
-    ],
-    "nohoist": [
-      "**/@graphprotocol/graph-ts",
-      "**/@graphprotocol/graph-ts/**",
-      "**/hardhat",
-      "**/hardhat/**",
-      "**/hardhat-ts",
-      "**/hardhat-ts/**"
-    ]
   },
   "dependencies": {},
   "devDependencies": {}

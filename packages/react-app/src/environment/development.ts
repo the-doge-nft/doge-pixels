@@ -1,13 +1,13 @@
-import deployedContracts from "../contracts/hardhat_contracts.json"
+import deployedContracts from "../contracts/hardhat_contracts.json";
 const developmentEnv = {
-    api: {
-        baseURL: "https://dev.gainormather.xyz",
-        // proxyURL: "http://localhost:3003"
+  api: {
+    baseURL: "https://staging.api.ownthedoge.com",
+    // proxyURL: "http://localhost:3003",
+  },
+  app: {
+    availableTokens: {
+      DOG: { decimals: 18, contractAddress: deployedContracts["4"]["rinkeby"]["contracts"]["DOG20"] },
     },
-    app: {
-        availableTokens: {
-            DOG: {decimals: 18, contractAddress:  deployedContracts["4"]["rinkeby"]["contracts"]["DOG20"]},
-        }
-    }
+  },
 };
 export default developmentEnv;

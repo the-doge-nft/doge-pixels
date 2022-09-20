@@ -1,4 +1,4 @@
-import {computed, makeObservable, observable} from "mobx";
+import {computed, makeObservable, observable, toJS} from "mobx";
 import {Navigable} from "../../services/mixins/navigable";
 import {Reactionable} from "../../services/mixins/reactionable";
 import {Constructor, EmptyClass} from "../../helpers/mixins";
@@ -14,8 +14,6 @@ import {formatUnits} from "ethers/lib/utils";
 import {sleep} from "../../helpers/sleep";
 
 export const GPv2VaultRelayerAddress = "0xC92E8bdf79f0507f65a392b0ab4667716BFE0110"
-
-const TEST_ADDRESS = "0xe961C0A8a86E4CB3Aa32380D67A45DcE46Bd573C"
 
 export enum MintModalView {
   Form = "mint",
@@ -87,13 +85,18 @@ class MintPixelsDialogStore extends Reactionable((Navigable<MintModalView, Const
   @observable
   private _pollOrdersTick = 0
 
+  @observable
+  oldPixels: number[] = []
+
+  @observable
+  diffPixels: number[] = []
+
   constructor() {
     super();
     makeObservable(this);
   }
 
   init() {
-    console.log('debug:: init called')
     this.pushNavigation(MintModalView.Form);
     this.react(() => [this.srcCurrency, this.pixelCount], async () => {
       if (Number(this.pixelCount) > 0) {
@@ -250,9 +253,26 @@ class MintPixelsDialogStore extends Reactionable((Navigable<MintModalView, Const
       const tx = await AppStore.web3.mintPuppers(amount, estimatedGas.add(gasLimitSafetyOffset))
 
       this.hasUserSignedTx = true
+      this.oldPixels = toJS(AppStore.web3.puppersOwned)
       showDebugToast(`minting ${this.pixelCount!} pixel`)
       const receipt = await tx.wait()
       this.txHash = receipt.transactionHash
+
+      await AppStore.web3.refreshPixelOwnershipMap()
+      const newPixels = toJS(AppStore.web3.puppersOwned)
+      const mintedPixels = newPixels.filter(pixel => {
+        if (!this.oldPixels.includes(pixel)) {
+          return 1
+        }
+        return 0
+      })
+      const burnedPixels = this.oldPixels.filter(pixel => {
+        if (!newPixels.includes(pixel)) {
+          return 1
+        }
+        return 0
+      })
+      this.diffPixels = mintedPixels.concat(burnedPixels)
       this.pushNavigation(MintModalView.Complete)
     } catch (e) {
       Sentry.captureException(e)

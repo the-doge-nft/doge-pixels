@@ -1,6 +1,6 @@
 import React from "react";
 import {Icon as ChakraIcon, IconProps as ChakraIconProps, useStyleConfig} from "@chakra-ui/react";
-import {VscArrowRight, VscChevronDown, VscChevronUp} from "react-icons/all";
+import {VscArrowRight, VscChevronDown, VscChevronUp, BsTwitter, FaDiscord} from "react-icons/all";
 
 import User from "./custom/User";
 import Search from "./custom/Search";
@@ -9,11 +9,17 @@ import PixelMoon from "./custom/PixelMoon";
 import Close from "./custom/Close";
 import Back from "./custom/Back";
 import Cowswap from "./custom/Cowswap";
+import ToolPen from "./custom/ToolPen";
+import ToolErase from "./custom/ToolErase";
+import ToolStickers from "./custom/ToolStickers";
+import TemplateToggle from "./custom/TemplateToggle";
 
 export type ReactIconName =
   | "chevron-up"
   | "chevron-down"
   | "arrow-right"
+  | "discord"
+  | "twitter"
 
 type CustomIconName =
   | "person"
@@ -23,13 +29,19 @@ type CustomIconName =
   | "close"
   | "back"
   | "cowswap"
+  | "toolPen"
+  | "toolErase"
+  | "toolStickers"
+  | "templateToggle"
 
-const customIcons: CustomIconName[] = ['person', 'search', 'sun', 'moon', 'close', 'back', 'cowswap']
+const customIcons: CustomIconName[] = ['person', 'search', 'sun', 'moon', 'close', 'back', 'cowswap', 'toolPen', 'toolErase', 'toolStickers', 'templateToggle']
 
 const iconStringToComponentMap = {
   "chevron-up": VscChevronUp,
   "chevron-down": VscChevronDown,
-  "arrow-right": VscArrowRight
+  "arrow-right": VscArrowRight,
+  "discord": FaDiscord,
+  "twitter": BsTwitter
 };
 
 const customIconStringToComponentMap = {
@@ -39,7 +51,11 @@ const customIconStringToComponentMap = {
   moon: PixelMoon,
   close: Close,
   back: Back,
-  cowswap: Cowswap
+  cowswap: Cowswap,
+  toolPen: ToolPen,
+  toolErase: ToolErase,
+  toolStickers: ToolStickers,
+  templateToggle: TemplateToggle,
 }
 
 interface IconProps extends ChakraIconProps {

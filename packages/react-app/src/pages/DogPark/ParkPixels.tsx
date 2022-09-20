@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import {useCallback, useEffect, useState} from "react";
 import Kobosu from "../../images/THE_ACTUAL_NFT_IMAGE.png";
 import { Box, useColorMode } from "@chakra-ui/react";
 import AppStore from "../../store/App.store";
@@ -6,11 +6,13 @@ import { observer } from "mobx-react-lite";
 import { lightOrDarkMode } from "../../DSL/Theme";
 import { Canvas } from "@react-three/fiber";
 import { PixelOwnerInfo } from "./DogParkPage.store";
+import jsonify from "../../helpers/jsonify";
 
 interface ParkPixelsProps {
   selectedPixel: number;
   pixelOwner: PixelOwnerInfo;
   onPupperClick: (pupper: number | null) => void;
+  id: string
 }
 
 interface IPupperRectPosition {
@@ -31,16 +33,7 @@ const PIXEL_WIDTH = 15;
 const PIXEL_HEIGHT = 15;
 const SCALE = IMAGE_WIDTH / 640;
 
-function createHiPPICanvas(w: number, h: number) {
-  let ratio = window.devicePixelRatio;
-  let cv = document.getElementById("canvas") as HTMLCanvasElement;
-  cv.width = w * ratio;
-  cv.height = h * ratio;
-  cv.style.width = w + "px";
-  cv.style.height = h + "px";
-  cv.getContext("2d")!.scale(ratio, ratio);
-  return cv;
-}
+// @next use refs here instead of getElementById()
 
 const getPixelOffsets = (y: number) => {
   if (y * SCALE <= IMAGE_HEIGHT / 2) {
@@ -50,7 +43,7 @@ const getPixelOffsets = (y: number) => {
   }
 };
 
-const ParkPixels = observer(({ selectedPixel, pixelOwner, onPupperClick }: ParkPixelsProps) => {
+const ParkPixels = observer(({ selectedPixel, pixelOwner, onPupperClick, id }: ParkPixelsProps) => {
   const { colorMode } = useColorMode();
   const [pupperPositions, setPupperPositions] = useState<IPupperRectPosition[]>([]);
 
@@ -67,22 +60,14 @@ const ParkPixels = observer(({ selectedPixel, pixelOwner, onPupperClick }: ParkP
     }
 
     setPupperPositions(positions);
-  }, [selectedPixel, pixelOwner, colorMode]);
+  }, [pixelOwner.pixels]);
 
   useEffect(() => {
-    // scale the canvas so we don't see pixelated shapes
-    let ratio = window.devicePixelRatio;
-    let cv = document.getElementById("canvas") as HTMLCanvasElement;
-    cv.width = IMAGE_WIDTH * ratio;
-    cv.height = IMAGE_HEIGHT * ratio;
-    cv.style.width = IMAGE_WIDTH + "px";
-    cv.style.height = IMAGE_HEIGHT + "px";
-    cv.getContext("2d")!.scale(ratio, ratio);
-  }, [])
-
-  useEffect(() => {
-    drawBackground();
-  }, [pupperPositions]);
+    // @next there are some rendering issues where pupperPositions is 0
+    if (pupperPositions.length !== 0) {
+      drawBackground()
+    }
+  }, [pupperPositions, selectedPixel])
 
   const drawSelectedPixel = (ctx: CanvasRenderingContext2D) => {
     if (selectedPixel === -1) return;
@@ -204,7 +189,7 @@ const ParkPixels = observer(({ selectedPixel, pixelOwner, onPupperClick }: ParkP
   };
 
   const drawBackground = async () => {
-    let canvas: HTMLCanvasElement = document.getElementById("canvas") as HTMLCanvasElement;
+    let canvas: HTMLCanvasElement = document.getElementById(id) as HTMLCanvasElement;
     if (canvas.getContext) {
       let ctx = canvas.getContext("2d");
       if (!ctx) return;
@@ -215,6 +200,7 @@ const ParkPixels = observer(({ selectedPixel, pixelOwner, onPupperClick }: ParkP
       drawScaledImage(img, ctx);
 
       drawSelectedPixel(ctx);
+
       drawPixels(ctx);
       drawPixelPane(ctx);
       drawPixelPointer(ctx);
@@ -233,7 +219,7 @@ const ParkPixels = observer(({ selectedPixel, pixelOwner, onPupperClick }: ParkP
     const x = e.clientX;
     const y = e.clientY;
 
-    let canvas: HTMLCanvasElement = document.getElementById("canvas") as HTMLCanvasElement;
+    let canvas: HTMLCanvasElement = document.getElementById(id) as HTMLCanvasElement;
     const rect = canvas.getBoundingClientRect();
 
     const offsetX = x - rect.x;
@@ -282,7 +268,7 @@ const ParkPixels = observer(({ selectedPixel, pixelOwner, onPupperClick }: ParkP
   const onCanvasMouseDown = (e: any) => {
     const x = e.clientX;
     const y = e.clientY;
-    let canvas: HTMLCanvasElement = document.getElementById("canvas") as HTMLCanvasElement;
+    let canvas: HTMLCanvasElement = document.getElementById(id) as HTMLCanvasElement;
     const rect = canvas.getBoundingClientRect();
 
     const offsetX = x - rect.x;
@@ -296,6 +282,19 @@ const ParkPixels = observer(({ selectedPixel, pixelOwner, onPupperClick }: ParkP
     }
   };
 
+  const drawOnMount = useCallback((node: any) => {
+    // scale the canvas so we don't see pixelated shapes
+    let ratio = window.devicePixelRatio;
+    let cv = document.getElementById(id) as HTMLCanvasElement;
+    if (cv) {
+      cv.width = IMAGE_WIDTH * ratio;
+      cv.height = IMAGE_HEIGHT * ratio;
+      cv.style.width = IMAGE_WIDTH + "px";
+      cv.style.height = IMAGE_HEIGHT + "px";
+      cv.getContext("2d")!.scale(ratio, ratio);
+    }
+  }, [])
+
   return (
     <Box
       w={IMAGE_WIDTH}
@@ -306,7 +305,8 @@ const ParkPixels = observer(({ selectedPixel, pixelOwner, onPupperClick }: ParkP
       _focus={{ boxShadow: "none" }}
     >
       <canvas
-        id="canvas"
+        ref={drawOnMount}
+        id={id}
         onMouseMove={e => onCanvasMouseMove(e)}
         onMouseDown={e => onCanvasMouseDown(e)}
       />

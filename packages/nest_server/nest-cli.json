@@ -1,0 +1,14 @@
+{
+  "$schema": "https://json.schemastore.org/nest-cli",
+  "collection": "@nestjs/schematics",
+  "sourceRoot": "src",
+  "compilerOptions": {
+    "assets": [
+      "assets/images/*.png",
+      "assets/fonts/*.ttf.fnt",
+      "assets/fonts/*.ttf_0.png",
+      "views/*.hbs",
+      "public/*.txt"
+    ]
+  }
+}

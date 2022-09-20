@@ -10,7 +10,7 @@ import {abbreviate} from "../../helpers/strings";
 export interface PixelOwnerInfo {
   address: string;
   pixels: number[];
-  ens?: string
+  ens: string | null
 }
 
 class DogParkPageStore extends Reactionable(EmptyClass) {
@@ -57,32 +57,14 @@ class DogParkPageStore extends Reactionable(EmptyClass) {
   }
 
   @computed
-  get sortedPixelOwners(): PixelOwnerInfo[] {
-    const tds = ObjectKeys(AppStore.web3.addressToPuppers).map((key, index, arr) => (
-      {address: key, pixels: AppStore.web3.addressToPuppers![key].tokenIDs, ens: AppStore.web3.addressToPuppers![key].ens}
-    ))
-    return tds
-      .filter(dog => dog.address !== ethers.constants.AddressZero)
-      .filter(dog => dog.pixels.length > 0)
-      .sort((a, b) => {
-        if (a.pixels.length > b.pixels.length) {
-          return -1
-        } else if (a.pixels.length < b.pixels.length) {
-          return 1
-        } else {
-          return 0
-        }
-      })
-  }
-
-  @computed
   get filteredOwners() {
-    return arrayFuzzyFilterByKey(this.sortedPixelOwners, this.addressToSearch, 'address').concat(arrayFuzzyFilterByKey(this.sortedPixelOwners, this.addressToSearch, 'ens'))
+    return arrayFuzzyFilterByKey(AppStore.web3.sortedPixelOwners, this.addressToSearch, 'address')
+        .concat(arrayFuzzyFilterByKey(AppStore.web3.sortedPixelOwners, this.addressToSearch, 'ens'))
   }
 
   @computed
   get selectedOwner(): PixelOwnerInfo | undefined {
-    return this.sortedPixelOwners.filter(dog => dog.address === this.selectedAddress)[0]
+    return AppStore.web3.sortedPixelOwners.filter(dog => dog.address === this.selectedAddress)[0]
   }
 
   @computed
