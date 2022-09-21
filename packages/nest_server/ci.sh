@@ -15,7 +15,7 @@ HELP_USAGE
 if [[ $1 == "dev" ]]; then
     curl http://167.172.252.56:3009/logs
 elif [[ $1 == "prod" ]]; then
-    curl http://167.172.252.56:3009/logs
+    curl http://143.244.147.62:3009/logs
 else
     usage
 fi
