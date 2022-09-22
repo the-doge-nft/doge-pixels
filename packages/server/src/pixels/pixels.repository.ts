@@ -3,6 +3,7 @@ import { PrismaService } from '../prisma.service';
 import { ethers } from 'ethers';
 import { EthersService } from '../ethers/ethers.service';
 import { Cache } from 'cache-manager';
+import { PixelTransfers } from '@prisma/client';
 
 @Injectable()
 export class PixelsRepository {
@@ -16,15 +17,6 @@ export class PixelsRepository {
 
   findByTokenId(tokenId: number) {
     return this.prisma.pixels.findUnique({ where: { tokenId } });
-  }
-
-  create({ to, tokenId }) {
-    return this.prisma.pixels.create({
-      data: {
-        ownerAddress: to,
-        tokenId,
-      },
-    });
   }
 
   upsert({ tokenId, ownerAddress }: { tokenId: number; ownerAddress: string }) {
@@ -78,7 +70,7 @@ export class PixelsRepository {
   }
 
   async getOwnershipBalances() {
-    
+
     const data = await this.prisma.pixelTransfers.findMany({
       distinct: ['tokenId'],
       orderBy: {
@@ -104,13 +96,14 @@ export class PixelsRepository {
     return map;
   }
 
-  addTransferEvent({ tokenId, from, to, blockNumber }: { tokenId: number; from: string; to: string; blockNumber: number }) {
+  create({ tokenId, from, to, blockNumber, uniqueTransferId }: Omit<PixelTransfers, 'updatedAt' | 'insertedAt' | 'id'>) {
     return this.prisma.pixelTransfers.create({
       data: {
         tokenId,
         from,
         to,
-        blockNumber
+        blockNumber,
+        uniqueTransferId
       },
     });
   }
@@ -165,40 +158,45 @@ export class PixelsRepository {
     for(const key in sort) {
       sortQuery[key] = sort[key].toLowerCase();
     }
-    
+
     return sortQuery;
   }
-  async getTransferEvents(filter, sort) {
+
+  async getPixelTransfers(filter, sort) {
     const filterQuery = this.generateFilterQuery(filter);
     const sortQuery = this.generateSortQuery(sort);
-
-    this.logger.log("filterQuery", filterQuery);
-    this.logger.log("sortQuery", sortQuery);
     const data = await this.prisma.pixelTransfers.findMany({
       where: filterQuery,
       orderBy: sortQuery,
     });
-     
+
     return data;
   }
 
-  async upsertEvent({ tokenId, from, to, blockNumber }: { tokenId: number; from: string, to: string, blockNumber: number }) {
-    const event = await this.prisma.pixelTransfers.findFirst({
-      where: { 
+  async upsertPixelTransfer({ tokenId, from, to, blockNumber, uniqueTransferId }: Omit<PixelTransfers, 'updatedAt' | 'insertedAt' | 'id'>) {
+    return this.prisma.pixelTransfers.upsert({
+      where: { uniqueTransferId },
+      create: {
         tokenId,
-        from: {
-          equals: from,
-          mode: 'insensitive',
-        },
-        to: {
-          equals: to,
-          mode: 'insensitive',
-        },
-       },
-    });
-    this.logger.log("Event", event)
-    if (!event) {
-      return this.addTransferEvent({ tokenId, from, to, blockNumber });
-    }
+        from,
+        to,
+        blockNumber,
+        uniqueTransferId
+      },
+      update: {}
+    })
+  }
+
+  async getMostRecentTransferByBlockNumber() {
+    return this.prisma.pixelTransfers.findMany({
+      orderBy: {
+        blockNumber: "desc"
+      },
+      take: 1
+    })
+  }
+
+  dropAllTransfers() {
+    return this.prisma.pixelTransfers.deleteMany()
   }
 }

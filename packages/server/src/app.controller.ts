@@ -80,13 +80,13 @@ export class AppController {
 
   @Get('config/refresh')
   async getConfigRefreshed() {
-    await this.pixelService.syncTransfers();
+    // await this.pixelService.syncTransfers();
     return this.pixelsRepository.getOwnershipMap();
   }
 
   @Get('config/refreshEvents')
   async getConfigRefreshedEvents() {
-    await this.pixelService.syncTransferEvents();
+    await this.pixelService.syncAllTransferEvents();
     return this.pixelsRepository.getOwnershipBalances();
   }
 

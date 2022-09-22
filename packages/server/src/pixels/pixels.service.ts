@@ -1,7 +1,7 @@
 import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { EventEmitter2, OnEvent } from '@nestjs/event-emitter';
 import { Events, PixelMintOrBurnPayload } from '../events';
-import { ethers } from 'ethers';
+import {BigNumber, ethers} from 'ethers';
 import { EthersService } from '../ethers/ethers.service';
 import * as ABI from '../contracts/hardhat_contracts.json';
 import { ConfigService } from '@nestjs/config';
@@ -9,6 +9,8 @@ import { Configuration } from '../config/configuration';
 import { PixelsRepository } from './pixels.repository';
 import * as KobosuJson from '../constants/kobosu.json';
 import { InjectSentry, SentryService } from '@travelerdev/nestjs-sentry';
+import {Event} from "@ethersproject/contracts/src.ts/index";
+import {keccak256} from "ethers/lib/utils";
 
 @Injectable()
 export class PixelsService implements OnModuleInit {
@@ -29,101 +31,119 @@ export class PixelsService implements OnModuleInit {
   ) {}
 
   async onModuleInit() {
-    if (!this.pxContract && !this.dogContract && this.ethersService.provider) {
-      this.initContracts(this.ethersService.provider);
+    await this.pixelsRepository.dropAllTransfers()
+    if (!this.isConnectedToContracts && this.ethersService.provider) {
+      this.onProviderConnected(this.ethersService.provider);
     }
   }
 
   @OnEvent(Events.ETHERS_WS_PROVIDER_CONNECTED)
   async handleProviderConnected(provider: ethers.providers.WebSocketProvider) {
-    const logMessage = 'Infura provider re-connected';
-    this.logger.log(logMessage);
-    this.sentryClient.instance().captureMessage(logMessage);
-    this.initContracts(provider);
+    this.onProviderConnected(provider);
   }
 
-  private async initContracts(provider: ethers.providers.WebSocketProvider) {
+  private get isConnectedToContracts() {
+    return this.pxContract!! && this.dogContract!!
+  }
+
+  private async onProviderConnected(provider: ethers.providers.WebSocketProvider) {
+    const logMessage = 'Provider connected';
+    this.logger.log(logMessage);
+    this.sentryClient.instance().captureMessage(logMessage);
+
     await this.connectToContracts(provider);
     this.initPixelListener();
-    this.syncTransfers();
+    // this.syncTransfers();
+    await this.syncRecentTransfers()
   }
 
   private async connectToContracts(
-    provider: ethers.providers.WebSocketProvider,
+      provider: ethers.providers.WebSocketProvider,
   ) {
     const { chainId } = await provider.getNetwork();
     const pxContractInfo =
-      ABI[chainId][this.ethersService.network].contracts['PX'];
+        ABI[chainId][this.ethersService.network].contracts['PX'];
 
     const dogContractInfo =
-      ABI[chainId][this.ethersService.network].contracts['DOG20'];
+        ABI[chainId][this.ethersService.network].contracts['DOG20'];
 
     this.pxContract = new ethers.Contract(
-      pxContractInfo.address,
-      pxContractInfo.abi,
-      provider,
+        pxContractInfo.address,
+        pxContractInfo.abi,
+        provider,
     );
 
     this.dogContract = new ethers.Contract(
-      dogContractInfo.address,
-      dogContractInfo.abi,
-      provider,
+        dogContractInfo.address,
+        dogContractInfo.abi,
+        provider,
     );
   }
 
   private initPixelListener() {
     this.logger.log(`Listening to transfer events`);
     this.pxContract.on('Transfer', async (from, to, tokenId, event) => {
-      this.logger.log(`new transfer event hit: ${from} -- ${to} -- ${tokenId}`);
+      this.logger.log(`new transfer event hit: (${tokenId.toNumber()}) ${from} -> ${to}`);
       const payload: PixelMintOrBurnPayload = {
         from,
         to,
         tokenId: tokenId.toNumber(),
+        blockNumber: event.blockNumber
       };
       this.eventEmitter.emit(Events.PIXEL_MINT_OR_BURN, payload);
-      await this.pixelsRepository.upsert({
+
+      await this.pixelsRepository.create({
         tokenId: tokenId.toNumber(),
-        ownerAddress: to,
+        from,
+        to,
+        blockNumber: event.blockNumber,
+        uniqueTransferId: this.getUniqueTransferId(event)
       });
-      await this.pixelsRepository.addTransferEvent({tokenId: tokenId.toNumber(), from, to, blockNumber: event.blockNumber});
     });
   }
 
-  async syncTransfers() {
-    this.logger.log('Getting pixel transfer logs');
-    const logs = await this.getAllPixelTransferLogs();
-    this.logger.log(`Got logs of length: ${logs.length}`);
-    this.logger.log('Syncing transfers in db');
-    for (const log of logs) {
-      const { args } = log;
-      const { from, to, tokenId } = args;
-      await this.pixelsRepository.upsert({
-        tokenId: tokenId.toNumber(),
-        ownerAddress: to,
-      });
+  private async syncRecentTransfers() {
+    this.logger.log('Syncing recent transfers')
+    const mostRecentBlock = (await this.pixelsRepository.getMostRecentTransferByBlockNumber())[0]?.blockNumber
+    this.logger.log(mostRecentBlock)
+    if (!mostRecentBlock) {
+      return this.syncAllTransferEvents()
+    } else {
+      return this.syncTransferEventsFromBlock(mostRecentBlock)
     }
-    this.logger.log('Done syncing pixels');
   }
-  
-  async syncTransferEvents() {
-    this.logger.log('Getting pixel transfer logs');
-    const logs = await this.getAllPixelTransferLogs();
-    this.logger.log(`Got logs of length: ${logs.length}`);
-    this.logger.log('Syncing transfers in db');
-    for (const log of logs) {
-      const { args } = log;
+
+  async syncAllTransferEvents() {
+    this.logger.log('Syncing all transfer events')
+    return this.upsertTransfersFromLogs(await this.getAllPixelTransferLogs())
+  }
+
+  async syncTransferEventsFromBlock(blockNumber: number) {
+
+  }
+
+  private async upsertTransfersFromLogs(events: Event[]) {
+    for (const event of events) {
+      const { args, blockNumber } = event;
       const { from, to, tokenId } = args;
-      await this.pixelsRepository.upsertEvent({
+      await this.pixelsRepository.upsertPixelTransfer({
         tokenId: tokenId.toNumber(),
         from,
         to: to,
-        blockNumber: log.blockNumber,
+        blockNumber: blockNumber,
+        uniqueTransferId: this.getUniqueTransferId(event)
       });
     }
-    this.logger.log('Done syncing pixels');
+  }
+
+  private getUniqueTransferId(event: Event) {
+    // https://ethereum.stackexchange.com/questions/55155/contract-event-transactionindex-and-logindex
+    const { blockHash, transactionHash, logIndex } = event
+    return `${blockHash}:${transactionHash}:${logIndex}`
   }
 
   async getAllPixelTransferLogs() {
+    this.logger.log('Getting all pixel transfer events')
     const filter = this.pxContract.filters.Transfer(null, null);
     const fromBlock = this.configService.get(
       'pixelContractDeploymentBlockNumber',
@@ -186,27 +206,27 @@ export class PixelsService implements OnModuleInit {
   }
 
   async getTranserEvents(
-    {filter, sort}: 
+    {filter, sort}:
     {
-      filter?: { 
-        tokenId?: number, 
-        from?: string, 
-        to?: string, 
-        fromBlockNumber?: number, 
-        toBlockNumber?: number, 
-        fromDate?: string, 
-        toDate?: string 
-      }, 
-      sort?: { 
+      filter?: {
+        tokenId?: number,
+        from?: string,
+        to?: string,
+        fromBlockNumber?: number,
+        toBlockNumber?: number,
+        fromDate?: string,
+        toDate?: string
+      },
+      sort?: {
         tokenId?: 'ASC' | 'DESC',
         blockNumber?: 'ASC' | 'DESC',
         insertedAt?: 'ASC' | 'DESC',
       }
     }
   ) {
-      return this.pixelsRepository.getTransferEvents(filter, sort)
+      return this.pixelsRepository.getPixelTransfers(filter, sort)
   }
 
 
-  
+
 }

@@ -27,4 +27,5 @@ model PixelTransfers {
   from              String
   to                String
   tokenId           Int
+  uniqueTransferId  String @unique
 }

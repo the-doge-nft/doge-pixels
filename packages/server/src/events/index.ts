@@ -6,5 +6,6 @@ export enum Events {
 export interface PixelMintOrBurnPayload {
   from: string;
   to: string;
-  tokenId: number
+  tokenId: number;
+  blockNumber: number;
 }

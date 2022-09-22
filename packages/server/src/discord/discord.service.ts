@@ -37,7 +37,7 @@ export class DiscordService implements OnModuleInit {
   }
 
   @OnEvent(Events.PIXEL_MINT_OR_BURN)
-  async discordBot({ from, to, tokenId }: PixelMintOrBurnPayload) {
+  async discordBot({ from, to, tokenId }: Omit<PixelMintOrBurnPayload, 'blockNumber'>) {
     this.logger.log(`Posting to discord:: (${tokenId}) ${from} -> ${to}`);
     const textContent = await this.imageGenerator.getTextContent(
       from,
