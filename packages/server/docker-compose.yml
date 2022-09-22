@@ -12,6 +12,11 @@ services:
         POSTGRES_DB: ${POSTGRES_DB}
     restart: always
 
+  redis:
+    image: redis:latest
+    ports:
+      - '6379:6379'
+
   api:
     build:
         context: .
@@ -31,6 +36,8 @@ services:
       - '${PORT}:${PORT}'
     depends_on:
       - db
+      - redis
+
 
 volumes:
     pixelsdb:

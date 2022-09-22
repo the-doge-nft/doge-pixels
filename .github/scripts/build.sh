@@ -39,8 +39,8 @@ buildApi() {
 
   echo "👷‍🚧👷 building:: $appname: $sha_tag :: $latest_tag"
 
-  docker build "./packages/nest_server" \
-  -f "./packages/nest_server/$appname.Dockerfile" \
+  docker build "./packages/server" \
+  -f "./packages/server/$appname.Dockerfile" \
   -t "$latest_tag" \
   --label "runnumber=${GITHUB_RUN_ID}" \
   --target production

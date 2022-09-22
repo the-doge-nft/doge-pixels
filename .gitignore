@@ -84,5 +84,5 @@ tools/
 # ignore all workflows for now
 calebtools
 
-packages/nest_server/dist
-packages/nest_server/src/assets/images/*pointer
+packages/server/dist
+packages/server/src/assets/images/*pointer
