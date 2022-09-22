@@ -62,3 +62,7 @@ elif [[ $1 == "up" ]]; then
 else
     usage
 fi
+
+trap handler SIGINT
+down
+

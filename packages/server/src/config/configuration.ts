@@ -35,6 +35,10 @@ export interface Configuration {
     region: string;
     bucketName: string
   },
+  redis: {
+    hostName: string;
+    port: number;
+  },
   nomicsKey: string;
 }
 
@@ -68,6 +72,10 @@ const configuration: Configuration = {
     accessKeySecret: process.env.AWS_ACCESS_KEY_SECRET,
     region: process.env.AWS_REGION,
     bucketName: process.env.AWS_S3_BUCKET_NAME
+  },
+  redis: {
+    hostName: process.env.REDIS_HOSTNAME,
+    port: parseInt(process.env.REDIS_PORT)
   },
   nomicsKey: process.env.NOMICS_API_KEY,
 };

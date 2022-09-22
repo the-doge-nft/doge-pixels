@@ -44,8 +44,6 @@ export class EthersService implements OnModuleInit {
 
   async onModuleInit() {
     this.initWS();
-    this.logger.log('resetting api cache');
-    await this.cacheManager.reset();
   }
 
   initWS() {

@@ -18,32 +18,38 @@ import { NomicsService } from './nomics/nomics.service';
 import { AwsService } from './aws/aws.service';
 import { ServeStaticModule } from "@nestjs/serve-static";
 import { join } from 'path'
+import * as redisStore from 'cache-manager-redis-store'
 
 @Module({
   imports: [
+      ConfigModule.forRoot({
+          load: [() => configuration],
+      }),
       ServeStaticModule.forRoot({
         rootPath: join(__dirname, 'public')
       }),
-    ConfigModule.forRoot({
-      load: [() => configuration],
-    }),
-    ScheduleModule.forRoot(),
-    EventEmitterModule.forRoot(),
-    HttpModule.register({
-      timeout: 5000,
-    }),
-    SentryModule.forRootAsync({
-      imports: [ConfigModule],
-      useFactory: async (config: ConfigService<Configuration>) => ({
-        dsn: config.get('sentryDns'),
-        debug: true,
+      ScheduleModule.forRoot(),
+      EventEmitterModule.forRoot(),
+      HttpModule.register({
+        timeout: 5000,
       }),
-      inject: [ConfigService],
-    }),
-    CacheModule.register({
-      ttl: 10,
-      max: 1000,
-    }),
+      SentryModule.forRootAsync({
+        imports: [ConfigModule],
+        useFactory: async (config: ConfigService<Configuration>) => ({
+          dsn: config.get('sentryDns'),
+          debug: true,
+        }),
+        inject: [ConfigService],
+      }),
+      CacheModule.registerAsync({
+          useFactory: () => ({
+              store: redisStore,
+              host: 'redis',
+              port: 6379,
+              ttl: 10,
+              max: 1000,
+          }),
+      }),
   ],
   controllers: [AppController],
   providers: [

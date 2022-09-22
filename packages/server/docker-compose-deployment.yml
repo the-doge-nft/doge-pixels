@@ -12,6 +12,11 @@ services:
       POSTGRES_DB: ${POSTGRES_DB}
     restart: always
 
+  redis:
+    image: redis:latest
+    ports:
+      - '6379:6379'
+
   api:
     image: "${DOCKER_REGISTRY:?No docker registry supplied}/doge-pixels:${BUILD_ID:?No build ID supplied}"
     ports:
@@ -23,6 +28,7 @@ services:
       DATABASE_URL: postgresql://${POSTGRES_USER:?No postgres user proivded}:${POSTGRES_PASSWORD:?No db password provided}@db:5432/${POSTGRES_DB:?No db provided}?schema=public
     depends_on:
       - db
+      - redis
     restart: always
 
 volumes:
