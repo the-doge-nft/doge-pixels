@@ -33,7 +33,7 @@ export class PixelTransferService implements OnModuleInit {
     }
 
     async syncFromBlockNumber(block: number) {
-        this.logger.log('Syncing transfers from the most recent block')
+        this.logger.log(`Syncing transfers from block: ${block}`)
         return this.upsertTransfersFromLogs(await this.pixels.getPixelTransferLogs(block))
     }
 
@@ -58,9 +58,7 @@ export class PixelTransferService implements OnModuleInit {
     }
 
     async syncRecentTransfers() {
-        this.logger.log('Syncing recent transfers')
-        const mostRecentBlock = (await this.pixelTransfers.getMostRecentTransferByBlockNumber())[0]?.blockNumber
-        this.logger.log(mostRecentBlock)
+        const mostRecentBlock = (await this.pixelTransfers.getMostRecentTransferByBlockNumber())?.blockNumber
         if (!mostRecentBlock) {
             return this.syncAll()
         } else {

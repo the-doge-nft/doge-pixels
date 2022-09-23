@@ -151,7 +151,7 @@ export class PixelTransferRepository {
         blockNumber: "desc"
       },
       take: 1
-    })
+    })[0]
   }
 
   dropAllTransfers() {
