@@ -3,11 +3,11 @@ import { PrismaService } from '../prisma.service';
 import { ethers } from 'ethers';
 import { EthersService } from '../ethers/ethers.service';
 import { Cache } from 'cache-manager';
-import { PixelTransfers } from '@prisma/client';
+import {PixelTransfers, PrismaClient} from '@prisma/client';
 
 @Injectable()
-export class PixelsRepository {
-  private readonly logger = new Logger(PixelsRepository.name);
+export class PixelTransferRepository {
+  private readonly logger = new Logger(PixelTransferRepository.name);
 
   constructor(
     private prisma: PrismaService,
@@ -48,52 +48,6 @@ export class PixelsRepository {
 
   deleteAll() {
     return this.prisma.pixels.deleteMany();
-  }
-
-  async getOwnershipMap() {
-    const map = {};
-    const data = await this.prisma.pixels.findMany();
-    for (const item of data) {
-      if (map[item.ownerAddress]?.tokenIds) {
-        map[item.ownerAddress].tokenIds.push(item.tokenId);
-      } else {
-        const ens = await this.ethers.getEnsName(item.ownerAddress);
-        map[item.ownerAddress] = {
-          tokenIds: [item.tokenId],
-          ens: ens,
-        };
-      }
-    }
-    // remove zero address for now
-    delete map[ethers.constants.AddressZero];
-    return map;
-  }
-
-  async getOwnershipBalances() {
-
-    const data = await this.prisma.pixelTransfers.findMany({
-      distinct: ['tokenId'],
-      orderBy: {
-        insertedAt: 'desc',
-      },
-    });
-    const map = {};
-
-    for (const item of data) {
-      if (item.to === ethers.constants.AddressZero) {
-        continue;
-      }
-      if (map[item.to]?.tokenIds) {
-        map[item.to].tokenIds.push(item.tokenId);
-      } else {
-        const ens = await this.ethers.getEnsName(item.to);
-        map[item.to] = {
-          tokenIds: [item.tokenId],
-          ens: ens,
-        };
-      }
-    }
-    return map;
   }
 
   create({ tokenId, from, to, blockNumber, uniqueTransferId }: Omit<PixelTransfers, 'updatedAt' | 'insertedAt' | 'id'>) {
@@ -183,7 +137,11 @@ export class PixelsRepository {
         blockNumber,
         uniqueTransferId
       },
-      update: {}
+      update: {
+        from,
+        to,
+        tokenId
+      }
     })
   }
 
@@ -198,5 +156,9 @@ export class PixelsRepository {
 
   dropAllTransfers() {
     return this.prisma.pixelTransfers.deleteMany()
+  }
+
+  findMany(args: any) {
+    return this.prisma.pixelTransfers.findMany(args)
   }
 }

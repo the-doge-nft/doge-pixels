@@ -8,15 +8,16 @@ import { PrismaService } from './prisma.service';
 import { EthersService } from './ethers/ethers.service';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { HttpModule } from '@nestjs/axios';
-import { PixelsRepository } from './pixels/pixels.repository';
+import { PixelTransferRepository } from './pixel-transfer/pixel-transfer.repository';
 import { TwitterService } from './twitter/twitter.service';
 import { DiscordService } from './discord/discord.service';
-import { PixelImageGeneratorService } from './pixel-image-generator/pixel-image-generator.service';
+import { ImageGeneratorService } from './image-generator/image-generator.service';
 import { SentryModule } from '@travelerdev/nestjs-sentry';
 import { NomicsService } from './nomics/nomics.service';
 import { AwsService } from './aws/aws.service';
 import { ServeStaticModule } from "@nestjs/serve-static";
 import { join } from 'path'
+import { PixelTransferService } from './pixel-transfer/pixel-transfer.service';
 import * as redisStore from 'cache-manager-redis-store'
 
 @Module({
@@ -55,12 +56,13 @@ import * as redisStore from 'cache-manager-redis-store'
     PrismaService,
     EthersService,
     PixelsService,
-    PixelsRepository,
+    PixelTransferRepository,
     TwitterService,
     DiscordService,
-    PixelImageGeneratorService,
+    ImageGeneratorService,
     NomicsService,
     AwsService,
+    PixelTransferService,
   ],
 })
 export class AppModule {}

@@ -9,8 +9,8 @@ import {
 import { ConfigService } from '@nestjs/config';
 import { Configuration } from '../config/configuration';
 import { OnEvent } from '@nestjs/event-emitter';
-import { Events, PixelMintOrBurnPayload } from '../events';
-import { PixelImageGeneratorService } from '../pixel-image-generator/pixel-image-generator.service';
+import { Events, PixelTransferEventPayload } from '../events';
+import { ImageGeneratorService } from '../image-generator/image-generator.service';
 import { EthersService } from '../ethers/ethers.service';
 import { InjectSentry, SentryService } from '@travelerdev/nestjs-sentry';
 
@@ -21,7 +21,7 @@ export class DiscordService implements OnModuleInit {
 
   constructor(
     private readonly config: ConfigService<Configuration>,
-    private readonly imageGenerator: PixelImageGeneratorService,
+    private readonly imageGenerator: ImageGeneratorService,
     private readonly ethers: EthersService,
     @InjectSentry() private readonly sentryClient: SentryService,
   ) {}
@@ -36,8 +36,8 @@ export class DiscordService implements OnModuleInit {
     });
   }
 
-  @OnEvent(Events.PIXEL_MINT_OR_BURN)
-  async discordBot({ from, to, tokenId }: Omit<PixelMintOrBurnPayload, 'blockNumber'>) {
+  @OnEvent(Events.PIXEL_TRANSFER)
+  async discordBot({ from, to, tokenId }: Omit<PixelTransferEventPayload, 'event'>) {
     this.logger.log(`Posting to discord:: (${tokenId}) ${from} -> ${to}`);
     const textContent = await this.imageGenerator.getTextContent(
       from,

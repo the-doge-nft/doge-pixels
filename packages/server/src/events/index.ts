@@ -1,11 +1,13 @@
+import {Event} from "@ethersproject/contracts/src.ts/index";
+
 export enum Events {
   ETHERS_WS_PROVIDER_CONNECTED = 'ETHERS_WS_PROVIDER_CONNECTED',
-  PIXEL_MINT_OR_BURN = 'PIXEL_MINT_OR_BURN'
+  PIXEL_TRANSFER = 'PIXEL_TRANSFER'
 }
 
-export interface PixelMintOrBurnPayload {
+export interface PixelTransferEventPayload {
   from: string;
   to: string;
   tokenId: number;
-  blockNumber: number;
+  event: Event
 }
