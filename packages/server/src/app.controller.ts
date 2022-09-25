@@ -106,15 +106,17 @@ export class AppController {
 
   @Get('px/owner/:tokenId')
   async getOwnerByTokenId(@Param() params: { tokenId: number }) {
-    const token = await this.pixelTransferRepo.findByTokenId(
+    const transfer = await this.pixelTransferRepo.findOwnerByTokenId(
       Number(params.tokenId),
     );
 
-    if (!token) {
+    this.logger.log(transfer)
+
+    if (!transfer) {
       throw new BadRequestException('Could not find token');
     }
     return {
-      address: token.ownerAddress,
+      address: transfer.to,
     };
   }
 

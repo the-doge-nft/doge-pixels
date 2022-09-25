@@ -22,7 +22,7 @@ export class PixelTransferService implements OnModuleInit {
     ) {}
 
     async onModuleInit() {
-        await this.pixelTransfers.dropAllTransfers()
+        // await this.pixelTransfers.dropAllTransfers()
     }
 
     async syncAll() {
@@ -34,7 +34,9 @@ export class PixelTransferService implements OnModuleInit {
 
     async syncFromBlockNumber(block: number) {
         this.logger.log(`Syncing transfers from block: ${block}`)
-        return this.upsertTransfersFromLogs(await this.pixels.getPixelTransferLogs(block))
+        return this.upsertTransfersFromLogs(await this.pixels.getPixelTransferLogs(block)).then(_ => {
+            this.logger.log(`Done syncing transfers from block: ${block}`)
+        })
     }
 
     private async upsertTransfersFromLogs(events: Event[]) {
@@ -58,7 +60,8 @@ export class PixelTransferService implements OnModuleInit {
     }
 
     async syncRecentTransfers() {
-        const mostRecentBlock = (await this.pixelTransfers.getMostRecentTransferByBlockNumber())?.blockNumber
+        // const mostRecentBlock = (await this.pixelTransfers.getMostRecentTransferBlockNumber())?.blockNumber
+        const mostRecentBlock = await this.pixelTransfers.getMostRecentTransferBlockNumber()
         if (!mostRecentBlock) {
             return this.syncAll()
         } else {

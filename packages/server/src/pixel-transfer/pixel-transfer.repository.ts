@@ -15,39 +15,14 @@ export class PixelTransferRepository {
     @Inject(CACHE_MANAGER) private cacheManager: Cache,
   ) {}
 
-  findByTokenId(tokenId: number) {
-    return this.prisma.pixels.findUnique({ where: { tokenId } });
-  }
-
-  upsert({ tokenId, ownerAddress }: { tokenId: number; ownerAddress: string }) {
-    return this.prisma.pixels.upsert({
+  findOwnerByTokenId(tokenId: number) {
+    return this.prisma.pixelTransfers.findMany({
       where: { tokenId },
-      update: { ownerAddress },
-      create: {
-        tokenId,
-        ownerAddress,
+      orderBy: {
+        blockNumber: 'desc'
       },
-    });
-  }
-
-  updateOwner({
-    tokenId,
-    ownerAddress,
-  }: {
-    tokenId: number;
-    ownerAddress: string;
-  }) {
-    return this.prisma.pixels.update({
-      where: { tokenId },
-      data: {
-        ownerAddress,
-        updatedAt: new Date(),
-      },
-    });
-  }
-
-  deleteAll() {
-    return this.prisma.pixels.deleteMany();
+      take: 1
+    })[0]
   }
 
   create({ tokenId, from, to, blockNumber, uniqueTransferId }: Omit<PixelTransfers, 'updatedAt' | 'insertedAt' | 'id'>) {
@@ -145,16 +120,16 @@ export class PixelTransferRepository {
     })
   }
 
-  async getMostRecentTransferByBlockNumber() {
-    return this.prisma.pixelTransfers.findMany({
+  async getMostRecentTransferBlockNumber() {
+    return (await this.prisma.pixelTransfers.findMany({
       orderBy: {
         blockNumber: "desc"
       },
       take: 1
-    })[0]
+    }))[0]?.blockNumber
   }
 
-  dropAllTransfers() {
+  dropAll() {
     return this.prisma.pixelTransfers.deleteMany()
   }
 
