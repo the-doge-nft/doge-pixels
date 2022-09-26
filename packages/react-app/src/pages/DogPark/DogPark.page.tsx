@@ -1,24 +1,23 @@
-import { Box, Flex, Grid, GridItem, useColorMode } from "@chakra-ui/react";
-import { observer } from "mobx-react-lite";
-import React, { useEffect, useMemo } from "react";
+import {Box, Flex, Grid, GridItem, HStack, useColorMode, VStack} from "@chakra-ui/react";
+import {observer} from "mobx-react-lite";
+import React, {useEffect, useMemo} from "react";
 import Pane from "../../DSL/Pane/Pane";
-import Typography, { TVariant } from "../../DSL/Typography/Typography";
+import Typography, {TVariant} from "../../DSL/Typography/Typography";
 import DogParkPageStore from "./DogParkPage.store";
 import TextInput from "../../DSL/Form/TextInput";
 import Form from "../../DSL/Form/Form";
 import model from "../../DSL/Form/model";
 import AppStore from "../../store/App.store";
 import UserCard from "./UserCard";
-import { useHistory, useParams } from "react-router-dom";
-import Icon from "../../DSL/Icon/Icon";
-import PxPill from "./PxPill";
+import {useHistory, useParams} from "react-router-dom";
 import PixelPane from "../../DSL/PixelPane/PixelPane";
 import Button from "../../DSL/Button/Button";
-import { convertToAbbreviation } from "../../helpers/numberFormatter";
+import {convertToAbbreviation} from "../../helpers/numberFormatter";
 import BigText from "../../DSL/BigText/BigText";
-import { darkModeSecondary, lightModePrimary, lightOrDarkMode } from "../../DSL/Theme";
-import { NamedRoutes, route, SELECTED_PIXEL_PARAM } from "../../App.routes";
+import {darkModeSecondary, lightModePrimary, lightOrDarkMode} from "../../DSL/Theme";
+import {NamedRoutes, route, SELECTED_PIXEL_PARAM} from "../../App.routes";
 import ParkPixels from "./ParkPixels";
+import * as ethers from 'ethers'
 
 const DogParkPage = observer(function DogParkPage() {
   const history = useHistory();
@@ -52,8 +51,6 @@ const DogParkPage = observer(function DogParkPage() {
   };
   return (
     <Grid
-      // templateColumns={"0.5fr 1fr"}
-      // flexGrow={1}
       templateRows={{base: "1fr 1fr", "xl": "1fr"}}
       templateColumns={{base: "1fr", "xl": "0.5fr 1fr"}}
                     >
@@ -71,13 +68,33 @@ const DogParkPage = observer(function DogParkPage() {
                 fontSize={"14px"}
                 rightIcon={"search"}
                 placeholder={"Search pixel owners"}
-                {...model(store, "addressToSearch")}
+                {...model(store, "searchValue")}
               />
             </Form>
           </Box>
 
           <Flex flexDirection={"column"} flexGrow={1} h={"full"}>
-            {!store.selectedAddress && <SearchHints store={store} />}
+            {!store.selectedAddress && <>
+            {!store.isSearchEmpty && <SearchHints store={store} />}
+              {store.isSearchEmpty && <Box>
+                <Flex flexWrap={"wrap"}>
+                  {store.transfers.map(transfer => <Box>
+                    <Box>
+                      <Typography variant={TVariant.ComicSans14}>
+                        {transfer.from === ethers.constants.AddressZero && "Minted"}
+                        {transfer.to === ethers.constants.AddressZero && "Burned"}
+                        {transfer.to !== ethers.constants.AddressZero && transfer.from !== ethers.constants.AddressZero && "Transfer"}
+                      </Typography>
+                      <Box borderWidth={"1px"} borderColor={"black"} h={10} w={10} backgroundColor={AppStore.web3.pupperToHexLocal(transfer.tokenId)}/>
+                      <Typography variant={TVariant.ComicSans14}>{transfer.from}</Typography>
+                      <Typography variant={TVariant.ComicSans14}>{transfer.to}</Typography>
+                      <Typography variant={TVariant.ComicSans14}>{transfer.tokenId}</Typography>
+                    </Box>
+                  </Box>)}
+                </Flex>
+              </Box>}
+
+            </>}
             {store.selectedAddress && (
               <>
                 {!store.selectedUserHasPixels && <Box mb={5} h={store.selectedUserHasPixels ? "initial" : "full"}>
@@ -216,15 +233,15 @@ const DogParkPage = observer(function DogParkPage() {
 const SearchHints = ({ store }: { store: DogParkPageStore }) => {
   return (
     <>
-      {!store.isSearchInputEmpty && store.filteredOwners.length > 1 && (
+      {!store.isSearchEmpty && store.filteredOwners.length > 1 && (
         <Typography mt={2} variant={TVariant.PresStart18} block>
           Similar results
         </Typography>
       )}
-      {!store.isSearchInputEmpty &&
+      {!store.isSearchEmpty &&
         !store.selectedAddress &&
         store.filteredOwners.map(owner => <UserCard key={`filtered-dog-${owner.address}`} store={store} pixelOwner={owner} />)}
-      {!store.isSearchInputEmpty && store.isFilteredResultEmpty && (
+      {!store.isSearchEmpty && store.isFilteredResultEmpty && (
         <Typography variant={TVariant.PresStart15}>No results found</Typography>
       )}
     </>

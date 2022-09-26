@@ -12,7 +12,6 @@ const PaneStyle = {
       background: lightOrDarkMode(colorMode, "yellow.50", darkModePrimary),
       position: "relative",
       h: "full",
-      p: 9,
       _after: {
         base: "none",
         md: {
@@ -29,9 +28,19 @@ const PaneStyle = {
         },
       },
     },
-    title: {},
   }),
-  defaultProps: {},
+  sizes: {
+    sm: {
+      container: {p: 2}
+    },
+    lg: {
+      container: {p: 9}
+    }
+  },
+  title: {},
+  defaultProps: {
+    size: 'lg'
+  },
 };
 
 export default PaneStyle;

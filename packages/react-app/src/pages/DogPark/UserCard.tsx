@@ -30,7 +30,7 @@ const UserCard: React.FC<PropsWithChildren<UserCardProps>> = observer(({store, p
     }}
     onClick={() => {
       store.selectedAddress = pixelOwner.address
-      store.addressToSearch = pixelOwner.address
+      store.searchValue = pixelOwner.address
       store.selectedPixel = null
       window.history.pushState({}, "", route(NamedRoutes.DOG_PARK, {address: store.selectedAddress}))
     }}

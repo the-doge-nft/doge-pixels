@@ -59,7 +59,7 @@ export class PixelTransferRepository {
       }
     }
 
-    if (filter?.fromBlockNumber) {
+    if (filter?.fromBlockNumber !== null && filter?.fromBlockNumber !== undefined) {
       filterQuery['blockNumber'] = {
         gte: filter.fromBlockNumber,
       }
@@ -67,16 +67,6 @@ export class PixelTransferRepository {
     if (filter?.toBlockNumber) {
       filterQuery['blockNumber'] = {
         lte: filter.toBlockNumber,
-      }
-    }
-    if (filter?.fromDate) {
-      filterQuery['insertedAt'] = {
-        gte: new Date(filter.fromDate),
-      }
-    }
-    if (filter?.toDate) {
-      filterQuery['insertedAt'] = {
-        lte: new Date(filter.toDate),
       }
     }
     return filterQuery;
@@ -91,18 +81,18 @@ export class PixelTransferRepository {
     return sortQuery;
   }
 
+  // @next TODO: acccept array of filters & add paging
   async getPixelTransfers(filter, sort) {
     const filterQuery = this.generateFilterQuery(filter);
     const sortQuery = this.generateSortQuery(sort);
-    const data = await this.prisma.pixelTransfers.findMany({
+    return this.prisma.pixelTransfers.findMany({
       where: filterQuery,
       orderBy: sortQuery,
+      take: 100
     });
-
-    return data;
   }
 
-  async upsertPixelTransfer({ tokenId, from, to, blockNumber, uniqueTransferId }: Omit<PixelTransfers, 'updatedAt' | 'insertedAt' | 'id'>) {
+  async upsert({ tokenId, from, to, blockNumber, uniqueTransferId }: Omit<PixelTransfers, 'updatedAt' | 'insertedAt' | 'id'>) {
     return this.prisma.pixelTransfers.upsert({
       where: { uniqueTransferId },
       create: {

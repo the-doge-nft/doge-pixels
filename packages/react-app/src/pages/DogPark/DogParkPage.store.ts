@@ -6,6 +6,7 @@ import { Reactionable } from "../../services/mixins/reactionable";
 import { EmptyClass } from "../../helpers/mixins";
 import {ethers} from "ethers";
 import {abbreviate} from "../../helpers/strings";
+import {Http} from "../../services";
 
 export interface PixelOwnerInfo {
   address: string;
@@ -13,10 +14,20 @@ export interface PixelOwnerInfo {
   ens: string | null
 }
 
+interface PixelTransfer {
+  id: number;
+  from: string;
+  insertedAt: string;
+  to: string;
+  tokenId: number;
+  uniqueTransferId: string;
+  updatedAt: string
+}
+
 class DogParkPageStore extends Reactionable(EmptyClass) {
 
   @observable
-  addressToSearch = ""
+  searchValue = ""
 
   @observable
   selectedAddress?: string
@@ -27,12 +38,15 @@ class DogParkPageStore extends Reactionable(EmptyClass) {
   @observable
   lockedDog: number | null = null
 
+  @observable
+  transfers: PixelTransfer[] = []
+
   constructor(selectedAddress?: string, selectedPupper?: number) {
     super()
     makeObservable(this)
 
     if (selectedAddress) {
-      this.addressToSearch = selectedAddress
+      this.searchValue = selectedAddress
       this.selectedAddress = selectedAddress
     }
 
@@ -40,11 +54,11 @@ class DogParkPageStore extends Reactionable(EmptyClass) {
       this.selectedPixel = selectedPupper
     }
 
-    this.react(() => this.addressToSearch, (value, prevValue) => {
+    this.react(() => this.searchValue, (value, prevValue) => {
       //@ts-ignore
       if ((this.selectedAddress && value.length === prevValue.length - 1) || value === "") {
         this.selectedAddress = undefined
-        this.addressToSearch = ""
+        this.searchValue = ""
       }
     })
   }
@@ -54,12 +68,19 @@ class DogParkPageStore extends Reactionable(EmptyClass) {
       this.lockedDog = Number(balance)
     })
     AppStore.web3.getPixelOwnershipMap()
+    Http.post<PixelTransfer[]>("/v1/transfers", {
+      sort: {
+        blockNumber: "desc"
+      }
+    }).then(({data}) => {
+      this.transfers = data
+    })
   }
 
   @computed
   get filteredOwners() {
-    return arrayFuzzyFilterByKey(AppStore.web3.sortedPixelOwners, this.addressToSearch, 'address')
-        .concat(arrayFuzzyFilterByKey(AppStore.web3.sortedPixelOwners, this.addressToSearch, 'ens'))
+    return arrayFuzzyFilterByKey(AppStore.web3.sortedPixelOwners, this.searchValue, 'address')
+        .concat(arrayFuzzyFilterByKey(AppStore.web3.sortedPixelOwners, this.searchValue, 'ens'))
   }
 
   @computed
@@ -73,8 +94,8 @@ class DogParkPageStore extends Reactionable(EmptyClass) {
   }
 
   @computed
-  get isSearchInputEmpty() {
-    return this.addressToSearch === ""
+  get isSearchEmpty() {
+    return this.searchValue === ""
   }
 
   @computed

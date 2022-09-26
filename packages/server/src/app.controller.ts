@@ -25,6 +25,7 @@ import { NomicsService } from './nomics/nomics.service';
 import { Cache } from 'cache-manager';
 import { Request } from 'express';
 import {PixelTransferService} from "./pixel-transfer/pixel-transfer.service";
+import {PostTransfersDto} from "./dto/PostTransfers.dto";
 
 @Controller('/v1')
 export class AppController {
@@ -75,20 +76,15 @@ export class AppController {
     return this.pixelTransferService.getBalances();
   }
 
-  @Get('balances')
-  async getOwnershipBalances() {
-    return this.pixelTransferService.getBalances();
-  }
-
   @Get('config/refresh')
   async getConfigRefreshed() {
-    await this.pixelTransferService.syncAll();
+    await this.pixelTransferService.syncRecentTransfers();
     return this.pixelTransferService.getBalances();
   }
 
-  @Get('transfers')
-  async getTransferEvents(@Req() { body: {filter, sort} }: Request) {
-    return await this.pixelTransferRepo.getPixelTransfers(filter, sort);
+  @Post('transfers')
+  async getTransferEvents(@Body() {filter, sort}: PostTransfersDto) {
+    return this.pixelTransferRepo.getPixelTransfers(filter, sort);
   }
 
   @Get('px/dimensions')

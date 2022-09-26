@@ -73,7 +73,7 @@ const NavLinks = ({ isMobile }: { isMobile?: boolean }) => {
           .filter(route => route.showOnDesktop)
           .map(appRoute => (
             <Link
-              size={"md"}
+              size={"sm"}
               isNav
               key={`desktop-nav-${appRoute.path}`}
               to={getPath(appRoute.name)}

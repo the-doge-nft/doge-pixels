@@ -11,14 +11,6 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Pixels {
-  id                Int @id @default(autoincrement())
-  insertedAt        DateTime @default(now())
-  updatedAt         DateTime @default(now())
-  ownerAddress      String
-  tokenId           Int @unique
-}
-
 model PixelTransfers {
   id                Int @id @default(autoincrement())
   blockNumber       Int

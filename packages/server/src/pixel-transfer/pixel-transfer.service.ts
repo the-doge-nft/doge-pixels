@@ -43,7 +43,7 @@ export class PixelTransferService implements OnModuleInit {
         for (const event of events) {
             const { args, blockNumber } = event;
             const { from, to, tokenId } = args;
-            await this.pixelTransfers.upsertPixelTransfer({
+            await this.pixelTransfers.upsert({
                 tokenId: tokenId.toNumber(),
                 from,
                 to: to,
@@ -60,7 +60,6 @@ export class PixelTransferService implements OnModuleInit {
     }
 
     async syncRecentTransfers() {
-        // const mostRecentBlock = (await this.pixelTransfers.getMostRecentTransferBlockNumber())?.blockNumber
         const mostRecentBlock = await this.pixelTransfers.getMostRecentTransferBlockNumber()
         if (!mostRecentBlock) {
             return this.syncAll()
@@ -71,7 +70,7 @@ export class PixelTransferService implements OnModuleInit {
 
     @OnEvent(Events.PIXEL_TRANSFER)
     async handleNewTransfer({from, to, tokenId, event}: PixelTransferEventPayload) {
-        return this.pixelTransfers.create({
+        return this.pixelTransfers.upsert({
             from,
             to,
             tokenId,
