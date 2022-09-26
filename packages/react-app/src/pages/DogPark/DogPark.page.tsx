@@ -78,12 +78,12 @@ const DogParkPage = observer(function DogParkPage() {
                         {!store.isSearchEmpty && <SearchHints store={store}/>}
                         {store.isSearchEmpty && <Flex flexDir={'column'} flexGrow={1}>
                           <Flex justifyContent={"center"}>
-                            <ParkPixels
-                              id={'dog-park-pixels'}
-                              selectedPixel={store.selectedPixel ? store.selectedPixel : -1}
-                              previewPixels={store.selectedOwner?.pixels}
-                              onPupperClick={setPupper}
-                            />
+                            {/*<ParkPixels*/}
+                            {/*  id={'dog-park-pixels'}*/}
+                            {/*  selectedPixel={store.selectedPixel ? store.selectedPixel : -1}*/}
+                            {/*  previewPixels={store.selectedOwner?.pixels}*/}
+                            {/*  onPupperClick={setPupper}*/}
+                            {/*/>*/}
                           </Flex>
                           <Flex flexDir={'column'} flexGrow={1}>
                             <Typography variant={TVariant.PresStart18} mb={3} block>Recent Activity</Typography>
@@ -99,6 +99,7 @@ const DogParkPage = observer(function DogParkPage() {
                                     </Typography>
                                   </Box>
                                   <PixelPane
+                                      onClick={() => console.log()}
                                       size={"sm"}
                                       pupper={transfer.tokenId}
                                   />
