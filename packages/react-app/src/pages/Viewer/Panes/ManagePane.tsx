@@ -32,14 +32,10 @@ const ManagePane = observer(function ManagePane({store}: {store: ViewerStore}) {
               }}
             >
               <PixelPane
-                showCoords
-                coordinates={AppStore.web3.pupperToPixelCoordsLocal(px)}
                 isNew={store.getIsPupperNew(px)}
                 size={"sm"}
                 onClick={() => store.onManagePixelClick(px)}
                 pupper={px}
-                color={AppStore.web3.pupperToHexLocal(px)}
-                pupperIndex={AppStore.web3.pupperToIndexLocal(px)}
               />
             </Box>})}
         </Box>

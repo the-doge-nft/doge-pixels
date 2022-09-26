@@ -18,12 +18,8 @@ const SelectedPixelPane = observer(function SelectedPixelPane({ store }: { store
         <Box mt={4}>
           {store.selectedPupper && (
             <PixelPane
-              showCoords
-              coordinates={AppStore.web3.pupperToPixelCoordsLocal(store.selectedPupper)}
               size={"lg"}
               pupper={store.selectedPupper}
-              color={store.selectedPupperHEX}
-              pupperIndex={store.selectedPupperIndex}
               variant={"shadow"}
               onClick={() => store.publish(SELECT_PIXEL, [store.selectedPixelX, store.selectedPixelY])}
             />

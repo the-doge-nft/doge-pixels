@@ -12,16 +12,12 @@ const PixelPaneDemo = () => {
                       onClick={(pupper) => alert(`you hit pupper: ${pupper}`)}
                       size={"sm"}
                       pupper={10}
-                      color={"#c5b68b"}
-                      pupperIndex={234}
                     />
                     <PixelPane
                       isNew
                       variant={"shadow"}
                       size={"sm"}
                       pupper={10}
-                      color={"#e7ca6e"}
-                      pupperIndex={543}
                     />
                 </HStack>
             </Box>
@@ -29,14 +25,11 @@ const PixelPaneDemo = () => {
                 <HStack>
                     <PixelPane
                       pupper={10}
-                      color={"#b6b76b"}
-                      pupperIndex={342}
                     />
                     <PixelPane
                       variant={"shadow"}
                       onClick={(pupper) => alert(`you hit pupper: ${pupper}`)}
-                      pupper={10} color={"#d79d75"}
-                      pupperIndex={938}
+                      pupper={10}
                     />
                 </HStack>
             </Box>
@@ -46,15 +39,11 @@ const PixelPaneDemo = () => {
                       onClick={(pupper) => alert(`you hit pupper: ${pupper}`)}
                       size={"lg"}
                       pupper={10}
-                      color={"#c5b68b"}
-                      pupperIndex={234}
                     />
                     <PixelPane
                       variant={"shadow"}
                       size={"lg"}
                       pupper={10}
-                      color={"#e7ca6e"}
-                      pupperIndex={543}
                     />
                 </HStack>
             </Box>

@@ -64,12 +64,8 @@ const SelectPixels = observer(({store}: { store: BurnPixelsModalStore}) => {
                             // }}
                 >
                   <PixelPane
-                    showCoords
-                    coordinates={AppStore.web3.pupperToPixelCoordsLocal(px)}
                     size={"sm"}
                     pupper={px}
-                    color={hex}
-                    pupperIndex={index}
                     onClick={() => store.handlePixelSelect(px)}
                   />
                 </Box>
@@ -124,7 +120,7 @@ const Complete = observer(({store, txHash}: {store: BurnPixelsDialogStore, txHas
       🔥🔥🔥
     </Typography>
     <Box mt={4}>
-      <SharePixelsDialog action={"burn"} pixelOwner={{address: AppStore.web3.address, pixels: store.diffPixels, ens: AppStore.web3.ens}}/>
+      <SharePixelsDialog action={"burn"} previewPixels={store.diffPixels}/>
       <Flex justifyContent={"center"}>
         {txHash && <Link href={getEtherscanURL(txHash, "tx")} isExternal>View tx</Link>}
       </Flex>

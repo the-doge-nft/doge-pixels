@@ -6,7 +6,7 @@ import shareToTwitter, {TwitterShareType} from "../../helpers/shareToTwitter";
 import {PixelOwnerInfo} from "../../pages/DogPark/DogParkPage.store";
 import {useState} from "react";
 
-const SharePixelsDialog = observer(({action, pixelOwner}: {action: 'mint' | 'burn', pixelOwner: PixelOwnerInfo}) => {
+const SharePixelsDialog = observer(({action, previewPixels}: {action: 'mint' | 'burn', previewPixels: number[]}) => {
 
     const id = 'share-pixels-canvas'
 
@@ -29,7 +29,7 @@ const SharePixelsDialog = observer(({action, pixelOwner}: {action: 'mint' | 'bur
             <ParkPixels
                 id={id}
                 selectedPixel={selectedPixel}
-                pixelOwner={pixelOwner}
+                previewPixels={previewPixels}
                 onPupperClick={(pupper) => {
                     if (pupper === null) {
                         setSelectedPixel(-1)

@@ -4,13 +4,10 @@ import { Box, useColorMode } from "@chakra-ui/react";
 import AppStore from "../../store/App.store";
 import { observer } from "mobx-react-lite";
 import { lightOrDarkMode } from "../../DSL/Theme";
-import { Canvas } from "@react-three/fiber";
-import { PixelOwnerInfo } from "./DogParkPage.store";
-import jsonify from "../../helpers/jsonify";
 
 interface ParkPixelsProps {
   selectedPixel: number;
-  pixelOwner: PixelOwnerInfo;
+  previewPixels: number[];
   onPupperClick: (pupper: number | null) => void;
   id: string
 }
@@ -43,24 +40,24 @@ const getPixelOffsets = (y: number) => {
   }
 };
 
-const ParkPixels = observer(({ selectedPixel, pixelOwner, onPupperClick, id }: ParkPixelsProps) => {
+const ParkPixels = observer(({ selectedPixel, previewPixels = [], onPupperClick, id }: ParkPixelsProps) => {
   const { colorMode } = useColorMode();
   const [pupperPositions, setPupperPositions] = useState<IPupperRectPosition[]>([]);
 
   useEffect(() => {
-    const length = pixelOwner.pixels.length;
+    const length = previewPixels?.length;
     let positions: IPupperRectPosition[] = [];
     for (let i = 0; i < length; i++) {
-      const [x, y] = AppStore.web3.pupperToPixelCoordsLocal(pixelOwner.pixels[i]);
+      const [x, y] = AppStore.web3.pupperToPixelCoordsLocal(previewPixels[i]);
       positions.push({
-        pupper: pixelOwner.pixels[i],
+        pupper: previewPixels[i],
         x: x * SCALE - PIXEL_WIDTH / 2,
         y: y * SCALE - PIXEL_HEIGHT / 2,
       });
     }
 
     setPupperPositions(positions);
-  }, [pixelOwner.pixels]);
+  }, [previewPixels]);
 
   useEffect(() => {
     // @next there are some rendering issues where pupperPositions is 0
