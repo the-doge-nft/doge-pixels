@@ -61,6 +61,8 @@ export class PixelsRepository {
   async getOwnershipMap() {
     const map = {};
     const data = await this.prisma.pixels.findMany();
+    this.logger.log(`got pixel results`)
+    this.logger.log(JSON.stringify(data))
     for (const item of data) {
       if (map[item.ownerAddress]?.tokenIds) {
         map[item.ownerAddress].tokenIds.push(item.tokenId);
