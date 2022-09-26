@@ -11,7 +11,7 @@ services:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_DB: ${POSTGRES_DB}
     restart: always
-    command: postgres -c listen_addresses=12.0.0.1
+    command: postgres -c listen_addresses=127.0.0.1
 
   redis:
     image: redis:latest
