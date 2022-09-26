@@ -64,9 +64,11 @@ export class PixelsRepository {
     this.logger.log(`got pixel results`)
     this.logger.log(JSON.stringify(data))
     for (const item of data) {
+      this.logger.log(JSON.stringify(item))
       if (map[item.ownerAddress]?.tokenIds) {
         map[item.ownerAddress].tokenIds.push(item.tokenId);
       } else {
+        this.logger.log(`getting ends before: ${item.ownerAddress}`)
         const ens = await this.ethers.getEnsName(item.ownerAddress);
         map[item.ownerAddress] = {
           tokenIds: [item.tokenId],
