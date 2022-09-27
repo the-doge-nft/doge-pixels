@@ -43,7 +43,7 @@ const DogParkPage = observer(function DogParkPage() {
     return (
         <Grid
             templateRows={{base: "1fr 1fr", "xl": "1fr"}}
-            templateColumns={{base: "1fr", "xl": "0.5fr 1fr"}}
+            templateColumns={{base: "1fr", "xl": "0.35fr 1fr"}}
         >
             <GridItem display={"flex"} flexDirection={"column"} flexGrow={1} order={{base: 2, xl: 1}}>
                 <TopDogs store={store}/>
