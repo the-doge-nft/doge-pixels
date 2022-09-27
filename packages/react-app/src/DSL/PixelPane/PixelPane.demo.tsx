@@ -11,25 +11,25 @@ const PixelPaneDemo = () => {
                     <PixelPane
                       onClick={(pupper) => alert(`you hit pupper: ${pupper}`)}
                       size={"sm"}
-                      pupper={10}
+                      pupper={1065551}
                     />
                     <PixelPane
                       isNew
                       variant={"shadow"}
                       size={"sm"}
-                      pupper={10}
+                      pupper={1065551}
                     />
                 </HStack>
             </Box>
             <Box mt={8}>
                 <HStack>
                     <PixelPane
-                      pupper={10}
+                      pupper={1065551}
                     />
                     <PixelPane
                       variant={"shadow"}
                       onClick={(pupper) => alert(`you hit pupper: ${pupper}`)}
-                      pupper={10}
+                      pupper={1065551}
                     />
                 </HStack>
             </Box>
@@ -38,12 +38,12 @@ const PixelPaneDemo = () => {
                     <PixelPane
                       onClick={(pupper) => alert(`you hit pupper: ${pupper}`)}
                       size={"lg"}
-                      pupper={10}
+                      pupper={1065551}
                     />
                     <PixelPane
                       variant={"shadow"}
                       size={"lg"}
-                      pupper={10}
+                      pupper={1065551}
                     />
                 </HStack>
             </Box>

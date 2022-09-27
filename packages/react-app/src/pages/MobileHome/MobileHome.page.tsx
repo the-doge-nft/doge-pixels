@@ -12,7 +12,7 @@ import MobileHomeStore from "./MobileHome.store";
 import MintPixelsDrawer from "./MintPixelsDrawer/MintPixelsDrawer";
 import BurnPixelsDrawer from "./BurnPixelsDrawer/BurnPixelsDrawer";
 import {NamedRoutes, route, SELECTED_PIXEL_PARAM} from "../../App.routes";
-import ParkPixels from "../DogPark/ParkPixels";
+import ParkPixels from "../../DSL/ParkPixels/ParkPixels";
 import {darkModeSecondary, lightModePrimary} from "../../DSL/Theme";
 
 const MobileHomePage = observer(() => {
@@ -61,7 +61,7 @@ const MobileHomePage = observer(() => {
         <Flex justifyContent={"center"} alignItems={"center"} mt={14}>
           {store.selectedOwner && <ParkPixels
               id={'home-pixels'}
-              selectedPixel={store.selectedPixel ? store.selectedPixel : -1}
+              selectedPixel={store.selectedPixel}
               previewPixels={store.selectedOwner?.pixels}
               onPupperClick={(pupper) => {
                 store.selectedPixel = pupper

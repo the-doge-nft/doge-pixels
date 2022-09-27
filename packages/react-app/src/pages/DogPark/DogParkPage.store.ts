@@ -36,6 +36,9 @@ class DogParkPageStore extends Reactionable(EmptyClass) {
   selectedPixel: number | null = null
 
   @observable
+  selectedActivityPixel: number | null = null
+
+  @observable
   lockedDog: number | null = null
 
   @observable

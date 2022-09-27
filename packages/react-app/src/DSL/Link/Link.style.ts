@@ -22,7 +22,7 @@ const LinkStyle = {
   }),
   sizes: {
     sm: {
-      fontSize: "10px",
+      fontSize: "13px",
     },
     md: {
       fontSize: "16px",

@@ -17,24 +17,15 @@ import BigText from "../../DSL/BigText/BigText";
 import {darkModeSecondary, lightModePrimary, lightOrDarkMode} from "../../DSL/Theme";
 import {NamedRoutes, route, SELECTED_PIXEL_PARAM} from "../../App.routes";
 import * as ethers from 'ethers'
-import ParkPixels from "./ParkPixels";
+import ParkPixels, {PixelPreviewSize} from "../../DSL/ParkPixels/ParkPixels";
 
 const DogParkPage = observer(function DogParkPage() {
     const history = useHistory();
     const {address, tokenID} = useParams<{ address: string; tokenID: string }>();
     const store = useMemo(() => new DogParkPageStore(address, Number(tokenID)), [address, tokenID]);
     const {colorMode} = useColorMode();
-
-    // useEffect(() => {
-    //   if (AppStore.rwd.isMobile) {
-    //     history.push(route(NamedRoutes.VIEWER));
-    //   }
-    //   // eslint-disable-next-line
-    // }, [AppStore.rwd.isMobile]);
-
     useEffect(() => {
         store.init();
-
         return () => {
             store.destroy()
         }
@@ -61,7 +52,7 @@ const DogParkPage = observer(function DogParkPage() {
                 </Box>
             </GridItem>
 
-            <GridItem order={{base: 1, xl: 3}} ml={10} display={'flex'} flexDirection={'column'}>
+            <GridItem order={{base: 1, xl: 3}} ml={{base: 0, lg: 10}} display={'flex'} flexDirection={'column'}>
                 <Box mb={8}>
                     <Form onSubmit={async () => {
                     }}>
@@ -77,18 +68,24 @@ const DogParkPage = observer(function DogParkPage() {
                     {!store.selectedAddress && <>
                         {!store.isSearchEmpty && <SearchHints store={store}/>}
                         {store.isSearchEmpty && <Flex flexDir={'column'} flexGrow={1}>
-                          <Flex justifyContent={"center"}>
-                            {/*<ParkPixels*/}
-                            {/*  id={'dog-park-pixels'}*/}
-                            {/*  selectedPixel={store.selectedPixel ? store.selectedPixel : -1}*/}
-                            {/*  previewPixels={store.selectedOwner?.pixels}*/}
-                            {/*  onPupperClick={setPupper}*/}
-                            {/*/>*/}
+                          <Flex justifyContent={"flex-start"} mb={4}>
+                            <Box flexGrow={1}>
+                              <ParkPixels
+                                size={PixelPreviewSize.lg}
+                                id={'dog-park-pixels'}
+                                selectedPixel={store.selectedActivityPixel}
+                                previewPixels={store.selectedActivityPixel === null ? [] : [store.selectedActivityPixel]}
+                                onPupperClick={(pupper) => store.selectedActivityPixel = pupper}
+                              />
+                            </Box>
+                            <Pane display={{base: 'none', md: 'block'}}>
+                              details
+                            </Pane>
                           </Flex>
-                          <Flex flexDir={'column'} flexGrow={1}>
-                            <Typography variant={TVariant.PresStart18} mb={3} block>Recent Activity</Typography>
+                          <Pane display={'flex'} flexDir={'column'} flexGrow={1}>
+                            <Typography variant={TVariant.PresStart18} mb={4} block>Recent Activity</Typography>
                             <Box overflowY={"scroll"} flexGrow={1}>
-                              <Flex flexWrap={"wrap"} gap={2} maxHeight={'300px'}>
+                              <Flex flexWrap={"wrap"} gap={2} maxHeight={'250px'}>
                                 {store.transfers.map(transfer => <Box position={"relative"}>
                                   <Box position={"absolute"} left={"50%"} top={"50%"} zIndex={10}
                                        style={{transform: "translate(-50%, -65%)"}}>
@@ -99,14 +96,14 @@ const DogParkPage = observer(function DogParkPage() {
                                     </Typography>
                                   </Box>
                                   <PixelPane
-                                      onClick={() => console.log()}
+                                      onClick={(pupper) => store.selectedActivityPixel = pupper}
                                       size={"sm"}
                                       pupper={transfer.tokenId}
                                   />
                                 </Box>)}
                               </Flex>
                             </Box>
-                          </Flex>
+                          </Pane>
                         </Flex>}
                     </>}
                     {store.selectedAddress && (
@@ -126,9 +123,6 @@ const DogParkPage = observer(function DogParkPage() {
                             </Box>}
                             {store.selectedUserHasPixels && (
                                 <Flex
-                                    // flexWrap={"wrap"}
-                                    // templateRows={{base: "1fr 1fr", "xl": "1fr"}}
-                                    // templateColumns={{base: "1fr", "xl": "1fr 1fr"}}
                                     h={"full"}>
                                     <GridItem order={{base: 2, xl: 1}} display={"flex"}>
                                         <Box overflowY={"auto"} flexGrow={1}>
@@ -270,7 +264,7 @@ const DogKennel = observer(({store}: { store: DogParkPageStore }) => {
     return (
         <Pane h={"inherit"}>
             <Flex flexDirection={"column"}>
-                <Flex mb={6} alignItems={"flex-end"}>
+                <Flex mb={4} alignItems={"flex-end"}>
                     <Typography variant={TVariant.PresStart18} block height={"max-content"}>
                         DOG Locked
                     </Typography>
@@ -291,7 +285,7 @@ const TopDogs = observer(({store}: { store: DogParkPageStore }) => {
     const {colorMode} = useColorMode();
     return (
         <Pane display={"flex"} flexDirection={"column"} h={"full"}>
-            <Flex mb={6} alignItems={"center"}>
+            <Flex mb={4} alignItems={"center"}>
                 <Typography variant={TVariant.PresStart18} block height={"max-content"}>
                     Top Dogs
                 </Typography>

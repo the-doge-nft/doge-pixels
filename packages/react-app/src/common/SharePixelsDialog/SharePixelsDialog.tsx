@@ -1,4 +1,4 @@
-import ParkPixels from "../../pages/DogPark/ParkPixels";
+import ParkPixels from "../../DSL/ParkPixels/ParkPixels";
 import {observer} from "mobx-react-lite";
 import {Box, Flex} from "@chakra-ui/react";
 import Button from "../../DSL/Button/Button";
@@ -22,7 +22,7 @@ const SharePixelsDialog = observer(({action, previewPixels}: {action: 'mint' | '
         shareToTwitter(data, description, action === "mint" ? TwitterShareType.Mint : TwitterShareType.Burn)
     }
 
-    const [selectedPixel, setSelectedPixel] = useState(-1)
+    const [selectedPixel, setSelectedPixel] = useState(null)
 
     return <Flex justifyContent={"center"}>
         <Box>
@@ -30,13 +30,7 @@ const SharePixelsDialog = observer(({action, previewPixels}: {action: 'mint' | '
                 id={id}
                 selectedPixel={selectedPixel}
                 previewPixels={previewPixels}
-                onPupperClick={(pupper) => {
-                    if (pupper === null) {
-                        setSelectedPixel(-1)
-                    } else {
-                        setSelectedPixel(pupper)
-                    }
-                }}
+                onPupperClick={setSelectedPixel}
             />
             <Flex justifyContent={"center"} mt={6} mb={7}>
                 <Button onClick={postTweet}>Share</Button>
