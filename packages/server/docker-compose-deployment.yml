@@ -17,7 +17,7 @@ services:
     ports:
       - '${REDIS_PORT}:6379'
     volumes:
-      - redis/data
+      - redis:/data
 
   api:
     image: "${DOCKER_REGISTRY:?No docker registry supplied}/doge-pixels:${BUILD_ID:?No build ID supplied}"
