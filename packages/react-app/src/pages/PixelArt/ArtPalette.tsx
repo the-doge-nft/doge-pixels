@@ -76,7 +76,7 @@ const ArtPalette = observer(({ store }: { store: PixelArtPageStore }) => {
                             );
                         })}
                     </Flex>
-                    <Flex justifyContent={"space-between"} w={'full'}>
+                    <Flex justifyContent={"space-between"} w={'full'} mt={1}>
                         <Typography variant={TVariant.ComicSans12} color={lightOrDarkMode(colorMode, 'yellow.100', 'gray.400')}>
                             {store.isRandomPaletteActive ? 'Random Pixels from The Doge NFT' : `${AppStore.web3.addressForDisplay}'s pixels`}
                         </Typography>
