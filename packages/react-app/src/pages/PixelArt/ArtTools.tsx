@@ -4,6 +4,7 @@ import {Box, GridItem, useColorMode, VStack} from "@chakra-ui/react";
 import {pixelArtTools} from "./PixelArtTools";
 import {darkModeSecondary, lightModePrimary, lightOrDarkMode} from "../../DSL/Theme";
 import Icon, {IconName} from "../../DSL/Icon/Icon";
+import Tooltip from "../../DSL/Tooltip/Tooltip";
 
 const ArtTools = observer(({ store }: { store: PixelArtPageStore }) => {
     const { colorMode } = useColorMode();
@@ -11,27 +12,31 @@ const ArtTools = observer(({ store }: { store: PixelArtPageStore }) => {
         <Box margin={"5px"}>
             <VStack spacing={3}>
                 <VStack spacing={1}>
-                    {pixelArtTools.map((entry: any, index: number) => {
+                    {pixelArtTools.map((entry, index: number) => {
                         return (
-                            <ArtToolIcon
-                                icon={entry.icon}
-                                key={`art-tool-${index}`}
-                                bg={store.selectedToolIndex === index
-                                ? colorMode === "light"
-                                    ? lightModePrimary
-                                    : darkModeSecondary
-                                : "inherit"}
-                                onClick={() => store.selectedToolIndex = index}
-                            />
+                            <Tooltip offset={[0,14]} placement={'left'} label={entry.description}>
+                                <ArtToolIcon
+                                    icon={entry.icon}
+                                    key={`art-tool-${index}`}
+                                    bg={store.selectedToolIndex === index
+                                        ? colorMode === "light"
+                                            ? lightModePrimary
+                                            : darkModeSecondary
+                                        : "inherit"}
+                                    onClick={() => store.selectedToolIndex = index}
+                                />
+                            </Tooltip>
                         );
                     })}
                 </VStack>
                 <Box borderTopWidth={1} borderColor={lightOrDarkMode(colorMode, 'black', 'white')} h={"1px"} w={"full"} my={10} />
-                <ArtToolIcon
-                    bg={store.isTemplateVisible ? ( lightOrDarkMode(colorMode, lightModePrimary, darkModeSecondary)) : "inherit"}
-                    onClick={() => store.toggleTemplateVisibility()}
-                    icon={"templateToggle"}
-                />
+                <Tooltip offset={[0,14]} placement={'left'} label={'Toggle template'}>
+                    <ArtToolIcon
+                        bg={store.isTemplateVisible ? ( lightOrDarkMode(colorMode, lightModePrimary, darkModeSecondary)) : "inherit"}
+                        onClick={() => store.toggleTemplateVisibility()}
+                        icon={"templateToggle"}
+                    />
+                </Tooltip>
             </VStack>
         </Box>
     );
