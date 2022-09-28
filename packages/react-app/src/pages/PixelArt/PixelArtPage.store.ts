@@ -301,8 +301,8 @@ class PixelArtPageStore extends Reactionable(EmptyClass) {
         const count = 25;
         const height = KobosuJson.length
         for (let i = 0; i < count; i++) {
-            const y = getRandomIntInclusive(0, height)
-            const x = getRandomIntInclusive(0, KobosuJson[y].length)
+            const y = getRandomIntInclusive(0, height - 1)
+            const x = getRandomIntInclusive(0, KobosuJson[y].length - 1)
             const pupper = AppStore.web3.coordinateToPupperLocal(x,y)
             palette.push({
                 tokenId: pupper,
