@@ -131,6 +131,12 @@ class PixelArtPageStore extends Reactionable(EmptyClass) {
         } else {
             this.paletteType = 'random'
         }
+
+        this.react(() => AppStore.web3.signer, () => {
+            if (!AppStore.web3.signer && this.paletteType === 'user') {
+                this.paletteType = 'random'
+            }
+        })
     }
 
     setCanvas(canvas: HTMLCanvasElement) {

@@ -4,6 +4,7 @@ import {Box, Flex} from "@chakra-ui/react";
 import PixelArtPageStore from "./PixelArtPage.store";
 import Button from "../../DSL/Button/Button";
 import Typography, {TVariant} from "../../DSL/Typography/Typography";
+import AppStore from "../../store/App.store";
 
 interface PaletteModalProps {
     isOpen: boolean;
@@ -20,9 +21,11 @@ const PaletteModal = observer(({isOpen, onClose, store}: PaletteModalProps) => {
         description={'Select your pixel palette'}
     >
         <Flex flexDir={"column"} mt={4} gap={4}>
-            <PaletteButton isSelected={store.paletteType === 'user'} onClick={() => store.paletteType = 'user'}>
+            {!AppStore.web3.isConnected && <Button isDisabled>Your Pixels (connect wallet)</Button>}
+            {AppStore.web3.isConnected && AppStore.web3.puppersOwned.length === 0 && <Button>No Pixels Owned Min here</Button>}
+            {AppStore.web3.isConnected && AppStore.web3.puppersOwned.length !== 0 && <PaletteButton isSelected={store.paletteType === 'user'} onClick={() => store.paletteType = 'user'}>
                 Your Pixels ({store.userPalette.length})
-            </PaletteButton>
+            </PaletteButton>}
             <Flex>
                 <Box flexGrow={1}>
                     <PaletteButton isSelected={store.paletteType === 'random'} onClick={() => store.paletteType = 'random'}>
