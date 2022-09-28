@@ -11,14 +11,14 @@ interface PaneProps extends AllowedStyleProps {
 const Pane = ({ children, title, ...rest }: PaneProps) => {
   const styles = useMultiStyleConfig("Pane", {});
   return (
-      <Box position={"relative"} zIndex={0} w={"100%"} h={"100%"}>
-      <Box __css={styles.container} cursor={rest.onClick ? "pointer" : "inherit"} {...rest}>
-        {title && <Box __css={styles.title}>
-          {title}
-        </Box>}
-        {children && children}
+          <Box position={"relative"} zIndex={0} w={"100%"} h={"100%"}>
+          <Box __css={styles.container} cursor={rest.onClick ? "pointer" : "inherit"} {...rest}>
+              {title && <Box __css={styles.title}>
+                  {title}
+              </Box>}
+              {children && children}
+          </Box>
       </Box>
-    </Box>
   );
 };
 

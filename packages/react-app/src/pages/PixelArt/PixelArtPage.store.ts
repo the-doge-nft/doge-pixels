@@ -6,6 +6,14 @@ import { Reactionable } from "../../services/mixins/reactionable";
 import AppStore from "../../store/App.store";
 import { ActionInterface } from "./PixelArtActions";
 import { CanvasSize, PixelArtCanvas } from "./PixelArtCanvas";
+import KobosuJson from "../../images/kobosu.json"
+import {getRandomIntInclusive} from "../../helpers/numbers";
+
+export type PalletType = 'user' | 'random'
+export interface Palette {
+    tokenId: number;
+    hex: string
+}
 
 const MAX_ACTIONS_CN = 50;
 
@@ -75,8 +83,16 @@ class PixelArtPageStore extends Reactionable(EmptyClass) {
     isImportStickerModalOpened: boolean;
     @observable
     isCanvasPropertiesModalOpened: boolean;
+    @observable
+    isPaletteModalOpened: boolean;
+
+    @observable
+    private _paletteType: PalletType
 
     pixelsCanvas: PixelArtCanvas;
+
+    @observable
+    randomPalette: Palette[]
 
     constructor() {
         super()
@@ -108,6 +124,13 @@ class PixelArtPageStore extends Reactionable(EmptyClass) {
         this.isImportStickerModalOpened = false;
 
         this.tryLoadProject();
+        this.getRandomPalette()
+
+        if (AppStore.web3.isConnected) {
+            this.paletteType = 'user'
+        } else {
+            this.paletteType = 'random'
+        }
     }
 
     setCanvas(canvas: HTMLCanvasElement) {
@@ -229,7 +252,6 @@ class PixelArtPageStore extends Reactionable(EmptyClass) {
         if (this.undoActions.length) {
             const action: ActionInterface | undefined = this.undoActions.pop();
             if (action) {
-                //console.log('undoAction', action);
                 action.undo(this);
                 this.redoActions.push(action);
             }
@@ -240,7 +262,6 @@ class PixelArtPageStore extends Reactionable(EmptyClass) {
         if (this.redoActions.length) {
             const action: ActionInterface | undefined = this.redoActions.pop();
             if (action) {
-                //console.log('redoAction', action);
                 action.redo(this);
                 this.undoActions.push(action);
             }
@@ -248,43 +269,62 @@ class PixelArtPageStore extends Reactionable(EmptyClass) {
     }
 
     @computed
-    get topDogs(): { address: string, puppers: number[], ens?: string }[] {
-        const tds = ObjectKeys(AppStore.web3.addressToPuppers).map((key, index, arr) => (
-            { address: key, puppers: AppStore.web3.addressToPuppers![key].tokenIds, ens: AppStore.web3.addressToPuppers![key].ens }
-        ))
-        return tds
-            .filter(dog => dog.address !== ethers.constants.AddressZero)
-            .filter(dog => dog.puppers.length > 0)
-            .sort((a, b) => {
-                if (a.puppers.length > b.puppers.length) {
-                    return -1
-                } else if (a.puppers.length < b.puppers.length) {
-                    return 1
-                } else {
-                    return 0
-                }
+    get palette(): {tokenId: number, hex: string}[] {
+        if (this.paletteType === 'user') {
+            return this.userPalette
+        } else if (this.paletteType === 'random') {
+            return this.randomPalette
+        }
+        return []
+    }
+
+    @computed
+    get userPalette() {
+        return AppStore.web3.puppersOwned.map(px => {
+            return {
+                tokenId: px,
+                hex: AppStore.web3.pupperToHexLocal(px)
+            };
+        }).sort((a, b) => {
+            return a.hex.localeCompare(b.hex);
+        });
+    }
+
+    toggleTemplateVisibility() {
+        return this.isTemplateVisible = !this.isTemplateVisible
+    }
+
+    @action
+    getRandomPalette() {
+        console.log('debug:: getting random palette')
+        const palette: Palette[] = []
+        const count = 25;
+        const height = KobosuJson.length
+        for (let i = 0; i < count; i++) {
+            const y = getRandomIntInclusive(0, height)
+            const x = getRandomIntInclusive(0, KobosuJson[y].length)
+            const pupper = AppStore.web3.coordinateToPupperLocal(x,y)
+            palette.push({
+                tokenId: pupper,
+                hex: KobosuJson[y][x]
             })
-    }
-    @computed
-    get selectedDogs() {
-        return this.topDogs.filter(dog => dog.address === this.selectedAddress)[0]
+        }
+        this.randomPalette = palette
     }
 
     @computed
-    get palette() {
-        let data = this.selectedDogs?.puppers.map(px => {
-            return AppStore.web3.pupperToHexLocal(px);
-        })
-            .sort((a, b) => {
-                return a.localeCompare(b);
-            });
-        data = data?.filter(function (item, pos) {
-            return data.indexOf(item) === pos;
-        })
-
-        return data;
+    get isRandomPaletteActive() {
+        return this.paletteType === 'random'
     }
 
+    get paletteType() {
+        return this._paletteType
+    }
+
+    set paletteType(type) {
+        this._paletteType = type
+        this.selectedBrushPixelIndex = 0
+    }
 }
 
 export default PixelArtPageStore;

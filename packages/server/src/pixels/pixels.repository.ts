@@ -62,7 +62,6 @@ export class PixelsRepository {
     const map = {};
     const data = await this.prisma.pixels.findMany();
     for (const item of data) {
-      this.logger.log(JSON.stringify(item))
       if (map[item.ownerAddress]?.tokenIds) {
         map[item.ownerAddress].tokenIds.push(item.tokenId);
       } else {

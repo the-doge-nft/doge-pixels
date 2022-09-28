@@ -1,11 +1,11 @@
 import { observer } from "mobx-react-lite";
-import Modal from "../../../DSL/Modal/Modal";
+import Modal from "../../DSL/Modal/Modal";
 import { Box } from "@chakra-ui/react";
-import PixelArtPageStore, { Sticker } from "../PixelArtPage.store";
-import { Input } from "../../../DSL/Form/Input/Input";
-import Button, { ButtonVariant } from "../../../DSL/Button/Button";
+import PixelArtPageStore, { Sticker } from "./PixelArtPage.store";
+import { Input } from "../../DSL/Form/Input/Input";
+import Button, { ButtonVariant } from "../../DSL/Button/Button";
 import { useState } from "react";
-import { AddStickerAction } from "../PixelArtActions";
+import { AddStickerAction } from "./PixelArtActions";
 
 interface ImportStickerModalProps {
     isOpen: boolean;
@@ -31,7 +31,7 @@ const ImportStickerModal = observer((props: ImportStickerModalProps) => {
                     setImageWidth(image.width);
                     setImageHeight(image.height);
                     setImageBase64(data as string);
-                }    
+                }
             }
         } else {
             setImageBase64('');

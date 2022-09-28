@@ -1,14 +1,14 @@
 import { observer } from "mobx-react-lite";
-import Modal from "../../../DSL/Modal/Modal";
+import Modal from "../../DSL/Modal/Modal";
 import { Box } from "@chakra-ui/react";
-import PixelArtPageStore from "../PixelArtPage.store";
-import Button, { ButtonVariant } from "../../../DSL/Button/Button";
+import PixelArtPageStore from "./PixelArtPage.store";
+import Button, { ButtonVariant } from "../../DSL/Button/Button";
 import { useEffect, useRef, useState } from "react";
-import Select from "../../../DSL/Select/Select";
-import Typography, { TVariant } from "../../../DSL/Typography/Typography";
-import AppStore from "../../../store/App.store";
-import { CANVAS_SIZES } from "../PixelArtCanvas";
-import TemplateComponent from "../TemplateComponent";
+import Select from "../../DSL/Select/Select";
+import Typography, { TVariant } from "../../DSL/Typography/Typography";
+import AppStore from "../../store/App.store";
+import { CANVAS_SIZES } from "./PixelArtCanvas";
+import TemplateComponent from "./TemplateComponent";
 
 const CANVAS_ELEMENT_SIZE = 256;
 const CANVAS_ELEMENT_MARGIN = 80;

@@ -140,6 +140,11 @@ class Web3providerStore {
     AppStore.web3.provider!.on('chainChanged', handleChainChanged)
     AppStore.web3.provider!.on('disconnect', handleDisconnect)
   }
+
+  @computed
+  get isConnected() {
+    return !!this.signer && !!this.address
+  }
 }
 
 export default Web3providerStore

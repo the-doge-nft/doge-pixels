@@ -34,6 +34,8 @@ type CustomIconName =
   | "toolStickers"
   | "templateToggle"
 
+export type IconName = ReactIconName | CustomIconName
+
 const customIcons: CustomIconName[] = ['person', 'search', 'sun', 'moon', 'close', 'back', 'cowswap', 'toolPen', 'toolErase', 'toolStickers', 'templateToggle']
 
 const iconStringToComponentMap = {
@@ -59,7 +61,7 @@ const customIconStringToComponentMap = {
 }
 
 interface IconProps extends ChakraIconProps {
-  icon: ReactIconName | CustomIconName;
+  icon: IconName;
 }
 
 const Icon = ({ icon, ...rest }: IconProps) => {
