@@ -47,7 +47,7 @@ const ArtPalette = observer(({ store }: { store: PixelArtPageStore }) => {
                         </>
                     )}
                 </Box>
-                <Box borderRightWidth={1} borderColor={'black'} w={"1px"} mx={3} />
+                <Box borderRightWidth={1} borderColor={lightOrDarkMode(colorMode, 'black', 'white')} w={"1px"} mx={3} />
                 <Flex flexDir={"column"} flexGrow={1}>
                     <Flex
                         overflowX={"hidden"}

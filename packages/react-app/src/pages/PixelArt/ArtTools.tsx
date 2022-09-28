@@ -9,22 +9,24 @@ const ArtTools = observer(({ store }: { store: PixelArtPageStore }) => {
     const { colorMode } = useColorMode();
     return (
         <Box margin={"5px"}>
-            <VStack spacing={1}>
-                {pixelArtTools.map((entry: any, index: number) => {
-                    return (
-                        <ArtToolIcon
-                            icon={entry.icon}
-                            key={`art-tool-${index}`}
-                            bg={store.selectedToolIndex === index
-                            ? colorMode === "light"
-                                ? lightModePrimary
-                                : darkModeSecondary
-                            : "inherit"}
-                            onClick={() => store.selectedToolIndex = index}
-                        />
-                    );
-                })}
-                <Box borderTopWidth={1} borderColor={lightOrDarkMode(colorMode, 'black', 'white')} m={"3px"} h={"1px"} w={"90%"} marginTop={"5px"} />
+            <VStack spacing={3}>
+                <VStack spacing={1}>
+                    {pixelArtTools.map((entry: any, index: number) => {
+                        return (
+                            <ArtToolIcon
+                                icon={entry.icon}
+                                key={`art-tool-${index}`}
+                                bg={store.selectedToolIndex === index
+                                ? colorMode === "light"
+                                    ? lightModePrimary
+                                    : darkModeSecondary
+                                : "inherit"}
+                                onClick={() => store.selectedToolIndex = index}
+                            />
+                        );
+                    })}
+                </VStack>
+                <Box borderTopWidth={1} borderColor={lightOrDarkMode(colorMode, 'black', 'white')} h={"1px"} w={"full"} my={10} />
                 <ArtToolIcon
                     bg={store.isTemplateVisible ? ( lightOrDarkMode(colorMode, lightModePrimary, darkModeSecondary)) : "inherit"}
                     onClick={() => store.toggleTemplateVisibility()}
