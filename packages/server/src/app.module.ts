@@ -23,6 +23,7 @@ import * as redisStore from 'cache-manager-redis-store'
 @Module({
   imports: [
       ConfigModule.forRoot({
+          isGlobal: true,
           load: [() => configuration],
       }),
       ServeStaticModule.forRoot({
@@ -42,13 +43,14 @@ import * as redisStore from 'cache-manager-redis-store'
         inject: [ConfigService],
       }),
       CacheModule.registerAsync({
-          useFactory: () => ({
+          useFactory: (config: ConfigService<Configuration>) => ({
               store: redisStore,
-              host: 'redis',
-              port: 6379,
+              host: config.get('redis').host,
+              port: config.get('redis').port,
               ttl: 10,
               max: 1000,
           }),
+          inject: [ConfigService]
       }),
   ],
   controllers: [AppController],
