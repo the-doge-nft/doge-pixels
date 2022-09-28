@@ -47,6 +47,7 @@ import * as redisStore from 'cache-manager-redis-store'
               store: redisStore,
               host: config.get('redis').host,
               port: config.get('redis').port,
+              auth_pass: config.get('redis').password,
               ttl: 10,
               max: 1000,
           }),

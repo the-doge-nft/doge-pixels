@@ -15,7 +15,13 @@ services:
   redis:
     image: redis:latest
     ports:
-      - '6379:6379'
+      - '${REDIS_PORT}:6379'
+    command: >
+      --requirepass ${REDIS_PASSWORD}
+    env_file:
+      - .env
+    volumes:
+      - redis:/data
 
   api:
     build:
@@ -41,4 +47,6 @@ services:
 
 volumes:
     pixelsdb:
+    redis:
+      driver: local
 
