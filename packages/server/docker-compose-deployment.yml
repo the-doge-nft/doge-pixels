@@ -15,7 +15,9 @@ services:
   redis:
     image: redis:latest
     ports:
-      - '6379:6379'
+      - '${REDIS_PORT}:6379'
+    volumes:
+      - redis/data
 
   api:
     image: "${DOCKER_REGISTRY:?No docker registry supplied}/doge-pixels:${BUILD_ID:?No build ID supplied}"
@@ -26,6 +28,8 @@ services:
     # https://github.com/prisma/prisma/issues/1385
     environment:
       DATABASE_URL: postgresql://${POSTGRES_USER:?No postgres user proivded}:${POSTGRES_PASSWORD:?No db password provided}@db:5432/${POSTGRES_DB:?No db provided}?schema=public
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
     depends_on:
       - db
       - redis
@@ -33,3 +37,5 @@ services:
 
 volumes:
   pixelsdb:
+  redis:
+    driver: local
