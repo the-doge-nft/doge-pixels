@@ -38,6 +38,7 @@ export interface Configuration {
   redis: {
     host: string;
     port: number;
+    password: string;
   },
   nomicsKey: string;
 }
@@ -75,7 +76,8 @@ const configuration: Configuration = {
   },
   redis: {
     host: process.env.REDIS_HOST,
-    port: parseInt(process.env.REDIS_PORT)
+    port: parseInt(process.env.REDIS_PORT),
+    password: process.env.REDIS_PASSWORD
   },
   nomicsKey: process.env.NOMICS_API_KEY,
 };

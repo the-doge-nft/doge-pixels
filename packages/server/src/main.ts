@@ -6,7 +6,9 @@ import { join } from 'path';
 import * as bodyParser from "body-parser";
 
 async function bootstrap() {
-  const app = await NestFactory.create<NestExpressApplication>(AppModule);
+  const app = await NestFactory.create<NestExpressApplication>(AppModule, {
+    logger: ['verbose']
+  });
 
   app.setBaseViewsDir(join(__dirname, 'views'));
   app.setViewEngine('hbs');

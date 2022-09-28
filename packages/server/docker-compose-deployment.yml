@@ -16,6 +16,8 @@ services:
     image: redis:latest
     ports:
       - '${REDIS_PORT}:6379'
+    command: >
+      --requirepass ${REDIS_PASSWORD}
     volumes:
       - redis:/data
 
