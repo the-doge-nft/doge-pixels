@@ -1,10 +1,11 @@
 import { observer } from "mobx-react-lite";
-import Modal from "../../../DSL/Modal/Modal";
+import Modal from "../../DSL/Modal/Modal";
 import { Box } from "@chakra-ui/react";
-import PixelArtPageStore from "../PixelArtPage.store";
-import { Input } from "../../../DSL/Form/Input/Input";
-import Button, { ButtonVariant } from "../../../DSL/Button/Button";
+import PixelArtPageStore from "./PixelArtPage.store";
+import { Input } from "../../DSL/Form/Input/Input";
+import Button, { ButtonVariant } from "../../DSL/Button/Button";
 import { useState } from "react";
+import {Type} from "../../DSL/Fonts/Fonts";
 
 interface ImportTemplateModalProps {
     isOpen: boolean;
@@ -49,6 +50,7 @@ const ImportTemplateModal = observer((props: ImportTemplateModalProps) => {
     >
         <Box pt={0} pb={6}>
             <Input
+                fontFamily={Type.ComicSans}
                 w={'full'}
                 h={100}
                 my={5}

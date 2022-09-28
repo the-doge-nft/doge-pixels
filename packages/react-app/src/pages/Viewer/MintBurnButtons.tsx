@@ -22,7 +22,7 @@ export const MintBurnButtons = observer(({store}: {store: ViewerStore}) => {
         variant={ButtonVariant.Text}
         size={"md"}
         onClick={() => store.pushNavigation(ViewerView.Manage)}>
-        View my pixels
+        My pixels
     </Button>}
   </Flex>
 })

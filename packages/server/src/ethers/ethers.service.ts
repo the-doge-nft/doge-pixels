@@ -147,6 +147,7 @@ export class EthersService implements OnModuleInit {
   }
 
   private queryEnsName(address: string) {
+    this.logger.log(`querying fresh ens: ${address}`)
     return this.provider.lookupAddress(address);
   }
 
