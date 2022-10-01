@@ -1,10 +1,11 @@
-import { Box, Flex, useColorMode, useMultiStyleConfig } from "@chakra-ui/react";
+import {Box, css, Flex, useColorMode, useMultiStyleConfig} from "@chakra-ui/react";
 import { observer } from "mobx-react-lite";
 import { useMemo } from "react";
 import Typography, { TVariant } from "../../DSL/Typography/Typography";
 import PerksStore, { PerkItem } from "./Perks.store";
 import Button, { ButtonVariant } from "../../DSL/Button/Button";
 import { lightOrDarkMode } from "../../DSL/Theme";
+import Pill from "../../DSL/Pill/Pill";
 
 const PerksPage = observer(() => {
   const store = useMemo(() => new PerksStore(), [])
@@ -48,6 +49,9 @@ const Perk: React.FC<{item: PerkItem}> = ({ item }) => {
         //@ts-ignore
         __css={styles.drop}
       />
+      {item.isLive && <Box position={"absolute"} top={-2} right={-2}>
+        <Pill>Live</Pill>
+      </Box>}
     </Box>
   </a>
 }
