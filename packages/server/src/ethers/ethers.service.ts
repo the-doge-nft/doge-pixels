@@ -123,8 +123,7 @@ export class EthersService implements OnModuleInit {
     const noEns = 'NOENS';
     if (withCache) {
       const ens = await this.cacheManager.get(cacheKey);
-
-      if (ens === undefined) {
+      if (!ens) {
         // does not exist in cache
         const freshEns = await this.queryEnsName(address);
         if (freshEns) {
@@ -147,6 +146,7 @@ export class EthersService implements OnModuleInit {
   }
 
   private queryEnsName(address: string) {
+    this.logger.log(`querying fresh ens: ${address}`)
     return this.provider.lookupAddress(address);
   }
 

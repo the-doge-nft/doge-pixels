@@ -21,6 +21,10 @@ up() {
     docker-compose up -d db
     sleep 5
 
+    spacedEcho "spinning up redis"
+    docker-compose up -d redis
+    sleep 5
+
     spacedEcho "compiling contracts"
     yarn compile_contracts
 
@@ -39,7 +43,7 @@ up() {
 }
 
 down() {
-    echo "bringing down db & api"
+    echo "bringing down db, redis, & api"
     docker-compose down --remove-orphans -v
 }
 

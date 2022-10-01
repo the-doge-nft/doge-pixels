@@ -171,7 +171,7 @@ export class IdenticonAction implements ActionInterface {
                 let i = cx + cy * store.pixelsCanvas.canvasSize;
                 i %= hashedText.length;
                 let code = hashedText.charCodeAt(i) - 32;
-                store.pixelsCanvas.setPixelColor(cx, cy, colors[code % colors.length]);
+                store.pixelsCanvas.setPixelColor(cx, cy, colors[code % colors.length].hex);
             }
         }
     }

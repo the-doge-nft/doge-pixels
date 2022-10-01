@@ -4,14 +4,11 @@ import {
   CACHE_MANAGER,
   Controller,
   Get,
-  Header,
   Inject,
   Logger,
   Param,
   Post,
   Render,
-  Req,
-  Response,
 } from '@nestjs/common';
 import { PixelsService } from './pixels/pixels.service';
 import { ethers } from 'ethers';
@@ -21,11 +18,10 @@ import { PixelTransferRepository } from './pixel-transfer/pixel-transfer.reposit
 import { TwitterService } from './twitter/twitter.service';
 import { ConfigService } from '@nestjs/config';
 import { DiscordService } from './discord/discord.service';
-import { NomicsService } from './nomics/nomics.service';
 import { Cache } from 'cache-manager';
-import { Request } from 'express';
 import {PixelTransferService} from "./pixel-transfer/pixel-transfer.service";
 import {PostTransfersDto} from "./dto/PostTransfers.dto";
+import {CoinGeckoService} from "./coin-gecko/coin-gecko.service";
 
 @Controller('/v1')
 export class AppController {
@@ -37,10 +33,12 @@ export class AppController {
     private readonly pixelTransferService: PixelTransferService,
     private readonly ethers: EthersService,
     private readonly http: HttpService,
-    private readonly nomics: NomicsService,
+    private readonly pixelService: PixelsService,
+    private readonly ethersService: EthersService,
     private readonly twitter: TwitterService,
     private readonly discord: DiscordService,
     private readonly config: ConfigService,
+    private readonly gecko: CoinGeckoService,
     @Inject(CACHE_MANAGER) private cacheManager: Cache,
   ) {}
 
@@ -151,9 +149,7 @@ export class AppController {
         this.logger.log(tokenNotMintedMessage);
         throw new Error(tokenNotMintedMessage);
       } else {
-        // todo instead of querying the contract -- query the DB first to ensure the token has been minted actually
-        const tokenUri = await this.pixels.getPixelURI(params.tokenId);
-        const { data } = await this.http.get(tokenUri).toPromise();
+        const { data } = await this.pixelService.getTokenMetadata(tokenId)
         this.logger.log(
           `got metadata, setting to cache: ${JSON.stringify(data)}`,
         );
@@ -180,14 +176,7 @@ export class AppController {
 
   @Get('px/price')
   async getPixelUSDPrice() {
-    const cacheKey = 'NOMICS:DOG';
-    let usdPrice = await this.cacheManager.get(cacheKey);
-    if (!usdPrice) {
-      const { data } = await this.nomics.getDOGPrice();
-      usdPrice = Number(data[0].price);
-      await this.cacheManager.set(cacheKey, usdPrice, { ttl: 60 });
-    }
-
+    const usdPrice = await this.gecko.getDOGUSDPrice()
     const dogPerPixel = 55239.89899;
     const price = Number(usdPrice) * dogPerPixel;
     return {

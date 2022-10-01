@@ -14,6 +14,7 @@ import DemoLink from "../DSL/Link/Link.demo";
 import DemoDrawer from "../DSL/Drawer/Drawer.demo";
 import DemoSelect from "../DSL/Select/Select.demo";
 import DemoParkPixels from "../DSL/ParkPixels/ParkPixels.demo";
+import TooltipDemo from "../DSL/Tooltip/Tooltip.demo";
 
 const DSLPage = () => {
     return (
@@ -23,6 +24,7 @@ const DSLPage = () => {
                     ✨ DSL ✨
                 </Typography>
                 <DemoParkPixels/>
+                <TooltipDemo/>
                 <DemoSelect/>
                 <DemoDrawer/>
                 <DemoLink/>

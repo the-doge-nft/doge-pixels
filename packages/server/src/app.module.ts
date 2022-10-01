@@ -13,16 +13,17 @@ import { TwitterService } from './twitter/twitter.service';
 import { DiscordService } from './discord/discord.service';
 import { ImageGeneratorService } from './image-generator/image-generator.service';
 import { SentryModule } from '@travelerdev/nestjs-sentry';
-import { NomicsService } from './nomics/nomics.service';
 import { AwsService } from './aws/aws.service';
 import { ServeStaticModule } from "@nestjs/serve-static";
 import { join } from 'path'
 import { PixelTransferService } from './pixel-transfer/pixel-transfer.service';
+import { CoinGeckoService } from './coin-gecko/coin-gecko.service';
 import * as redisStore from 'cache-manager-redis-store'
 
 @Module({
   imports: [
       ConfigModule.forRoot({
+          isGlobal: true,
           load: [() => configuration],
       }),
       ServeStaticModule.forRoot({
@@ -42,13 +43,15 @@ import * as redisStore from 'cache-manager-redis-store'
         inject: [ConfigService],
       }),
       CacheModule.registerAsync({
-          useFactory: () => ({
+          useFactory: (config: ConfigService<Configuration>) => ({
               store: redisStore,
-              host: 'redis',
-              port: 6379,
+              host: config.get('redis').host,
+              port: config.get('redis').port,
+              auth_pass: config.get('redis').password,
               ttl: 10,
               max: 1000,
           }),
+          inject: [ConfigService]
       }),
   ],
   controllers: [AppController],
@@ -60,8 +63,9 @@ import * as redisStore from 'cache-manager-redis-store'
     TwitterService,
     DiscordService,
     ImageGeneratorService,
-    NomicsService,
+    ImageGeneratorService,
     AwsService,
+    CoinGeckoService,
     PixelTransferService,
   ],
 })

@@ -9,11 +9,12 @@ interface PixelPaneProps {
     pupper: number;
     onClick?: (pupper: number) => void;
     variant?: "solid" | "shadow";
-    size?: "sm" | "md" | "lg";
+    size?: "xs" | "sm" | "md" | "lg";
     isNew?: boolean;
 }
 
 const sizeToTypeMap = {
+    xs: TVariant.PresStart7,
     sm: TVariant.PresStart8,
     md: TVariant.PresStart10,
     lg: TVariant.PresStart14

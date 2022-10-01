@@ -9,6 +9,7 @@ import { Configuration } from '../config/configuration';
 import * as KobosuJson from '../constants/kobosu.json';
 import { InjectSentry, SentryService } from '@travelerdev/nestjs-sentry';
 import { PixelTransferService } from "../pixel-transfer/pixel-transfer.service";
+import {HttpService} from "@nestjs/axios";
 
 @Injectable()
 export class PixelsService implements OnModuleInit {
@@ -26,6 +27,7 @@ export class PixelsService implements OnModuleInit {
     private ethersService: EthersService,
     private configService: ConfigService<Configuration>,
     private eventEmitter: EventEmitter2,
+    private http: HttpService,
     @InjectSentry() private readonly sentryClient: SentryService,
   ) {}
 
@@ -156,5 +158,11 @@ export class PixelsService implements OnModuleInit {
   pixelToHexLocal(pixel: number) {
     const [x, y] = this.pixelToCoordsLocal(pixel);
     return KobosuJson[y][x];
+  }
+
+  async getTokenMetadata(tokenId: string) {
+    // todo instead of querying the contract -- query the DB first to ensure the token has been minted actually
+    const uri = await this.getPixelURI(tokenId)
+    return this.http.get(uri).toPromise()
   }
 }
