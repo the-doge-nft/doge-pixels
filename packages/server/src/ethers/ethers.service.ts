@@ -158,4 +158,9 @@ export class EthersService implements OnModuleInit {
       return false;
     }
   }
+
+  async getDateTimeFromBlockNumber(blockNumber: number) {
+    const block = await this.provider.getBlock(blockNumber)
+    return new Date(block.timestamp * 1000)
+  }
 }

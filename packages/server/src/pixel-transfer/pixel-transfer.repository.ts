@@ -25,14 +25,15 @@ export class PixelTransferRepository {
     })[0]
   }
 
-  create({ tokenId, from, to, blockNumber, uniqueTransferId }: Omit<PixelTransfers, 'updatedAt' | 'insertedAt' | 'id'>) {
+  create({ tokenId, from, to, blockNumber, uniqueTransferId, blockCreatedAt }: Omit<PixelTransfers, 'updatedAt' | 'insertedAt' | 'id'>) {
     return this.prisma.pixelTransfers.create({
       data: {
         tokenId,
         from,
         to,
         blockNumber,
-        uniqueTransferId
+        uniqueTransferId,
+        blockCreatedAt
       },
     });
   }
@@ -92,7 +93,7 @@ export class PixelTransferRepository {
     });
   }
 
-  async upsert({ tokenId, from, to, blockNumber, uniqueTransferId }: Omit<PixelTransfers, 'updatedAt' | 'insertedAt' | 'id'>) {
+  async upsert({ tokenId, from, to, blockNumber, uniqueTransferId, blockCreatedAt }: Omit<PixelTransfers, 'updatedAt' | 'insertedAt' | 'id'>) {
     return this.prisma.pixelTransfers.upsert({
       where: { uniqueTransferId },
       create: {
@@ -100,12 +101,14 @@ export class PixelTransferRepository {
         from,
         to,
         blockNumber,
-        uniqueTransferId
+        uniqueTransferId,
+        blockCreatedAt
       },
       update: {
         from,
         to,
-        tokenId
+        tokenId,
+        blockCreatedAt
       }
     })
   }

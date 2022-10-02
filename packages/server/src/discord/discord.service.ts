@@ -37,7 +37,7 @@ export class DiscordService implements OnModuleInit {
   }
 
   @OnEvent(Events.PIXEL_TRANSFER)
-  async discordBot({ from, to, tokenId }: Omit<PixelTransferEventPayload, 'event'>) {
+  async post({ from, to, tokenId }: Omit<PixelTransferEventPayload, 'event' | 'blockCreatedAt' | 'blockNumber'>) {
     this.logger.log(`Posting to discord:: (${tokenId}) ${from} -> ${to}`);
     const textContent = await this.imageGenerator.getTextContent(
       from,
@@ -70,7 +70,7 @@ export class DiscordService implements OnModuleInit {
 
   async DEBUG_TEST(id: number) {
     if (this.config.get('isDev')) {
-      return this.discordBot({
+      return this.post({
         from: '0x0000000000000000000000000000000000000000',
         to: '0xd801d86C10e2185a8FCBccFB7D7baF0A6C5B6BD5',
         tokenId: id,

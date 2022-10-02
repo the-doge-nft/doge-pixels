@@ -9,5 +9,7 @@ export interface PixelTransferEventPayload {
   from: string;
   to: string;
   tokenId: number;
+  blockNumber: number;
+  blockCreatedAt: Date;
   event: Event
 }

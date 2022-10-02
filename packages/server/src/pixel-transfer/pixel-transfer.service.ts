@@ -41,14 +41,17 @@ export class PixelTransferService implements OnModuleInit {
 
     private async upsertTransfersFromLogs(events: Event[]) {
         for (const event of events) {
+            console.log(JSON.stringify(event))
             const { args, blockNumber } = event;
+            const blockCreatedAt = await this.ethersService.getDateTimeFromBlockNumber(blockNumber)
             const { from, to, tokenId } = args;
             await this.pixelTransfers.upsert({
                 tokenId: tokenId.toNumber(),
                 from,
                 to: to,
                 blockNumber: blockNumber,
-                uniqueTransferId: this.getUniqueTransferId(event)
+                uniqueTransferId: this.getUniqueTransferId(event),
+                blockCreatedAt
             });
         }
     }
@@ -69,12 +72,13 @@ export class PixelTransferService implements OnModuleInit {
     }
 
     @OnEvent(Events.PIXEL_TRANSFER)
-    async handleNewTransfer({from, to, tokenId, event}: PixelTransferEventPayload) {
+    async handleNewTransfer({from, to, tokenId, blockNumber, blockCreatedAt, event}: PixelTransferEventPayload) {
         return this.pixelTransfers.upsert({
             from,
             to,
             tokenId,
-            blockNumber: event.blockNumber,
+            blockNumber,
+            blockCreatedAt,
             uniqueTransferId: this.getUniqueTransferId(event)
         })
     }

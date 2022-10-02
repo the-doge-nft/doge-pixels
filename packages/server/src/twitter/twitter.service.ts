@@ -34,7 +34,7 @@ export class TwitterService implements OnModuleInit {
   }
 
   @OnEvent(Events.PIXEL_TRANSFER)
-  async tweetPixelEventImage({ from, to, tokenId }: Omit<PixelTransferEventPayload, 'event'>) {
+  async tweetPixelEventImage({ from, to, tokenId }: Omit<PixelTransferEventPayload, 'event' | 'blockCreatedAt' | 'blockNumber'>) {
     this.logger.log(`Posting to twitter:: (${tokenId}) ${from} -> ${to}`);
     const textContent = await this.imageGenerator.getTextContent(
       from,

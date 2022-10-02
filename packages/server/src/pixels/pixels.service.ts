@@ -83,10 +83,14 @@ export class PixelsService implements OnModuleInit {
     this.logger.log(`Listening to transfer events`);
     this.pxContract.on('Transfer', async (from, to, tokenId, event) => {
       this.logger.log(`new transfer event hit: (${tokenId.toNumber()}) ${from} -> ${to}`);
+      const blockNumber = event.blockNumber
+      const blockCreatedAt = await this.ethersService.getDateTimeFromBlockNumber(blockNumber)
       const payload: PixelTransferEventPayload = {
         from,
         to,
         tokenId: tokenId.toNumber(),
+        blockNumber,
+        blockCreatedAt,
         event: event
       };
       this.eventEmitter.emit(Events.PIXEL_TRANSFER, payload);
