@@ -6,7 +6,7 @@ import { observer } from "mobx-react-lite";
 import { lightOrDarkMode } from "../Theme";
 
 interface ParkPixelsProps {
-  selectedPixel: number | null;
+  selectedTokenId: number | null;
   previewPixels: number[];
   onPupperClick: (pupper: number | null) => void;
   id: string;
@@ -61,7 +61,7 @@ const TOP_PIXEL_OFFSET_Y = 20;
 const BOTTOM_PIXEL_OFFSET_Y = 200;
 
 
-const ParkPixels = observer(({ size = PixelPreviewSize.md, selectedPixel, previewPixels = [], onPupperClick, id }: ParkPixelsProps) => {
+const ParkPixels = observer(({ size = PixelPreviewSize.md, selectedTokenId, previewPixels = [], onPupperClick, id }: ParkPixelsProps) => {
   const { colorMode } = useColorMode();
   const [pupperPositions, setPupperPositions] = useState<IPupperRectPosition[]>([]);
 
@@ -96,12 +96,12 @@ const ParkPixels = observer(({ size = PixelPreviewSize.md, selectedPixel, previe
     if (pupperPositions.length !== 0) {
       drawBackground()
     }
-  }, [pupperPositions, selectedPixel])
+  }, [pupperPositions, selectedTokenId])
 
   const drawSelectedPixel = (ctx: CanvasRenderingContext2D) => {
-    if (selectedPixel === null) return;
+    if (!selectedTokenId) return;
 
-    const [selectedX, selectedY] = AppStore.web3.pupperToPixelCoordsLocal(selectedPixel);
+    const [selectedX, selectedY] = AppStore.web3.pupperToPixelCoordsLocal(selectedTokenId);
     let fillColor = lightOrDarkMode(colorMode, "#ffd335", "#ff00e5");
     ctx.save();
     ctx.fillStyle = fillColor;
@@ -119,7 +119,7 @@ const ParkPixels = observer(({ size = PixelPreviewSize.md, selectedPixel, previe
     ctx.strokeStyle = strokeColor;
 
     for (let i = 0; i < length; i++) {
-      if (pupperPositions[i].pupper !== selectedPixel) {
+      if (pupperPositions[i].pupper !== selectedTokenId) {
         ctx.rect(pupperPositions[i].x, pupperPositions[i].y, properties.pixelSize, properties.pixelSize);
       }
     }
@@ -129,8 +129,8 @@ const ParkPixels = observer(({ size = PixelPreviewSize.md, selectedPixel, previe
   };
 
   const drawPixelPane = (ctx: CanvasRenderingContext2D) => {
-    if (selectedPixel === null) return;
-    const [x, y] = AppStore.web3.pupperToPixelCoordsLocal(selectedPixel);
+    if (!selectedTokenId) return;
+    const [x, y] = AppStore.web3.pupperToPixelCoordsLocal(selectedTokenId);
     let paneY: number;
 
     if (y * properties.scale <= properties.height / 2) {
@@ -140,7 +140,7 @@ const ParkPixels = observer(({ size = PixelPreviewSize.md, selectedPixel, previe
     }
     ctx.save();
     ctx.beginPath();
-    const hex = AppStore.web3.pupperToHexLocal(selectedPixel);
+    const hex = AppStore.web3.pupperToHexLocal(selectedTokenId);
     ctx.fillStyle = hex;
     ctx.fillRect(PIXEL_OFFSET_X, paneY, properties.pixelPaneSize, properties.pixelPaneSize);
 
@@ -162,8 +162,8 @@ const ParkPixels = observer(({ size = PixelPreviewSize.md, selectedPixel, previe
   };
 
   const drawPixelPointer = (ctx: CanvasRenderingContext2D) => {
-    if (selectedPixel === null) return;
-    const [x, y] = AppStore.web3.pupperToPixelCoordsLocal(selectedPixel);
+    if (!selectedTokenId) return;
+    const [x, y] = AppStore.web3.pupperToPixelCoordsLocal(selectedTokenId);
     const [pixelOffsetX, pixelOffsetY] = getPixelOffsets(y);
     let y1;
 

@@ -18,7 +18,6 @@ import {darkModeSecondary, lightModePrimary, lightOrDarkMode} from "../../DSL/Th
 import {NamedRoutes, route, SELECTED_PIXEL_PARAM} from "../../App.routes";
 import * as ethers from 'ethers'
 import ParkPixels, {PixelPreviewSize} from "../../DSL/ParkPixels/ParkPixels";
-import jsonify from "../../helpers/jsonify";
 
 const DogParkPage = observer(function DogParkPage() {
     const history = useHistory();
@@ -74,13 +73,16 @@ const DogParkPage = observer(function DogParkPage() {
                               <ParkPixels
                                 size={PixelPreviewSize.lg}
                                 id={'dog-park-pixels'}
-                                selectedPixel={store.selectedActivityTokenId}
+                                selectedTokenId={store.selectedActivityTokenId}
                                 previewPixels={store.selectedActivityTokenId ? [store.selectedActivityTokenId] : []}
                                 onPupperClick={(pupper) => console.log()}
                               />
                             </Box>
                             <Pane display={{base: 'none', md: 'block'}}>
                                 {store.selectedActivityTransfer && <div>
+                                    <Box>
+                                      <Typography variant={TVariant.PresStart14}>{store.selectedActivityTransferTitle}</Typography>
+                                    </Box>
                                     <div>
                                         {store.selectedActivityTransfer.from}
                                     </div>
@@ -116,6 +118,8 @@ const DogParkPage = observer(function DogParkPage() {
                                         p={2}
                                         mt={0}
                                         _hover={{bg: colorMode === "light" ? lightModePrimary : darkModeSecondary}}
+                                        onClick={() => store.selectedTransferId = transfer.uniqueTransferId}
+                                        cursor={"pointer"}
                                     >
                                         <Box position={"relative"}>
                                             <Box position={"absolute"} left={"50%"} top={"50%"} zIndex={10}
@@ -127,7 +131,7 @@ const DogParkPage = observer(function DogParkPage() {
                                                 </Typography>
                                             </Box>
                                             <PixelPane
-                                                onClick={(pupper) => store.selectedTransferId = transfer.uniqueTransferId}
+                                                // onClick={(pupper) => store.selectedTransferId = transfer.uniqueTransferId}
                                                 size={"sm"}
                                                 pupper={transfer.tokenId}
                                             />

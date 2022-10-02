@@ -9,21 +9,21 @@ const DemoParkPixels = () => {
         <VStack>
             <ParkPixels
                 size={PixelPreviewSize.sm}
-                selectedPixel={selectedPixel}
+                selectedTokenId={selectedPixel}
                 previewPixels={[1012396, 1012060, 1212729, 1270578]}
                 onPupperClick={(pupper) => setSelectedPixel(pupper)}
                 id={'tester-pixels-0'}
             />
             <ParkPixels
                 size={PixelPreviewSize.md}
-                selectedPixel={selectedPixel}
+                selectedTokenId={selectedPixel}
                 previewPixels={[1012396, 1012060, 1212729, 1270578]}
                 onPupperClick={(pupper) => setSelectedPixel(pupper)}
                 id={'tester-pixels-1'}
             />
             <ParkPixels
                 size={PixelPreviewSize.lg}
-                selectedPixel={selectedPixel}
+                selectedTokenId={selectedPixel}
                 previewPixels={[1012396, 1012060, 1212729, 1270578]}
                 onPupperClick={(pupper) => setSelectedPixel(pupper)}
                 id={'tester-pixels-2'}

@@ -61,7 +61,7 @@ const MobileHomePage = observer(() => {
         <Flex justifyContent={"center"} alignItems={"center"} mt={14}>
           {store.selectedOwner && <ParkPixels
               id={'home-pixels'}
-              selectedPixel={store.selectedPixel}
+              selectedTokenId={store.selectedPixel}
               previewPixels={store.selectedOwner?.pixels}
               onPupperClick={(pupper) => {
                 store.selectedPixel = pupper

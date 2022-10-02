@@ -28,7 +28,7 @@ const SharePixelsDialog = observer(({action, previewPixels}: {action: 'mint' | '
         <Box>
             <ParkPixels
                 id={id}
-                selectedPixel={selectedPixel}
+                selectedTokenId={selectedPixel}
                 previewPixels={previewPixels}
                 onPupperClick={setSelectedPixel}
             />

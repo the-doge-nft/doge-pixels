@@ -153,6 +153,17 @@ class DogParkPageStore extends Reactionable(EmptyClass) {
     return this.selectedActivityTransfer?.tokenId
   }
 
+  @computed
+  get selectedActivityTransferTitle() {
+    if (this.selectedActivityTransfer.from === ethers.constants.AddressZero) {
+      return "Minted"
+    } else if (this.selectedActivityTransfer.to === ethers.constants.AddressZero) {
+      return "Burned"
+    } else {
+      return "Transfer"
+    }
+  }
+
   destroy() {
     return this.disposeReactions()
   }
