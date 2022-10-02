@@ -18,6 +18,7 @@ import {darkModeSecondary, lightModePrimary, lightOrDarkMode} from "../../DSL/Th
 import {NamedRoutes, route, SELECTED_PIXEL_PARAM} from "../../App.routes";
 import * as ethers from 'ethers'
 import ParkPixels, {PixelPreviewSize} from "../../DSL/ParkPixels/ParkPixels";
+import jsonify from "../../helpers/jsonify";
 
 const DogParkPage = observer(function DogParkPage() {
     const history = useHistory();
@@ -73,34 +74,66 @@ const DogParkPage = observer(function DogParkPage() {
                               <ParkPixels
                                 size={PixelPreviewSize.lg}
                                 id={'dog-park-pixels'}
-                                selectedPixel={store.selectedActivityPixel}
-                                previewPixels={store.selectedActivityPixel === null ? [] : [store.selectedActivityPixel]}
-                                onPupperClick={(pupper) => store.selectedActivityPixel = pupper}
+                                selectedPixel={store.selectedActivityTokenId}
+                                previewPixels={store.selectedActivityTokenId ? [store.selectedActivityTokenId] : []}
+                                onPupperClick={(pupper) => console.log()}
                               />
                             </Box>
                             <Pane display={{base: 'none', md: 'block'}}>
-                              details
+                                {store.selectedActivityTransfer && <div>
+                                    <div>
+                                        {store.selectedActivityTransfer.from}
+                                    </div>
+                                  <div>
+                                      {store.selectedActivityTransfer.to}
+                                  </div>
+                                  <div>
+                                      {store.selectedActivityTransfer.tokenId}
+                                  </div>
+                                  <div>
+                                      {store.selectedActivityTransfer.blockNumber}
+                                  </div>
+                                  <div>
+                                      {store.selectedActivityTransfer.blockCreatedAt}
+                                  </div>
+                                </div>}
                             </Pane>
                           </Flex>
                           <Pane display={'flex'} flexDir={'column'} flexGrow={1}>
                             <Typography variant={TVariant.PresStart18} mb={4} block>Recent Activity</Typography>
                             <Box overflowY={"scroll"} flexGrow={1}>
-                              <Flex flexWrap={"wrap"} gap={2} maxHeight={'250px'}>
-                                {store.transfers.map(transfer => <Box position={"relative"}>
-                                  <Box position={"absolute"} left={"50%"} top={"50%"} zIndex={10}
-                                       style={{transform: "translate(-50%, -65%)"}}>
-                                    <Typography variant={TVariant.ComicSans14}>
-                                      {transfer.from === ethers.constants.AddressZero && "✨"}
-                                      {transfer.to === ethers.constants.AddressZero && "🔥"}
-                                      {transfer.to !== ethers.constants.AddressZero && transfer.from !== ethers.constants.AddressZero && "✉️"}
-                                    </Typography>
-                                  </Box>
-                                  <PixelPane
-                                      onClick={(pupper) => store.selectedActivityPixel = pupper}
-                                      size={"sm"}
-                                      pupper={transfer.tokenId}
-                                  />
-                                </Box>)}
+                              <Flex flexWrap={"wrap"} gap={0} maxHeight={'250px'}>
+                                {store.transfers.map(transfer => <>
+                                    <Box
+                                        key={`user-dog-${transfer.uniqueTransferId}`}
+                                        bg={
+                                            store.selectedTransferId === transfer.uniqueTransferId
+                                                ? colorMode === "light"
+                                                    ? lightModePrimary
+                                                    : darkModeSecondary
+                                                : "inherit"
+                                        }
+                                        p={2}
+                                        mt={0}
+                                        _hover={{bg: colorMode === "light" ? lightModePrimary : darkModeSecondary}}
+                                    >
+                                        <Box position={"relative"}>
+                                            <Box position={"absolute"} left={"50%"} top={"50%"} zIndex={10}
+                                                 style={{transform: "translate(-50%, -65%)"}}>
+                                                <Typography variant={TVariant.ComicSans14}>
+                                                    {transfer.from === ethers.constants.AddressZero && "✨"}
+                                                    {transfer.to === ethers.constants.AddressZero && "🔥"}
+                                                    {transfer.to !== ethers.constants.AddressZero && transfer.from !== ethers.constants.AddressZero && "✉️"}
+                                                </Typography>
+                                            </Box>
+                                            <PixelPane
+                                                onClick={(pupper) => store.selectedTransferId = transfer.uniqueTransferId}
+                                                size={"sm"}
+                                                pupper={transfer.tokenId}
+                                            />
+                                        </Box>
+                                    </Box>
+                                </>)}
                               </Flex>
                             </Box>
                           </Pane>

@@ -78,17 +78,14 @@ export class PixelTransferRepository {
     for(const key in sort) {
       sortQuery[key] = sort[key].toLowerCase();
     }
-
     return sortQuery;
   }
 
   // @next TODO: acccept array of filters & add paging
   async getPixelTransfers(filter, sort) {
-    const filterQuery = this.generateFilterQuery(filter);
-    const sortQuery = this.generateSortQuery(sort);
     return this.prisma.pixelTransfers.findMany({
-      where: filterQuery,
-      orderBy: sortQuery,
+      where: filter ? this.generateFilterQuery(filter) : undefined,
+      orderBy: sort ? this.generateSortQuery(sort) : {blockCreatedAt: 'desc'},
       take: 100
     });
   }

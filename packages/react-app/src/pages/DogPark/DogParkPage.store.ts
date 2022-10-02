@@ -21,7 +21,9 @@ interface PixelTransfer {
   to: string;
   tokenId: number;
   uniqueTransferId: string;
-  updatedAt: string
+  updatedAt: string;
+  blockNumber: number;
+  blockCreatedAt: string;
 }
 
 class DogParkPageStore extends Reactionable(EmptyClass) {
@@ -36,7 +38,7 @@ class DogParkPageStore extends Reactionable(EmptyClass) {
   selectedPixel: number | null = null
 
   @observable
-  selectedActivityPixel: number | null = null
+  selectedTransferId: string | null = null
 
   @observable
   lockedDog: number | null = null
@@ -139,6 +141,16 @@ class DogParkPageStore extends Reactionable(EmptyClass) {
       }
     }
     return "None"
+  }
+
+  @computed
+  get selectedActivityTransfer(): PixelTransfer | undefined {
+    return this.transfers.filter(transfer => transfer.uniqueTransferId === this.selectedTransferId)[0]
+  }
+
+  @computed
+  get selectedActivityTokenId() {
+    return this.selectedActivityTransfer?.tokenId
   }
 
   destroy() {
