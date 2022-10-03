@@ -140,18 +140,6 @@ const routes: AppRouteInterface[] = [
     showOnMobile: true,
     showOnDesktop: true,
     order: 0,
-  },
-  {
-    path: "*",
-    exact: false,
-    name: NamedRoutes.FOUR_O_FOUR,
-    layout: AppLayout,
-    component: FourOhFour,
-    desktopName: '',
-    mobileName: '',
-    showOnMobile: false,
-    showOnDesktop: false,
-    order: 5
   }
 ];
 
@@ -169,5 +157,19 @@ if (isDevModeEnabled()) {
     order: 4,
   });
 }
+
+// add last route as a catch all for anything not defined above
+routes.push({
+  path: "*",
+  exact: false,
+  name: NamedRoutes.FOUR_O_FOUR,
+  layout: AppLayout,
+  component: FourOhFour,
+  desktopName: '',
+  mobileName: '',
+  showOnMobile: false,
+  showOnDesktop: false,
+  order: 5
+})
 
 export default routes;

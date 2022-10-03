@@ -68,15 +68,17 @@ const DogParkPage = observer(function DogParkPage() {
                     {!store.selectedAddress && <>
                         {!store.isSearchEmpty && <SearchHints store={store}/>}
                         {store.isSearchEmpty && <Flex flexDir={'column'} flexGrow={1}>
-                          <Flex justifyContent={"flex-start"} mb={4}>
+                          <Flex justifyContent={"flex-start"} mb={8} gap={8}>
                             <Box flexGrow={1}>
-                              <ParkPixels
-                                size={PixelPreviewSize.lg}
-                                id={'dog-park-pixels'}
-                                selectedTokenId={store.selectedActivityTokenId}
-                                previewPixels={store.selectedActivityTokenId ? [store.selectedActivityTokenId] : []}
-                                onPupperClick={(pupper) => console.log()}
-                              />
+                              <Pane p={0} borderWidth={"0px"}>
+                                <ParkPixels
+                                  size={PixelPreviewSize.lg}
+                                  id={'dog-park-pixels'}
+                                  selectedTokenId={store.selectedActivityTokenId}
+                                  previewPixels={store.selectedActivityTokenId ? [store.selectedActivityTokenId] : []}
+                                  onPupperClick={(pupper) => console.log()}
+                                />
+                              </Pane>
                             </Box>
                             <Pane display={{base: 'none', md: 'block'}}>
                                 {store.selectedActivityTransfer && <div>
