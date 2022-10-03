@@ -8,7 +8,6 @@ import DogParkPage from "./pages/DogPark/DogPark.page";
 import { isDevModeEnabled } from "./environment/helpers";
 import MobileHomePage from "./pages/MobileHome/MobileHome.page";
 import PixelArtPage from "./pages/PixelArt/PixelArt.page";
-//import SnakeGamePage from "./pages/SnakeGame/SnakeGame.page";
 import PerksPage from "./pages/Perks/Perks.page";
 import FourOhFour from "./pages/FourOhFour";
 

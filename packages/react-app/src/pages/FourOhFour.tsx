@@ -4,6 +4,7 @@ import {Flex, useColorMode} from "@chakra-ui/react";
 import Link from "../DSL/Link/Link";
 import {NamedRoutes, route} from "../App.routes";
 import {lightOrDarkMode} from "../DSL/Theme";
+import "@culturehq/add-to-calendar/dist/styles.css";
 
 const FourOhFour = () => {
     const { colorMode } = useColorMode()
