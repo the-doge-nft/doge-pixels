@@ -10,6 +10,7 @@ import MobileHomePage from "./pages/MobileHome/MobileHome.page";
 import PixelArtPage from "./pages/PixelArt/PixelArt.page";
 //import SnakeGamePage from "./pages/SnakeGame/SnakeGame.page";
 import PerksPage from "./pages/Perks/Perks.page";
+import FourOhFour from "./pages/FourOhFour";
 
 export enum NamedRoutes {
   VIEWER = "viewer",
@@ -20,6 +21,7 @@ export enum NamedRoutes {
   MOBILE_HOME = "mobile",
   PIXELS = "pixels",
   PERKS = "perks",
+  FOUR_O_FOUR = "fourofour"
 }
 
 export interface AppRouteInterface {
@@ -68,7 +70,7 @@ const routes: AppRouteInterface[] = [
     order: 2,
   },
   {
-    path: "/park/:address?/:tokenID?",
+    path: "/leaderbork/:address?/:tokenID?",
     name: NamedRoutes.DOG_PARK,
     exact: true,
     layout: AppLayout,
@@ -139,6 +141,18 @@ const routes: AppRouteInterface[] = [
     showOnDesktop: true,
     order: 0,
   },
+  {
+    path: "*",
+    exact: false,
+    name: NamedRoutes.FOUR_O_FOUR,
+    layout: AppLayout,
+    component: FourOhFour,
+    desktopName: '',
+    mobileName: '',
+    showOnMobile: false,
+    showOnDesktop: false,
+    order: 5
+  }
 ];
 
 if (isDevModeEnabled()) {
