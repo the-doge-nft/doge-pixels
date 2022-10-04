@@ -160,13 +160,13 @@ class LeaderborkStore extends Reactionable(EmptyClass) {
     let description
     if (this.selectedActivityTransfer.from === ethers.constants.AddressZero) {
       title = "Minted"
-      description = this.selectedActivityTransfer.to
+      description = abbreviate(this.selectedActivityTransfer.to, 4)
     } else if (this.selectedActivityTransfer.to === ethers.constants.AddressZero) {
       title = "Burned"
-      description = this.selectedActivityTransfer.from
+      description = abbreviate(this.selectedActivityTransfer.from, 4)
     } else {
       title = "Transfer"
-      description = `${this.selectedActivityTransfer.from} to ${this.selectedActivityTransfer.to}`
+      description = `${abbreviate(this.selectedActivityTransfer.from, 4)} to ${abbreviate(this.selectedActivityTransfer.to, 4)}`
     }
     return {title, description}
   }

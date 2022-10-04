@@ -13,8 +13,7 @@ const PaneStyle = {
       position: "relative",
       h: "full",
       _after: {
-        base: "none",
-        md: {
+        base: {
           zIndex: "-1",
           content: "''",
           position: "absolute",

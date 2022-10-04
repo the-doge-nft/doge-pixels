@@ -64,9 +64,7 @@ const BOTTOM_PIXEL_OFFSET_Y = 200;
 const ParkPixels = observer(({ size = PixelPreviewSize.md, selectedTokenId, previewPixels = [], onPupperClick, id }: ParkPixelsProps) => {
   const { colorMode } = useColorMode();
   const [pupperPositions, setPupperPositions] = useState<IPupperRectPosition[]>([]);
-
   const properties = imageProperties[size]
-  console.log('debug::', properties)
 
   const getPixelOffsets = (y: number) => {
     if (y * properties.scale <= properties.height / 2) {

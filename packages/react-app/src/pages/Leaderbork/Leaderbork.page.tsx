@@ -43,6 +43,7 @@ const LeaderborkPage = observer(function DogParkPage() {
     };
     return (
         <Grid
+            p={{base: 5, md: 0}}
             templateRows={{base: "1fr 1fr", "xl": "1fr"}}
             templateColumns={{base: "1fr", "xl": "0.35fr 1fr"}}
         >
@@ -52,7 +53,6 @@ const LeaderborkPage = observer(function DogParkPage() {
                     <DogKennel store={store}/>
                 </Box>
             </GridItem>
-
             <GridItem order={{base: 1, xl: 3}} ml={{base: 0, lg: 10}} display={'flex'} flexDirection={'column'}>
                 <Box mb={8}>
                     <Form onSubmit={async () => {
@@ -69,9 +69,9 @@ const LeaderborkPage = observer(function DogParkPage() {
                     {!store.selectedAddress && <>
                         {!store.isSearchEmpty && <SearchHints store={store}/>}
                         {store.isSearchEmpty && <Flex flexDir={'column'} flexGrow={1}>
-                          <Flex justifyContent={"flex-start"} mb={8} gap={8}>
-                            <Box flexGrow={1}>
-                              <Pane p={0} borderWidth={"0px"}>
+                          <Flex flexDir={{base: "column", md: "row"}} justifyContent={"flex-start"} mb={8} gap={8}>
+                            <Flex justifyContent={"center"} flexGrow={0}>
+                              <Pane margin={'auto'} maxW={'fit-content'} p={0} borderWidth={"0px"}>
                                 <ParkPixels
                                   size={PixelPreviewSize.lg}
                                   id={'dog-park-pixels'}
@@ -80,31 +80,31 @@ const LeaderborkPage = observer(function DogParkPage() {
                                   onPupperClick={(pupper) => console.log()}
                                 />
                               </Pane>
-                            </Box>
-                            <Pane display={{base: 'none', md: 'block'}}>
-                                {store.selectedActivityTransfer && <Flex gap={8} h={"full"}>
-                                  <Box>
-                                    <PixelPane size={"md"} pupper={store.selectedActivityTransfer?.tokenId} variant={"shadow"}/>
-                                  </Box>
-                                  <Flex flexDir={"column"} flexGrow={1}>
-                                    <Flex flexDir={"column"}>
-                                      <Typography variant={TVariant.PresStart18} mb={2}>{store.selectedActivityTransferDetails.title}</Typography>
-                                      <Grid templateColumns={"0.70fr 1fr"} gap={1}>
-                                        <Typography variant={TVariant.ComicSans18}>by:</Typography>
-                                        <Typography variant={TVariant.ComicSans18}>{store.selectedActivityTransferDetails.description}</Typography>
-
-                                        <Typography variant={TVariant.ComicSans18}>token ID:</Typography>
-                                        <Typography variant={TVariant.ComicSans18}>{store.selectedActivityTransfer.tokenId}</Typography>
-
-                                        <Typography variant={TVariant.ComicSans18}>when:</Typography>
-                                        <Typography variant={TVariant.ComicSans18}>{(new Date(store.selectedActivityTransfer.blockCreatedAt)).toLocaleString()}</Typography>
-                                      </Grid>
+                            </Flex>
+                            <Pane flexGrow={1}>
+                                {store.selectedActivityTransfer && <Flex flexDir={"column"} h={"full"}>
+                                  <Flex gap={10}>
+                                    <Box>
+                                      <PixelPane size={"md"} pupper={store.selectedActivityTransfer?.tokenId} variant={"shadow"}/>
+                                    </Box>
+                                    <Flex flexDir={"column"} flexGrow={1}>
+                                      <Flex flexDir={"column"}>
+                                        <Typography variant={TVariant.PresStart18} mb={2}>{store.selectedActivityTransferDetails.title}</Typography>
+                                        <Grid templateColumns={"0.5fr 1fr"} gap={1}>
+                                          <Typography variant={TVariant.ComicSans16}>by:</Typography>
+                                          <Typography variant={TVariant.ComicSans16} overflowWrap={"anywhere"}>{store.selectedActivityTransferDetails.description}</Typography>
+                                          <Typography variant={TVariant.ComicSans16}>token ID:</Typography>
+                                          <Typography variant={TVariant.ComicSans16}>{store.selectedActivityTransfer.tokenId}</Typography>
+                                          <Typography variant={TVariant.ComicSans16}>date:</Typography>
+                                          <Typography variant={TVariant.ComicSans16} overflowWrap={"anywhere"}>{(new Date(store.selectedActivityTransfer.blockCreatedAt)).toLocaleDateString()}</Typography>
+                                        </Grid>
+                                      </Flex>
                                     </Flex>
-                                    <Flex justifyContent={'center'} alignItems={'center'} flexGrow={1}>
-                                      <Link display={"inline-block"} isNav to={route(NamedRoutes.PIXELS, {[SELECTED_PIXEL_PARAM]: store.selectedActivityTransfer.tokenId})}>
-                                        <Button onClick={() => console.log()}>Portal</Button>
-                                      </Link>
-                                    </Flex>
+                                  </Flex>
+                                  <Flex justifyContent={'center'} alignItems={'center'} flexGrow={1}>
+                                    <Link display={"inline-block"} isNav to={route(NamedRoutes.PIXELS, {[SELECTED_PIXEL_PARAM]: store.selectedActivityTransfer.tokenId})}>
+                                      <Button onClick={() => console.log()}>Portal</Button>
+                                    </Link>
                                   </Flex>
                                 </Flex>}
                             </Pane>
