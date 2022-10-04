@@ -25,7 +25,7 @@ const LeaderborkPage = observer(function DogParkPage() {
     const history = useHistory();
     const {address, tokenID, activityId} = useParams<{ address?: string; tokenID?: string, activityId?: string }>();
     console.log("debug:: acitivyt id", activityId)
-    const store = useMemo(() => new LeaderborkStore(address, Number(tokenID), activityId), [address, tokenID, activityId]);
+    const store = useMemo(() => new LeaderborkStore(address, Number(tokenID), activityId), [address, tokenID]);
     const {colorMode} = useColorMode();
     useEffect(() => {
         store.init();
@@ -33,7 +33,7 @@ const LeaderborkPage = observer(function DogParkPage() {
             store.destroy()
         }
         // eslint-disable-next-line
-    }, [address, tokenID, activityId]);
+    }, []);
 
     const setPupper = (pupper: number | null) => {
         store.selectedPixel = pupper;
@@ -72,9 +72,8 @@ const LeaderborkPage = observer(function DogParkPage() {
                     />
                 </Box>
                 <Flex flexDirection={"column"} flexGrow={1}>
-                    {!store.selectedAddress && <>
                         <Flex flexDir={'column'} flexGrow={1}>
-                          <Flex flexDir={{base: "column", md: "row"}} justifyContent={"flex-start"} mb={8} gap={8}>
+                          <Flex flexDir={{base: "column", md: "row"}} justifyContent={"flex-start"} mb={8} gap={8} flexGrow={1}>
                             <Flex justifyContent={"center"} flexGrow={0}>
                               <Pane margin={'auto'} maxW={'fit-content'} p={0} borderWidth={"0px"}>
                                 <ParkPixels
@@ -118,9 +117,7 @@ const LeaderborkPage = observer(function DogParkPage() {
                             <Typography variant={TVariant.PresStart18} mb={4} block>Recent Activity</Typography>
                             <Box overflowY={"scroll"} flexGrow={1}>
                               <Flex flexWrap={"wrap"} gap={0} maxHeight={'250px'}>
-                                {store.transfers.map(transfer => <>
-                                    <Link isNav to={`/leaderbork/${transfer.uniqueTransferId}`}>
-
+                                {!store.selectedAddress && store.transfers.map(transfer => <>
                                     <Box
                                         key={`user-dog-${transfer.uniqueTransferId}`}
                                         bg={
@@ -133,7 +130,7 @@ const LeaderborkPage = observer(function DogParkPage() {
                                         p={2}
                                         mt={0}
                                         _hover={{bg: colorMode === "light" ? lightModePrimary : darkModeSecondary}}
-                                        // onClick={() => store.selectedTransferId = transfer.uniqueTransferId}
+                                        onClick={() => store.selectedTransferId = transfer.uniqueTransferId}
                                         cursor={"pointer"}
                                     >
                                         <Box position={"relative"}>
@@ -152,13 +149,14 @@ const LeaderborkPage = observer(function DogParkPage() {
                                             />
                                         </Box>
                                     </Box>
-                                    </Link>
                                 </>)}
+                                {store.selectedAddress && <Box>
+                                  show the selected user's pixels
+                                </Box>}
                               </Flex>
                             </Box>
                           </Pane>
                         </Flex>
-                    </>}
                     {/*{store.selectedAddress && (*/}
                     {/*    <>*/}
                     {/*        {!store.selectedUserHasPixels &&*/}

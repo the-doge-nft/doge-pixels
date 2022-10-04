@@ -85,9 +85,6 @@ export class AppController {
     return this.pixelTransferRepo.getPixelTransfers(filter, sort);
   }
 
-  @Get('transfers/px')
-  async getTransfersBy
-
   @Get('px/dimensions')
   async getPictureDimensions() {
     return this.pixels.getDimensions();

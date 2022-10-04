@@ -54,6 +54,10 @@ const Typeahead: React.FC<ComboboxProps> = observer(({onItemSelect, items, value
         }
     }, [inputRef])
 
+    // useEffect(() => {
+    //     if (value === "" && )
+    // }, [items])
+
     return <Box position={"relative"}>
         <Form onSubmit={async () => {
         }}>
