@@ -19,6 +19,7 @@ import {NamedRoutes, route, SELECTED_PIXEL_PARAM} from "../../App.routes";
 import * as ethers from 'ethers'
 import ParkPixels, {PixelPreviewSize} from "../../DSL/ParkPixels/ParkPixels";
 import Link from "../../DSL/Link/Link";
+import Typeahead from "../../DSL/Typeahead/Typeahead";
 
 const LeaderborkPage = observer(function DogParkPage() {
     const history = useHistory();
@@ -55,20 +56,23 @@ const LeaderborkPage = observer(function DogParkPage() {
             </GridItem>
             <GridItem order={{base: 1, xl: 3}} ml={{base: 0, lg: 10}} display={'flex'} flexDirection={'column'}>
                 <Box mb={8}>
-                    <Form onSubmit={async () => {
-                    }}>
-                        <TextInput
-                            fontSize={"14px"}
-                            rightIcon={"search"}
-                            placeholder={"Search pixel owners"}
-                            {...model(store, "searchValue")}
-                        />
-                    </Form>
+                    <Typeahead
+                        onItemSelect={(value) => store.selectedAddress = value as unknown as string}
+                        items={store.ownersTypeaheadItems}
+                        fontSize={"14px"}
+                        rightIcon={"search"}
+                        placeholder={"Search pixel owners"}
+                        value={store.searchValue}
+                        onChange={(value) => {
+                            console.log('debug:: value', value)
+                            store.searchValue = value
+                        }}
+                        {...model(store, "searchValue")}
+                    />
                 </Box>
                 <Flex flexDirection={"column"} flexGrow={1}>
                     {!store.selectedAddress && <>
-                        {!store.isSearchEmpty && <SearchHints store={store}/>}
-                        {store.isSearchEmpty && <Flex flexDir={'column'} flexGrow={1}>
+                        <Flex flexDir={'column'} flexGrow={1}>
                           <Flex flexDir={{base: "column", md: "row"}} justifyContent={"flex-start"} mb={8} gap={8}>
                             <Flex justifyContent={"center"} flexGrow={0}>
                               <Pane margin={'auto'} maxW={'fit-content'} p={0} borderWidth={"0px"}>
@@ -89,8 +93,8 @@ const LeaderborkPage = observer(function DogParkPage() {
                                     </Box>
                                     <Flex flexDir={"column"} flexGrow={1}>
                                       <Flex flexDir={"column"}>
-                                        <Typography variant={TVariant.PresStart18} mb={2}>{store.selectedActivityTransferDetails.title}</Typography>
-                                        <Grid templateColumns={"0.5fr 1fr"} gap={1}>
+                                        <Typography variant={TVariant.PresStart18} mb={1}>{store.selectedActivityTransferDetails.title}</Typography>
+                                        <Grid templateColumns={"0.5fr 1fr"}>
                                           <Typography variant={TVariant.ComicSans16}>by:</Typography>
                                           <Typography variant={TVariant.ComicSans16} overflowWrap={"anywhere"}>{store.selectedActivityTransferDetails.description}</Typography>
                                           <Typography variant={TVariant.ComicSans16}>token ID:</Typography>
@@ -149,160 +153,141 @@ const LeaderborkPage = observer(function DogParkPage() {
                               </Flex>
                             </Box>
                           </Pane>
-                        </Flex>}
+                        </Flex>
                     </>}
-                    {store.selectedAddress && (
-                        <>
-                            {!store.selectedUserHasPixels &&
-                            <Box mb={5} h={store.selectedUserHasPixels ? "initial" : "full"}>
-                              <Box w={"full"} h={"full"}>
-                                <Flex alignItems={"center"} w={"full"} h={"full"} justifyContent={"center"}>
-                                  <Typography variant={TVariant.PresStart28} color={"#d6ceb6"}>
-                                    No pixels owned
-                                  </Typography>
-                                  <Typography variant={TVariant.PresStart28} mb={2} ml={3}>
-                                    😟
-                                  </Typography>
-                                </Flex>
-                              </Box>
-                            </Box>}
-                            {store.selectedUserHasPixels && (
-                                <Flex
-                                    h={"full"}>
-                                    <GridItem order={{base: 2, xl: 1}} display={"flex"}>
-                                        <Box overflowY={"auto"} flexGrow={1}>
-                                            <Flex flexWrap={"wrap"} maxHeight={"380px"} overflow="auto">
-                                                {store.selectedOwner?.pixels.map(px => {
-                                                    const hex = AppStore.web3.pupperToHexLocal(px);
-                                                    const index = AppStore.web3.pupperToIndexLocal(px);
-                                                    return (
-                                                        <Box
-                                                            key={`user-dog-${px}`}
-                                                            bg={
-                                                                store.selectedPixel === px
-                                                                    ? colorMode === "light"
-                                                                        ? lightModePrimary
-                                                                        : darkModeSecondary
-                                                                    : "inherit"
-                                                            }
-                                                            p={2}
-                                                            mt={0}
-                                                            _hover={{bg: colorMode === "light" ? lightModePrimary : darkModeSecondary}}
-                                                        >
-                                                            <PixelPane
-                                                                size={"sm"}
-                                                                key={`top_dog_${px}`}
-                                                                pupper={px}
-                                                                onClick={px => {
-                                                                    store.selectedPixel = px;
-                                                                    window.history.pushState(
-                                                                        {},
-                                                                        "",
-                                                                        route(NamedRoutes.DOG_PARK, {
-                                                                            address: store.selectedAddress,
-                                                                            tokenID: store.selectedPixel,
-                                                                        }),
-                                                                    );
-                                                                }}
-                                                            />
-                                                        </Box>
-                                                    );
-                                                })}
-                                            </Flex>
-                                        </Box>
-                                    </GridItem>
-                                    <GridItem order={{base: 1, xl: 2}} display={"flex"} justifyContent={"center"}
-                                              mx={4}>
-                                        {store.selectedOwner && (
-                                            <Box maxWidth={"fit-content"} mt={2}>
-                                                <Flex flexDirection={"column"}>
-                                                    {/*<ParkPixels*/}
-                                                    {/*  id={'dog-park-pixels'}*/}
-                                                    {/*  selectedPixel={store.selectedPixel ? store.selectedPixel : -1}*/}
-                                                    {/*  pixelOwner={store.selectedOwner}*/}
-                                                    {/*  onPupperClick={setPupper}*/}
-                                                    {/*/>*/}
-                                                    {store.selectedPixel && (
-                                                        <Flex mt={3}>
-                                                            <Grid templateColumns={"1fr 1fr"} templateRows={"1fr 1fr"}
-                                                                  columnGap={2}>
-                                                                <GridItem>
-                                                                    <Typography variant={TVariant.ComicSans18}>Pixel
-                                                                        #:</Typography>
-                                                                </GridItem>
-                                                                <GridItem>
-                                                                    <Typography variant={TVariant.ComicSans18} ml={2}>
-                                                                        {store.seletedPixelIndex}
-                                                                    </Typography>
-                                                                </GridItem>
+                    {/*{store.selectedAddress && (*/}
+                    {/*    <>*/}
+                    {/*        {!store.selectedUserHasPixels &&*/}
+                    {/*        <Box mb={5} h={store.selectedUserHasPixels ? "initial" : "full"}>*/}
+                    {/*          <Box w={"full"} h={"full"}>*/}
+                    {/*            <Flex alignItems={"center"} w={"full"} h={"full"} justifyContent={"center"}>*/}
+                    {/*              <Typography variant={TVariant.PresStart28} color={"#d6ceb6"}>*/}
+                    {/*                No pixels owned*/}
+                    {/*              </Typography>*/}
+                    {/*              <Typography variant={TVariant.PresStart28} mb={2} ml={3}>*/}
+                    {/*                😟*/}
+                    {/*              </Typography>*/}
+                    {/*            </Flex>*/}
+                    {/*          </Box>*/}
+                    {/*        </Box>}*/}
+                    {/*        {store.selectedUserHasPixels && (*/}
+                    {/*            <Flex*/}
+                    {/*                h={"full"}>*/}
+                    {/*                <GridItem order={{base: 2, xl: 1}} display={"flex"}>*/}
+                    {/*                    <Box overflowY={"auto"} flexGrow={1}>*/}
+                    {/*                        <Flex flexWrap={"wrap"} maxHeight={"380px"} overflow="auto">*/}
+                    {/*                            {store.selectedOwner?.pixels.map(px => {*/}
+                    {/*                                const hex = AppStore.web3.pupperToHexLocal(px);*/}
+                    {/*                                const index = AppStore.web3.pupperToIndexLocal(px);*/}
+                    {/*                                return (*/}
+                    {/*                                    <Box*/}
+                    {/*                                        key={`user-dog-${px}`}*/}
+                    {/*                                        bg={*/}
+                    {/*                                            store.selectedPixel === px*/}
+                    {/*                                                ? colorMode === "light"*/}
+                    {/*                                                    ? lightModePrimary*/}
+                    {/*                                                    : darkModeSecondary*/}
+                    {/*                                                : "inherit"*/}
+                    {/*                                        }*/}
+                    {/*                                        p={2}*/}
+                    {/*                                        mt={0}*/}
+                    {/*                                        _hover={{bg: colorMode === "light" ? lightModePrimary : darkModeSecondary}}*/}
+                    {/*                                    >*/}
+                    {/*                                        <PixelPane*/}
+                    {/*                                            size={"sm"}*/}
+                    {/*                                            key={`top_dog_${px}`}*/}
+                    {/*                                            pupper={px}*/}
+                    {/*                                            onClick={px => {*/}
+                    {/*                                                store.selectedPixel = px;*/}
+                    {/*                                                window.history.pushState(*/}
+                    {/*                                                    {},*/}
+                    {/*                                                    "",*/}
+                    {/*                                                    route(NamedRoutes.DOG_PARK, {*/}
+                    {/*                                                        address: store.selectedAddress,*/}
+                    {/*                                                        tokenID: store.selectedPixel,*/}
+                    {/*                                                    }),*/}
+                    {/*                                                );*/}
+                    {/*                                            }}*/}
+                    {/*                                        />*/}
+                    {/*                                    </Box>*/}
+                    {/*                                );*/}
+                    {/*                            })}*/}
+                    {/*                        </Flex>*/}
+                    {/*                    </Box>*/}
+                    {/*                </GridItem>*/}
+                    {/*                <GridItem order={{base: 1, xl: 2}} display={"flex"} justifyContent={"center"}*/}
+                    {/*                          mx={4}>*/}
+                    {/*                    {store.selectedOwner && (*/}
+                    {/*                        <Box maxWidth={"fit-content"} mt={2}>*/}
+                    {/*                            <Flex flexDirection={"column"}>*/}
+                    {/*                                <ParkPixels*/}
+                    {/*                                  id={'dog-park-pixels'}*/}
+                    {/*                                  selectedPixel={store.selectedPixel ? store.selectedPixel : -1}*/}
+                    {/*                                  pixelOwner={store.selectedOwner}*/}
+                    {/*                                  onPupperClick={setPupper}*/}
+                    {/*                                />*/}
+                    {/*                                {store.selectedPixel && (*/}
+                    {/*                                    <Flex mt={3}>*/}
+                    {/*                                        <Grid templateColumns={"1fr 1fr"} templateRows={"1fr 1fr"}*/}
+                    {/*                                              columnGap={2}>*/}
+                    {/*                                            <GridItem>*/}
+                    {/*                                                <Typography variant={TVariant.ComicSans18}>Pixel*/}
+                    {/*                                                    #:</Typography>*/}
+                    {/*                                            </GridItem>*/}
+                    {/*                                            <GridItem>*/}
+                    {/*                                                <Typography variant={TVariant.ComicSans18} ml={2}>*/}
+                    {/*                                                    {store.seletedPixelIndex}*/}
+                    {/*                                                </Typography>*/}
+                    {/*                                            </GridItem>*/}
 
-                                                                <GridItem>
-                                                                    <Typography
-                                                                        variant={TVariant.ComicSans18}>HEX:</Typography>
-                                                                </GridItem>
-                                                                <GridItem>
-                                                                    <Typography variant={TVariant.ComicSans18} ml={2}>
-                                                                        {store.selectedPixelHexColor}
-                                                                    </Typography>
-                                                                </GridItem>
+                    {/*                                            <GridItem>*/}
+                    {/*                                                <Typography*/}
+                    {/*                                                    variant={TVariant.ComicSans18}>HEX:</Typography>*/}
+                    {/*                                            </GridItem>*/}
+                    {/*                                            <GridItem>*/}
+                    {/*                                                <Typography variant={TVariant.ComicSans18} ml={2}>*/}
+                    {/*                                                    {store.selectedPixelHexColor}*/}
+                    {/*                                                </Typography>*/}
+                    {/*                                            </GridItem>*/}
 
-                                                                <GridItem>
-                                                                    <Typography
-                                                                        variant={TVariant.ComicSans18}>Coordinates:</Typography>
-                                                                </GridItem>
-                                                                <GridItem>
-                                                                    <Typography variant={TVariant.ComicSans18} ml={2}>
-                                                                        ({store.selectedPixelCoordinates[0]},{store.selectedPixelCoordinates[1]})
-                                                                    </Typography>
-                                                                </GridItem>
-                                                            </Grid>
-                                                            <Flex alignItems={"center"} justifyContent={"flex-end"}
-                                                                  flexGrow={1}>
-                                                                <Button
-                                                                    size={"sm"}
-                                                                    onClick={() =>
-                                                                        history.push(
-                                                                            route(NamedRoutes.PIXELS, {[SELECTED_PIXEL_PARAM]: store.selectedPixel}),
-                                                                        )
-                                                                    }
-                                                                >
-                                                                    Portal
-                                                                </Button>
-                                                            </Flex>
-                                                        </Flex>
-                                                    )}
-                                                </Flex>
-                                            </Box>
-                                        )}
-                                    </GridItem>
-                                </Flex>
-                            )}
-                        </>
-                    )}
+                    {/*                                            <GridItem>*/}
+                    {/*                                                <Typography*/}
+                    {/*                                                    variant={TVariant.ComicSans18}>Coordinates:</Typography>*/}
+                    {/*                                            </GridItem>*/}
+                    {/*                                            <GridItem>*/}
+                    {/*                                                <Typography variant={TVariant.ComicSans18} ml={2}>*/}
+                    {/*                                                    ({store.selectedPixelCoordinates[0]},{store.selectedPixelCoordinates[1]})*/}
+                    {/*                                                </Typography>*/}
+                    {/*                                            </GridItem>*/}
+                    {/*                                        </Grid>*/}
+                    {/*                                        <Flex alignItems={"center"} justifyContent={"flex-end"}*/}
+                    {/*                                              flexGrow={1}>*/}
+                    {/*                                            <Button*/}
+                    {/*                                                size={"sm"}*/}
+                    {/*                                                onClick={() =>*/}
+                    {/*                                                    history.push(*/}
+                    {/*                                                        route(NamedRoutes.PIXELS, {[SELECTED_PIXEL_PARAM]: store.selectedPixel}),*/}
+                    {/*                                                    )*/}
+                    {/*                                                }*/}
+                    {/*                                            >*/}
+                    {/*                                                Portal*/}
+                    {/*                                            </Button>*/}
+                    {/*                                        </Flex>*/}
+                    {/*                                    </Flex>*/}
+                    {/*                                )}*/}
+                    {/*                            </Flex>*/}
+                    {/*                        </Box>*/}
+                    {/*                    )}*/}
+                    {/*                </GridItem>*/}
+                    {/*            </Flex>*/}
+                    {/*        )}*/}
+                    {/*    </>*/}
+                    {/*)}*/}
                 </Flex>
             </GridItem>
         </Grid>
     );
 });
-
-const SearchHints = ({store}: { store: LeaderborkStore }) => {
-    return (
-        <>
-            {!store.isSearchEmpty && store.filteredOwners.length > 1 && (
-                <Typography mt={2} variant={TVariant.PresStart18} block>
-                    Similar results
-                </Typography>
-            )}
-            {!store.isSearchEmpty &&
-            !store.selectedAddress &&
-            store.filteredOwners.map(owner => <UserCard key={`filtered-dog-${owner.address}`} store={store}
-                                                        pixelOwner={owner}/>)}
-            {!store.isSearchEmpty && store.isFilteredResultEmpty && (
-                <Typography variant={TVariant.PresStart15}>No results found</Typography>
-            )}
-        </>
-    );
-};
 
 const DogKennel = observer(({store}: { store: LeaderborkStore }) => {
     const [num, abbr] = store.lockedDog ? convertToAbbreviation(Math.trunc(store.lockedDog)) : ["N/A", ""];

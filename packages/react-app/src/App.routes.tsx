@@ -43,10 +43,7 @@ export const route = (name: NamedRoutes, params?: {}) => {
     throw new TypeError("Unknown named route: " + name);
   }
   if (params) {
-    console.log('debug:: params', params)
-    const path = generatePath(route.path, params);
-    console.log('debug:: path', path)
-    return path
+    return generatePath(route.path, params);
   } else {
     return route.path;
   }

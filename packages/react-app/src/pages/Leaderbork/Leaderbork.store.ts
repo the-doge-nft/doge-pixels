@@ -84,9 +84,8 @@ class LeaderborkStore extends Reactionable(EmptyClass) {
   }
 
   @computed
-  get filteredOwners() {
-    return arrayFuzzyFilterByKey(AppStore.web3.sortedPixelOwners, this.searchValue, 'address')
-        .concat(arrayFuzzyFilterByKey(AppStore.web3.sortedPixelOwners, this.searchValue, 'ens'))
+  get ownersTypeaheadItems() {
+    return AppStore.web3.sortedPixelOwners.map(item => ({value: item.address, name: item.ens ? item.ens : item.address}))
   }
 
   @computed
@@ -102,11 +101,6 @@ class LeaderborkStore extends Reactionable(EmptyClass) {
   @computed
   get isSearchEmpty() {
     return this.searchValue === ""
-  }
-
-  @computed
-  get isFilteredResultEmpty() {
-    return this.filteredOwners.length === 0
   }
 
   @computed

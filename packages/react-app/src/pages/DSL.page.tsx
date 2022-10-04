@@ -15,6 +15,7 @@ import DemoDrawer from "../DSL/Drawer/Drawer.demo";
 import DemoSelect from "../DSL/Select/Select.demo";
 import DemoParkPixels from "../DSL/ParkPixels/ParkPixels.demo";
 import TooltipDemo from "../DSL/Tooltip/Tooltip.demo";
+import DemoCombobox from "../DSL/Typeahead/Typeahead.demo";
 
 const DSLPage = () => {
     return (
@@ -23,6 +24,7 @@ const DSLPage = () => {
                 <Typography variant={TVariant.PresStart28} block mb={7}>
                     ✨ DSL ✨
                 </Typography>
+                <DemoCombobox/>
                 <DemoParkPixels/>
                 <TooltipDemo/>
                 <DemoSelect/>

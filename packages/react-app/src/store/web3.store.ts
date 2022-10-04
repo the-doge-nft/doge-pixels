@@ -87,7 +87,7 @@ class Web3Store extends Reactionable(Web3providerStore) {
         }
         this.getPixelOwnershipMap()
         this.getShibaDimensions()
-        this.getUSDPerPixel()
+        // this.getUSDPerPixel()
     }
 
     async connect() {

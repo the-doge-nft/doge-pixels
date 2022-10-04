@@ -23,7 +23,6 @@ const sizeToTypeMap = {
 const PixelPane = observer(({pupper, onClick, variant = "solid", size = "md", isNew = false}: PixelPaneProps) => {
     const styles = useMultiStyleConfig("PixelPane", {size: size, variant: variant})
     const coordinates = AppStore.web3.pupperToPixelCoordsLocal(pupper)
-    console.log('debug:: coords', coordinates)
     const color = AppStore.web3.pupperToHexLocal(pupper)
     return <Box
           __css={styles.container}
