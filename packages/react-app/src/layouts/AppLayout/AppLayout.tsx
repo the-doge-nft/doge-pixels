@@ -17,8 +17,8 @@ interface AppLayoutProps {
 
 const AppLayout = observer(function AppLayout({ children }: AppLayoutProps) {
   return (
-    <>
-      <Flex flexGrow={1} w={"100vw"} p={{ base: 0, md: 8 }} pb={{ base: 0, md: 3 }} flexDirection={"column"}>
+    <Flex justifyContent={"center"} flexGrow={1}>
+      <Flex flexGrow={1} w={"full"} maxW={"8xl"} p={{ base: 0, md: 8 }} pb={{ base: 0, md: 3 }} flexDirection={"column"}>
         <Header />
         <Flex grow={1}>
           {children}
@@ -26,7 +26,7 @@ const AppLayout = observer(function AppLayout({ children }: AppLayoutProps) {
         {AppStore.rwd.isMobile && <MobileNav />}
         {!AppStore.rwd.isMobile && <Footer />}
       </Flex>
-    </>
+    </Flex>
   );
 });
 

@@ -20,7 +20,7 @@ const Header = observer(() => {
       <Box mr={6} display={{base: "none", xl: "block"}}>
         <Flex w={"full"} h={"full"} alignItems={"center"} justifyContent={"center"}>
           <HStack spacing={12}>
-            <NavLinks />
+            {/*<NavLinks />*/}
           </HStack>
         </Flex>
       </Box>
