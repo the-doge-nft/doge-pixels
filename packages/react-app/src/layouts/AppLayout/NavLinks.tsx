@@ -9,7 +9,7 @@ const NavLinks = ({ isMobile }: { isMobile?: boolean }) => {
 
   const getPath = (routeName: NamedRoutes) => {
     let path = route(routeName, {
-      address: routeName === NamedRoutes.DOG_PARK && AppStore.web3.address ? AppStore.web3.address : undefined,
+      address: routeName === NamedRoutes.LEADERBORK && AppStore.web3.address ? AppStore.web3.address : undefined,
     });
     return path;
   };

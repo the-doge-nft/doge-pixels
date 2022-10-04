@@ -40,7 +40,7 @@ const LeaderborkPage = observer(function DogParkPage() {
         window.history.pushState(
             {},
             "",
-            route(NamedRoutes.DOG_PARK, {address: store.selectedAddress, tokenID: store.selectedPixel}),
+            route(NamedRoutes.LEADERBORK, {address: store.selectedAddress, tokenID: store.selectedPixel}),
         );
     };
     return (

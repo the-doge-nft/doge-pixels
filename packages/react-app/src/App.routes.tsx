@@ -13,7 +13,7 @@ import FourOhFour from "./pages/FourOhFour";
 
 export enum NamedRoutes {
   VIEWER = "viewer",
-  DOG_PARK = "park",
+  LEADERBORK = "leaderbork",
   PIXEL_ART = "art",
   SNAKE_GAME = "snake",
   DSL = "dsl",
@@ -70,7 +70,7 @@ const routes: AppRouteInterface[] = [
   },
   {
     path: "/leaderbork",
-    name: NamedRoutes.DOG_PARK,
+    name: NamedRoutes.LEADERBORK,
     exact: true,
     layout: AppLayout,
     component: LeaderborkPage,
@@ -82,7 +82,7 @@ const routes: AppRouteInterface[] = [
   },
   {
     path: "/leaderbork/:activityId",
-    name: NamedRoutes.DOG_PARK,
+    name: NamedRoutes.LEADERBORK,
     exact: true,
     layout: AppLayout,
     component: LeaderborkPage,
@@ -94,7 +94,7 @@ const routes: AppRouteInterface[] = [
   },
   {
     path: "/leaderbork/:address?/:tokenID?",
-    name: NamedRoutes.DOG_PARK,
+    name: NamedRoutes.LEADERBORK,
     exact: true,
     layout: AppLayout,
     component: LeaderborkPage,

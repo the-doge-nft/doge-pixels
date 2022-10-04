@@ -32,7 +32,7 @@ const UserCard: React.FC<PropsWithChildren<UserCardProps>> = observer(({store, p
       store.selectedAddress = pixelOwner.address
       store.searchValue = pixelOwner.address
       store.selectedPixel = null
-      window.history.pushState({}, "", route(NamedRoutes.DOG_PARK, {address: store.selectedAddress}))
+      window.history.pushState({}, "", route(NamedRoutes.LEADERBORK, {address: store.selectedAddress}))
     }}
   >
     <Flex alignItems={"center"} overflow={"hidden"}>
