@@ -15,14 +15,14 @@ export class PixelTransferRepository {
     @Inject(CACHE_MANAGER) private cacheManager: Cache,
   ) {}
 
-  findOwnerByTokenId(tokenId: number) {
-    return this.prisma.pixelTransfers.findMany({
+  async findOwnerByTokenId(tokenId: number) {
+    return (await this.prisma.pixelTransfers.findMany({
       where: { tokenId },
       orderBy: {
         blockNumber: 'desc'
       },
       take: 1
-    })[0]
+    }))[0]
   }
 
   create({ tokenId, from, to, blockNumber, uniqueTransferId, blockCreatedAt }: Omit<PixelTransfers, 'updatedAt' | 'insertedAt' | 'id'>) {

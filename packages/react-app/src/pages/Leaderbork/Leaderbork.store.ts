@@ -46,7 +46,7 @@ class LeaderborkStore extends Reactionable(EmptyClass) {
   @observable
   transfers: PixelTransfer[] = []
 
-  constructor(selectedAddress?: string, selectedPupper?: number) {
+  constructor(selectedAddress?: string, selectedPupper?: number, transferId?: string) {
     super()
     makeObservable(this)
 
@@ -57,6 +57,10 @@ class LeaderborkStore extends Reactionable(EmptyClass) {
 
     if (selectedPupper) {
       this.selectedPixel = selectedPupper
+    }
+
+    if (transferId) {
+      this.selectedTransferId = transferId
     }
 
     this.react(() => this.searchValue, (value, prevValue) => {

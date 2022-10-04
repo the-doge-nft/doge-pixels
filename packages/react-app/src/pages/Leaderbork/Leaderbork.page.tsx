@@ -23,8 +23,9 @@ import Typeahead from "../../DSL/Typeahead/Typeahead";
 
 const LeaderborkPage = observer(function DogParkPage() {
     const history = useHistory();
-    const {address, tokenID} = useParams<{ address: string; tokenID: string }>();
-    const store = useMemo(() => new LeaderborkStore(address, Number(tokenID)), [address, tokenID]);
+    const {address, tokenID, activityId} = useParams<{ address?: string; tokenID?: string, activityId?: string }>();
+    console.log("debug:: acitivyt id", activityId)
+    const store = useMemo(() => new LeaderborkStore(address, Number(tokenID), activityId), [address, tokenID, activityId]);
     const {colorMode} = useColorMode();
     useEffect(() => {
         store.init();
@@ -32,7 +33,7 @@ const LeaderborkPage = observer(function DogParkPage() {
             store.destroy()
         }
         // eslint-disable-next-line
-    }, []);
+    }, [address, tokenID, activityId]);
 
     const setPupper = (pupper: number | null) => {
         store.selectedPixel = pupper;
@@ -118,6 +119,8 @@ const LeaderborkPage = observer(function DogParkPage() {
                             <Box overflowY={"scroll"} flexGrow={1}>
                               <Flex flexWrap={"wrap"} gap={0} maxHeight={'250px'}>
                                 {store.transfers.map(transfer => <>
+                                    <Link isNav to={`/leaderbork/${transfer.uniqueTransferId}`}>
+
                                     <Box
                                         key={`user-dog-${transfer.uniqueTransferId}`}
                                         bg={
@@ -130,7 +133,7 @@ const LeaderborkPage = observer(function DogParkPage() {
                                         p={2}
                                         mt={0}
                                         _hover={{bg: colorMode === "light" ? lightModePrimary : darkModeSecondary}}
-                                        onClick={() => store.selectedTransferId = transfer.uniqueTransferId}
+                                        // onClick={() => store.selectedTransferId = transfer.uniqueTransferId}
                                         cursor={"pointer"}
                                     >
                                         <Box position={"relative"}>
@@ -149,6 +152,7 @@ const LeaderborkPage = observer(function DogParkPage() {
                                             />
                                         </Box>
                                     </Box>
+                                    </Link>
                                 </>)}
                               </Flex>
                             </Box>
