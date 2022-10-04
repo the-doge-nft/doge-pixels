@@ -14,7 +14,7 @@ class PerksStore {
       title: "Doge Major",
       description: "Claim a fraction of 'Doge Major' created by Anas Abdin",
       link: "https://ownthedoge.com/doge-major",
-      date: "2022-08-30",
+      date: "2022-10-01",
       isLive: true
     },
     {
