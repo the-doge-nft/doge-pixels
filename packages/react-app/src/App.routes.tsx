@@ -4,7 +4,7 @@ import { FC } from "react";
 import AppLayout from "./layouts/AppLayout/AppLayout";
 import ViewerPage from "./pages/Viewer/Viewer.page";
 import DSLPage from "./pages/DSL.page";
-import DogParkPage from "./pages/DogPark/DogPark.page";
+import LeaderborkPage from "./pages/Leaderbork/Leaderbork.page";
 import { isDevModeEnabled } from "./environment/helpers";
 import MobileHomePage from "./pages/MobileHome/MobileHome.page";
 import PixelArtPage from "./pages/PixelArt/PixelArt.page";
@@ -43,7 +43,10 @@ export const route = (name: NamedRoutes, params?: {}) => {
     throw new TypeError("Unknown named route: " + name);
   }
   if (params) {
-    return generatePath(route.path, params);
+    console.log('debug:: params', params)
+    const path = generatePath(route.path, params);
+    console.log('debug:: path', path)
+    return path
   } else {
     return route.path;
   }
@@ -69,16 +72,28 @@ const routes: AppRouteInterface[] = [
     order: 2,
   },
   {
+    path: "/leaderbork",
+    name: NamedRoutes.DOG_PARK,
+    exact: true,
+    layout: AppLayout,
+    component: LeaderborkPage,
+    desktopName: "Leaderbork",
+    mobileName: "Leaderbork",
+    showOnMobile: true,
+    showOnDesktop: true,
+    order: 1,
+  },
+  {
     path: "/leaderbork/:address?/:tokenID?",
     name: NamedRoutes.DOG_PARK,
     exact: true,
     layout: AppLayout,
-    component: DogParkPage,
+    component: LeaderborkPage,
     desktopName: "Leaderbork",
     mobileName: "Leaderbork",
     showOnMobile: false,
-    showOnDesktop: true,
-    order: 1,
+    showOnDesktop: false,
+    order: 0,
   },
   {
     path: "/art",
@@ -92,18 +107,6 @@ const routes: AppRouteInterface[] = [
     showOnDesktop: true,
     order: 1,
   },
-  /*{
-    path: "/snake",
-    name: NamedRoutes.SNAKE_GAME,
-    exact: true,
-    layout: AppLayout,
-    component: SnakeGamePage,
-    desktopName: "Snake",
-    mobileName: "Snake",
-    showOnMobile: false,
-    showOnDesktop: true,
-    order: 1
-  },*/
   {
     path: "/pixels",
     name: NamedRoutes.MOBILE_HOME,
@@ -117,7 +120,7 @@ const routes: AppRouteInterface[] = [
     order: 0,
   },
   {
-    path: `/px/:${SELECTED_PIXEL_PARAM}`,
+    path: `/px/:${SELECTED_PIXEL_PARAM}?`,
     name: NamedRoutes.PIXELS,
     exact: true,
     layout: AppLayout,

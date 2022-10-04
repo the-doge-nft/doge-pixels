@@ -3,7 +3,7 @@ import {observer} from "mobx-react-lite";
 import {Box, Flex} from "@chakra-ui/react";
 import Button from "../../DSL/Button/Button";
 import shareToTwitter, {TwitterShareType} from "../../helpers/shareToTwitter";
-import {PixelOwnerInfo} from "../../pages/DogPark/DogParkPage.store";
+import {PixelOwnerInfo} from "../../pages/Leaderbork/Leaderbork.store";
 import {useState} from "react";
 
 const SharePixelsDialog = observer(({action, previewPixels}: {action: 'mint' | 'burn', previewPixels: number[]}) => {

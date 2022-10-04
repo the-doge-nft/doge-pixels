@@ -1,6 +1,6 @@
 import {computed, makeObservable, observable} from "mobx";
 import AppStore from "../../store/App.store";
-import {PixelOwnerInfo} from "../DogPark/DogParkPage.store";
+import {PixelOwnerInfo} from "../Leaderbork/Leaderbork.store";
 
 class MobileHomeStore {
 

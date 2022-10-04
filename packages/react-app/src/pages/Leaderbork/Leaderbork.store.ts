@@ -26,7 +26,7 @@ interface PixelTransfer {
   blockCreatedAt: string;
 }
 
-class DogParkPageStore extends Reactionable(EmptyClass) {
+class LeaderborkStore extends Reactionable(EmptyClass) {
 
   @observable
   searchValue = ""
@@ -79,6 +79,7 @@ class DogParkPageStore extends Reactionable(EmptyClass) {
       }
     }).then(({data}) => {
       this.transfers = data
+      this.selectedTransferId = this.transfers[0]?.uniqueTransferId
     })
   }
 
@@ -154,14 +155,20 @@ class DogParkPageStore extends Reactionable(EmptyClass) {
   }
 
   @computed
-  get selectedActivityTransferTitle() {
+  get selectedActivityTransferDetails() {
+    let title
+    let description
     if (this.selectedActivityTransfer.from === ethers.constants.AddressZero) {
-      return "Minted"
+      title = "Minted"
+      description = this.selectedActivityTransfer.to
     } else if (this.selectedActivityTransfer.to === ethers.constants.AddressZero) {
-      return "Burned"
+      title = "Burned"
+      description = this.selectedActivityTransfer.from
     } else {
-      return "Transfer"
+      title = "Transfer"
+      description = `${this.selectedActivityTransfer.from} to ${this.selectedActivityTransfer.to}`
     }
+    return {title, description}
   }
 
   destroy() {
@@ -169,4 +176,4 @@ class DogParkPageStore extends Reactionable(EmptyClass) {
   }
 }
 
-export default DogParkPageStore
+export default LeaderborkStore

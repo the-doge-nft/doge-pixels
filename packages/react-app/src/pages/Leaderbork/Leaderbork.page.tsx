@@ -3,7 +3,7 @@ import {observer} from "mobx-react-lite";
 import React, {useEffect, useMemo} from "react";
 import Pane from "../../DSL/Pane/Pane";
 import Typography, {TVariant} from "../../DSL/Typography/Typography";
-import DogParkPageStore from "./DogParkPage.store";
+import LeaderborkStore from "./Leaderbork.store";
 import TextInput from "../../DSL/Form/TextInput";
 import Form from "../../DSL/Form/Form";
 import model from "../../DSL/Form/model";
@@ -18,11 +18,12 @@ import {darkModeSecondary, lightModePrimary, lightOrDarkMode} from "../../DSL/Th
 import {NamedRoutes, route, SELECTED_PIXEL_PARAM} from "../../App.routes";
 import * as ethers from 'ethers'
 import ParkPixels, {PixelPreviewSize} from "../../DSL/ParkPixels/ParkPixels";
+import Link from "../../DSL/Link/Link";
 
-const DogParkPage = observer(function DogParkPage() {
+const LeaderborkPage = observer(function DogParkPage() {
     const history = useHistory();
     const {address, tokenID} = useParams<{ address: string; tokenID: string }>();
-    const store = useMemo(() => new DogParkPageStore(address, Number(tokenID)), [address, tokenID]);
+    const store = useMemo(() => new LeaderborkStore(address, Number(tokenID)), [address, tokenID]);
     const {colorMode} = useColorMode();
     useEffect(() => {
         store.init();
@@ -81,26 +82,31 @@ const DogParkPage = observer(function DogParkPage() {
                               </Pane>
                             </Box>
                             <Pane display={{base: 'none', md: 'block'}}>
-                                {store.selectedActivityTransfer && <div>
-                                    <Box>
-                                      <Typography variant={TVariant.PresStart14}>{store.selectedActivityTransferTitle}</Typography>
-                                    </Box>
-                                    <div>
-                                        {store.selectedActivityTransfer.from}
-                                    </div>
-                                  <div>
-                                      {store.selectedActivityTransfer.to}
-                                  </div>
-                                  <div>
-                                      {store.selectedActivityTransfer.tokenId}
-                                  </div>
-                                  <div>
-                                      {store.selectedActivityTransfer.blockNumber}
-                                  </div>
-                                  <div>
-                                      {store.selectedActivityTransfer.blockCreatedAt}
-                                  </div>
-                                </div>}
+                                {store.selectedActivityTransfer && <Flex gap={8} h={"full"}>
+                                  <Box>
+                                    <PixelPane size={"md"} pupper={store.selectedActivityTransfer?.tokenId} variant={"shadow"}/>
+                                  </Box>
+                                  <Flex flexDir={"column"} flexGrow={1}>
+                                    <Flex flexDir={"column"}>
+                                      <Typography variant={TVariant.PresStart18} mb={2}>{store.selectedActivityTransferDetails.title}</Typography>
+                                      <Grid templateColumns={"0.70fr 1fr"} gap={1}>
+                                        <Typography variant={TVariant.ComicSans18}>by:</Typography>
+                                        <Typography variant={TVariant.ComicSans18}>{store.selectedActivityTransferDetails.description}</Typography>
+
+                                        <Typography variant={TVariant.ComicSans18}>token ID:</Typography>
+                                        <Typography variant={TVariant.ComicSans18}>{store.selectedActivityTransfer.tokenId}</Typography>
+
+                                        <Typography variant={TVariant.ComicSans18}>when:</Typography>
+                                        <Typography variant={TVariant.ComicSans18}>{(new Date(store.selectedActivityTransfer.blockCreatedAt)).toLocaleString()}</Typography>
+                                      </Grid>
+                                    </Flex>
+                                    <Flex justifyContent={'center'} alignItems={'center'} flexGrow={1}>
+                                      <Link display={"inline-block"} isNav to={route(NamedRoutes.PIXELS, {[SELECTED_PIXEL_PARAM]: store.selectedActivityTransfer.tokenId})}>
+                                        <Button onClick={() => console.log()}>Portal</Button>
+                                      </Link>
+                                    </Flex>
+                                  </Flex>
+                                </Flex>}
                             </Pane>
                           </Flex>
                           <Pane display={'flex'} flexDir={'column'} flexGrow={1}>
@@ -279,7 +285,7 @@ const DogParkPage = observer(function DogParkPage() {
     );
 });
 
-const SearchHints = ({store}: { store: DogParkPageStore }) => {
+const SearchHints = ({store}: { store: LeaderborkStore }) => {
     return (
         <>
             {!store.isSearchEmpty && store.filteredOwners.length > 1 && (
@@ -298,7 +304,7 @@ const SearchHints = ({store}: { store: DogParkPageStore }) => {
     );
 };
 
-const DogKennel = observer(({store}: { store: DogParkPageStore }) => {
+const DogKennel = observer(({store}: { store: LeaderborkStore }) => {
     const [num, abbr] = store.lockedDog ? convertToAbbreviation(Math.trunc(store.lockedDog)) : ["N/A", ""];
     return (
         <Pane h={"inherit"}>
@@ -320,7 +326,7 @@ const DogKennel = observer(({store}: { store: DogParkPageStore }) => {
     );
 });
 
-const TopDogs = observer(({store}: { store: DogParkPageStore }) => {
+const TopDogs = observer(({store}: { store: LeaderborkStore }) => {
     const {colorMode} = useColorMode();
     return (
         <Pane display={"flex"} flexDirection={"column"} h={"full"}>
@@ -357,4 +363,4 @@ const TopDogs = observer(({store}: { store: DogParkPageStore }) => {
     );
 });
 
-export default DogParkPage;
+export default LeaderborkPage;

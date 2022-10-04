@@ -15,7 +15,7 @@ import {ContractInterface} from "@ethersproject/contracts/src.ts/index";
 import CowStore from "./cow.store";
 import {ObjectKeys} from "../helpers/objects";
 import AppStore from "./App.store";
-import {PixelOwnerInfo} from "../pages/DogPark/DogParkPage.store";
+import {PixelOwnerInfo} from "../pages/Leaderbork/Leaderbork.store";
 import {Reactionable} from "../services/mixins/reactionable";
 
 interface AddressToPuppers {
