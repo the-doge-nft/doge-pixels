@@ -113,8 +113,8 @@ const LeaderborkPage = observer(function DogParkPage() {
                                 </Flex>}
                             </Pane>
                           </Flex>
-                          <Pane display={'flex'} flexDir={'column'} flexGrow={1}>
-                            <Typography variant={TVariant.PresStart18} mb={4} block>Recent Activity</Typography>
+                          <Pane title={<Typography variant={TVariant.PresStart18} mb={4} block>Recent Activity</Typography>} display={'flex'} flexDir={'column'} flexGrow={1}>
+
                             <Box overflowY={"scroll"} flexGrow={1}>
                               <Flex flexWrap={"wrap"} gap={0} maxHeight={'250px'}>
                                 {!store.selectedAddress && store.transfers.map(transfer => <>
