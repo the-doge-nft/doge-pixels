@@ -60,7 +60,7 @@ const LeaderborkPage = observer(function DogParkPage() {
                         onItemSelect={(value) => store.selectedAddress = value as unknown as string}
                         items={store.ownersTypeaheadItems}
                         fontSize={"14px"}
-                        rightIcon={"search"}
+                        icon={"search"}
                         placeholder={"Search pixel owners"}
                         value={store.searchValue}
                         onChange={(value) => {

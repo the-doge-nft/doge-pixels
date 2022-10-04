@@ -1,5 +1,5 @@
 import Control from "./Control";
-import { FormErrorMessage, InputGroup, InputRightElement, useColorMode } from "@chakra-ui/react";
+import {FormErrorMessage, InputGroup, InputLeftElement, InputRightElement, useColorMode} from "@chakra-ui/react";
 import React from "react";
 import { AllowedStyleProps, BaseInputProps } from "./interfaces";
 import { Input } from "./Input/Input";
@@ -8,7 +8,7 @@ import Icon from "../Icon/Icon";
 import { lightOrDarkMode } from "../Theme";
 
 export interface TextInputProps extends BaseInputProps, AllowedStyleProps {
-  rightIcon?: any
+  icon?: any
 }
 
 const TextInput = React.forwardRef(({
@@ -20,18 +20,19 @@ const TextInput = React.forwardRef(({
                                            value,
                                            onChange,
                                            horizontal = false,
-                                           rightIcon,
+                                           icon,
                                            ...rest
                                        }: TextInputProps, ref) => {
     const { isRequired, inputValue, inputOnChange, restInput, meta } = useFormField(validate, name, initialValue);
     useControlledFormField(inputOnChange, value);
 
-    const rightIconWidth = "60px"
+    const iconWidth = "55px"
 
     const {colorMode} = useColorMode()
     return (
         <Control name={name} isRequired={isRequired} label={label} horizontal={horizontal}>
             <InputGroup>
+                {icon && <InputLeftElement zIndex={0} top={"50%"} transform={"translateY(-50%)"} width={iconWidth} children={<Icon icon={icon}/>}/>}
                 <Input
                     ref={ref}
                     id={name}
@@ -49,9 +50,8 @@ const TextInput = React.forwardRef(({
                         inputOnChange(value);
                     }}
                     value={inputValue}
-                    pr={rightIcon ? rightIconWidth : "inherit"}
+                    pl={icon ? iconWidth : "inherit"}
                 />
-                {rightIcon && <InputRightElement zIndex={0} top={"50%"} transform={"translateY(-50%)"} width={rightIconWidth} children={<Icon icon={rightIcon}/>}/>}
             </InputGroup>
             <FormErrorMessage>{meta.error}</FormErrorMessage>
         </Control>
