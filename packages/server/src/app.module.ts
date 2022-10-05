@@ -1,6 +1,5 @@
 import { CacheModule, Module } from '@nestjs/common';
 import { AppController } from './app.controller';
-import { AppService } from './app.service';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import configuration, { Configuration } from './config/configuration';
 import { ScheduleModule } from '@nestjs/schedule';
@@ -9,14 +8,15 @@ import { PrismaService } from './prisma.service';
 import { EthersService } from './ethers/ethers.service';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { HttpModule } from '@nestjs/axios';
-import { PixelsRepository } from './pixels/pixels.repository';
+import { PixelTransferRepository } from './pixel-transfer/pixel-transfer.repository';
 import { TwitterService } from './twitter/twitter.service';
 import { DiscordService } from './discord/discord.service';
-import { PixelImageGeneratorService } from './pixel-image-generator/pixel-image-generator.service';
+import { ImageGeneratorService } from './image-generator/image-generator.service';
 import { SentryModule } from '@travelerdev/nestjs-sentry';
 import { AwsService } from './aws/aws.service';
 import { ServeStaticModule } from "@nestjs/serve-static";
 import { join } from 'path'
+import { PixelTransferService } from './pixel-transfer/pixel-transfer.service';
 import { CoinGeckoService } from './coin-gecko/coin-gecko.service';
 import * as redisStore from 'cache-manager-redis-store'
 
@@ -56,16 +56,17 @@ import * as redisStore from 'cache-manager-redis-store'
   ],
   controllers: [AppController],
   providers: [
-    AppService,
     PrismaService,
     EthersService,
     PixelsService,
-    PixelsRepository,
+    PixelTransferRepository,
     TwitterService,
     DiscordService,
-    PixelImageGeneratorService,
+    ImageGeneratorService,
+    ImageGeneratorService,
     AwsService,
     CoinGeckoService,
+    PixelTransferService,
   ],
 })
 export class AppModule {}

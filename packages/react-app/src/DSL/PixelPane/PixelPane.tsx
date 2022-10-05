@@ -2,17 +2,15 @@ import { Box, useMultiStyleConfig } from "@chakra-ui/react";
 import React from "react";
 import Typography, { TVariant } from "../Typography/Typography";
 import Pill from "../Pill/Pill";
+import AppStore from "../../store/App.store";
+import {observer} from "mobx-react-lite";
 
 interface PixelPaneProps {
     pupper: number;
-    color: string;
-    pupperIndex: number;
     onClick?: (pupper: number) => void;
     variant?: "solid" | "shadow";
     size?: "xs" | "sm" | "md" | "lg";
     isNew?: boolean;
-    showCoords?: boolean,
-    coordinates?: number[]
 }
 
 const sizeToTypeMap = {
@@ -22,8 +20,10 @@ const sizeToTypeMap = {
     lg: TVariant.PresStart14
 }
 
-const PixelPane = ({pupper, color, onClick, pupperIndex, showCoords, coordinates, variant = "solid", size = "md", isNew = false}: PixelPaneProps) => {
+const PixelPane = observer(({pupper, onClick, variant = "solid", size = "md", isNew = false}: PixelPaneProps) => {
     const styles = useMultiStyleConfig("PixelPane", {size: size, variant: variant})
+    const coordinates = AppStore.web3.pupperToPixelCoordsLocal(pupper)
+    const color = AppStore.web3.pupperToHexLocal(pupper)
     return <Box
           __css={styles.container}
           _hover={onClick ? {
@@ -41,11 +41,11 @@ const PixelPane = ({pupper, color, onClick, pupperIndex, showCoords, coordinates
             />
             <Box __css={styles.textContainer}>
                 <Typography variant={sizeToTypeMap[size]}>
-                    {showCoords && coordinates ? `(${coordinates[0]},${coordinates[1]})` : `# ${pupperIndex}`}
+                    {`(${coordinates[0]},${coordinates[1]})`}
                 </Typography>
             </Box>
         <Box __css={styles.drop}/>
     </Box>
-}
+})
 
 export default PixelPane;

@@ -340,7 +340,7 @@ const DogeExplorer = observer(({ onPixelSelect, store }: ThreeSceneProps) => {
       </Canvas>
       {!AppStore.rwd.isMobile && (
         <Box ref={tooltipRef} position={"absolute"} zIndex={2} display={"none"} pointerEvents={"none"}>
-          <PixelPane size={"md"} pupper={0} color={"fff"} pupperIndex={0} />
+          <PixelPane size={"md"} pupper={1113825}/>
         </Box>
       )}
       <Box position={"absolute"} bottom={0} left={0} p={2}>

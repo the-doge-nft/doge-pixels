@@ -9,8 +9,8 @@ import {
 import { ConfigService } from '@nestjs/config';
 import { Configuration } from '../config/configuration';
 import { OnEvent } from '@nestjs/event-emitter';
-import { Events, PixelMintOrBurnPayload } from '../events';
-import { PixelImageGeneratorService } from '../pixel-image-generator/pixel-image-generator.service';
+import { Events, PixelTransferEventPayload } from '../events';
+import { ImageGeneratorService } from '../image-generator/image-generator.service';
 import { EthersService } from '../ethers/ethers.service';
 import { InjectSentry, SentryService } from '@travelerdev/nestjs-sentry';
 import {S3} from "aws-sdk";

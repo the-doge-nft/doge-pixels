@@ -29,7 +29,7 @@ up() {
     yarn compile_contracts
 
     spacedEcho "migrating local db"
-    yarn run prisma migrate dev --name init
+    yarn prisma:migratedev
 
     spacedEcho "spinning up api"
     if [[ $1 = "--build" ]]; then

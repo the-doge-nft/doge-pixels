@@ -1,5 +1,5 @@
 import React, { PropsWithChildren } from "react";
-import DogParkPageStore, { PixelOwnerInfo } from "./DogParkPage.store";
+import LeaderborkStore, { PixelOwnerInfo } from "./Leaderbork.store";
 import {Box, Flex, useColorMode} from "@chakra-ui/react";
 import Typography, {TVariant} from "../../DSL/Typography/Typography";
 import {abbreviate} from "../../helpers/strings";
@@ -9,14 +9,13 @@ import {NamedRoutes, route} from "../../App.routes";
 import { observer } from "mobx-react-lite";
 
 interface UserCardProps {
-  store: DogParkPageStore;
+  store: LeaderborkStore;
   pixelOwner: PixelOwnerInfo;
   isSelected?: boolean
 }
 
 const UserCard: React.FC<PropsWithChildren<UserCardProps>> = observer(({store, pixelOwner, isSelected = false, children}) => {
   const {colorMode} = useColorMode()
-
   return <Flex
     w={"full"}
     justifyContent={"space-between"}
@@ -28,12 +27,7 @@ const UserCard: React.FC<PropsWithChildren<UserCardProps>> = observer(({store, p
       cursor: "pointer",
       bg: colorMode === "light" ? lightModePrimary : darkModeSecondary
     }}
-    onClick={() => {
-      store.selectedAddress = pixelOwner.address
-      store.addressToSearch = pixelOwner.address
-      store.selectedPixel = null
-      window.history.pushState({}, "", route(NamedRoutes.DOG_PARK, {address: store.selectedAddress}))
-    }}
+    onClick={() => store.setSelectedAddress(pixelOwner.address)}
   >
     <Flex alignItems={"center"} overflow={"hidden"}>
       <Typography

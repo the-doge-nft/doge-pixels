@@ -30,7 +30,6 @@ export class CoinGeckoService {
             }
             usdPrice = Number(data[dogID][vsCurrency]);
             await this.cacheManager.set(cacheKey, usdPrice, { ttl: 60 });
-            console.log("usd price", usdPrice)
             return usdPrice
         } else {
             return usdPrice

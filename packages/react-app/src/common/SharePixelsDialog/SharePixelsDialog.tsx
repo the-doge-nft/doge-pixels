@@ -1,12 +1,12 @@
-import ParkPixels from "../../pages/DogPark/ParkPixels";
+import PixelPreview from "../../DSL/PixelPreview/PixelPreview";
 import {observer} from "mobx-react-lite";
 import {Box, Flex} from "@chakra-ui/react";
 import Button from "../../DSL/Button/Button";
 import shareToTwitter, {TwitterShareType} from "../../helpers/shareToTwitter";
-import {PixelOwnerInfo} from "../../pages/DogPark/DogParkPage.store";
+import {PixelOwnerInfo} from "../../pages/Leaderbork/Leaderbork.store";
 import {useState} from "react";
 
-const SharePixelsDialog = observer(({action, pixelOwner}: {action: 'mint' | 'burn', pixelOwner: PixelOwnerInfo}) => {
+const SharePixelsDialog = observer(({action, previewPixels}: {action: 'mint' | 'burn', previewPixels: number[]}) => {
 
     const id = 'share-pixels-canvas'
 
@@ -22,21 +22,15 @@ const SharePixelsDialog = observer(({action, pixelOwner}: {action: 'mint' | 'bur
         shareToTwitter(data, description, action === "mint" ? TwitterShareType.Mint : TwitterShareType.Burn)
     }
 
-    const [selectedPixel, setSelectedPixel] = useState(-1)
+    const [selectedPixel, setSelectedPixel] = useState(null)
 
     return <Flex justifyContent={"center"}>
         <Box>
-            <ParkPixels
+            <PixelPreview
                 id={id}
-                selectedPixel={selectedPixel}
-                pixelOwner={pixelOwner}
-                onPupperClick={(pupper) => {
-                    if (pupper === null) {
-                        setSelectedPixel(-1)
-                    } else {
-                        setSelectedPixel(pupper)
-                    }
-                }}
+                selectedTokenId={selectedPixel}
+                previewPixels={previewPixels}
+                onPupperClick={setSelectedPixel}
             />
             <Flex justifyContent={"center"} mt={6} mb={7}>
                 <Button onClick={postTweet}>Share</Button>

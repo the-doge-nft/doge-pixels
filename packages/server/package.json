@@ -20,8 +20,9 @@
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
+    "prisma:migratedev": "prisma migrate dev",
     "prisma:generate": "prisma generate",
-    "start:migrate:prod": "prisma migrate deploy && yarn start:prod"
+    "start:migrate:prod": "yarn prisma:migratedev && prisma migrate deploy && yarn start:prod"
   },
   "dependencies": {
     "@nestjs/axios": "^0.1.0",
@@ -40,6 +41,8 @@
     "cache-manager": "^4.1.0",
     "cache-manager-redis-store": "^2.0.0",
     "canvas": "^2.10.0",
+    "class-transformer": "^0.5.1",
+    "class-validator": "^0.13.2",
     "discord.js": "^14.3.0",
     "ethers": "^5.7.0",
     "hbs": "^4.2.0",

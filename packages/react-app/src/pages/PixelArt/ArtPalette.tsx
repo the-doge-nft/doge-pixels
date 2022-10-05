@@ -16,13 +16,9 @@ const ArtPalette = observer(({ store }: { store: PixelArtPageStore }) => {
                 <Box>
                     {store.palette[store.selectedBrushPixelIndex] && store.selectedToolIndex !== PixelArtTool.erase && (
                         <PixelPane
-                              onClick={() => console.log()}
                               size={'xs'}
+                              onClick={() => console.log()}
                               pupper={store.palette[store.selectedBrushPixelIndex].tokenId}
-                              color={store.palette[store.selectedBrushPixelIndex].hex}
-                              pupperIndex={AppStore.web3.pupperToIndexLocal(store.palette[store.selectedBrushPixelIndex].tokenId)}
-                              coordinates={AppStore.web3.pupperToPixelCoordsLocal(store.palette[store.selectedBrushPixelIndex].tokenId)}
-                              showCoords
                         />
                     )}
                     {store.selectedToolIndex === PixelArtTool.erase && (

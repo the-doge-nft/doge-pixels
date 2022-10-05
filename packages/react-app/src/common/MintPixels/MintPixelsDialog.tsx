@@ -272,7 +272,7 @@ const Complete = observer(({store, txHash}: { store: MintPixelsDialogStore, txHa
             🌟🦄💫🐸🐕🚀
         </Typography>
         <Box mt={4}>
-            <SharePixelsDialog action={"mint"} pixelOwner={{address: AppStore.web3.address, pixels: store.diffPixels, ens: AppStore.web3.ens}}/>
+            <SharePixelsDialog action={"mint"} previewPixels={store.diffPixels}/>
             <Flex justifyContent={"center"}>
                 {txHash && <Link href={getEtherscanURL(txHash, "tx")} isExternal>View tx</Link>}
             </Flex>

@@ -13,15 +13,19 @@ import DemoPill from "../DSL/Pill/Pill.demo";
 import DemoLink from "../DSL/Link/Link.demo";
 import DemoDrawer from "../DSL/Drawer/Drawer.demo";
 import DemoSelect from "../DSL/Select/Select.demo";
+import DemoParkPixels from "../DSL/PixelPreview/PixelPreview.demo";
 import TooltipDemo from "../DSL/Tooltip/Tooltip.demo";
+import DemoCombobox from "../DSL/Typeahead/Typeahead.demo";
 
 const DSLPage = () => {
     return (
-        <Box px={{lg: 250, sm: 50}} mb={20}>
+        <Box px={{lg: 350, sm: 50}} mb={20}>
             <Box textAlign={"center"}>
                 <Typography variant={TVariant.PresStart28} block mb={7}>
                     ✨ DSL ✨
                 </Typography>
+                <DemoCombobox/>
+                <DemoParkPixels/>
                 <TooltipDemo/>
                 <DemoSelect/>
                 <DemoDrawer/>

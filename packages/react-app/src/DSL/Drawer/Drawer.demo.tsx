@@ -3,17 +3,20 @@ import Demo from "../Demo/Demo"
 import {useDisclosure} from "@chakra-ui/react";
 import Drawer from "./Drawer";
 import Button from "../Button/Button";
+import MetaDoge from "../../images/meme/mint/meta.gif";
+import VibinDoge from "../../images/meme/mint/vibin.gif"
+import { Image } from "@chakra-ui/react";
 
 const DrawerDemo = () => {
   const { isOpen, onOpen, onClose } = useDisclosure()
   return <Demo title={"Drawer"}>
     <Button onClick={onOpen}>open</Button>
     <Drawer
-      title={"TEST"}
+      title={"Nice Drawer!"}
       isOpen={isOpen}
       onClose={onClose}
     >
-      test a lot of stuff is here yo
+      <Image w={"full"} src={VibinDoge} />
     </Drawer>
   </Demo>
 }

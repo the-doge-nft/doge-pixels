@@ -4,26 +4,28 @@ import { FC } from "react";
 import AppLayout from "./layouts/AppLayout/AppLayout";
 import ViewerPage from "./pages/Viewer/Viewer.page";
 import DSLPage from "./pages/DSL.page";
-import DogParkPage from "./pages/DogPark/DogPark.page";
+import LeaderborkPage from "./pages/Leaderbork/Leaderbork.page";
 import { isDevModeEnabled } from "./environment/helpers";
 import MobileHomePage from "./pages/MobileHome/MobileHome.page";
 import PixelArtPage from "./pages/PixelArt/PixelArt.page";
-//import SnakeGamePage from "./pages/SnakeGame/SnakeGame.page";
 import PerksPage from "./pages/Perks/Perks.page";
+import FourOhFour from "./pages/FourOhFour";
+import {SelectedOwnerTab} from "./pages/Leaderbork/Leaderbork.store";
 
 export enum NamedRoutes {
   VIEWER = "viewer",
-  DOG_PARK = "park",
+  LEADERBORK = "leaderbork",
   PIXEL_ART = "art",
   SNAKE_GAME = "snake",
   DSL = "dsl",
   MOBILE_HOME = "mobile",
   PIXELS = "pixels",
   PERKS = "perks",
+  FOUR_O_FOUR = "fourofour"
 }
 
 export interface AppRouteInterface {
-  path: string;
+  path: string | string[];
   exact: boolean;
   name: NamedRoutes;
   layout: FC;
@@ -33,7 +35,7 @@ export interface AppRouteInterface {
   mobileName: string;
   showOnMobile: boolean;
   showOnDesktop: boolean;
-  order: number;
+  displayOrder: number;
 }
 
 export const route = (name: NamedRoutes, params?: {}) => {
@@ -41,6 +43,11 @@ export const route = (name: NamedRoutes, params?: {}) => {
   if (!route) {
     throw new TypeError("Unknown named route: " + name);
   }
+
+  if (Array.isArray(route.path)) {
+    throw new TypeError("Array paths not supported yet")
+  }
+
   if (params) {
     return generatePath(route.path, params);
   } else {
@@ -56,6 +63,18 @@ export const SELECTED_PIXEL_PARAM = "id_with_offset";
 */
 const routes: AppRouteInterface[] = [
   {
+    path: [`/leaderbork/:address/${SelectedOwnerTab.Activity}/:activityId?`, `/leaderbork/:address/${SelectedOwnerTab.Wallet}/:tokenId?`, `/leaderbork/${SelectedOwnerTab.Activity}/:activityId?`, "/leaderbork"],
+    name: NamedRoutes.LEADERBORK,
+    exact: true,
+    layout: AppLayout,
+    component: LeaderborkPage,
+    desktopName: "Leaderbork",
+    mobileName: "LEADERBORK",
+    showOnDesktop: true,
+    showOnMobile: true,
+    displayOrder: 1
+  },
+  {
     path: "/perks",
     name: NamedRoutes.PERKS,
     exact: true,
@@ -65,19 +84,7 @@ const routes: AppRouteInterface[] = [
     mobileName: "PERKS",
     showOnMobile: true,
     showOnDesktop: true,
-    order: 2,
-  },
-  {
-    path: "/park/:address?/:tokenID?",
-    name: NamedRoutes.DOG_PARK,
-    exact: true,
-    layout: AppLayout,
-    component: DogParkPage,
-    desktopName: "Park",
-    mobileName: "Park",
-    showOnMobile: false,
-    showOnDesktop: true,
-    order: 1,
+    displayOrder: 2,
   },
   {
     path: "/art",
@@ -89,20 +96,8 @@ const routes: AppRouteInterface[] = [
     mobileName: "ART",
     showOnMobile: true,
     showOnDesktop: true,
-    order: 1,
+    displayOrder: 1,
   },
-  /*{
-    path: "/snake",
-    name: NamedRoutes.SNAKE_GAME,
-    exact: true,
-    layout: AppLayout,
-    component: SnakeGamePage,
-    desktopName: "Snake",
-    mobileName: "Snake",
-    showOnMobile: false,
-    showOnDesktop: true,
-    order: 1
-  },*/
   {
     path: "/pixels",
     name: NamedRoutes.MOBILE_HOME,
@@ -113,10 +108,10 @@ const routes: AppRouteInterface[] = [
     mobileName: "PIXELS",
     showOnMobile: true,
     showOnDesktop: false,
-    order: 0,
+    displayOrder: 0,
   },
   {
-    path: `/px/:${SELECTED_PIXEL_PARAM}`,
+    path: `/px/:${SELECTED_PIXEL_PARAM}?`,
     name: NamedRoutes.PIXELS,
     exact: true,
     layout: AppLayout,
@@ -125,7 +120,7 @@ const routes: AppRouteInterface[] = [
     mobileName: "Portal",
     showOnDesktop: false,
     showOnMobile: false,
-    order: 0,
+    displayOrder: 0,
   },
   {
     path: "/",
@@ -137,7 +132,7 @@ const routes: AppRouteInterface[] = [
     mobileName: "DOGE",
     showOnMobile: true,
     showOnDesktop: true,
-    order: 0,
+    displayOrder: 0,
   },
 ];
 
@@ -152,8 +147,22 @@ if (isDevModeEnabled()) {
     mobileName: "DSL",
     showOnMobile: true,
     showOnDesktop: true,
-    order: 4,
+    displayOrder: 4,
   });
 }
+
+// add last route as a catch all for anything not defined above
+routes.push({
+  path: "*",
+  exact: false,
+  name: NamedRoutes.FOUR_O_FOUR,
+  layout: AppLayout,
+  component: FourOhFour,
+  desktopName: '',
+  mobileName: '',
+  showOnMobile: false,
+  showOnDesktop: false,
+  displayOrder: 5
+})
 
 export default routes;

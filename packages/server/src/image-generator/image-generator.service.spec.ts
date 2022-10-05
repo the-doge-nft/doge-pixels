@@ -1,15 +1,15 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { PixelImageGeneratorService } from './pixel-image-generator.service';
+import { ImageGeneratorService } from './image-generator.service';
 
 describe('PixelImageGeneratorService', () => {
-  let service: PixelImageGeneratorService;
+  let service: ImageGeneratorService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [PixelImageGeneratorService],
+      providers: [ImageGeneratorService],
     }).compile();
 
-    service = module.get<PixelImageGeneratorService>(PixelImageGeneratorService);
+    service = module.get<ImageGeneratorService>(ImageGeneratorService);
   });
 
   it('should be defined', () => {

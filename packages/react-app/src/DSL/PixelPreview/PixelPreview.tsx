@@ -3,16 +3,14 @@ import Kobosu from "../../images/THE_ACTUAL_NFT_IMAGE.png";
 import { Box, useColorMode } from "@chakra-ui/react";
 import AppStore from "../../store/App.store";
 import { observer } from "mobx-react-lite";
-import { lightOrDarkMode } from "../../DSL/Theme";
-import { Canvas } from "@react-three/fiber";
-import { PixelOwnerInfo } from "./DogParkPage.store";
-import jsonify from "../../helpers/jsonify";
+import { lightOrDarkMode } from "../Theme";
 
 interface ParkPixelsProps {
-  selectedPixel: number;
-  pixelOwner: PixelOwnerInfo;
-  onPupperClick: (pupper: number | null) => void;
-  id: string
+  selectedTokenId: number | null;
+  previewPixels: number[];
+  onPupperClick?: (pupper: number | null) => void;
+  id: string;
+  size?: PixelPreviewSize
 }
 
 interface IPupperRectPosition {
@@ -21,62 +19,90 @@ interface IPupperRectPosition {
   y: number;
 }
 
-export const IMAGE_WIDTH = 400;
-export const IMAGE_HEIGHT = 300;
-const PIXEL_OFFSET_X = 50;
-const TOP_PIXEL_OFFSET_Y = 20;
-const BOTTOM_PIXEL_OFFSET_Y = 200;
-const PIXEL_PANE_WIDTH = 70;
-const PIXEL_PANE_HEIGHT = 70;
-const PIXEL_TEXT_HEIGHT = 20;
-const PIXEL_WIDTH = 15;
-const PIXEL_HEIGHT = 15;
-const SCALE = IMAGE_WIDTH / 640;
+export enum PixelPreviewSize {
+  sm = "sm",
+  md = "md",
+  lg = "lg"
+}
 
-// @next use refs here instead of getElementById()
-
-const getPixelOffsets = (y: number) => {
-  if (y * SCALE <= IMAGE_HEIGHT / 2) {
-    return [PIXEL_OFFSET_X, BOTTOM_PIXEL_OFFSET_Y];
-  } else {
-    return [PIXEL_OFFSET_X, TOP_PIXEL_OFFSET_Y];
+const imageProperties = {
+  [PixelPreviewSize.sm]: {
+    height: 275 * 0.75,
+    width: 275,
+    scale: 275 / 650,
+    pixelSize: 10,
+    pixelPaneSize: 50,
+    pixelPaneTextBoxSize: 20,
+    pixelPaneTextSize: 5
+  },
+  [PixelPreviewSize.md]: {
+    height: 350 * 0.75,
+    width: 350,
+    scale: 350 / 640,
+    pixelSize: 12,
+    pixelPaneSize: 60,
+    pixelPaneTextBoxSize: 20,
+    pixelPaneTextSize: 6
+  },
+  [PixelPreviewSize.lg]: {
+    height: 450 * 0.75,
+    width: 450,
+    scale: 450 / 640,
+    pixelSize: 15,
+    pixelPaneSize: 70,
+    pixelPaneTextBoxSize: 20,
+    pixelPaneTextSize: 7
   }
-};
+}
 
-const ParkPixels = observer(({ selectedPixel, pixelOwner, onPupperClick, id }: ParkPixelsProps) => {
+
+const PixelPreview = observer(({ size = PixelPreviewSize.md, selectedTokenId, previewPixels = [], onPupperClick, id }: ParkPixelsProps) => {
   const { colorMode } = useColorMode();
   const [pupperPositions, setPupperPositions] = useState<IPupperRectPosition[]>([]);
+  const properties = imageProperties[size]
+
+  const PIXEL_OFFSET_X = properties.width / 9;
+  const TOP_PIXEL_OFFSET_Y = properties.height / 16.875;
+  const BOTTOM_PIXEL_OFFSET_Y = properties.height / 1.6875;
+
+  const getPixelOffsets = (y: number) => {
+    if (y * properties.scale <= properties.height / 2) {
+      return [PIXEL_OFFSET_X, BOTTOM_PIXEL_OFFSET_Y];
+    } else {
+      return [PIXEL_OFFSET_X, TOP_PIXEL_OFFSET_Y];
+    }
+  };
 
   useEffect(() => {
-    const length = pixelOwner.pixels.length;
+    const length = previewPixels?.length;
     let positions: IPupperRectPosition[] = [];
     for (let i = 0; i < length; i++) {
-      const [x, y] = AppStore.web3.pupperToPixelCoordsLocal(pixelOwner.pixels[i]);
+      const [x, y] = AppStore.web3.pupperToPixelCoordsLocal(previewPixels[i]);
       positions.push({
-        pupper: pixelOwner.pixels[i],
-        x: x * SCALE - PIXEL_WIDTH / 2,
-        y: y * SCALE - PIXEL_HEIGHT / 2,
+        pupper: previewPixels[i],
+        x: x * properties.scale - properties.pixelSize / 2,
+        y: y * properties.scale - properties.pixelSize / 2,
       });
     }
 
     setPupperPositions(positions);
-  }, [pixelOwner.pixels]);
+  }, [previewPixels]);
 
   useEffect(() => {
     // @next there are some rendering issues where pupperPositions is 0
     if (pupperPositions.length !== 0) {
       drawBackground()
     }
-  }, [pupperPositions, selectedPixel])
+  }, [pupperPositions, selectedTokenId])
 
   const drawSelectedPixel = (ctx: CanvasRenderingContext2D) => {
-    if (selectedPixel === -1) return;
+    if (!selectedTokenId) return;
 
-    const [selectedX, selectedY] = AppStore.web3.pupperToPixelCoordsLocal(selectedPixel);
+    const [selectedX, selectedY] = AppStore.web3.pupperToPixelCoordsLocal(selectedTokenId);
     let fillColor = lightOrDarkMode(colorMode, "#ffd335", "#ff00e5");
     ctx.save();
     ctx.fillStyle = fillColor;
-    ctx.fillRect(selectedX * SCALE - PIXEL_WIDTH / 2, selectedY * SCALE - PIXEL_HEIGHT / 2, PIXEL_WIDTH, PIXEL_HEIGHT);
+    ctx.fillRect(selectedX * properties.scale - properties.pixelSize / 2, selectedY * properties.scale - properties.pixelSize / 2, properties.pixelSize, properties.pixelSize);
     ctx.restore();
   };
 
@@ -90,8 +116,8 @@ const ParkPixels = observer(({ selectedPixel, pixelOwner, onPupperClick, id }: P
     ctx.strokeStyle = strokeColor;
 
     for (let i = 0; i < length; i++) {
-      if (pupperPositions[i].pupper !== selectedPixel) {
-        ctx.rect(pupperPositions[i].x, pupperPositions[i].y, PIXEL_WIDTH, PIXEL_HEIGHT);
+      if (pupperPositions[i].pupper !== selectedTokenId) {
+        ctx.rect(pupperPositions[i].x, pupperPositions[i].y, properties.pixelSize, properties.pixelSize);
       }
     }
     ctx.stroke();
@@ -100,58 +126,58 @@ const ParkPixels = observer(({ selectedPixel, pixelOwner, onPupperClick, id }: P
   };
 
   const drawPixelPane = (ctx: CanvasRenderingContext2D) => {
-    if (selectedPixel === -1) return;
-    const [x, y] = AppStore.web3.pupperToPixelCoordsLocal(selectedPixel);
+    if (!selectedTokenId) return;
+    const [x, y] = AppStore.web3.pupperToPixelCoordsLocal(selectedTokenId);
     let paneY: number;
 
-    if (y * SCALE <= IMAGE_HEIGHT / 2) {
+    if (y * properties.scale <= properties.height / 2) {
       paneY = BOTTOM_PIXEL_OFFSET_Y;
     } else {
       paneY = TOP_PIXEL_OFFSET_Y;
     }
     ctx.save();
     ctx.beginPath();
-    const hex = AppStore.web3.pupperToHexLocal(selectedPixel);
+    const hex = AppStore.web3.pupperToHexLocal(selectedTokenId);
     ctx.fillStyle = hex;
-    ctx.fillRect(PIXEL_OFFSET_X, paneY, PIXEL_PANE_WIDTH, PIXEL_PANE_HEIGHT);
+    ctx.fillRect(PIXEL_OFFSET_X, paneY, properties.pixelPaneSize, properties.pixelPaneSize);
 
     let fillColor = lightOrDarkMode(colorMode, "#FFF8E4", "#180e30");
     ctx.fillStyle = fillColor;
-    ctx.fillRect(PIXEL_OFFSET_X, paneY + PIXEL_PANE_HEIGHT, PIXEL_PANE_WIDTH, PIXEL_TEXT_HEIGHT);
+    ctx.fillRect(PIXEL_OFFSET_X, paneY + properties.pixelPaneSize, properties.pixelPaneSize, properties.pixelPaneTextBoxSize);
 
-    ctx.font = "7px PressStart2P";
+    ctx.font = `${properties.pixelPaneTextSize}px PressStart2P`;
     let textColor = lightOrDarkMode(colorMode, "black", "white");
     ctx.strokeStyle = textColor;
-    ctx.rect(PIXEL_OFFSET_X, paneY, PIXEL_PANE_WIDTH, PIXEL_PANE_HEIGHT + PIXEL_TEXT_HEIGHT);
-    ctx.lineTo(PIXEL_OFFSET_X, paneY + PIXEL_PANE_HEIGHT);
-    ctx.lineTo(PIXEL_OFFSET_X + PIXEL_PANE_WIDTH, paneY + PIXEL_PANE_HEIGHT);
+    ctx.rect(PIXEL_OFFSET_X, paneY, properties.pixelPaneSize, properties.pixelPaneSize + properties.pixelPaneTextBoxSize);
+    ctx.lineTo(PIXEL_OFFSET_X, paneY + properties.pixelPaneSize);
+    ctx.lineTo(PIXEL_OFFSET_X + properties.pixelPaneSize, paneY + properties.pixelPaneSize);
     ctx.stroke();
     ctx.fillStyle = textColor;
-    ctx.fillText(`(${x},${y})`, PIXEL_OFFSET_X + 3, paneY + PIXEL_PANE_HEIGHT + 14);
+    ctx.fillText(`(${x},${y})`, PIXEL_OFFSET_X + 3, paneY + properties.pixelPaneSize + 14);
     ctx.closePath();
     ctx.restore();
   };
 
   const drawPixelPointer = (ctx: CanvasRenderingContext2D) => {
-    if (selectedPixel === -1) return;
-    const [x, y] = AppStore.web3.pupperToPixelCoordsLocal(selectedPixel);
+    if (!selectedTokenId) return;
+    const [x, y] = AppStore.web3.pupperToPixelCoordsLocal(selectedTokenId);
     const [pixelOffsetX, pixelOffsetY] = getPixelOffsets(y);
     let y1;
 
     if (pixelOffsetY === BOTTOM_PIXEL_OFFSET_Y) {
       y1 = BOTTOM_PIXEL_OFFSET_Y;
     } else {
-      y1 = TOP_PIXEL_OFFSET_Y + PIXEL_PANE_HEIGHT + PIXEL_TEXT_HEIGHT;
+      y1 = TOP_PIXEL_OFFSET_Y + properties.pixelPaneSize + properties.pixelPaneTextBoxSize;
     }
 
     const x1 = pixelOffsetX + 20;
     const x2 = pixelOffsetX + 45;
     ctx.save();
     ctx.beginPath();
-    ctx.moveTo(x * SCALE, y * SCALE);
+    ctx.moveTo(x * properties.scale, y * properties.scale);
     ctx.lineTo(x1, y1);
     ctx.lineTo(x2, y1);
-    ctx.lineTo(x * SCALE, y * SCALE);
+    ctx.lineTo(x * properties.scale, y * properties.scale);
     ctx.strokeStyle = "#000000";
     ctx.fillStyle = "#000000";
     ctx.stroke();
@@ -226,7 +252,7 @@ const ParkPixels = observer(({ selectedPixel, pixelOwner, onPupperClick, id }: P
     const offsetY = y - rect.y;
 
     const pupper = getPupperFromPosition(offsetX, offsetY);
-    if (pupper) {
+    if (pupper && onPupperClick) {
       document.body.style.cursor = "pointer";
     } else {
       document.body.style.cursor = "default";
@@ -254,8 +280,8 @@ const ParkPixels = observer(({ selectedPixel, pixelOwner, onPupperClick, id }: P
           y,
           pupperPositions[i].x,
           pupperPositions[i].y,
-          pupperPositions[i].x + PIXEL_WIDTH,
-          pupperPositions[i].y + PIXEL_HEIGHT,
+          pupperPositions[i].x + properties.pixelSize,
+          pupperPositions[i].y + properties.pixelSize,
         )
       ) {
         return pupperPositions[i].pupper;
@@ -275,10 +301,13 @@ const ParkPixels = observer(({ selectedPixel, pixelOwner, onPupperClick, id }: P
     const offsetY = y - rect.y;
 
     const pupper = getPupperFromPosition(offsetX, offsetY);
-    if (pupper) {
-      onPupperClick(pupper);
-    } else {
-      onPupperClick(null);
+
+    if (onPupperClick) {
+      if (pupper) {
+        onPupperClick(pupper);
+      } else {
+        onPupperClick(null);
+      }
     }
   };
 
@@ -287,18 +316,19 @@ const ParkPixels = observer(({ selectedPixel, pixelOwner, onPupperClick, id }: P
     let ratio = window.devicePixelRatio;
     let cv = document.getElementById(id) as HTMLCanvasElement;
     if (cv) {
-      cv.width = IMAGE_WIDTH * ratio;
-      cv.height = IMAGE_HEIGHT * ratio;
-      cv.style.width = IMAGE_WIDTH + "px";
-      cv.style.height = IMAGE_HEIGHT + "px";
+      cv.width = properties.width * ratio;
+      cv.height = properties.height * ratio;
+      cv.style.width = properties.width + "px";
+      cv.style.height = properties.height + "px";
       cv.getContext("2d")!.scale(ratio, ratio);
+      drawBackground()
     }
   }, [])
 
   return (
     <Box
-      w={IMAGE_WIDTH}
-      h={IMAGE_HEIGHT}
+      w={properties.width}
+      h={properties.height}
       overflow={"hidden"}
       borderWidth={1}
       borderColor={lightOrDarkMode(colorMode, "black", "white")}
@@ -314,4 +344,4 @@ const ParkPixels = observer(({ selectedPixel, pixelOwner, onPupperClick, id }: P
   );
 });
 
-export default ParkPixels;
+export default PixelPreview;

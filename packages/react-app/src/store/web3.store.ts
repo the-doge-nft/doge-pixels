@@ -15,7 +15,7 @@ import {ContractInterface} from "@ethersproject/contracts/src.ts/index";
 import CowStore from "./cow.store";
 import {ObjectKeys} from "../helpers/objects";
 import AppStore from "./App.store";
-import {PixelOwnerInfo} from "../pages/DogPark/DogParkPage.store";
+import {PixelOwnerInfo} from "../pages/Leaderbork/Leaderbork.store";
 import {Reactionable} from "../services/mixins/reactionable";
 
 interface AddressToPuppers {
@@ -87,7 +87,7 @@ class Web3Store extends Reactionable(Web3providerStore) {
         }
         this.getPixelOwnershipMap()
         this.getShibaDimensions()
-        this.getUSDPerPixel()
+        // this.getUSDPerPixel()
     }
 
     async connect() {
@@ -231,8 +231,8 @@ class Web3Store extends Reactionable(Web3providerStore) {
         return res.data.balance
     }
 
-    async getPxOwnerByTokenId(tokenID: number) {
-        const res = await Http.get(`/v1/px/owner/${tokenID}`)
+    async getPxOwnerByTokenId(tokenId: number) {
+        const res = await Http.get(`/v1/px/owner/${tokenId}`)
         return res.data.address
     }
 

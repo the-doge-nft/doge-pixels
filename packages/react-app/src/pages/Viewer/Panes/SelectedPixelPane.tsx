@@ -1,15 +1,17 @@
 import React from "react";
-import { observer } from "mobx-react-lite";
-import { Box, Flex, Image, VStack } from "@chakra-ui/react";
-import Typography, { TVariant } from "../../../DSL/Typography/Typography";
+import {observer} from "mobx-react-lite";
+import {Box, Flex, Image, VStack} from "@chakra-ui/react";
+import Typography, {TVariant} from "../../../DSL/Typography/Typography";
 import ViewerStore from "../Viewer.store";
-import Button, { ButtonVariant } from "../../../DSL/Button/Button";
+import Button from "../../../DSL/Button/Button";
 import PixelPane from "../../../DSL/PixelPane/PixelPane";
-import { SELECT_PIXEL } from "../../../services/mixins/eventable";
+import {SELECT_PIXEL} from "../../../services/mixins/eventable";
 import AppStore from "../../../store/App.store";
 import Dev from "../../../common/Dev";
-import { isDevModeEnabled, isProduction, isStaging } from "../../../environment/helpers";
+import {isDevModeEnabled, isStaging} from "../../../environment/helpers";
 import Link from "../../../DSL/Link/Link";
+import {NamedRoutes, route} from "../../../App.routes";
+import {generatePath} from "react-router-dom";
 
 const SelectedPixelPane = observer(function SelectedPixelPane({ store }: { store: ViewerStore }) {
   return (
@@ -18,12 +20,8 @@ const SelectedPixelPane = observer(function SelectedPixelPane({ store }: { store
         <Box mt={4}>
           {store.selectedPupper && (
             <PixelPane
-              showCoords
-              coordinates={AppStore.web3.pupperToPixelCoordsLocal(store.selectedPupper)}
               size={"lg"}
               pupper={store.selectedPupper}
-              color={store.selectedPupperHEX}
-              pupperIndex={store.selectedPupperIndex}
               variant={"shadow"}
               onClick={() => store.publish(SELECT_PIXEL, [store.selectedPixelX, store.selectedPixelY])}
             />
@@ -80,9 +78,14 @@ const SelectedPixelPane = observer(function SelectedPixelPane({ store }: { store
                   </Box>
                 )}
 
+                {/*`/park/${store.tokenOwner}/${store.selectedPupper}`*/}
+
                 {!AppStore.rwd.isMobile && (
                   <Box mt={2}>
-                    <Link isNav to={`/park/${store.tokenOwner}/${store.selectedPupper}`}>
+                    <Link isNav to={generatePath("/leaderbork/:address/wallet/:tokenId", {
+                      address: store.tokenOwner,
+                      tokenId: store.selectedPupper
+                    })}>
                       {store.selectedTokenOwnerDisplayName}
                     </Link>
                   </Box>

@@ -12,7 +12,7 @@ import MobileHomeStore from "./MobileHome.store";
 import MintPixelsDrawer from "./MintPixelsDrawer/MintPixelsDrawer";
 import BurnPixelsDrawer from "./BurnPixelsDrawer/BurnPixelsDrawer";
 import {NamedRoutes, route, SELECTED_PIXEL_PARAM} from "../../App.routes";
-import ParkPixels from "../DogPark/ParkPixels";
+import PixelPreview from "../../DSL/PixelPreview/PixelPreview";
 import {darkModeSecondary, lightModePrimary} from "../../DSL/Theme";
 
 const MobileHomePage = observer(() => {
@@ -59,10 +59,10 @@ const MobileHomePage = observer(() => {
         </Flex>
 
         <Flex justifyContent={"center"} alignItems={"center"} mt={14}>
-          {store.selectedOwner && <ParkPixels
+          {store.selectedOwner && <PixelPreview
               id={'home-pixels'}
-              selectedPixel={store.selectedPixel ? store.selectedPixel : -1}
-              pixelOwner={store.selectedOwner}
+              selectedTokenId={store.selectedPixel}
+              previewPixels={store.selectedOwner?.pixels}
               onPupperClick={(pupper) => {
                 store.selectedPixel = pupper
               }}
@@ -99,13 +99,9 @@ const MobileHomePage = observer(() => {
                         _hover={{ bg: colorMode === "light" ? lightModePrimary : darkModeSecondary }}
                     >
                       <PixelPane
-                          showCoords={true}
                           size={"sm"}
                           key={`top_dog_${px}`}
                           pupper={px}
-                          color={hex}
-                          pupperIndex={index}
-                          coordinates={AppStore.web3.pupperToPixelCoordsLocal(px)}
                           onClick={px => {
                             store.selectedPixel = px;
                           }}

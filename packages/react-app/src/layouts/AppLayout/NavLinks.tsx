@@ -1,30 +1,33 @@
-import routes, { AppRouteInterface, NamedRoutes, route, SELECTED_PIXEL_PARAM } from "../../App.routes";
+import routes, {AppRouteInterface, NamedRoutes, route, SELECTED_PIXEL_PARAM} from "../../App.routes";
 import AppStore from "../../store/App.store";
 import Link from "../../DSL/Link/Link";
-import { matchPath, useLocation } from "react-router-dom";
+import {matchPath, useLocation} from "react-router-dom";
+import {SelectedOwnerTab} from "../../pages/Leaderbork/Leaderbork.store";
 
 const NavLinks = ({ isMobile }: { isMobile?: boolean }) => {
   const location = useLocation();
 
 
   const getPath = (routeName: NamedRoutes) => {
-    let path = route(routeName, {
-      address: routeName === NamedRoutes.DOG_PARK && AppStore.web3.address ? AppStore.web3.address : undefined,
-    });
-    return path;
+    if (routeName === NamedRoutes.LEADERBORK) {
+      return `/leaderbork/${SelectedOwnerTab.Activity}`
+    } else {
+      return route(routeName)
+    }
   };
 
-  const getMatch = (routePath: string) => {
+  const getMatch = (routePath: string | string[]) => {
     let match = matchPath<any>(location.pathname, {
       path: routePath,
       exact: true,
       strict: false,
     });
 
+
     /*
-          Hack to match NamedRoutes.PIXELS route to the NamedRoutes.VIEWER link as they both render the same
-          component but NamedRoutes.PIXELS is hidden from desktop & mobile views.
-        */
+      Hack to match NamedRoutes.PIXELS route to the NamedRoutes.VIEWER link as they both render the same
+      component but NamedRoutes.PIXELS is hidden from desktop & mobile views.
+    */
     const isSelectedPixelMatch = matchPath<any>(location.pathname, {
       path: route(NamedRoutes.PIXELS),
       exact: true,
@@ -42,8 +45,8 @@ const NavLinks = ({ isMobile }: { isMobile?: boolean }) => {
   };
 
   const sortBy = (a: AppRouteInterface, b: AppRouteInterface) => {
-    const aOrder = a.order;
-    const bOrder = b.order;
+    const aOrder = a.displayOrder;
+    const bOrder = b.displayOrder;
     if (aOrder > bOrder) {
       return 1;
     } else if (aOrder < bOrder) {
@@ -73,7 +76,7 @@ const NavLinks = ({ isMobile }: { isMobile?: boolean }) => {
           .filter(route => route.showOnDesktop)
           .map(appRoute => (
             <Link
-              size={"md"}
+              size={"sm"}
               isNav
               key={`desktop-nav-${appRoute.path}`}
               to={getPath(appRoute.name)}

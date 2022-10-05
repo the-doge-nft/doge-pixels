@@ -11,8 +11,8 @@ const path = require('path');
 const Jimp = require('jimp');
 
 @Injectable()
-export class PixelImageGeneratorService implements OnModuleInit {
-  private logger = new Logger(PixelImageGeneratorService.name);
+export class ImageGeneratorService implements OnModuleInit {
+  private logger = new Logger(ImageGeneratorService.name);
 
   private pixelOffsetX = 50;
   private topPixeOffsetY = 20;
