@@ -96,6 +96,17 @@ class LeaderborkStore extends Reactionable(EmptyClass) {
         this.getGlobalTransfers()
       }
     })
+
+    this.react(() => [this.selectedOwner], () => {
+      if (this.selectedOwner) {
+        this.selectedPixelId = this.selectedOwner.pixels?.[0]
+        this.getSelectedUserTransfers().then((_) => {
+          if (!this.selectedTransferId) {
+            this.selectedTransferId = this.selectedOwnerTransfers[0].uniqueTransferId
+          }
+        })
+      }
+    })
   }
 
   init() {
@@ -103,9 +114,7 @@ class LeaderborkStore extends Reactionable(EmptyClass) {
       this.lockedDog = Number(balance)
     })
     AppStore.web3.getPixelOwnershipMap()
-    if (this.selectedAddress) {
-      this.getSelectedUserTransfers()
-    } else {
+    if (!this.selectedAddress) {
       this.getGlobalTransfers().then((_) => {
         this.selectedTransferId = this.globalTransfers[0].uniqueTransferId
       })
@@ -145,13 +154,38 @@ class LeaderborkStore extends Reactionable(EmptyClass) {
     let description
     if (this.selectedActivityTransfer.from.address === ethers.constants.AddressZero) {
       title = "Minted"
-      description = this.selectedActivityTransfer.to.ens ? this.selectedActivityTransfer.to.ens : abbreviate(this.selectedActivityTransfer.to.address, 4)
+      description = {
+        to: {
+          address: this.selectedActivityTransfer.to.address,
+          ens: this.selectedActivityTransfer.to.ens,
+          displayName: this.selectedActivityTransfer.to.ens ? this.selectedActivityTransfer.to.ens : abbreviate(this.selectedActivityTransfer.to.address, 4)
+        },
+        from: null
+      }
     } else if (this.selectedActivityTransfer.to.address === ethers.constants.AddressZero) {
       title = "Burned"
-      description = this.selectedActivityTransfer.from.ens ? this.selectedActivityTransfer.from.ens : abbreviate(this.selectedActivityTransfer.from.address, 4)
+      description = {
+        from: {
+          address: this.selectedActivityTransfer.from.address,
+          ens: this.selectedActivityTransfer.from.ens,
+          displayName: this.selectedActivityTransfer.from.ens ? this.selectedActivityTransfer.from.ens : abbreviate(this.selectedActivityTransfer.from.address, 4)
+        },
+        to: null
+      }
     } else {
       title = "Transfer"
-      description = `${abbreviate(this.selectedActivityTransfer.from.address, 4)} to ${abbreviate(this.selectedActivityTransfer.to.address, 4)}`
+      description = {
+        from: {
+          address: this.selectedActivityTransfer.from.address,
+          ens: this.selectedActivityTransfer.from.ens,
+          displayName: this.selectedActivityTransfer.from.ens ? this.selectedActivityTransfer.from.ens : abbreviate(this.selectedActivityTransfer.from.address, 4)
+        },
+        to: {
+          address: this.selectedActivityTransfer.to.address,
+          ens: this.selectedActivityTransfer.to.ens,
+          displayName: this.selectedActivityTransfer.to.ens ? this.selectedActivityTransfer.to.ens : abbreviate(this.selectedActivityTransfer.to.address, 4)
+        }
+      }
     }
     return {title, description}
   }
@@ -215,7 +249,7 @@ class LeaderborkStore extends Reactionable(EmptyClass) {
         blockNumber: "desc"
       }
     }).then(({data}) => {
-      this.globalTransfers = data
+      return this.globalTransfers = data
     })
   }
 
@@ -225,7 +259,7 @@ class LeaderborkStore extends Reactionable(EmptyClass) {
         blockNumber: "desc"
       }
     }).then(({data}) => {
-      this.selectedOwnerTransfers = data
+      return this.selectedOwnerTransfers = data
     })
   }
 

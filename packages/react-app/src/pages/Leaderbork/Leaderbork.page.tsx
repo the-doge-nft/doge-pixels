@@ -17,6 +17,8 @@ import Typeahead from "../../DSL/Typeahead/Typeahead";
 import DogLocked from "./DogLocked";
 import TopDogs from "./TopDogs";
 import {getEtherscanURL} from "../../helpers/links";
+import Icon from "../../DSL/Icon/Icon";
+import {Type} from "../../DSL/Fonts/Fonts";
 
 const LeaderborkPage = observer(function DogParkPage() {
     const location = useLocation()
@@ -27,6 +29,7 @@ const LeaderborkPage = observer(function DogParkPage() {
         selectedOwnerTabType = SelectedOwnerTab.Activity
     }
     const {address, tokenId, activityId} = useParams<{ address?: string; tokenId?: string, activityId?: string }>();
+    console.log('debug:: activity', activityId)
     const store = useMemo(() => new LeaderborkStore(address, tokenId ? Number(tokenId) : undefined, activityId, selectedOwnerTabType), [address, tokenId, selectedOwnerTabType]);
     const {colorMode} = useColorMode();
     useEffect(() => {
@@ -76,7 +79,6 @@ const LeaderborkPage = observer(function DogParkPage() {
                               selectedTokenId={store.previewSelectedPixel}
                               previewPixels={store.previewPixels}
                               onPupperClick={store.selectedOwnerTab === SelectedOwnerTab.Wallet ? (tokenId) => store.selectedPixelId = tokenId : undefined}
-                              // onPupperClick={(pixelId) => store.setSelectedPixelFromPreview(pixelId)}
                             />
                           </Pane>
                         </Flex>
@@ -90,8 +92,27 @@ const LeaderborkPage = observer(function DogParkPage() {
                                   <Flex flexDir={"column"}>
                                     <Typography variant={TVariant.PresStart18} mb={1}>{store.selectedActivityTransferDetails.title}</Typography>
                                     <Grid templateColumns={"0.75fr 1fr"}>
-                                      <Typography variant={TVariant.ComicSans16}>by:</Typography>
-                                      <Typography variant={TVariant.ComicSans16} overflowWrap={"anywhere"}>{store.selectedActivityTransferDetails.description}</Typography>
+                                        {store.selectedActivityTransferDetails.title === "Transfer" && <>
+                                            <GridItem display={"flex"} gap={2} colSpan={2} alignItems={"center"} justifyContent={"space-between"}>
+                                              <Link to={`/leaderbork/${store.selectedActivityTransferDetails.description.from.address}/wallet`} variant={Type.ComicSans} size={"md"}>
+                                                  {store.selectedActivityTransferDetails.description.from.displayName}
+                                              </Link>
+                                              <Icon icon={'arrow-right'} boxSize={5}/>
+                                              <Link to={`/leaderbork/${store.selectedActivityTransferDetails.description.to.address}/wallet`} variant={Type.ComicSans} size={"md"}>
+                                                  {store.selectedActivityTransferDetails.description.to.displayName}
+                                              </Link>
+                                            </GridItem>
+                                        </>}
+                                        {store.selectedActivityTransferDetails.title !== "Transfer" && <>
+                                          <Typography variant={TVariant.ComicSans16}>by:</Typography>
+                                          <Link to={`/leaderbork/${store.selectedActivityTransferDetails.description.from
+                                                  ? store.selectedActivityTransferDetails.description.from.address
+                                                  : store.selectedActivityTransferDetails.description.to.address}/wallet`} variant={Type.ComicSans} size={"md"} overflowWrap={"anywhere"}>
+                                              {store.selectedActivityTransferDetails.description.from
+                                                  ? store.selectedActivityTransferDetails.description.from.displayName
+                                                  : store.selectedActivityTransferDetails.description.to.displayName}
+                                          </Link>
+                                        </>}
                                       <Typography variant={TVariant.ComicSans16}>token ID:</Typography>
                                       <Typography variant={TVariant.ComicSans16}>{store.selectedActivityTransfer.tokenId}</Typography>
                                       <Typography variant={TVariant.ComicSans16}>date:</Typography>
