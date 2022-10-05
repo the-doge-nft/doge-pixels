@@ -70,7 +70,7 @@ const Typeahead: React.FC<ComboboxProps> = observer(({onItemSelect, items, value
             />
         </Form>
         {showBox && filteredItems.length > 0 && <Box ref={boxRef} __css={styles.box}>
-            {filteredItems.map(item => <Box key={`${item.name}-${item.value}`} onClick={() => {
+            {filteredItems.map((item, index) => <Box key={`${item.name}-${item.value}-${index}`} onClick={() => {
                 onChange(item.value)
                 onItemSelect && onItemSelect(item.value)
                 setShowBox(false)

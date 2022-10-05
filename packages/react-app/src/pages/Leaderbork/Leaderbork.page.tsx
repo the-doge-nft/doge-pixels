@@ -120,6 +120,8 @@ const LeaderborkPage = observer(function DogParkPage() {
                                           <Typography variant={TVariant.ComicSans16}>{store.previewSelectedPixelId}</Typography>
                                           <Typography variant={TVariant.ComicSans16}>hex:</Typography>
                                           <Typography variant={TVariant.ComicSans16}>{AppStore.web3.pupperToHexLocal(store.previewSelectedPixelId)}</Typography>
+                                          <Typography variant={TVariant.ComicSans16}>coords:</Typography>
+                                          <Typography variant={TVariant.ComicSans16}>({AppStore.web3.pupperToPixelCoordsLocal(store.previewSelectedPixelId)[0]}, {AppStore.web3.pupperToPixelCoordsLocal(store.previewSelectedPixelId)[1]})</Typography>
                                         </>}
                                         {(store.selectedOwnerTab === SelectedOwnerTab.Activity || !store.selectedAddress) && store.selectedActivityTransfer && <>
                                           <Typography variant={TVariant.ComicSans16}>date:</Typography>
