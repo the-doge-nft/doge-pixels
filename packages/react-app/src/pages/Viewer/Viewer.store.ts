@@ -84,9 +84,9 @@ class ViewerStore extends (Eventable(Reactionable(Navigable<ViewerView, Construc
     }, {fireImmediately: true})
   }
 
-  async getTokenOwner(tokenID: number) {
+  async getTokenOwner(tokenId: number) {
     try {
-      this.tokenOwner = await AppStore.web3.getPxOwnerByTokenId(tokenID)
+      this.tokenOwner = await AppStore.web3.getPxOwnerByTokenId(tokenId)
     } catch (e) {
       this.tokenOwner = null
     }
@@ -102,9 +102,9 @@ class ViewerStore extends (Eventable(Reactionable(Navigable<ViewerView, Construc
     }
   }
 
-  async getTokenMetadata(tokenID: number) {
+  async getTokenMetadata(tokenId: number) {
     try {
-      const res = await Http.get(`/v1/px/metadata/${tokenID}`)
+      const res = await Http.get(`/v1/px/metadata/${tokenId}`)
       this.metaData = res.data
     } catch (e) {
       this.metaData = null

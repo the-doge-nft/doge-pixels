@@ -34,7 +34,7 @@ export interface AppRouteInterface {
   mobileName: string;
   showOnMobile: boolean;
   showOnDesktop: boolean;
-  order: number;
+  displayOrder: number;
 }
 
 export const route = (name: NamedRoutes, params?: {}) => {
@@ -66,43 +66,31 @@ const routes: AppRouteInterface[] = [
     mobileName: "PERKS",
     showOnMobile: true,
     showOnDesktop: true,
-    order: 2,
+    displayOrder: 2,
   },
   {
-    path: "/leaderbork",
+    path: "/leaderbork/:activityId?",
     name: NamedRoutes.LEADERBORK,
     exact: true,
     layout: AppLayout,
     component: LeaderborkPage,
     desktopName: "Leaderbork",
-    mobileName: "Leaderbork",
+    mobileName: "LEADERBORK",
+    showOnDesktop: false,
+    showOnMobile: false,
+    displayOrder: 0
+  },
+  {
+    path: "/leaderbork/:address?/:tokenId?",
+    name: NamedRoutes.LEADERBORK,
+    exact: true,
+    layout: AppLayout,
+    component: LeaderborkPage,
+    desktopName: "Leaderbork",
+    mobileName: "LEADERBORK",
     showOnMobile: true,
     showOnDesktop: true,
-    order: 1,
-  },
-  {
-    path: "/leaderbork/:activityId",
-    name: NamedRoutes.LEADERBORK,
-    exact: true,
-    layout: AppLayout,
-    component: LeaderborkPage,
-    desktopName: "LEADERBORK",
-    mobileName: "LEADERBORK",
-    showOnDesktop: false,
-    showOnMobile: false,
-    order: 0
-  },
-  {
-    path: "/leaderbork/:address?/:tokenID?",
-    name: NamedRoutes.LEADERBORK,
-    exact: true,
-    layout: AppLayout,
-    component: LeaderborkPage,
-    desktopName: "LEADERBORK",
-    mobileName: "LEADERBORK",
-    showOnMobile: false,
-    showOnDesktop: false,
-    order: 0,
+    displayOrder: 1,
   },
   {
     path: "/art",
@@ -114,7 +102,7 @@ const routes: AppRouteInterface[] = [
     mobileName: "ART",
     showOnMobile: true,
     showOnDesktop: true,
-    order: 1,
+    displayOrder: 1,
   },
   {
     path: "/pixels",
@@ -126,7 +114,7 @@ const routes: AppRouteInterface[] = [
     mobileName: "PIXELS",
     showOnMobile: true,
     showOnDesktop: false,
-    order: 0,
+    displayOrder: 0,
   },
   {
     path: `/px/:${SELECTED_PIXEL_PARAM}?`,
@@ -138,7 +126,7 @@ const routes: AppRouteInterface[] = [
     mobileName: "Portal",
     showOnDesktop: false,
     showOnMobile: false,
-    order: 0,
+    displayOrder: 0,
   },
   {
     path: "/",
@@ -150,7 +138,7 @@ const routes: AppRouteInterface[] = [
     mobileName: "DOGE",
     showOnMobile: true,
     showOnDesktop: true,
-    order: 0,
+    displayOrder: 0,
   }
 ];
 
@@ -165,7 +153,7 @@ if (isDevModeEnabled()) {
     mobileName: "DSL",
     showOnMobile: true,
     showOnDesktop: true,
-    order: 4,
+    displayOrder: 4,
   });
 }
 
@@ -180,7 +168,7 @@ routes.push({
   mobileName: '',
   showOnMobile: false,
   showOnDesktop: false,
-  order: 5
+  displayOrder: 5
 })
 
 export default routes;

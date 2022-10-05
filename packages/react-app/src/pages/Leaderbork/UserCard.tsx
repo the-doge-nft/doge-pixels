@@ -16,7 +16,6 @@ interface UserCardProps {
 
 const UserCard: React.FC<PropsWithChildren<UserCardProps>> = observer(({store, pixelOwner, isSelected = false, children}) => {
   const {colorMode} = useColorMode()
-
   return <Flex
     w={"full"}
     justifyContent={"space-between"}
@@ -28,12 +27,7 @@ const UserCard: React.FC<PropsWithChildren<UserCardProps>> = observer(({store, p
       cursor: "pointer",
       bg: colorMode === "light" ? lightModePrimary : darkModeSecondary
     }}
-    onClick={() => {
-      store.selectedAddress = pixelOwner.address
-      store.searchValue = pixelOwner.address
-      store.selectedPixel = null
-      window.history.pushState({}, "", route(NamedRoutes.LEADERBORK, {address: store.selectedAddress}))
-    }}
+    onClick={() => store.selectOwner(pixelOwner.address)}
   >
     <Flex alignItems={"center"} overflow={"hidden"}>
       <Typography

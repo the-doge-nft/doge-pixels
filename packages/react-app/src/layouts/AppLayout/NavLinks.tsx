@@ -42,8 +42,8 @@ const NavLinks = ({ isMobile }: { isMobile?: boolean }) => {
   };
 
   const sortBy = (a: AppRouteInterface, b: AppRouteInterface) => {
-    const aOrder = a.order;
-    const bOrder = b.order;
+    const aOrder = a.displayOrder;
+    const bOrder = b.displayOrder;
     if (aOrder > bOrder) {
       return 1;
     } else if (aOrder < bOrder) {

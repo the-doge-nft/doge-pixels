@@ -83,7 +83,7 @@ const SelectedPixelPane = observer(function SelectedPixelPane({ store }: { store
                   <Box mt={2}>
                     <Link isNav to={route(NamedRoutes.LEADERBORK, {
                       address: store.tokenOwner,
-                      tokenID: store.selectedPupper
+                      tokenId: store.selectedPupper
                     })}>
                       {store.selectedTokenOwnerDisplayName}
                     </Link>
