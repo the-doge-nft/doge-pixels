@@ -33,7 +33,7 @@ interface PixelTransfer {
 
 export enum SelectedOwnerTab {
   Wallet = "wallet",
-  Transfers = "transfers"
+  Activity = "activity"
 }
 
 class LeaderborkStore extends Reactionable(EmptyClass) {
@@ -60,7 +60,7 @@ class LeaderborkStore extends Reactionable(EmptyClass) {
   selectedOwnerTransfers: PixelTransfer[] = []
 
   @observable
-  selectedOwnerTab: SelectedOwnerTab = SelectedOwnerTab.Transfers
+  selectedOwnerTab: SelectedOwnerTab = SelectedOwnerTab.Activity
 
   constructor(selectedAddress?: string, selectedPixelId?: number, transferId?: string, selectedOwnerTab?: SelectedOwnerTab) {
     super()
@@ -145,10 +145,10 @@ class LeaderborkStore extends Reactionable(EmptyClass) {
     let description
     if (this.selectedActivityTransfer.from.address === ethers.constants.AddressZero) {
       title = "Minted"
-      description = abbreviate(this.selectedActivityTransfer.to.address, 4)
+      description = this.selectedActivityTransfer.to.ens ? this.selectedActivityTransfer.to.ens : abbreviate(this.selectedActivityTransfer.to.address, 4)
     } else if (this.selectedActivityTransfer.to.address === ethers.constants.AddressZero) {
       title = "Burned"
-      description = abbreviate(this.selectedActivityTransfer.from.address, 4)
+      description = this.selectedActivityTransfer.from.ens ? this.selectedActivityTransfer.from.ens : abbreviate(this.selectedActivityTransfer.from.address, 4)
     } else {
       title = "Transfer"
       description = `${abbreviate(this.selectedActivityTransfer.from.address, 4)} to ${abbreviate(this.selectedActivityTransfer.to.address, 4)}`
@@ -175,10 +175,10 @@ class LeaderborkStore extends Reactionable(EmptyClass) {
   setActivityId(activityId: string) {
     this.selectedTransferId = activityId;
     if (this.selectedOwner) {
-      this.pushWindowState(generatePath(`/leaderbork/:address/${SelectedOwnerTab.Transfers}/:activityId`,
+      this.pushWindowState(generatePath(`/leaderbork/:address/${SelectedOwnerTab.Activity}/:activityId`,
           {address: this.selectedAddress, activityId: this.selectedTransferId}))
     } else {
-      this.pushWindowState(generatePath(`/leaderbork/${SelectedOwnerTab.Transfers}/:activityId`, {activityId: this.selectedTransferId}))
+      this.pushWindowState(generatePath(`/leaderbork/${SelectedOwnerTab.Activity}/:activityId`, {activityId: this.selectedTransferId}))
     }
   }
 
@@ -246,9 +246,9 @@ class LeaderborkStore extends Reactionable(EmptyClass) {
     if (this.selectedOwnerTab === SelectedOwnerTab.Wallet) {
       this.selectedPixelId = this.selectedOwner.pixels[0]
       this.pushWindowState(generatePath(`/leaderbork/:address/${SelectedOwnerTab.Wallet}/:tokenId`, {address: this.selectedAddress, tokenId: this.selectedPixelId}))
-    } else if (this.selectedOwnerTab === SelectedOwnerTab.Transfers) {
+    } else if (this.selectedOwnerTab === SelectedOwnerTab.Activity) {
       this.selectedTransferId = this.selectedOwnerTransfers[0].uniqueTransferId
-      this.pushWindowState(generatePath(`/leaderbork/:address/${SelectedOwnerTab.Transfers}/:activityId`, {address: this.selectedAddress, activityId: this.selectedTransferId}))
+      this.pushWindowState(generatePath(`/leaderbork/:address/${SelectedOwnerTab.Activity}/:activityId`, {address: this.selectedAddress, activityId: this.selectedTransferId}))
     }
   }
 
@@ -264,7 +264,7 @@ class LeaderborkStore extends Reactionable(EmptyClass) {
   @computed
   get previewSelectedPixel() {
     if (this.selectedOwner) {
-      if (this.selectedOwnerTab === SelectedOwnerTab.Transfers) {
+      if (this.selectedOwnerTab === SelectedOwnerTab.Activity) {
         return this.selectedActivityTokenId
       } else {
         return this.selectedPixelId

@@ -10,7 +10,7 @@ const NavLinks = ({ isMobile }: { isMobile?: boolean }) => {
 
   const getPath = (routeName: NamedRoutes) => {
     if (routeName === NamedRoutes.LEADERBORK) {
-      return `/leaderbork/${SelectedOwnerTab.Transfers}`
+      return `/leaderbork/${SelectedOwnerTab.Activity}`
     } else {
       return route(routeName)
     }

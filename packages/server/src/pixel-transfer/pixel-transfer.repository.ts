@@ -15,18 +15,24 @@ export class PixelTransferRepository {
     @Inject(CACHE_MANAGER) private cacheManager: Cache,
   ) {}
 
-  private afterTransfersQuery(transfers: PixelTransfers[]) {
-    return transfers.map(transfer => ({
-      ...transfer,
-      to: {
-        address: transfer.to,
-        ens: this.ethers.getEnsName(transfer.to)
-      },
-      from: {
-        address: transfer.from,
-        ens: this.ethers.getEnsName(transfer.from)
-      }
-    }))
+  private async afterTransfersQuery(transfers: PixelTransfers[]) {
+    const data = []
+    for (let i = 0; i < transfers.length; i++) {
+      const toEns = await this.ethers.getEnsName(transfers[i].to)
+      const fromEns = await this.ethers.getEnsName(transfers[i].from)
+      data.push({
+        ...transfers[i],
+        to: {
+          address: transfers[i].to,
+          ens: toEns
+        },
+        from: {
+          address: transfers[i].from,
+          ens: fromEns
+        }
+      })
+    }
+    return data
   }
 
   async findOwnerByTokenId(tokenId: number) {

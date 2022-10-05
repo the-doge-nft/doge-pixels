@@ -24,7 +24,7 @@ const LeaderborkPage = observer(function DogParkPage() {
     if (location.pathname.indexOf(SelectedOwnerTab.Wallet) !== -1) {
         selectedOwnerTabType = SelectedOwnerTab.Wallet
     } else {
-        selectedOwnerTabType = SelectedOwnerTab.Transfers
+        selectedOwnerTabType = SelectedOwnerTab.Activity
     }
     const {address, tokenId, activityId} = useParams<{ address?: string; tokenId?: string, activityId?: string }>();
     const store = useMemo(() => new LeaderborkStore(address, tokenId ? Number(tokenId) : undefined, activityId, selectedOwnerTabType), [address, tokenId, selectedOwnerTabType]);
@@ -124,7 +124,7 @@ const LeaderborkPage = observer(function DogParkPage() {
 
                         <Box overflowY={"scroll"} flexGrow={1}>
                           <Flex flexWrap={"wrap"} gap={0} maxHeight={'250px'}>
-                            {(store.selectedOwnerTab === SelectedOwnerTab.Transfers || !store.selectedAddress) && store.transfers.map(transfer => <>
+                            {(store.selectedOwnerTab === SelectedOwnerTab.Activity || !store.selectedAddress) && store.transfers.map(transfer => <>
                                 <Box
                                     key={`user-dog-${transfer.uniqueTransferId}`}
                                     bg={

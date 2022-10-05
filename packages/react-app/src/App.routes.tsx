@@ -63,7 +63,7 @@ export const SELECTED_PIXEL_PARAM = "id_with_offset";
 */
 const routes: AppRouteInterface[] = [
   {
-    path: [`/leaderbork/:address/${SelectedOwnerTab.Transfers}/:activityId?`, `/leaderbork/:address/${SelectedOwnerTab.Wallet}/:tokenId?`, `/leaderbork/${SelectedOwnerTab.Transfers}/:activityId?`, "/leaderbork"],
+    path: [`/leaderbork/:address/${SelectedOwnerTab.Activity}/:activityId?`, `/leaderbork/:address/${SelectedOwnerTab.Wallet}/:tokenId?`, `/leaderbork/${SelectedOwnerTab.Activity}/:activityId?`, "/leaderbork"],
     name: NamedRoutes.LEADERBORK,
     exact: true,
     layout: AppLayout,
