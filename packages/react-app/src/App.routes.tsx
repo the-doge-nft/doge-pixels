@@ -10,6 +10,7 @@ import MobileHomePage from "./pages/MobileHome/MobileHome.page";
 import PixelArtPage from "./pages/PixelArt/PixelArt.page";
 import PerksPage from "./pages/Perks/Perks.page";
 import FourOhFour from "./pages/FourOhFour";
+import {SelectedOwnerTab} from "./pages/Leaderbork/Leaderbork.store";
 
 export enum NamedRoutes {
   VIEWER = "viewer",
@@ -62,7 +63,7 @@ export const SELECTED_PIXEL_PARAM = "id_with_offset";
 */
 const routes: AppRouteInterface[] = [
   {
-    path: ["/leaderbork/:address/:selectedOwnerTab/:activityId?", "/leaderbork/:address/:selectedOwnerTab/:tokenId?", "/leaderbork/activity/:activityId?", "/leaderbork"],
+    path: [`/leaderbork/:address/${SelectedOwnerTab.Transfers}/:activityId?`, `/leaderbork/:address/${SelectedOwnerTab.Wallet}/:tokenId?`, `/leaderbork/${SelectedOwnerTab.Transfers}/:activityId?`, "/leaderbork"],
     name: NamedRoutes.LEADERBORK,
     exact: true,
     layout: AppLayout,

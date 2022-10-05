@@ -5,7 +5,7 @@ import Pane from "../../DSL/Pane/Pane";
 import Typography, {TVariant} from "../../DSL/Typography/Typography";
 import LeaderborkStore, {SelectedOwnerTab} from "./Leaderbork.store";
 import model from "../../DSL/Form/model";
-import {useParams} from "react-router-dom";
+import {useLocation, useParams} from "react-router-dom";
 import PixelPane from "../../DSL/PixelPane/PixelPane";
 import Button from "../../DSL/Button/Button";
 import {darkModeSecondary, lightModePrimary} from "../../DSL/Theme";
@@ -18,8 +18,15 @@ import DogLocked from "./DogLocked";
 import TopDogs from "./TopDogs";
 
 const LeaderborkPage = observer(function DogParkPage() {
-    const {address, tokenId, activityId, selectedOwnerTab} = useParams<{ address?: string; tokenId?: string, activityId?: string, selectedOwnerTab?: SelectedOwnerTab }>();
-    const store = useMemo(() => new LeaderborkStore(address, tokenId ? Number(tokenId) : undefined, activityId, selectedOwnerTab), [address, tokenId, selectedOwnerTab]);
+    const location = useLocation()
+    let selectedOwnerTabType;
+    if (location.pathname.indexOf(SelectedOwnerTab.Wallet) !== -1) {
+        selectedOwnerTabType = SelectedOwnerTab.Wallet
+    } else {
+        selectedOwnerTabType = SelectedOwnerTab.Transfers
+    }
+    const {address, tokenId, activityId} = useParams<{ address?: string; tokenId?: string, activityId?: string }>();
+    const store = useMemo(() => new LeaderborkStore(address, tokenId ? Number(tokenId) : undefined, activityId, selectedOwnerTabType), [address, tokenId, selectedOwnerTabType]);
     const {colorMode} = useColorMode();
     useEffect(() => {
         store.init();

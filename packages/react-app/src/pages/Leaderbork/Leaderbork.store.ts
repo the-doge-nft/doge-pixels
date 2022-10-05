@@ -78,6 +78,8 @@ class LeaderborkStore extends Reactionable(EmptyClass) {
       this.selectedOwnerTab = selectedOwnerTab
     }
 
+    console.log('debug::', selectedAddress, selectedPixelId, transferId, selectedOwnerTab)
+
     this.react(() => this.searchValue, (value, prevValue) => {
       //@ts-ignore
       if ((this.selectedAddress && value.length === prevValue.length - 1) || value === "") {
@@ -154,23 +156,23 @@ class LeaderborkStore extends Reactionable(EmptyClass) {
     this.searchValue = this.selectedAddress
     await this.getSelectedUserTransfers()
     this.selectedTransferId = this.selectedOwnerTransfers[0].uniqueTransferId
-    this.pushWindowState(generatePath("/leaderbork/:address/:selectedOwnerTab/:activityId",
-        {selectedOwnerTab: SelectedOwnerTab.Transfers, address: this.selectedAddress, activityId: this.selectedTransferId}))
+    this.pushWindowState(generatePath(`/leaderbork/:address/${SelectedOwnerTab.Transfers}/:activityId`,
+        {address: this.selectedAddress, activityId: this.selectedTransferId}))
   }
 
   setSelectedPixelId(pixelId: number | null) {
     this.selectedPixelId = pixelId
-    this.pushWindowState(generatePath("/leaderbork/:address/:selectedOwnerTab/:tokenId",
-        {selectedOwnerTab: SelectedOwnerTab.Wallet, address: this.selectedAddress, tokenId: this.selectedPixelId}))
+    this.pushWindowState(generatePath(`/leaderbork/:address/${SelectedOwnerTab.Wallet}/:tokenId`,
+        {address: this.selectedAddress, tokenId: this.selectedPixelId}))
   }
 
   setActivityId(activityId: string) {
     this.selectedTransferId = activityId;
     if (this.selectedOwner) {
-      this.pushWindowState(generatePath("/leaderbork/:address/:selectedOwnerTab/:activityId",
-          {selectedOwnerTab: SelectedOwnerTab.Transfers, address: this.selectedAddress, activityId: this.selectedTransferId}))
+      this.pushWindowState(generatePath(`/leaderbork/:address/${SelectedOwnerTab.Transfers}/:activityId`,
+          {address: this.selectedAddress, activityId: this.selectedTransferId}))
     } else {
-      this.pushWindowState(generatePath("/leaderbork/activity/:activityId", {activityId: this.selectedTransferId}))
+      this.pushWindowState(generatePath(`/leaderbork/${SelectedOwnerTab.Transfers}/:activityId`, {activityId: this.selectedTransferId}))
     }
   }
 
@@ -237,10 +239,10 @@ class LeaderborkStore extends Reactionable(EmptyClass) {
     this.selectedOwnerTab = tabType
     if (this.selectedOwnerTab === SelectedOwnerTab.Wallet) {
       this.selectedPixelId = this.selectedOwner.pixels[0]
-      this.pushWindowState(generatePath("/leaderbork/:address/wallet/:tokenId", {address: this.selectedAddress, tokenId: this.selectedPixelId}))
+      this.pushWindowState(generatePath(`/leaderbork/:address/${SelectedOwnerTab.Wallet}/:tokenId`, {address: this.selectedAddress, tokenId: this.selectedPixelId}))
     } else if (this.selectedOwnerTab === SelectedOwnerTab.Transfers) {
       this.selectedTransferId = this.selectedOwnerTransfers[0].uniqueTransferId
-      this.pushWindowState(generatePath("/leaderbork/:address/activity/:activityId", {address: this.selectedAddress, activityId: this.selectedTransferId}))
+      this.pushWindowState(generatePath(`/leaderbork/:address/${SelectedOwnerTab.Transfers}/:activityId`, {address: this.selectedAddress, activityId: this.selectedTransferId}))
     }
   }
 
