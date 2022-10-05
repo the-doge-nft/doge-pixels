@@ -165,10 +165,10 @@ class Web3Store extends Reactionable(Web3providerStore) {
 
     async errorGuardContracts() {
         const nonContractCode = "0x"
-        const pxCode = await this.web3Provider.getCode(this.pxContract.address)
+        const pxCode = await this.web3Provider.getCode(this.pxContractAddress)
         if (pxCode === nonContractCode) {
             await this.disconnect()
-            throw Error(`PX address is not a contract, please make sure it is deployed & you are on the correct network. Got ${pxCode} ${this.network?.name} ${this.pxContract?.address}`)
+            throw Error(`PX address is not a contract, please make sure it is deployed & you are on the correct network. Got ${pxCode} ${this.network?.name} ${this.pxContractAddress}`)
         }
         const dogCode = await this.web3Provider.getCode(this.dogContract.address)
         if (dogCode === nonContractCode) {

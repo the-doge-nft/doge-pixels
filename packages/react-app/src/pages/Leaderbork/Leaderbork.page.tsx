@@ -144,7 +144,9 @@ const LeaderborkPage = observer(function DogParkPage() {
                               {Object.keys(SelectedOwnerTab).map(item => <Box>
                                   <Typography
                                       textUnderlineOffset={3}
-                                      cursor={"pointer"}
+                                      _hover={{
+                                          cursor: "pointer",
+                                      }}
                                       onClick={() => store.setSelectedOwnerTab(SelectedOwnerTab[item])}
                                       textDecoration={SelectedOwnerTab[item] === store.selectedOwnerTab ? "underline" : "inherit"}
                                       variant={TVariant.PresStart12}>
