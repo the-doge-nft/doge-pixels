@@ -18,8 +18,10 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Install deps
+        working-directory: packages/react-app
         run: yarn install
       - name: Build
+        working-directory: packages/react-app
         run: yarn _dev_build
       - name: Configure AWS Creds
         uses: aws-actions/configure-aws-credentials@v1
@@ -28,8 +30,10 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-1
       - name: Deploy to S3
+        working-directory: packages/react-app
         run: yarn _aws_dev_deploy
       - name: Invalidate Cloudfront cache
+        working-directory: packages/react-apps
         run: yarn _aws_dev_invalidate_cloudfront
 
 
