@@ -5,7 +5,6 @@ import {EmptyClass} from "../../helpers/mixins";
 import {ethers} from "ethers";
 import {abbreviate} from "../../helpers/strings";
 import {Http} from "../../services";
-import {NamedRoutes, route} from "../../App.routes";
 import {generatePath} from "react-router-dom";
 
 export interface PixelOwnerInfo {
@@ -16,9 +15,15 @@ export interface PixelOwnerInfo {
 
 interface PixelTransfer {
   id: number;
-  from: string;
+  from: {
+    address: string;
+    ens: string | null
+  };
   insertedAt: string;
-  to: string;
+  to: {
+    address: string;
+    ens: string | null;
+  };
   tokenId: number;
   uniqueTransferId: string;
   updatedAt: string;
@@ -138,27 +143,27 @@ class LeaderborkStore extends Reactionable(EmptyClass) {
   get selectedActivityTransferDetails() {
     let title
     let description
-    if (this.selectedActivityTransfer.from === ethers.constants.AddressZero) {
+    if (this.selectedActivityTransfer.from.address === ethers.constants.AddressZero) {
       title = "Minted"
-      description = abbreviate(this.selectedActivityTransfer.to, 4)
-    } else if (this.selectedActivityTransfer.to === ethers.constants.AddressZero) {
+      description = abbreviate(this.selectedActivityTransfer.to.address, 4)
+    } else if (this.selectedActivityTransfer.to.address === ethers.constants.AddressZero) {
       title = "Burned"
-      description = abbreviate(this.selectedActivityTransfer.from, 4)
+      description = abbreviate(this.selectedActivityTransfer.from.address, 4)
     } else {
       title = "Transfer"
-      description = `${abbreviate(this.selectedActivityTransfer.from, 4)} to ${abbreviate(this.selectedActivityTransfer.to, 4)}`
+      description = `${abbreviate(this.selectedActivityTransfer.from.address, 4)} to ${abbreviate(this.selectedActivityTransfer.to.address, 4)}`
     }
     return {title, description}
   }
 
-  async selectOwner(address: string) {
+  async setSelectedAddress(address: string) {
     this.selectedAddress = address;
     this.searchValue = this.selectedAddress
-    await this.getSelectedUserTransfers()
-    this.selectedTransferId = this.selectedOwnerTransfers[0].uniqueTransferId
     this.selectedOwnerTab = SelectedOwnerTab.Wallet
-    this.pushWindowState(generatePath(`/leaderbork/:address/${SelectedOwnerTab.Wallet}/:activityId`,
-        {address: this.selectedAddress, activityId: this.selectedTransferId}))
+    this.selectedPixelId = this.selectedOwner.pixels[0]
+    this.pushWindowState(generatePath(`/leaderbork/:address/${SelectedOwnerTab.Wallet}/:tokenId`,
+        {address: this.selectedAddress, tokenId: this.selectedPixelId}))
+    this.getSelectedUserTransfers()
   }
 
   setSelectedPixelId(pixelId: number | null) {

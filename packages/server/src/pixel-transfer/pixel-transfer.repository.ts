@@ -15,6 +15,20 @@ export class PixelTransferRepository {
     @Inject(CACHE_MANAGER) private cacheManager: Cache,
   ) {}
 
+  private afterTransfersQuery(transfers: PixelTransfers[]) {
+    return transfers.map(transfer => ({
+      ...transfer,
+      to: {
+        address: transfer.to,
+        ens: this.ethers.getEnsName(transfer.to)
+      },
+      from: {
+        address: transfer.from,
+        ens: this.ethers.getEnsName(transfer.from)
+      }
+    }))
+  }
+
   async findOwnerByTokenId(tokenId: number) {
     return (await this.prisma.pixelTransfers.findMany({
       where: { tokenId },
@@ -83,20 +97,22 @@ export class PixelTransferRepository {
 
   async searchPixelTransfersByAddress(address, filter, sort) {
     const defaultFilter = {OR: [{from: address}, {to: address}]}
-    return this.prisma.pixelTransfers.findMany({
+    const data = await this.prisma.pixelTransfers.findMany({
       where: filter ? {...this.generateFilterQuery(filter), ...defaultFilter} : defaultFilter,
       orderBy: sort ? this.generateSortQuery(sort) : {blockCreatedAt: 'desc'},
       take: 100
     })
+    return this.afterTransfersQuery(data)
   }
 
   // @next TODO: acccept array of filters & add paging
   async searchPixelTransfers(filter, sort) {
-    return this.prisma.pixelTransfers.findMany({
+    const data = await this.prisma.pixelTransfers.findMany({
       where: filter ? this.generateFilterQuery(filter) : undefined,
       orderBy: sort ? this.generateSortQuery(sort) : {blockCreatedAt: 'desc'},
       take: 100
     });
+    return this.afterTransfersQuery(data)
   }
 
   async upsert({ tokenId, from, to, blockNumber, uniqueTransferId, blockCreatedAt }: Omit<PixelTransfers, 'updatedAt' | 'insertedAt' | 'id'>) {

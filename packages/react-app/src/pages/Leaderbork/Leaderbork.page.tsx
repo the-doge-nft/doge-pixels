@@ -144,9 +144,9 @@ const LeaderborkPage = observer(function DogParkPage() {
                                         <Box position={"absolute"} left={"50%"} top={"50%"} zIndex={10}
                                              style={{transform: "translate(-50%, -65%)"}}>
                                             <Typography variant={TVariant.ComicSans14}>
-                                                {transfer.from === ethers.constants.AddressZero && "✨"}
-                                                {transfer.to === ethers.constants.AddressZero && "🔥"}
-                                                {transfer.to !== ethers.constants.AddressZero && transfer.from !== ethers.constants.AddressZero && "✉️"}
+                                                {transfer.from.address === ethers.constants.AddressZero && "✨"}
+                                                {transfer.to.address === ethers.constants.AddressZero && "🔥"}
+                                                {transfer.to.address !== ethers.constants.AddressZero && transfer.from.address !== ethers.constants.AddressZero && "✉️"}
                                             </Typography>
                                         </Box>
                                         <PixelPane

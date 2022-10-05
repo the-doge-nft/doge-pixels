@@ -27,7 +27,7 @@ const UserCard: React.FC<PropsWithChildren<UserCardProps>> = observer(({store, p
       cursor: "pointer",
       bg: colorMode === "light" ? lightModePrimary : darkModeSecondary
     }}
-    onClick={() => store.selectOwner(pixelOwner.address)}
+    onClick={() => store.setSelectedAddress(pixelOwner.address)}
   >
     <Flex alignItems={"center"} overflow={"hidden"}>
       <Typography
