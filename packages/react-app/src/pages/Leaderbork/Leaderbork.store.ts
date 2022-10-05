@@ -83,8 +83,6 @@ class LeaderborkStore extends Reactionable(EmptyClass) {
       this.selectedOwnerTab = selectedOwnerTab
     }
 
-    console.log('debug::', selectedAddress, selectedPixelId, transferId, selectedOwnerTab)
-
     this.react(() => this.searchValue, (value, prevValue) => {
       //@ts-ignore
       if ((this.selectedAddress && value.length === prevValue.length - 1) || value === "") {

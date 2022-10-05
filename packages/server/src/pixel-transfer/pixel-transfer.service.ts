@@ -41,7 +41,6 @@ export class PixelTransferService implements OnModuleInit {
 
     private async upsertTransfersFromLogs(events: Event[]) {
         for (const event of events) {
-            console.log(JSON.stringify(event))
             const { args, blockNumber } = event;
             const blockCreatedAt = await this.ethersService.getDateTimeFromBlockNumber(blockNumber)
             const { from, to, tokenId } = args;
