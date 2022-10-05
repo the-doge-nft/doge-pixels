@@ -170,7 +170,7 @@ class Web3Store extends Reactionable(Web3providerStore) {
             await this.disconnect()
             throw Error(`PX address is not a contract, please make sure it is deployed & you are on the correct network. Got ${pxCode} ${this.network?.name} ${this.pxContractAddress}`)
         }
-        const dogCode = await this.web3Provider.getCode(this.dogContract.address)
+        const dogCode = await this.web3Provider.getCode(this.dogContractAddress)
         if (dogCode === nonContractCode) {
             await this.disconnect()
             throw Error("DOG20 address is not a contract, please make sure it is deployed & you are on the correct network.")
