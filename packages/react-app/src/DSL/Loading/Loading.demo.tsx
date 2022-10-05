@@ -4,12 +4,14 @@ import Demo from "../Demo/Demo";
 import Loading from "./Loading";
 
 const DemoLoading = () => {
-    return <Demo title="Loading">
-        <Box mb={14}>
-            <Loading />
-        </Box>
-        <Loading title={"Waiting 4 👆..."} showSigningHint/>
+  return (
+    <Demo title="Loading">
+      <Box mb={14}>
+        <Loading />
+      </Box>
+      <Loading title={"Waiting 4 👆..."} showSigningHint />
     </Demo>
-}
+  );
+};
 
-export default DemoLoading
+export default DemoLoading;

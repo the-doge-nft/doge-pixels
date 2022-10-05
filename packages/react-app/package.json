@@ -68,9 +68,9 @@
     "@types/three": "^0.133.1",
     "cross-env": "^7.0.3",
     "customize-cra": "^1.0.0",
+    "prettier": "2.7.1",
     "react-app-rewired": "^2.1.8",
-    "react-error-overlay": "6.0.9",
-    "surge": "^0.21.5"
+    "react-error-overlay": "6.0.9"
   },
   "resolutions": {
     "react-error-overlay": "6.0.9"
@@ -96,6 +96,7 @@
     "prestart": "yarn create-contracts && yarn write-build-number",
     "create-contracts": "node ./scripts/create_contracts.js",
     "write-build-number": "node ./scripts/write-build-number.js",
-    "test": "react-app-rewired test"
+    "test": "react-app-rewired test",
+    "format": "prettier --write './src/**/*.{js,jsx,ts,tsx,css}'"
   }
 }

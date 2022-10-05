@@ -1,16 +1,16 @@
 import React from "react";
-import {FormErrorMessage, Switch} from "@chakra-ui/react";
-import {BaseInputProps} from "./interfaces";
+import { FormErrorMessage, Switch } from "@chakra-ui/react";
+import { BaseInputProps } from "./interfaces";
 import Control from "./Control";
-import {observer} from "mobx-react-lite";
-import {useControlledFormField, useFormField} from "./useFormField";
+import { observer } from "mobx-react-lite";
+import { useControlledFormField, useFormField } from "./useFormField";
 
 interface ToggleInputProps extends BaseInputProps {}
 
 const ToggleInput = observer(
   ({ validate, name, initialValue, label, horizontal, onChange, value }: ToggleInputProps) => {
     const { isRequired, inputValue, inputOnChange, restInput, meta } = useFormField(validate, name, initialValue, true);
-    useControlledFormField(inputOnChange, value)
+    useControlledFormField(inputOnChange, value);
 
     return (
       <Control name={name} isRequired={isRequired} label={label} horizontal={horizontal}>

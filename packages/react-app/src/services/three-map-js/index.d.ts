@@ -1,17 +1,17 @@
-import {Object3D} from "three";
+import { Object3D } from "three";
 
 interface Dispose {
-  dispose: () => void
+  dispose: () => void;
 }
 
-export type PanZoomReturn = EventType & Dispose
+export type PanZoomReturn = EventType & Dispose;
 
 declare function panzoom(
   camera: Object3D,
   owner: HTMLElement,
   toKeepInBounds: Object3D,
   minDepth: number,
-  maxDepth: number
-): PanZoomReturn
+  maxDepth: number,
+): PanZoomReturn;
 
-export = panzoom
+export = panzoom;

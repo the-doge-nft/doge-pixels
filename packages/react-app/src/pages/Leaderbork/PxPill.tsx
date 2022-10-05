@@ -3,7 +3,7 @@ import { Box, useColorMode } from "@chakra-ui/react";
 import { lightOrDarkMode } from "../../DSL/Theme";
 import Typography, { TVariant } from "../../DSL/Typography/Typography";
 
-const PxPill = ({ count, bg }: { count: number, bg?: string }) => {
+const PxPill = ({ count, bg }: { count: number; bg?: string }) => {
   const { colorMode } = useColorMode();
   return (
     <Box

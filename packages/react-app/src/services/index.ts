@@ -1,4 +1,4 @@
-import {HttpConfig, httpFactory} from "./http";
+import { HttpConfig, httpFactory } from "./http";
 import ApiErrorInterceptor from "./interceptors/api-error.interceptor";
 
 const Http = httpFactory(HttpConfig);

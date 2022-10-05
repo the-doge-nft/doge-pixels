@@ -1,4 +1,3 @@
-
 export const STILL_LOADING_SIGN = "-";
 
 /**
@@ -18,7 +17,7 @@ export const STILL_LOADING_SIGN = "-";
  * @return string 100,000,000
  **/
 export const formatWithThousandsSeparators = (val: number | string, maxDigits: number = 4): string => {
-  return Number(val).toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: maxDigits});
+  return Number(val).toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: maxDigits });
   // line below is probably the cause for the exception on safari: https://stackoverflow.com/questions/51568821/works-in-chrome-but-breaks-in-safari-invalid-regular-expression-invalid-group
   // return val.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g,    ",");
   // return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
@@ -64,7 +63,6 @@ export function bytesToHumanReadable(bytes: number, decimals = 2) {
   return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + " " + sizes[i];
 }
 
-
 export function convertToAbbreviation(val: number) {
   // thousands, millions, billions etc..
   var s = ["", "K", "M", "B", "T"];
@@ -74,7 +72,7 @@ export function convertToAbbreviation(val: number) {
 
   // calculating the precised value.
   // eslint-disable-next-line
-  var sVal = parseFloat((sNum != 0 ? (val / Math.pow(1000, sNum)) : val).toPrecision(3));
+  var sVal = parseFloat((sNum != 0 ? val / Math.pow(1000, sNum) : val).toPrecision(3));
 
   // eslint-disable-next-line
   if (sVal % 1 != 0) {

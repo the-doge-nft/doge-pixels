@@ -1,18 +1,17 @@
-import routes, {AppRouteInterface, NamedRoutes, route, SELECTED_PIXEL_PARAM} from "../../App.routes";
+import routes, { AppRouteInterface, NamedRoutes, route, SELECTED_PIXEL_PARAM } from "../../App.routes";
 import AppStore from "../../store/App.store";
 import Link from "../../DSL/Link/Link";
-import {matchPath, useLocation} from "react-router-dom";
-import {SelectedOwnerTab} from "../../pages/Leaderbork/Leaderbork.store";
+import { matchPath, useLocation } from "react-router-dom";
+import { SelectedOwnerTab } from "../../pages/Leaderbork/Leaderbork.store";
 
 const NavLinks = ({ isMobile }: { isMobile?: boolean }) => {
   const location = useLocation();
 
-
   const getPath = (routeName: NamedRoutes) => {
     if (routeName === NamedRoutes.LEADERBORK) {
-      return `/leaderbork/${SelectedOwnerTab.Activity}`
+      return `/leaderbork/${SelectedOwnerTab.Activity}`;
     } else {
-      return route(routeName)
+      return route(routeName);
     }
   };
 
@@ -22,7 +21,6 @@ const NavLinks = ({ isMobile }: { isMobile?: boolean }) => {
       exact: true,
       strict: false,
     });
-
 
     /*
       Hack to match NamedRoutes.PIXELS route to the NamedRoutes.VIEWER link as they both render the same
@@ -59,34 +57,34 @@ const NavLinks = ({ isMobile }: { isMobile?: boolean }) => {
     <>
       {isMobile
         ? [...routes]
-          .sort(sortBy)
-          .filter(route => route.showOnMobile)
-          .map(appRoute => (
-            <Link
-              isNav
-              to={getPath(appRoute.name)}
-              key={`mobile-nav-${appRoute.path}`}
-              textDecoration={getMatch(appRoute.path) ? "underline" : "none"}
-            >
-              {appRoute.mobileName}
-            </Link>
-          ))
+            .sort(sortBy)
+            .filter(route => route.showOnMobile)
+            .map(appRoute => (
+              <Link
+                isNav
+                to={getPath(appRoute.name)}
+                key={`mobile-nav-${appRoute.path}`}
+                textDecoration={getMatch(appRoute.path) ? "underline" : "none"}
+              >
+                {appRoute.mobileName}
+              </Link>
+            ))
         : [...routes]
-          .sort(sortBy)
-          .filter(route => route.showOnDesktop)
-          .map(appRoute => (
-            <Link
-              size={"sm"}
-              isNav
-              key={`desktop-nav-${appRoute.path}`}
-              to={getPath(appRoute.name)}
-              textDecoration={getMatch(appRoute.path) ? "underline" : "none"}
-            >
-              {appRoute.desktopName}
-            </Link>
-          ))}
+            .sort(sortBy)
+            .filter(route => route.showOnDesktop)
+            .map(appRoute => (
+              <Link
+                size={"sm"}
+                isNav
+                key={`desktop-nav-${appRoute.path}`}
+                to={getPath(appRoute.name)}
+                textDecoration={getMatch(appRoute.path) ? "underline" : "none"}
+              >
+                {appRoute.desktopName}
+              </Link>
+            ))}
     </>
   );
 };
 
-export default NavLinks
+export default NavLinks;

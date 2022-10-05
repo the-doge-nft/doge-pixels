@@ -10,39 +10,41 @@ import { useHistory } from "react-router-dom";
 import NavLinks from "./NavLinks";
 
 const Header = observer(() => {
-  return <Box mb={10} display={{ base: "none", md: "flex" }}>
-    <Box w={"full"}>
-      <Flex alignItems={"center"} mb={2}>
-        <Title />
+  return (
+    <Box mb={10} display={{ base: "none", md: "flex" }}>
+      <Box w={"full"}>
+        <Flex alignItems={"center"} mb={2}>
+          <Title />
+        </Flex>
+      </Box>
+      <Flex>
+        <Box mr={6} display={{ base: "none", xl: "block" }}>
+          <Flex w={"full"} h={"full"} alignItems={"center"} justifyContent={"center"}>
+            <HStack spacing={12}>
+              <NavLinks />
+            </HStack>
+          </Flex>
+        </Box>
+        <Box display={{ base: "none", md: "flex" }} alignItems={"center"} justifyContent={"flex-end"} w={"full"}>
+          <Flex mr={8}>
+            <ColorModeToggle />
+          </Flex>
+          {!AppStore.web3.web3Provider && (
+            <Button
+              whiteSpace={{ base: "normal", lg: "nowrap" }}
+              onClick={() => {
+                AppStore.web3.connect();
+              }}
+            >
+              Connect
+            </Button>
+          )}
+          {AppStore.web3.address && AppStore.web3.web3Provider && <UserMenu />}
+        </Box>
       </Flex>
     </Box>
-    <Flex>
-      <Box mr={6} display={{base: "none", xl: "block"}}>
-        <Flex w={"full"} h={"full"} alignItems={"center"} justifyContent={"center"}>
-          <HStack spacing={12}>
-            <NavLinks />
-          </HStack>
-        </Flex>
-      </Box>
-      <Box display={{ base: "none", md: "flex" }} alignItems={"center"} justifyContent={"flex-end"} w={"full"}>
-        <Flex mr={8}>
-          <ColorModeToggle />
-        </Flex>
-        {!AppStore.web3.web3Provider && (
-          <Button
-            whiteSpace={{ base: "normal", lg: "nowrap" }}
-            onClick={() => {
-              AppStore.web3.connect();
-            }}
-          >
-            Connect
-          </Button>
-        )}
-        {AppStore.web3.address && AppStore.web3.web3Provider && <UserMenu />}
-      </Box>
-    </Flex>
-  </Box>
-})
+  );
+});
 
 const Title = () => {
   const history = useHistory();
@@ -65,4 +67,4 @@ const Title = () => {
   );
 };
 
-export default Header
+export default Header;

@@ -1,6 +1,6 @@
 import React from "react";
-import {Icon as ChakraIcon, IconProps as ChakraIconProps, useStyleConfig} from "@chakra-ui/react";
-import {VscArrowRight, VscChevronDown, VscChevronUp, BsTwitter, FaDiscord} from "react-icons/all";
+import { Icon as ChakraIcon, IconProps as ChakraIconProps, useStyleConfig } from "@chakra-ui/react";
+import { VscArrowRight, VscChevronDown, VscChevronUp, BsTwitter, FaDiscord } from "react-icons/all";
 
 import User from "./custom/User";
 import Search from "./custom/Search";
@@ -14,12 +14,7 @@ import ToolErase from "./custom/ToolErase";
 import ToolStickers from "./custom/ToolStickers";
 import TemplateToggle from "./custom/TemplateToggle";
 
-export type ReactIconName =
-  | "chevron-up"
-  | "chevron-down"
-  | "arrow-right"
-  | "discord"
-  | "twitter"
+export type ReactIconName = "chevron-up" | "chevron-down" | "arrow-right" | "discord" | "twitter";
 
 type CustomIconName =
   | "person"
@@ -32,18 +27,30 @@ type CustomIconName =
   | "toolPen"
   | "toolErase"
   | "toolStickers"
-  | "templateToggle"
+  | "templateToggle";
 
-export type IconName = ReactIconName | CustomIconName
+export type IconName = ReactIconName | CustomIconName;
 
-const customIcons: CustomIconName[] = ['person', 'search', 'sun', 'moon', 'close', 'back', 'cowswap', 'toolPen', 'toolErase', 'toolStickers', 'templateToggle']
+const customIcons: CustomIconName[] = [
+  "person",
+  "search",
+  "sun",
+  "moon",
+  "close",
+  "back",
+  "cowswap",
+  "toolPen",
+  "toolErase",
+  "toolStickers",
+  "templateToggle",
+];
 
 const iconStringToComponentMap = {
   "chevron-up": VscChevronUp,
   "chevron-down": VscChevronDown,
   "arrow-right": VscArrowRight,
-  "discord": FaDiscord,
-  "twitter": BsTwitter
+  discord: FaDiscord,
+  twitter: BsTwitter,
 };
 
 const customIconStringToComponentMap = {
@@ -58,17 +65,17 @@ const customIconStringToComponentMap = {
   toolErase: ToolErase,
   toolStickers: ToolStickers,
   templateToggle: TemplateToggle,
-}
+};
 
 interface IconProps extends ChakraIconProps {
   icon: IconName;
 }
 
 const Icon = ({ icon, ...rest }: IconProps) => {
-  const style = useStyleConfig("Icon")
+  const style = useStyleConfig("Icon");
   if (customIcons.includes(icon as CustomIconName)) {
-    const Component = customIconStringToComponentMap[icon as CustomIconName]
-    return <Component __css={style} {...rest}/>
+    const Component = customIconStringToComponentMap[icon as CustomIconName];
+    return <Component __css={style} {...rest} />;
   } else {
     //@ts-ignore
     return <ChakraIcon __css={style} as={iconStringToComponentMap[icon as ReactIconName]} {...rest} />;

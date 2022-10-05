@@ -42,8 +42,8 @@ const LinkStyle = {
   },
   defaultProps: {
     size: "md",
-    variant: Type.PresStart
-  }
+    variant: Type.PresStart,
+  },
 };
 
 export default LinkStyle;

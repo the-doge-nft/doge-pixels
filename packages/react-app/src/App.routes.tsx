@@ -10,7 +10,7 @@ import MobileHomePage from "./pages/MobileHome/MobileHome.page";
 import PixelArtPage from "./pages/PixelArt/PixelArt.page";
 import PerksPage from "./pages/Perks/Perks.page";
 import FourOhFour from "./pages/FourOhFour";
-import {SelectedOwnerTab} from "./pages/Leaderbork/Leaderbork.store";
+import { SelectedOwnerTab } from "./pages/Leaderbork/Leaderbork.store";
 
 export enum NamedRoutes {
   VIEWER = "viewer",
@@ -21,7 +21,7 @@ export enum NamedRoutes {
   MOBILE_HOME = "mobile",
   PIXELS = "pixels",
   PERKS = "perks",
-  FOUR_O_FOUR = "fourofour"
+  FOUR_O_FOUR = "fourofour",
 }
 
 export interface AppRouteInterface {
@@ -45,7 +45,7 @@ export const route = (name: NamedRoutes, params?: {}) => {
   }
 
   if (Array.isArray(route.path)) {
-    throw new TypeError("Array paths not supported yet")
+    throw new TypeError("Array paths not supported yet");
   }
 
   if (params) {
@@ -63,7 +63,12 @@ export const SELECTED_PIXEL_PARAM = "id_with_offset";
 */
 const routes: AppRouteInterface[] = [
   {
-    path: [`/leaderbork/:address/${SelectedOwnerTab.Activity}/:activityId?`, `/leaderbork/:address/${SelectedOwnerTab.Wallet}/:tokenId?`, `/leaderbork/${SelectedOwnerTab.Activity}/:activityId?`, "/leaderbork"],
+    path: [
+      `/leaderbork/:address/${SelectedOwnerTab.Activity}/:activityId?`,
+      `/leaderbork/:address/${SelectedOwnerTab.Wallet}/:tokenId?`,
+      `/leaderbork/${SelectedOwnerTab.Activity}/:activityId?`,
+      "/leaderbork",
+    ],
     name: NamedRoutes.LEADERBORK,
     exact: true,
     layout: AppLayout,
@@ -72,7 +77,7 @@ const routes: AppRouteInterface[] = [
     mobileName: "LEADERBORK",
     showOnDesktop: true,
     showOnMobile: true,
-    displayOrder: 1
+    displayOrder: 1,
   },
   {
     path: "/perks",
@@ -158,11 +163,11 @@ routes.push({
   name: NamedRoutes.FOUR_O_FOUR,
   layout: AppLayout,
   component: FourOhFour,
-  desktopName: '',
-  mobileName: '',
+  desktopName: "",
+  mobileName: "",
   showOnMobile: false,
   showOnDesktop: false,
-  displayOrder: 5
-})
+  displayOrder: 5,
+});
 
 export default routes;

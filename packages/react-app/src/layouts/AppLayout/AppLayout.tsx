@@ -1,5 +1,5 @@
 import React from "react";
-import {Box, Flex, HStack, useColorMode} from "@chakra-ui/react";
+import { Box, Flex, HStack, useColorMode } from "@chakra-ui/react";
 import { observer } from "mobx-react-lite";
 import AppStore from "../../store/App.store";
 import Typography, { TVariant } from "../../DSL/Typography/Typography";
@@ -8,8 +8,7 @@ import NavLinks from "./NavLinks";
 import Header from "./Header";
 import { formatWithThousandsSeparators } from "../../helpers/numberFormatter";
 import Icon from "../../DSL/Icon/Icon";
-import {Link} from "react-router-dom";
-
+import { Link } from "react-router-dom";
 
 interface AppLayoutProps {
   children?: any;
@@ -18,11 +17,16 @@ interface AppLayoutProps {
 const AppLayout = observer(function AppLayout({ children }: AppLayoutProps) {
   return (
     <Flex justifyContent={"center"} flexGrow={1}>
-      <Flex flexGrow={1} w={"full"} maxW={"8xl"} p={{ base: 0, md: 8 }} pb={{ base: 0, md: 3 }} flexDirection={"column"}>
+      <Flex
+        flexGrow={1}
+        w={"full"}
+        maxW={"8xl"}
+        p={{ base: 0, md: 8 }}
+        pb={{ base: 0, md: 3 }}
+        flexDirection={"column"}
+      >
         <Header />
-        <Flex grow={1}>
-          {children}
-        </Flex>
+        <Flex grow={1}>{children}</Flex>
         {AppStore.rwd.isMobile && <MobileNav />}
         {!AppStore.rwd.isMobile && <Footer />}
       </Flex>
@@ -32,17 +36,23 @@ const AppLayout = observer(function AppLayout({ children }: AppLayoutProps) {
 
 const Footer = observer(() => {
   return (
-      <HStack mt={5} justifyContent={'flex-end'} alignItems={'center'} spacing={2}>
-        <a target={"_blank"} href={"https://discord.com/invite/thedogenft"} style={{ display: 'flex', alignItems: 'center' }}>
-          <Icon icon={'discord'} boxSize={5}/>
-        </a>
-        <a target={"_blank"} href={"https://twitter.com/ownthedoge"} style={{ display: 'flex', alignItems: 'center' }}>
-          <Icon icon={'twitter'} boxSize={4}/>
-        </a>
-        {AppStore.web3.usdPerPixel && <Typography variant={TVariant.ComicSans14}>
+    <HStack mt={5} justifyContent={"flex-end"} alignItems={"center"} spacing={2}>
+      <a
+        target={"_blank"}
+        href={"https://discord.com/invite/thedogenft"}
+        style={{ display: "flex", alignItems: "center" }}
+      >
+        <Icon icon={"discord"} boxSize={5} />
+      </a>
+      <a target={"_blank"} href={"https://twitter.com/ownthedoge"} style={{ display: "flex", alignItems: "center" }}>
+        <Icon icon={"twitter"} boxSize={4} />
+      </a>
+      {AppStore.web3.usdPerPixel && (
+        <Typography variant={TVariant.ComicSans14}>
           ${formatWithThousandsSeparators(AppStore.web3.usdPerPixel, 2)} / pixel
-        </Typography>}
-      </HStack>
+        </Typography>
+      )}
+    </HStack>
   );
 });
 

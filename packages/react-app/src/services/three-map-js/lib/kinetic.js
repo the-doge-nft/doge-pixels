@@ -11,40 +11,40 @@ function kinetic(getPointCallback, options) {
   var trackerSpeed = options.trackerSpeed || 100;
   var scrollCallback = options.scrollCallback || noop;
 
-  var lastPoint = {x: 0, y: 0}
-  var timestamp
-  var timeConstant = 342
+  var lastPoint = { x: 0, y: 0 };
+  var timestamp;
+  var timeConstant = 342;
 
-  var ticker
+  var ticker;
   var vx, targetX, ax;
   var vy, targetY, ay;
 
-  var raf
+  var raf;
 
   return {
     start: start,
     stop: stop,
     cancel: cancel,
-    isStarted: isStarted
-  }
+    isStarted: isStarted,
+  };
 
   function isStarted() {
     return ticker !== 0;
   }
 
   function cancel() {
-    window.clearInterval(ticker)
-    window.cancelAnimationFrame(raf)
+    window.clearInterval(ticker);
+    window.cancelAnimationFrame(raf);
   }
 
   function start() {
-    setInternalLastPoint(getPointCallback())
+    setInternalLastPoint(getPointCallback());
 
-    ax = ay = vx = vy = 0
-    timestamp = new Date()
+    ax = ay = vx = vy = 0;
+    timestamp = new Date();
 
-    window.clearInterval(ticker)
-    window.cancelAnimationFrame(raf)
+    window.clearInterval(ticker);
+    window.cancelAnimationFrame(raf);
 
     ticker = window.setInterval(trackPointMovement, trackerSpeed);
   }
@@ -54,18 +54,18 @@ function kinetic(getPointCallback, options) {
     var elapsed = now - timestamp;
     timestamp = now;
 
-    var point = getPointCallback()
+    var point = getPointCallback();
 
-    var dx = point.x - lastPoint.x
-    var dy = point.y - lastPoint.y
+    var dx = point.x - lastPoint.x;
+    var dy = point.y - lastPoint.y;
 
     setInternalLastPoint(point);
 
-    var dt = 1000 / (1 + elapsed)
+    var dt = 1000 / (1 + elapsed);
 
     // moving average
-    vx = 0.8 * dx * dt + 0.2 * vx
-    vy = 0.8 * dy * dt + 0.2 * vy
+    vx = 0.8 * dx * dt + 0.2 * vx;
+    vy = 0.8 * dy * dt + 0.2 * vy;
   }
 
   function setInternalLastPoint(p) {
@@ -75,54 +75,54 @@ function kinetic(getPointCallback, options) {
 
   function stop() {
     window.clearInterval(ticker);
-    window.cancelAnimationFrame(raf)
+    window.cancelAnimationFrame(raf);
     ticker = 0;
 
-    var point = getPointCallback()
+    var point = getPointCallback();
 
-    targetX = point.x
-    targetY = point.y
-    timestamp = Date.now()
+    targetX = point.x;
+    targetY = point.y;
+    timestamp = Date.now();
 
     if (vx < -minVelocity || vx > minVelocity) {
-      ax = amplitude * vx
-      targetX += ax
+      ax = amplitude * vx;
+      targetX += ax;
     }
 
     if (vy < -minVelocity || vy > minVelocity) {
-      ay = amplitude * vy
-      targetY += ay
+      ay = amplitude * vy;
+      targetY += ay;
     }
 
     raf = window.requestAnimationFrame(autoScroll);
   }
 
   function autoScroll() {
-    var elapsed = Date.now() - timestamp
+    var elapsed = Date.now() - timestamp;
 
-    var moving = false
-    var dx = 0
-    var dy = 0
+    var moving = false;
+    var dx = 0;
+    var dy = 0;
 
     if (ax) {
-      dx = -ax * Math.exp(-elapsed / timeConstant)
+      dx = -ax * Math.exp(-elapsed / timeConstant);
 
-      if (dx > 0.5 || dx < -0.5) moving = true
-      else dx = ax = 0
+      if (dx > 0.5 || dx < -0.5) moving = true;
+      else dx = ax = 0;
     }
 
     if (ay) {
-      dy = -ay * Math.exp(-elapsed / timeConstant)
+      dy = -ay * Math.exp(-elapsed / timeConstant);
 
-      if (dy > 0.5 || dy < -0.5) moving = true
-      else dy = ay = 0
+      if (dy > 0.5 || dy < -0.5) moving = true;
+      else dy = ay = 0;
     }
 
     if (moving) {
-      scrollCallback(targetX + dx, targetY + dy)
+      scrollCallback(targetX + dx, targetY + dy);
       raf = window.requestAnimationFrame(autoScroll);
     }
   }
 }
 
-function noop() { }
+function noop() {}

@@ -30,15 +30,15 @@ const PaneStyle = {
   }),
   sizes: {
     sm: {
-      container: {p: 2}
+      container: { p: 2 },
     },
     lg: {
-      container: {p: 9}
-    }
+      container: { p: 9 },
+    },
   },
   title: {},
   defaultProps: {
-    size: 'lg'
+    size: "lg",
   },
 };
 

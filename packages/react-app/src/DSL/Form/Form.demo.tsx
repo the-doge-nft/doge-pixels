@@ -1,15 +1,15 @@
-import React, {useMemo} from "react";
+import React, { useMemo } from "react";
 import Demo from "../Demo/Demo";
 import Form from "./Form";
-import {Box, HStack, VStack} from "@chakra-ui/react";
-import Button, {ButtonVariant} from "../Button/Button";
+import { Box, HStack, VStack } from "@chakra-ui/react";
+import Button, { ButtonVariant } from "../Button/Button";
 import TextInput from "./TextInput";
 import NumberInput from "./NumberInput/NumberInput";
-import {makeObservable, observable} from "mobx";
+import { makeObservable, observable } from "mobx";
 import model from "./model";
 import Submit from "./Submit";
-import {observer} from "mobx-react-lite";
-import Typography, {TVariant} from "../../DSL/Typography/Typography";
+import { observer } from "mobx-react-lite";
+import Typography, { TVariant } from "../../DSL/Typography/Typography";
 import BigInput from "./BigInput";
 import CheckboxInput from "./CheckboxInput/CheckboxInput";
 
@@ -30,7 +30,7 @@ class DemoFormStore {
   toggle = false;
 
   @observable
-  check = false
+  check = false;
 
   get selectItems() {
     return [
@@ -46,17 +46,19 @@ class DemoFormStore {
 
 const DemoForm = () => {
   const store = useMemo(() => new DemoFormStore(), []);
-  return <Demo title={"Form"}>
-      <Box px={{base: 5, md: "20%"}}>
+  return (
+    <Demo title={"Form"}>
+      <Box px={{ base: 5, md: "20%" }}>
         <DemoBasicForm />
-        <DemoTextInputForm store={store}/>
-        <DemoNumberInputForm store={store}/>
-        <DemoBigInput store={store}/>
+        <DemoTextInputForm store={store} />
+        <DemoNumberInputForm store={store} />
+        <DemoBigInput store={store} />
         {/*<DemoSelectInput store={store} />*/}
         {/*<ToggleDemo store={store}/>*/}
-        <CheckboxDemo store={store}/>
+        <CheckboxDemo store={store} />
       </Box>
     </Demo>
+  );
 };
 
 const DemoBasicForm = () => {
@@ -142,11 +144,7 @@ const DemoBigInput = observer(({ store }: { store: DemoFormStore }) => {
   return (
     <SubDemo title={"Big Input"}>
       <Form onSubmit={async data => alert(JSON.stringify(data))}>
-        <BigInput
-          label={"PX"}
-          store={store}
-          storeKey={"bigNumberInput"}
-        />
+        <BigInput label={"PX"} store={store} storeKey={"bigNumberInput"} />
         <Submit w={"100%"} mt={3} />
       </Form>
     </SubDemo>
@@ -170,7 +168,7 @@ const DemoBigInput = observer(({ store }: { store: DemoFormStore }) => {
 //   );
 // });
 
-const CheckboxDemo = observer(({store}: {store: DemoFormStore}) => {
+const CheckboxDemo = observer(({ store }: { store: DemoFormStore }) => {
   return (
     <SubDemo title={"Checkbox Input"}>
       <Form onSubmit={async data => alert(JSON.stringify(data))}>
@@ -185,8 +183,8 @@ const CheckboxDemo = observer(({store}: {store: DemoFormStore}) => {
         </HStack>
       </Form>
     </SubDemo>
-  )
-})
+  );
+});
 
 export const SubDemo = ({ title, children }: { title: string; children: any }) => {
   return (

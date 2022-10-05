@@ -1,17 +1,17 @@
 import React from "react";
-import {observer} from "mobx-react-lite";
-import {Box, Flex, Image, VStack} from "@chakra-ui/react";
-import Typography, {TVariant} from "../../../DSL/Typography/Typography";
+import { observer } from "mobx-react-lite";
+import { Box, Flex, Image, VStack } from "@chakra-ui/react";
+import Typography, { TVariant } from "../../../DSL/Typography/Typography";
 import ViewerStore from "../Viewer.store";
 import Button from "../../../DSL/Button/Button";
 import PixelPane from "../../../DSL/PixelPane/PixelPane";
-import {SELECT_PIXEL} from "../../../services/mixins/eventable";
+import { SELECT_PIXEL } from "../../../services/mixins/eventable";
 import AppStore from "../../../store/App.store";
 import Dev from "../../../common/Dev";
-import {isDevModeEnabled, isStaging} from "../../../environment/helpers";
+import { isDevModeEnabled, isStaging } from "../../../environment/helpers";
 import Link from "../../../DSL/Link/Link";
-import {NamedRoutes, route} from "../../../App.routes";
-import {generatePath} from "react-router-dom";
+import { NamedRoutes, route } from "../../../App.routes";
+import { generatePath } from "react-router-dom";
 
 const SelectedPixelPane = observer(function SelectedPixelPane({ store }: { store: ViewerStore }) {
   return (
@@ -77,15 +77,15 @@ const SelectedPixelPane = observer(function SelectedPixelPane({ store }: { store
                     </Typography>
                   </Box>
                 )}
-
-                {/*`/park/${store.tokenOwner}/${store.selectedPupper}`*/}
-
                 {!AppStore.rwd.isMobile && (
                   <Box mt={2}>
-                    <Link isNav to={generatePath("/leaderbork/:address/wallet/:tokenId", {
-                      address: store.tokenOwner,
-                      tokenId: store.selectedPupper
-                    })}>
+                    <Link
+                      isNav
+                      to={generatePath("/leaderbork/:address/wallet/:tokenId", {
+                        address: store.tokenOwner,
+                        tokenId: store.selectedPupper,
+                      })}
+                    >
                       {store.selectedTokenOwnerDisplayName}
                     </Link>
                   </Box>

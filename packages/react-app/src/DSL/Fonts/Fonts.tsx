@@ -5,7 +5,7 @@ import React from "react";
 
 export enum Type {
   PresStart = "PressStart2P",
-  ComicSans = "Comic Sans"
+  ComicSans = "Comic Sans",
 }
 
 const Fonts = () => {

@@ -11,9 +11,7 @@ export type Constructor<T = {}> = new (...args: any[]) => T;
 
 export class EmptyClass {}
 
-export class MixinException extends Error {
-
-}
+export class MixinException extends Error {}
 
 /**
  *
@@ -75,15 +73,18 @@ export class MixinException extends Error {
  */
 export function guardMixinMethodInheritance(MixinClass: any, BaseClass: any, funcName: string) {
   if (BaseClass.prototype[funcName]) {
-    const tree: any[] = []
+    const tree: any[] = [];
     tree.push(MixinClass.name);
-    let curBase = MixinClass;//BaseClass;
+    let curBase = MixinClass; //BaseClass;
     while (curBase.__proto__ && curBase.__proto__.name) {
       tree.push(curBase.__proto__.name);
       curBase = curBase.__proto__;
     }
-    const hint = "Make sure no base class in the tree has method names overlapping with mixin class, and there are no duplicate classes in the inheritance tree"
-    throw new MixinException("Mixing Guard: found inherited func: " + funcName + " on class " + tree.join(' -> ') + ". " + hint);//+ ", while trying to create " + MixinClass.name + " mixin");
+    const hint =
+      "Make sure no base class in the tree has method names overlapping with mixin class, and there are no duplicate classes in the inheritance tree";
+    throw new MixinException(
+      "Mixing Guard: found inherited func: " + funcName + " on class " + tree.join(" -> ") + ". " + hint,
+    ); //+ ", while trying to create " + MixinClass.name + " mixin");
   }
 }
 
@@ -97,10 +98,7 @@ export function guardMixinMethodInheritance(MixinClass: any, BaseClass: any, fun
  * @param BaseClass
  */
 export function guardMixinClassInheritance(MixinClass: any, BaseClass: any) {
-  const ignore = [
-    "constructor",
-    "__reactstandin__regenerateByEval"
-  ];
+  const ignore = ["constructor", "__reactstandin__regenerateByEval"];
   const MixinMethods = Object.getOwnPropertyNames(MixinClass.prototype);
   for (let i = 0; i < MixinMethods.length; ++i) {
     if (ignore.indexOf(MixinMethods[i]) >= 0) {

@@ -2,16 +2,14 @@ import { makeObservable } from "mobx";
 import MintPixelsDialogStore from "../../../common/MintPixels/MintPixelsDialog.store";
 
 class MintPixelsDrawerStore extends MintPixelsDialogStore {
-
   constructor() {
     super();
-    makeObservable(this)
+    makeObservable(this);
   }
 
   init() {
-    super.init()
+    super.init();
   }
-
 }
 
-export default MintPixelsDrawerStore
+export default MintPixelsDrawerStore;

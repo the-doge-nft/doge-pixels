@@ -1,4 +1,4 @@
-import React, {forwardRef} from "react";
+import React, { forwardRef } from "react";
 import { Input as ChakraInput, InputProps as ChakraInputProps } from "@chakra-ui/react";
 
 //@TODO: add custom components for other chakra form inputs

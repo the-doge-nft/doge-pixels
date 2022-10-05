@@ -98,7 +98,7 @@ const theme = extendTheme({
     BigText: BigTextStyle,
     Drawer: DrawerStyle,
     Tooltip: TooltipStyle,
-    Typeahead: TypeaheadStyle
+    Typeahead: TypeaheadStyle,
   },
 });
 

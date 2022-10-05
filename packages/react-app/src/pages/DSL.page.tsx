@@ -1,6 +1,6 @@
 import React from "react";
-import {Box} from "@chakra-ui/react";
-import Typography, {TVariant} from "../DSL/Typography/Typography";
+import { Box } from "@chakra-ui/react";
+import Typography, { TVariant } from "../DSL/Typography/Typography";
 import DemoButton from "../DSL/Button/Button.demo";
 import DemoModal from "../DSL/Modal/Modal.demo";
 import DemoColors from "../DSL/Colors/Colors.demo";
@@ -18,30 +18,30 @@ import TooltipDemo from "../DSL/Tooltip/Tooltip.demo";
 import DemoCombobox from "../DSL/Typeahead/Typeahead.demo";
 
 const DSLPage = () => {
-    return (
-        <Box px={{lg: 350, sm: 50}} mb={20}>
-            <Box textAlign={"center"}>
-                <Typography variant={TVariant.PresStart28} block mb={7}>
-                    ✨ DSL ✨
-                </Typography>
-                <DemoCombobox/>
-                <DemoParkPixels/>
-                <TooltipDemo/>
-                <DemoSelect/>
-                <DemoDrawer/>
-                <DemoLink/>
-                <DemoPill/>
-                <DemoPixelPane/>
-                <DemoLoading/>
-                <DemoButton/>
-                <DemoModal/>
-                <DemoColors/>
-                <DemoToast/>
-                <DemoColorModeToggle/>
-                <DemoForm/>
-            </Box>
-        </Box>
-    );
+  return (
+    <Box px={{ lg: 350, sm: 50 }} mb={20}>
+      <Box textAlign={"center"}>
+        <Typography variant={TVariant.PresStart28} block mb={7}>
+          ✨ DSL ✨
+        </Typography>
+        <DemoCombobox />
+        <DemoParkPixels />
+        <TooltipDemo />
+        <DemoSelect />
+        <DemoDrawer />
+        <DemoLink />
+        <DemoPill />
+        <DemoPixelPane />
+        <DemoLoading />
+        <DemoButton />
+        <DemoModal />
+        <DemoColors />
+        <DemoToast />
+        <DemoColorModeToggle />
+        <DemoForm />
+      </Box>
+    </Box>
+  );
 };
 
 export default DSLPage;

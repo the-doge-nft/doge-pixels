@@ -1,6 +1,6 @@
 import { ValidatorFunction } from "./validation";
 import { StyleProps } from "@chakra-ui/styled-system";
-import {InputProps, OtherProps} from "@chakra-ui/react";
+import { InputProps, OtherProps } from "@chakra-ui/react";
 
 export type BaseInputValidators = ValidatorFunction[] | ValidatorFunction;
 

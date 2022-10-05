@@ -4,23 +4,23 @@ import { Reactionable } from "../../services/mixins/reactionable";
 import { SnakeGame } from "./SnakeGame";
 
 class SnakeGamePageStore extends Reactionable(EmptyClass) {
-    @observable
-    selectedAddress: string;
+  @observable
+  selectedAddress: string;
 
-    snakeGame: SnakeGame;
+  snakeGame: SnakeGame;
 
-    constructor() {
-        super()
-        makeObservable(this)
+  constructor() {
+    super();
+    makeObservable(this);
 
-        this.selectedAddress = '0xd801d86C10e2185a8FCBccFB7D7baF0A6C5B6BD5';
+    this.selectedAddress = "0xd801d86C10e2185a8FCBccFB7D7baF0A6C5B6BD5";
 
-        this.snakeGame = new SnakeGame();
-    }
+    this.snakeGame = new SnakeGame();
+  }
 
-    setCanvas(canvas: HTMLCanvasElement) {
-        this.snakeGame.setCanvas(canvas);
-    }
+  setCanvas(canvas: HTMLCanvasElement) {
+    this.snakeGame.setCanvas(canvas);
+  }
 }
 
 export default SnakeGamePageStore;
