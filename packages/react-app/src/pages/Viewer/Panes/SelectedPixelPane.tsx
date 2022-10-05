@@ -10,7 +10,6 @@ import AppStore from "../../../store/App.store";
 import Dev from "../../../common/Dev";
 import { isDevModeEnabled, isStaging } from "../../../environment/helpers";
 import Link from "../../../DSL/Link/Link";
-import { NamedRoutes, route } from "../../../App.routes";
 import { generatePath } from "react-router-dom";
 
 const SelectedPixelPane = observer(function SelectedPixelPane({ store }: { store: ViewerStore }) {
