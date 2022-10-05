@@ -27,8 +27,8 @@ interface PixelTransfer {
 }
 
 export enum SelectedOwnerTab {
-  Transfers = "transfers",
-  Wallet = "wallet"
+  Wallet = "wallet",
+  Transfers = "transfers"
 }
 
 class LeaderborkStore extends Reactionable(EmptyClass) {
@@ -156,7 +156,8 @@ class LeaderborkStore extends Reactionable(EmptyClass) {
     this.searchValue = this.selectedAddress
     await this.getSelectedUserTransfers()
     this.selectedTransferId = this.selectedOwnerTransfers[0].uniqueTransferId
-    this.pushWindowState(generatePath(`/leaderbork/:address/${SelectedOwnerTab.Transfers}/:activityId`,
+    this.selectedOwnerTab = SelectedOwnerTab.Wallet
+    this.pushWindowState(generatePath(`/leaderbork/:address/${SelectedOwnerTab.Wallet}/:activityId`,
         {address: this.selectedAddress, activityId: this.selectedTransferId}))
   }
 
@@ -265,16 +266,6 @@ class LeaderborkStore extends Reactionable(EmptyClass) {
       }
     } else {
       return this.selectedActivityTokenId
-    }
-  }
-
-  setSelectedPixelFromPreview(pixelId: number | null) {
-    if (this.selectedAddress) {
-      if (this.selectedOwnerTab === SelectedOwnerTab.Transfers) {
-        // this.selected
-      } else {
-
-      }
     }
   }
 }

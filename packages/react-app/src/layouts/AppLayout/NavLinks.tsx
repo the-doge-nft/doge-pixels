@@ -2,6 +2,7 @@ import routes, {AppRouteInterface, NamedRoutes, route, SELECTED_PIXEL_PARAM} fro
 import AppStore from "../../store/App.store";
 import Link from "../../DSL/Link/Link";
 import {matchPath, useLocation} from "react-router-dom";
+import {SelectedOwnerTab} from "../../pages/Leaderbork/Leaderbork.store";
 
 const NavLinks = ({ isMobile }: { isMobile?: boolean }) => {
   const location = useLocation();
@@ -9,7 +10,7 @@ const NavLinks = ({ isMobile }: { isMobile?: boolean }) => {
 
   const getPath = (routeName: NamedRoutes) => {
     if (routeName === NamedRoutes.LEADERBORK) {
-      return "/leaderbork/activity"
+      return `/leaderbork/${SelectedOwnerTab.Transfers}`
     } else {
       return route(routeName)
     }

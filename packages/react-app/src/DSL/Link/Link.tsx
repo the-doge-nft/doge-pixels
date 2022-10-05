@@ -24,13 +24,13 @@ const NormalLink = ({...rest}: LinkProps) => {
   </ChakraLink>
 }
 
-const Link = ({isNav, variant = Type.PresStart, size = "md", ...rest}: LinkProps) => {
+const Link = ({isNav, variant = Type.PresStart, size = "md", to, ...rest}: LinkProps) => {
   const styles = useStyleConfig('Link', {variant, size})
   const fontSize = styles.fontSize as string
   if (isNav) {
-    return <NavLink fontSize={fontSize} variant={variant} {...rest} __css={styles}/>
+    return <NavLink to={to} fontSize={fontSize} variant={variant} {...rest} __css={styles}/>
   } else {
-    return <NormalLink fontSize={fontSize} variant={variant} {...rest} __css={styles}/>
+    return <NormalLink href={to} fontSize={fontSize} variant={variant} {...rest} __css={styles}/>
   }
 }
 

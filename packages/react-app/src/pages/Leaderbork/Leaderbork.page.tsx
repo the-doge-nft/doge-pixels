@@ -16,6 +16,7 @@ import Link from "../../DSL/Link/Link";
 import Typeahead from "../../DSL/Typeahead/Typeahead";
 import DogLocked from "./DogLocked";
 import TopDogs from "./TopDogs";
+import {getEtherscanURL} from "../../helpers/links";
 
 const LeaderborkPage = observer(function DogParkPage() {
     const location = useLocation()
@@ -107,7 +108,7 @@ const LeaderborkPage = observer(function DogParkPage() {
                             </Flex>}
                         </Pane>
                       </Flex>
-                      <Pane title={<Typography variant={TVariant.PresStart18} mb={store.selectedAddress ? 2 : 4} block>{store.activityPaneTitle}</Typography>} display={'flex'} flexDir={'column'} flexGrow={1}>
+                      <Pane title={store.selectedAddress ? <Link target={"_blank"} to={getEtherscanURL(store.selectedAddress, "address")} mb={2}>{store.activityPaneTitle}</Link> : <Typography variant={TVariant.PresStart18} mb={4} block>{store.activityPaneTitle}</Typography>} display={'flex'} flexDir={'column'} flexGrow={1}>
                           {store.selectedAddress && <Flex gap={7} mb={4}>
                               {Object.keys(SelectedOwnerTab).map(item => <Box>
                                   <Typography
