@@ -237,11 +237,11 @@ class Web3Store extends Reactionable(Web3providerStore) {
     }
 
     async approvePxSpendDog(amount: BigNumber) {
-        return this.dogContract!.approve(this.pxContract!.address, amount)
+        return this.dogContract!.approve(this.pxContractAddress, amount)
     }
 
     async getPxDogSpendAllowance() {
-        return this.dogContract!.allowance(this.address!, this.pxContract!.address)
+        return this.dogContract!.allowance(this.address!, this.pxContractAddress)
     }
 
     async getDogToAccount() {
