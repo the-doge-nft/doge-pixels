@@ -88,21 +88,13 @@ class LeaderborkStore extends Reactionable(EmptyClass) {
       this.lockedDog = Number(balance)
     })
     AppStore.web3.getPixelOwnershipMap()
-
-    Http.post<PixelTransfer[]>("/v1/transfers", {
-      sort: {
-        blockNumber: "desc"
-      }
-    }).then(({data}) => {
-      this.globalTransfers = data
-      if (this.selectedTransferId) {
-        // TODO: there could be a case where this transfer ID does not exist in the current history
-        // either expand for *all* transfers, or we need to keep paging until we hit the data point
-        this.setActivityId(this.selectedTransferId)
-      } else if (!this.selectedPixelId && !this.selectedAddress) {
-        this.setActivityId(this.globalTransfers[0]?.uniqueTransferId)
-      }
-    })
+    if (this.selectedAddress) {
+      this.getSelectedUserTransfers()
+    } else {
+      this.getGlobalTransfers().then((_) => {
+        this.selectedTransferId = this.globalTransfers[0].uniqueTransferId
+      })
+    }
   }
 
   @computed
@@ -182,18 +174,12 @@ class LeaderborkStore extends Reactionable(EmptyClass) {
     return {title, description}
   }
 
-  selectOwner(address: string) {
+  async selectOwner(address: string) {
     this.selectedAddress = address;
     this.searchValue = this.selectedAddress
-    Http.post(`/v1/transfers/${this.selectedAddress}`, {}).then(({data}) => {
-      this.selectedOwnerTransfers = data
-      this.selectedTransferId = this.selectedOwnerTransfers[0].uniqueTransferId
-      this.pushWindowState(generatePath("/leaderbork/activity/:activityId", {activityId: this.selectedTransferId}))
-    })
-
-
-
-    this.setSelectedPixelId(this.selectedOwner.pixels[0])
+    await this.getSelectedUserTransfers()
+    this.selectedTransferId = this.selectedOwnerTransfers[0].uniqueTransferId
+    this.pushWindowState(generatePath("/leaderbork/:address/activity/:activityId", {address: this.selectedAddress, activityId: this.selectedTransferId}))
   }
 
   setSelectedPixelId(pixelId: number | null) {
@@ -203,7 +189,11 @@ class LeaderborkStore extends Reactionable(EmptyClass) {
 
   setActivityId(activityId: string) {
     this.selectedTransferId = activityId;
-    this.pushWindowState(generatePath("/leaderbork/activity/:activityId", {activityId: this.selectedTransferId}))
+    if (this.selectedOwner) {
+      this.pushWindowState(generatePath("/leaderbork/:address/activity/:activityId", {address: this.selectedAddress, activityId: this.selectedTransferId}))
+    } else {
+      this.pushWindowState(generatePath("/leaderbork/activity/:activityId", {activityId: this.selectedTransferId}))
+    }
   }
 
   pushWindowState(route: string) {
@@ -231,6 +221,26 @@ class LeaderborkStore extends Reactionable(EmptyClass) {
     } else {
       return this.globalTransfers.filter(transfer => transfer.uniqueTransferId === this.selectedTransferId)[0]
     }
+  }
+
+  getGlobalTransfers() {
+    return Http.post<PixelTransfer[]>("/v1/transfers", {
+      sort: {
+        blockNumber: "desc"
+      }
+    }).then(({data}) => {
+      this.globalTransfers = data
+    })
+  }
+
+  getSelectedUserTransfers() {
+    return Http.post(`/v1/transfers/${this.selectedAddress}`, {
+      sort: {
+        blockNumber: "desc"
+      }
+    }).then(({data}) => {
+      this.selectedOwnerTransfers = data
+    })
   }
 }
 
