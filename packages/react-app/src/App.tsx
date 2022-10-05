@@ -8,8 +8,10 @@ import buildInfo from "./build_number";
 
 const logAppVersionToConsole = () => {
     var styleArray= [
-        'background-image:url("https://media2.giphy.com/media/s51QoNAmM6dkWcSC0P/giphy.gif?cid=790b7611b9d3af20f12f55d06c1ea052d631612235f0b1af&rid=giphy.gif&ct=g")',
+        'background-color: yellow',
         'background-size: cover',
+        'background-repeat: no-repeat',
+        'background-position: center',
         'color: magenta',
         'font-weight: bold',
         'padding: 10px 10px',
@@ -17,14 +19,12 @@ const logAppVersionToConsole = () => {
         'border : 3px solid black',
         'text-align: center'
     ];
-    console.log(`%c dogepixels@${buildInfo.lastHash.substring(0, 6)}`, styleArray.join(';'))
-    console.debug(`build hash ${buildInfo.lastHash} - no ${buildInfo.buildNumber} - date ${buildInfo.buildTime}`);
+    console.log(`%cdogepixels@${buildInfo.lastHash.substring(0, 6)}`, styleArray.join('; '))
+    console.log(`build hash ${buildInfo.lastHash} - no ${buildInfo.buildNumber} - date ${buildInfo.buildTime}`);
 }
 
 
 AppStore.init()
-
-console.log('TEST --- DEPLOY')
 
 function App() {
   useEffect(logAppVersionToConsole, [])
