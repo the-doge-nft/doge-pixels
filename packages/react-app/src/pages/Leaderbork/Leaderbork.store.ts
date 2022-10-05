@@ -296,7 +296,7 @@ class LeaderborkStore extends Reactionable(EmptyClass) {
   }
 
   @computed
-  get previewSelectedPixel() {
+  get previewSelectedPixelId() {
     if (this.selectedOwner) {
       if (this.selectedOwnerTab === SelectedOwnerTab.Activity) {
         return this.selectedActivityTokenId

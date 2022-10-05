@@ -19,6 +19,7 @@ import TopDogs from "./TopDogs";
 import {getEtherscanURL} from "../../helpers/links";
 import Icon from "../../DSL/Icon/Icon";
 import {Type} from "../../DSL/Fonts/Fonts";
+import AppStore from "../../store/App.store";
 
 const LeaderborkPage = observer(function DogParkPage() {
     const location = useLocation()
@@ -29,7 +30,6 @@ const LeaderborkPage = observer(function DogParkPage() {
         selectedOwnerTabType = SelectedOwnerTab.Activity
     }
     const {address, tokenId, activityId} = useParams<{ address?: string; tokenId?: string, activityId?: string }>();
-    console.log('debug:: activity', activityId)
     const store = useMemo(() => new LeaderborkStore(address, tokenId ? Number(tokenId) : undefined, activityId, selectedOwnerTabType), [address, tokenId, selectedOwnerTabType]);
     const {colorMode} = useColorMode();
     useEffect(() => {
@@ -76,57 +76,65 @@ const LeaderborkPage = observer(function DogParkPage() {
                             <ParkPixels
                               size={PixelPreviewSize.lg}
                               id={'dog-park-pixels'}
-                              selectedTokenId={store.previewSelectedPixel}
+                              selectedTokenId={store.previewSelectedPixelId}
                               previewPixels={store.previewPixels}
                               onPupperClick={store.selectedOwnerTab === SelectedOwnerTab.Wallet ? (tokenId) => store.selectedPixelId = tokenId : undefined}
                             />
                           </Pane>
                         </Flex>
                         <Pane flexGrow={1}>
-                            {store.selectedActivityTransfer && <Flex flexDir={"column"} h={"full"}>
+                            <Flex flexDir={"column"} h={"full"}>
                               <Flex gap={10}>
-                                <Box>
-                                  <PixelPane size={"md"} pupper={store.selectedActivityTransfer?.tokenId} variant={"shadow"}/>
-                                </Box>
+                                {store.previewSelectedPixelId && <Box>
+                                    <PixelPane size={"md"} pupper={store.previewSelectedPixelId} variant={"shadow"}/>
+                                </Box>}
                                 <Flex flexDir={"column"} flexGrow={1}>
                                   <Flex flexDir={"column"}>
-                                    <Typography variant={TVariant.PresStart18} mb={1}>{store.selectedActivityTransferDetails.title}</Typography>
+                                    {store.selectedActivityTransfer && <Typography variant={TVariant.PresStart18} mb={1}>{store.selectedActivityTransferDetails.title}</Typography>}
                                     <Grid templateColumns={"0.75fr 1fr"}>
-                                        {store.selectedActivityTransferDetails.title === "Transfer" && <>
-                                            <GridItem display={"flex"} gap={2} colSpan={2} alignItems={"center"} justifyContent={"space-between"}>
-                                              <Link to={`/leaderbork/${store.selectedActivityTransferDetails.description.from.address}/wallet`} variant={Type.ComicSans} size={"md"}>
-                                                  {store.selectedActivityTransferDetails.description.from.displayName}
-                                              </Link>
-                                              <Icon icon={'arrow-right'} boxSize={5}/>
-                                              <Link to={`/leaderbork/${store.selectedActivityTransferDetails.description.to.address}/wallet`} variant={Type.ComicSans} size={"md"}>
-                                                  {store.selectedActivityTransferDetails.description.to.displayName}
-                                              </Link>
-                                            </GridItem>
-                                        </>}
-                                        {store.selectedActivityTransferDetails.title !== "Transfer" && <>
-                                          <Typography variant={TVariant.ComicSans16}>by:</Typography>
-                                          <Link to={`/leaderbork/${store.selectedActivityTransferDetails.description.from
+                                        {(store.selectedOwnerTab === SelectedOwnerTab.Activity || !this.selectedAddress) && store.selectedActivityTransfer && <>
+                                            {store.selectedActivityTransferDetails.title === "Transfer" && <>
+                                              <GridItem display={"flex"} gap={2} colSpan={2} alignItems={"center"} justifyContent={"space-between"}>
+                                                <Link to={`/leaderbork/${store.selectedActivityTransferDetails.description.from.address}/wallet`} variant={Type.ComicSans} size={"md"}>
+                                                    {store.selectedActivityTransferDetails.description.from.displayName}
+                                                </Link>
+                                                <Icon icon={'arrow-right'} boxSize={5}/>
+                                                <Link to={`/leaderbork/${store.selectedActivityTransferDetails.description.to.address}/wallet`} variant={Type.ComicSans} size={"md"}>
+                                                    {store.selectedActivityTransferDetails.description.to.displayName}
+                                                </Link>
+                                              </GridItem>
+                                            </>}
+                                            {store.selectedActivityTransferDetails.title !== "Transfer" && <>
+                                              <Typography variant={TVariant.ComicSans16}>by:</Typography>
+                                              <Link to={`/leaderbork/${store.selectedActivityTransferDetails.description.from
                                                   ? store.selectedActivityTransferDetails.description.from.address
                                                   : store.selectedActivityTransferDetails.description.to.address}/wallet`} variant={Type.ComicSans} size={"md"} overflowWrap={"anywhere"}>
-                                              {store.selectedActivityTransferDetails.description.from
-                                                  ? store.selectedActivityTransferDetails.description.from.displayName
-                                                  : store.selectedActivityTransferDetails.description.to.displayName}
-                                          </Link>
+                                                  {store.selectedActivityTransferDetails.description.from
+                                                      ? store.selectedActivityTransferDetails.description.from.displayName
+                                                      : store.selectedActivityTransferDetails.description.to.displayName}
+                                              </Link>
+                                            </>}
                                         </>}
-                                      <Typography variant={TVariant.ComicSans16}>token ID:</Typography>
-                                      <Typography variant={TVariant.ComicSans16}>{store.selectedActivityTransfer.tokenId}</Typography>
-                                      <Typography variant={TVariant.ComicSans16}>date:</Typography>
-                                      <Typography variant={TVariant.ComicSans16} overflowWrap={"anywhere"}>{(new Date(store.selectedActivityTransfer.blockCreatedAt)).toLocaleDateString()}</Typography>
+                                        {store.previewSelectedPixelId && <>
+                                          <Typography variant={TVariant.ComicSans16}>token ID:</Typography>
+                                          <Typography variant={TVariant.ComicSans16}>{store.previewSelectedPixelId}</Typography>
+                                          <Typography variant={TVariant.ComicSans16}>hex:</Typography>
+                                          <Typography variant={TVariant.ComicSans16}>{AppStore.web3.pupperToHexLocal(store.previewSelectedPixelId)}</Typography>
+                                        </>}
+                                        {(store.selectedOwnerTab === SelectedOwnerTab.Activity || !this.selectedAddress) && store.selectedActivityTransfer && <>
+                                          <Typography variant={TVariant.ComicSans16}>date:</Typography>
+                                          <Typography variant={TVariant.ComicSans16} overflowWrap={"anywhere"}>{(new Date(store.selectedActivityTransfer.blockCreatedAt)).toLocaleDateString()}</Typography>
+                                        </>}
                                     </Grid>
                                   </Flex>
                                 </Flex>
                               </Flex>
-                              <Flex justifyContent={'center'} alignItems={'center'} flexGrow={1}>
-                                <Link display={"inline-block"} isNav to={route(NamedRoutes.PIXELS, {[SELECTED_PIXEL_PARAM]: store.selectedActivityTransfer.tokenId})}>
-                                  <Button onClick={() => console.log()}>Portal</Button>
-                                </Link>
-                              </Flex>
-                            </Flex>}
+                                <Flex justifyContent={'center'} alignItems={'center'} flexGrow={1}>
+                                    <Link display={"inline-block"} isNav to={route(NamedRoutes.PIXELS, {[SELECTED_PIXEL_PARAM]: store.previewSelectedPixelId})}>
+                                      <Button onClick={() => console.log()}>Portal</Button>
+                                    </Link>
+                                </Flex>
+                            </Flex>
                         </Pane>
                       </Flex>
                       <Pane title={store.selectedAddress ? <Link target={"_blank"} to={getEtherscanURL(store.selectedAddress, "address")} mb={2}>{store.activityPaneTitle}</Link> : <Typography variant={TVariant.PresStart18} mb={4} block>{store.activityPaneTitle}</Typography>} display={'flex'} flexDir={'column'} flexGrow={1}>
