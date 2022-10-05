@@ -92,7 +92,7 @@ const LeaderborkPage = observer(function DogParkPage() {
                                   <Flex flexDir={"column"}>
                                     {store.selectedActivityTransfer && <Typography variant={TVariant.PresStart18} mb={1}>{store.selectedActivityTransferDetails.title}</Typography>}
                                     <Grid templateColumns={"0.75fr 1fr"}>
-                                        {(store.selectedOwnerTab === SelectedOwnerTab.Activity || !this.selectedAddress) && store.selectedActivityTransfer && <>
+                                        {(store.selectedOwnerTab === SelectedOwnerTab.Activity || !store.selectedAddress) && store.selectedActivityTransfer && <>
                                             {store.selectedActivityTransferDetails.title === "Transfer" && <>
                                               <GridItem display={"flex"} gap={2} colSpan={2} alignItems={"center"} justifyContent={"space-between"}>
                                                 <Link to={`/leaderbork/${store.selectedActivityTransferDetails.description.from.address}/wallet`} variant={Type.ComicSans} size={"md"}>
@@ -121,7 +121,7 @@ const LeaderborkPage = observer(function DogParkPage() {
                                           <Typography variant={TVariant.ComicSans16}>hex:</Typography>
                                           <Typography variant={TVariant.ComicSans16}>{AppStore.web3.pupperToHexLocal(store.previewSelectedPixelId)}</Typography>
                                         </>}
-                                        {(store.selectedOwnerTab === SelectedOwnerTab.Activity || !this.selectedAddress) && store.selectedActivityTransfer && <>
+                                        {(store.selectedOwnerTab === SelectedOwnerTab.Activity || !store.selectedAddress) && store.selectedActivityTransfer && <>
                                           <Typography variant={TVariant.ComicSans16}>date:</Typography>
                                           <Typography variant={TVariant.ComicSans16} overflowWrap={"anywhere"}>{(new Date(store.selectedActivityTransfer.blockCreatedAt)).toLocaleDateString()}</Typography>
                                         </>}
