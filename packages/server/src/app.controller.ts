@@ -80,9 +80,17 @@ export class AppController {
     return this.pixelTransferService.getBalances();
   }
 
+  @Post('transfers/:address')
+  async postTransfersByAddress(
+      @Param() {address}: {address: string},
+      @Body() {filter, sort}: PostTransfersDto
+  ) {
+    return this.pixelTransferRepo.searchPixelTransfersByAddress(address, filter, sort)
+  }
+
   @Post('transfers')
-  async getTransferEvents(@Body() {filter, sort}: PostTransfersDto) {
-    return this.pixelTransferRepo.getPixelTransfers(filter, sort);
+  async postTransfers(@Body() {filter, sort}: PostTransfersDto) {
+    return this.pixelTransferRepo.searchPixelTransfers(filter, sort);
   }
 
   @Get('px/dimensions')

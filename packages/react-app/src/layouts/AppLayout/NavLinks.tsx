@@ -1,30 +1,32 @@
-import routes, { AppRouteInterface, NamedRoutes, route, SELECTED_PIXEL_PARAM } from "../../App.routes";
+import routes, {AppRouteInterface, NamedRoutes, route, SELECTED_PIXEL_PARAM} from "../../App.routes";
 import AppStore from "../../store/App.store";
 import Link from "../../DSL/Link/Link";
-import { matchPath, useLocation } from "react-router-dom";
+import {matchPath, useLocation} from "react-router-dom";
 
 const NavLinks = ({ isMobile }: { isMobile?: boolean }) => {
   const location = useLocation();
 
 
   const getPath = (routeName: NamedRoutes) => {
-    let path = route(routeName, {
-      address: routeName === NamedRoutes.LEADERBORK && AppStore.web3.address ? AppStore.web3.address : undefined,
-    });
-    return path;
+    if (routeName === NamedRoutes.LEADERBORK) {
+      return "/leaderbork/activity"
+    } else {
+      return route(routeName)
+    }
   };
 
-  const getMatch = (routePath: string) => {
+  const getMatch = (routePath: string | string[]) => {
     let match = matchPath<any>(location.pathname, {
       path: routePath,
       exact: true,
       strict: false,
     });
 
+
     /*
-          Hack to match NamedRoutes.PIXELS route to the NamedRoutes.VIEWER link as they both render the same
-          component but NamedRoutes.PIXELS is hidden from desktop & mobile views.
-        */
+      Hack to match NamedRoutes.PIXELS route to the NamedRoutes.VIEWER link as they both render the same
+      component but NamedRoutes.PIXELS is hidden from desktop & mobile views.
+    */
     const isSelectedPixelMatch = matchPath<any>(location.pathname, {
       path: route(NamedRoutes.PIXELS),
       exact: true,

@@ -3,12 +3,12 @@ import {observer} from "mobx-react-lite";
 import React, {useEffect, useMemo} from "react";
 import Pane from "../../DSL/Pane/Pane";
 import Typography, {TVariant} from "../../DSL/Typography/Typography";
-import LeaderborkStore from "./Leaderbork.store";
+import LeaderborkStore, {SelectedOwnerTab} from "./Leaderbork.store";
 import model from "../../DSL/Form/model";
-import {useHistory, useParams} from "react-router-dom";
+import {useParams} from "react-router-dom";
 import PixelPane from "../../DSL/PixelPane/PixelPane";
 import Button from "../../DSL/Button/Button";
-import {darkModeSecondary, lightModePrimary, lightOrDarkMode} from "../../DSL/Theme";
+import {darkModeSecondary, lightModePrimary} from "../../DSL/Theme";
 import {NamedRoutes, route, SELECTED_PIXEL_PARAM} from "../../App.routes";
 import * as ethers from 'ethers'
 import ParkPixels, {PixelPreviewSize} from "../../DSL/ParkPixels/ParkPixels";
@@ -100,10 +100,9 @@ const LeaderborkPage = observer(function DogParkPage() {
                         </Pane>
                       </Flex>
                       <Pane title={<Typography variant={TVariant.PresStart18} mb={4} block>Recent Activity</Typography>} display={'flex'} flexDir={'column'} flexGrow={1}>
-
                         <Box overflowY={"scroll"} flexGrow={1}>
                           <Flex flexWrap={"wrap"} gap={0} maxHeight={'250px'}>
-                            {!store.selectedAddress && store.transfers.map(transfer => <>
+                            {store.selectedOwnerTab === SelectedOwnerTab.Transfers && store.transfers.map(transfer => <>
                                 <Box
                                     key={`user-dog-${transfer.uniqueTransferId}`}
                                     bg={
@@ -136,9 +135,6 @@ const LeaderborkPage = observer(function DogParkPage() {
                                     </Box>
                                 </Box>
                             </>)}
-                            {store.selectedAddress && <Box>
-                              show the selected user's pixels
-                            </Box>}
                           </Flex>
                         </Box>
                       </Pane>

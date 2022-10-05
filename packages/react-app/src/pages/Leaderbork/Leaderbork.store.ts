@@ -26,6 +26,11 @@ interface PixelTransfer {
   blockCreatedAt: string;
 }
 
+export enum SelectedOwnerTab {
+  Transfers = "Transfers",
+  Wallet = "Wallet"
+}
+
 class LeaderborkStore extends Reactionable(EmptyClass) {
 
   @observable
@@ -44,13 +49,17 @@ class LeaderborkStore extends Reactionable(EmptyClass) {
   lockedDog: number | null = null
 
   @observable
-  transfers: PixelTransfer[] = []
+  globalTransfers: PixelTransfer[] = []
+
+  @observable
+  selectedOwnerTransfers: PixelTransfer[] = []
+
+  @observable
+  selectedOwnerTab: SelectedOwnerTab = SelectedOwnerTab.Transfers
 
   constructor(selectedAddress?: string, selectedPixelId?: number, transferId?: string) {
     super()
     makeObservable(this)
-
-    console.log(selectedAddress, selectedPixelId)
 
     if (selectedAddress) {
       this.searchValue = selectedAddress
@@ -85,13 +94,13 @@ class LeaderborkStore extends Reactionable(EmptyClass) {
         blockNumber: "desc"
       }
     }).then(({data}) => {
-      this.transfers = data
+      this.globalTransfers = data
       if (this.selectedTransferId) {
         // TODO: there could be a case where this transfer ID does not exist in the current history
         // either expand for *all* transfers, or we need to keep paging until we hit the data point
         this.setActivityId(this.selectedTransferId)
       } else if (!this.selectedPixelId && !this.selectedAddress) {
-        this.setActivityId(this.transfers[0]?.uniqueTransferId)
+        this.setActivityId(this.globalTransfers[0]?.uniqueTransferId)
       }
     })
   }
@@ -152,11 +161,6 @@ class LeaderborkStore extends Reactionable(EmptyClass) {
   }
 
   @computed
-  get selectedActivityTransfer(): PixelTransfer | undefined {
-    return this.transfers.filter(transfer => transfer.uniqueTransferId === this.selectedTransferId)[0]
-  }
-
-  @computed
   get selectedActivityTokenId() {
     return this.selectedActivityTransfer?.tokenId
   }
@@ -181,6 +185,14 @@ class LeaderborkStore extends Reactionable(EmptyClass) {
   selectOwner(address: string) {
     this.selectedAddress = address;
     this.searchValue = this.selectedAddress
+    Http.post(`/v1/transfers/${this.selectedAddress}`, {}).then(({data}) => {
+      this.selectedOwnerTransfers = data
+      this.selectedTransferId = this.selectedOwnerTransfers[0].uniqueTransferId
+      this.pushWindowState(generatePath("/leaderbork/activity/:activityId", {activityId: this.selectedTransferId}))
+    })
+
+
+
     this.setSelectedPixelId(this.selectedOwner.pixels[0])
   }
 
@@ -191,7 +203,7 @@ class LeaderborkStore extends Reactionable(EmptyClass) {
 
   setActivityId(activityId: string) {
     this.selectedTransferId = activityId;
-    this.pushWindowState(generatePath("/leaderbork/:activityId", {activityId: this.selectedTransferId}))
+    this.pushWindowState(generatePath("/leaderbork/activity/:activityId", {activityId: this.selectedTransferId}))
   }
 
   pushWindowState(route: string) {
@@ -201,6 +213,24 @@ class LeaderborkStore extends Reactionable(EmptyClass) {
 
   destroy() {
     return this.disposeReactions()
+  }
+
+  @computed
+  get transfers() {
+    if (this.selectedOwner) {
+      return this.selectedOwnerTransfers
+    } else {
+      return this.globalTransfers
+    }
+  }
+
+  @computed
+  get selectedActivityTransfer(): PixelTransfer | undefined {
+    if (this.selectedOwner) {
+      return this.selectedOwnerTransfers.filter(transfer => transfer.uniqueTransferId === this.selectedTransferId)[0]
+    } else {
+      return this.globalTransfers.filter(transfer => transfer.uniqueTransferId === this.selectedTransferId)[0]
+    }
   }
 }
 

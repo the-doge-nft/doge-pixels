@@ -4,6 +4,7 @@ import {Flex, useColorMode} from "@chakra-ui/react";
 import Link from "../DSL/Link/Link";
 import {NamedRoutes, route} from "../App.routes";
 import {lightOrDarkMode} from "../DSL/Theme";
+import Button from "../DSL/Button/Button";
 
 const FourOhFour = () => {
     const { colorMode } = useColorMode()
@@ -13,7 +14,9 @@ const FourOhFour = () => {
                 Couldn't find what you were looking for
             </Typography>
             <Link href={route(NamedRoutes.VIEWER)}>
-                Back to Doge
+                <Button>
+                    Back to Doge
+                </Button>
             </Link>
             <Typography variant={TVariant.PresStart10} color={lightOrDarkMode(colorMode, "yellow.100", "gray.300")}>
                 (did you know Kabosu's birthday is November 2nd, 2005)

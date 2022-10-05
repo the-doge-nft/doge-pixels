@@ -24,7 +24,7 @@ export enum NamedRoutes {
 }
 
 export interface AppRouteInterface {
-  path: string;
+  path: string | string[];
   exact: boolean;
   name: NamedRoutes;
   layout: FC;
@@ -42,6 +42,11 @@ export const route = (name: NamedRoutes, params?: {}) => {
   if (!route) {
     throw new TypeError("Unknown named route: " + name);
   }
+
+  if (Array.isArray(route.path)) {
+    throw new TypeError("Array paths not supported yet")
+  }
+
   if (params) {
     return generatePath(route.path, params);
   } else {
@@ -57,6 +62,18 @@ export const SELECTED_PIXEL_PARAM = "id_with_offset";
 */
 const routes: AppRouteInterface[] = [
   {
+    path: ["/leaderbork", "/leaderbork/activity/:activityId?", "/leaderbork/:address/activity/:activityId?", "/leaderbork/:address/wallet/:tokenId?"],
+    name: NamedRoutes.LEADERBORK,
+    exact: true,
+    layout: AppLayout,
+    component: LeaderborkPage,
+    desktopName: "Leaderbork",
+    mobileName: "LEADERBORK",
+    showOnDesktop: true,
+    showOnMobile: true,
+    displayOrder: 1
+  },
+  {
     path: "/perks",
     name: NamedRoutes.PERKS,
     exact: true,
@@ -67,30 +84,6 @@ const routes: AppRouteInterface[] = [
     showOnMobile: true,
     showOnDesktop: true,
     displayOrder: 2,
-  },
-  {
-    path: "/leaderbork/:activityId?",
-    name: NamedRoutes.LEADERBORK,
-    exact: true,
-    layout: AppLayout,
-    component: LeaderborkPage,
-    desktopName: "Leaderbork",
-    mobileName: "LEADERBORK",
-    showOnDesktop: false,
-    showOnMobile: false,
-    displayOrder: 0
-  },
-  {
-    path: "/leaderbork/:address?/:tokenId?",
-    name: NamedRoutes.LEADERBORK,
-    exact: true,
-    layout: AppLayout,
-    component: LeaderborkPage,
-    desktopName: "Leaderbork",
-    mobileName: "LEADERBORK",
-    showOnMobile: true,
-    showOnDesktop: true,
-    displayOrder: 1,
   },
   {
     path: "/art",
@@ -139,7 +132,7 @@ const routes: AppRouteInterface[] = [
     showOnMobile: true,
     showOnDesktop: true,
     displayOrder: 0,
-  }
+  },
 ];
 
 if (isDevModeEnabled()) {
