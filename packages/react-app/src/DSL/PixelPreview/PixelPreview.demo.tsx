@@ -1,27 +1,27 @@
 import React, {useState} from "react";
 import Demo from "../Demo/Demo";
-import ParkPixels, {PixelPreviewSize} from "./ParkPixels";
+import PixelPreview, {PixelPreviewSize} from "./PixelPreview";
 import {Flex, HStack, VStack} from "@chakra-ui/react";
 
 const DemoParkPixels = () => {
     const [selectedPixel, setSelectedPixel] = useState(null)
     return <Demo title={"Park Pixels"}>
         <VStack>
-            <ParkPixels
+            <PixelPreview
                 size={PixelPreviewSize.sm}
                 selectedTokenId={selectedPixel}
                 previewPixels={[1012396, 1012060, 1212729, 1270578]}
                 onPupperClick={(pupper) => setSelectedPixel(pupper)}
                 id={'tester-pixels-0'}
             />
-            <ParkPixels
+            <PixelPreview
                 size={PixelPreviewSize.md}
                 selectedTokenId={selectedPixel}
                 previewPixels={[1012396, 1012060, 1212729, 1270578]}
                 onPupperClick={(pupper) => setSelectedPixel(pupper)}
                 id={'tester-pixels-1'}
             />
-            <ParkPixels
+            <PixelPreview
                 size={PixelPreviewSize.lg}
                 selectedTokenId={selectedPixel}
                 previewPixels={[1012396, 1012060, 1212729, 1270578]}

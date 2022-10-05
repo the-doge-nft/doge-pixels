@@ -13,7 +13,7 @@ import DemoPill from "../DSL/Pill/Pill.demo";
 import DemoLink from "../DSL/Link/Link.demo";
 import DemoDrawer from "../DSL/Drawer/Drawer.demo";
 import DemoSelect from "../DSL/Select/Select.demo";
-import DemoParkPixels from "../DSL/ParkPixels/ParkPixels.demo";
+import DemoParkPixels from "../DSL/PixelPreview/PixelPreview.demo";
 import TooltipDemo from "../DSL/Tooltip/Tooltip.demo";
 import DemoCombobox from "../DSL/Typeahead/Typeahead.demo";
 

@@ -11,7 +11,7 @@ import Button from "../../DSL/Button/Button";
 import {darkModeSecondary, lightModePrimary} from "../../DSL/Theme";
 import {NamedRoutes, route, SELECTED_PIXEL_PARAM} from "../../App.routes";
 import * as ethers from 'ethers'
-import ParkPixels, {PixelPreviewSize} from "../../DSL/ParkPixels/ParkPixels";
+import PixelPreview, {PixelPreviewSize} from "../../DSL/PixelPreview/PixelPreview";
 import Link from "../../DSL/Link/Link";
 import Typeahead from "../../DSL/Typeahead/Typeahead";
 import DogLocked from "./DogLocked";
@@ -73,7 +73,7 @@ const LeaderborkPage = observer(function DogParkPage() {
                       <Flex flexDir={{base: "column", md: "row"}} justifyContent={"flex-start"} mb={8} gap={8} flexGrow={1}>
                         <Flex justifyContent={"center"} flexGrow={0}>
                           <Pane margin={'auto'} maxW={'fit-content'} p={0} borderWidth={"0px"}>
-                            <ParkPixels
+                            <PixelPreview
                               size={PixelPreviewSize.lg}
                               id={'dog-park-pixels'}
                               selectedTokenId={store.previewSelectedPixelId}

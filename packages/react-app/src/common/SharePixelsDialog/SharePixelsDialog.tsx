@@ -1,4 +1,4 @@
-import ParkPixels from "../../DSL/ParkPixels/ParkPixels";
+import PixelPreview from "../../DSL/PixelPreview/PixelPreview";
 import {observer} from "mobx-react-lite";
 import {Box, Flex} from "@chakra-ui/react";
 import Button from "../../DSL/Button/Button";
@@ -26,7 +26,7 @@ const SharePixelsDialog = observer(({action, previewPixels}: {action: 'mint' | '
 
     return <Flex justifyContent={"center"}>
         <Box>
-            <ParkPixels
+            <PixelPreview
                 id={id}
                 selectedTokenId={selectedPixel}
                 previewPixels={previewPixels}

@@ -56,15 +56,14 @@ const imageProperties = {
 }
 
 
-const PIXEL_OFFSET_X = 50;
-const TOP_PIXEL_OFFSET_Y = 20;
-const BOTTOM_PIXEL_OFFSET_Y = 200;
-
-
-const ParkPixels = observer(({ size = PixelPreviewSize.md, selectedTokenId, previewPixels = [], onPupperClick, id }: ParkPixelsProps) => {
+const PixelPreview = observer(({ size = PixelPreviewSize.md, selectedTokenId, previewPixels = [], onPupperClick, id }: ParkPixelsProps) => {
   const { colorMode } = useColorMode();
   const [pupperPositions, setPupperPositions] = useState<IPupperRectPosition[]>([]);
   const properties = imageProperties[size]
+
+  const PIXEL_OFFSET_X = properties.width / 9;
+  const TOP_PIXEL_OFFSET_Y = properties.height / 16.875;
+  const BOTTOM_PIXEL_OFFSET_Y = properties.height / 1.6875;
 
   const getPixelOffsets = (y: number) => {
     if (y * properties.scale <= properties.height / 2) {
@@ -345,4 +344,4 @@ const ParkPixels = observer(({ size = PixelPreviewSize.md, selectedTokenId, prev
   );
 });
 
-export default ParkPixels;
+export default PixelPreview;
