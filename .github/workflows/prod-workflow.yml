@@ -4,6 +4,9 @@ name: '[prod]: build, deploy'
 on:
   push:
     branches: master
+    paths:
+      - packages/server/src/**
+      - packages/server/prisma/**
 
 defaults:
   run:
