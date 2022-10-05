@@ -74,7 +74,8 @@ const LeaderborkPage = observer(function DogParkPage() {
                               id={'dog-park-pixels'}
                               selectedTokenId={store.previewSelectedPixel}
                               previewPixels={store.previewPixels}
-                              onPupperClick={(pupper) => console.log()}
+                              onPupperClick={store.selectedOwnerTab === SelectedOwnerTab.Wallet ? (tokenId) => store.selectedPixelId = tokenId : undefined}
+                              // onPupperClick={(pixelId) => store.setSelectedPixelFromPreview(pixelId)}
                             />
                           </Pane>
                         </Flex>
@@ -87,7 +88,7 @@ const LeaderborkPage = observer(function DogParkPage() {
                                 <Flex flexDir={"column"} flexGrow={1}>
                                   <Flex flexDir={"column"}>
                                     <Typography variant={TVariant.PresStart18} mb={1}>{store.selectedActivityTransferDetails.title}</Typography>
-                                    <Grid templateColumns={"0.5fr 1fr"}>
+                                    <Grid templateColumns={"0.75fr 1fr"}>
                                       <Typography variant={TVariant.ComicSans16}>by:</Typography>
                                       <Typography variant={TVariant.ComicSans16} overflowWrap={"anywhere"}>{store.selectedActivityTransferDetails.description}</Typography>
                                       <Typography variant={TVariant.ComicSans16}>token ID:</Typography>

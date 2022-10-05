@@ -267,6 +267,16 @@ class LeaderborkStore extends Reactionable(EmptyClass) {
       return this.selectedActivityTokenId
     }
   }
+
+  setSelectedPixelFromPreview(pixelId: number | null) {
+    if (this.selectedAddress) {
+      if (this.selectedOwnerTab === SelectedOwnerTab.Transfers) {
+        // this.selected
+      } else {
+
+      }
+    }
+  }
 }
 
 export default LeaderborkStore

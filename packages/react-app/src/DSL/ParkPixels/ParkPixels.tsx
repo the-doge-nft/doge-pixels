@@ -8,7 +8,7 @@ import { lightOrDarkMode } from "../Theme";
 interface ParkPixelsProps {
   selectedTokenId: number | null;
   previewPixels: number[];
-  onPupperClick: (pupper: number | null) => void;
+  onPupperClick?: (pupper: number | null) => void;
   id: string;
   size?: PixelPreviewSize
 }
@@ -253,7 +253,7 @@ const ParkPixels = observer(({ size = PixelPreviewSize.md, selectedTokenId, prev
     const offsetY = y - rect.y;
 
     const pupper = getPupperFromPosition(offsetX, offsetY);
-    if (pupper) {
+    if (pupper && onPupperClick) {
       document.body.style.cursor = "pointer";
     } else {
       document.body.style.cursor = "default";
@@ -302,10 +302,13 @@ const ParkPixels = observer(({ size = PixelPreviewSize.md, selectedTokenId, prev
     const offsetY = y - rect.y;
 
     const pupper = getPupperFromPosition(offsetX, offsetY);
-    if (pupper) {
-      onPupperClick(pupper);
-    } else {
-      onPupperClick(null);
+
+    if (onPupperClick) {
+      if (pupper) {
+        onPupperClick(pupper);
+      } else {
+        onPupperClick(null);
+      }
     }
   };
 
