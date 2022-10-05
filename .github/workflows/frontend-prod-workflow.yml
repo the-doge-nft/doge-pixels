@@ -1,9 +1,9 @@
 
-name: '[staging:ui]: build, deploy, invalidate CDN'
+name: '[prod:ui]: build, deploy, invalidate CDN'
 
 on:
   push:
-    branches: dev
+    branches: master
     paths:
       - packages/react-app/**
 
@@ -25,15 +25,18 @@ jobs:
         run: yarn install --frozen-lockfile
       - name: Build
         working-directory: packages/react-app
-        run: yarn _dev_build
+        run: yarn _prod_build
       - name: Configure AWS Creds
         uses: aws-actions/configure-aws-credentials@v1
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-1
-      - name: Deploy to S3 & Invalidate Cloudfront CDN
+      - name: Deploy to S3
         working-directory: packages/react-app
-        run: yarn _aws_dev_deploy && yarn _aws_dev_invalidate_cloudfront
+        run: yarn _aws_prod_deploy
+      - name: Invalidate Cloudfront cache
+        working-directory: packages/react-apps
+        run: yarn _aws_prod_invalidate_cloudfront
 
 
