@@ -116,7 +116,7 @@ const LeaderborkPage = observer(function DogParkPage() {
                                             </>}
                                         </>}
                                         {store.previewSelectedPixelId && <>
-                                          <Typography variant={TVariant.ComicSans16}>token ID:</Typography>
+                                          <Typography variant={TVariant.ComicSans16}>ID:</Typography>
                                           <Typography variant={TVariant.ComicSans16}>{store.previewSelectedPixelId}</Typography>
                                           <Typography variant={TVariant.ComicSans16}>hex:</Typography>
                                           <Typography variant={TVariant.ComicSans16}>{AppStore.web3.pupperToHexLocal(store.previewSelectedPixelId)}</Typography>
