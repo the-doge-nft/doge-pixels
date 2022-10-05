@@ -1,5 +1,5 @@
 
-name: '[dev]: build, deploy'
+name: '[staging:server]: build, deploy'
 
 on:
   push:

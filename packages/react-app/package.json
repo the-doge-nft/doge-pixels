@@ -82,7 +82,7 @@
     "analyze": "source-map-explorer 'build/static/js/*.js'",
     "build": "react-app-rewired build",
     "start": "cross-env PORT=3001 react-app-rewired start",
-    "_aws_dev_deploy": "aws s3 sync ./build s3://dev.pixels.ownthedoge.com",
+    "_aws_dev_deploy": "aws s3 sync ./build s3://dev.pixels.ownthedoge.com --delete",
     "_aws_prod_deploy": "aws s3 sync ./build s3://pixels.ownthedoge.com",
     "_aws_prod_old_deploy": "aws s3 sync ./build s3://pixels.thedao.ge",
     "_aws_dev_invalidate_cloudfront": "aws cloudfront create-invalidation --distribution-id EM5YGQYZPD5JN --paths '/*'",

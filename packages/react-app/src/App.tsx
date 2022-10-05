@@ -24,6 +24,8 @@ const logAppVersionToConsole = () => {
 
 AppStore.init()
 
+console.log('TEST DEV DEPLOY')
+
 function App() {
   useEffect(logAppVersionToConsole, [])
   return <BrowserRouter>
