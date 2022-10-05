@@ -24,7 +24,7 @@ const logAppVersionToConsole = () => {
 
 AppStore.init()
 
-console.log('TEST DEV DEPLOY AGGGAIN')
+console.log('TESTDEPLOYS')
 
 function App() {
   useEffect(logAppVersionToConsole, [])
