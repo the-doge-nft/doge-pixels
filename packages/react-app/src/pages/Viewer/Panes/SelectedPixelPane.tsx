@@ -11,6 +11,7 @@ import Dev from "../../../common/Dev";
 import {isDevModeEnabled, isStaging} from "../../../environment/helpers";
 import Link from "../../../DSL/Link/Link";
 import {NamedRoutes, route} from "../../../App.routes";
+import {generatePath} from "react-router-dom";
 
 const SelectedPixelPane = observer(function SelectedPixelPane({ store }: { store: ViewerStore }) {
   return (
@@ -81,7 +82,7 @@ const SelectedPixelPane = observer(function SelectedPixelPane({ store }: { store
 
                 {!AppStore.rwd.isMobile && (
                   <Box mt={2}>
-                    <Link isNav to={route(NamedRoutes.LEADERBORK, {
+                    <Link isNav to={generatePath("/leaderbork/:address/wallet/:tokenId", {
                       address: store.tokenOwner,
                       tokenId: store.selectedPupper
                     })}>

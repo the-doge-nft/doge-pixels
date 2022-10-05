@@ -18,8 +18,8 @@ import DogLocked from "./DogLocked";
 import TopDogs from "./TopDogs";
 
 const LeaderborkPage = observer(function DogParkPage() {
-    const {address, tokenId, activityId} = useParams<{ address?: string; tokenId?: string, activityId?: string }>();
-    const store = useMemo(() => new LeaderborkStore(address, tokenId ? Number(tokenId) : undefined, activityId), [address, tokenId]);
+    const {address, tokenId, activityId, selectedOwnerTab} = useParams<{ address?: string; tokenId?: string, activityId?: string, selectedOwnerTab?: SelectedOwnerTab }>();
+    const store = useMemo(() => new LeaderborkStore(address, tokenId ? Number(tokenId) : undefined, activityId, selectedOwnerTab), [address, tokenId, selectedOwnerTab]);
     const {colorMode} = useColorMode();
     useEffect(() => {
         store.init();
@@ -65,8 +65,8 @@ const LeaderborkPage = observer(function DogParkPage() {
                             <ParkPixels
                               size={PixelPreviewSize.lg}
                               id={'dog-park-pixels'}
-                              selectedTokenId={store.selectedActivityTokenId}
-                              previewPixels={store.selectedActivityTokenId ? [store.selectedActivityTokenId] : []}
+                              selectedTokenId={store.previewSelectedPixel}
+                              previewPixels={store.previewPixels}
                               onPupperClick={(pupper) => console.log()}
                             />
                           </Pane>
@@ -99,10 +99,23 @@ const LeaderborkPage = observer(function DogParkPage() {
                             </Flex>}
                         </Pane>
                       </Flex>
-                      <Pane title={<Typography variant={TVariant.PresStart18} mb={4} block>Recent Activity</Typography>} display={'flex'} flexDir={'column'} flexGrow={1}>
+                      <Pane title={<Typography variant={TVariant.PresStart18} mb={store.selectedAddress ? 2 : 4} block>{store.activityPaneTitle}</Typography>} display={'flex'} flexDir={'column'} flexGrow={1}>
+                          {store.selectedAddress && <Flex gap={7} mb={4}>
+                              {Object.keys(SelectedOwnerTab).map(item => <Box>
+                                  <Typography
+                                      textUnderlineOffset={3}
+                                      cursor={"pointer"}
+                                      onClick={() => store.setSelectedOwnerTab(SelectedOwnerTab[item])}
+                                      textDecoration={SelectedOwnerTab[item] === store.selectedOwnerTab ? "underline" : "inherit"}
+                                      variant={TVariant.PresStart12}>
+                                      {item}
+                                  </Typography>
+                              </Box>)}
+                          </Flex>}
+
                         <Box overflowY={"scroll"} flexGrow={1}>
                           <Flex flexWrap={"wrap"} gap={0} maxHeight={'250px'}>
-                            {store.selectedOwnerTab === SelectedOwnerTab.Transfers && store.transfers.map(transfer => <>
+                            {(store.selectedOwnerTab === SelectedOwnerTab.Transfers || !store.selectedAddress) && store.transfers.map(transfer => <>
                                 <Box
                                     key={`user-dog-${transfer.uniqueTransferId}`}
                                     bg={
@@ -128,13 +141,32 @@ const LeaderborkPage = observer(function DogParkPage() {
                                             </Typography>
                                         </Box>
                                         <PixelPane
-                                            // onClick={(pupper) => store.selectedTransferId = transfer.uniqueTransferId}
                                             size={"sm"}
                                             pupper={transfer.tokenId}
                                         />
                                     </Box>
                                 </Box>
                             </>)}
+                              {store.selectedOwnerTab === SelectedOwnerTab.Wallet && store.selectedOwner?.pixels.map(tokenId => <Box
+                                  key={`user-dog-${tokenId}`}
+                                  bg={
+                                      store.selectedPixelId === tokenId
+                                          ? colorMode === "light"
+                                              ? lightModePrimary
+                                              : darkModeSecondary
+                                          : "inherit"
+                                  }
+                                  p={2}
+                                  mt={0}
+                                  _hover={{bg: colorMode === "light" ? lightModePrimary : darkModeSecondary}}
+                                  onClick={() => store.setSelectedPixelId(tokenId)}
+                                  cursor={"pointer"}
+                              >
+                                      <PixelPane
+                                          size={"sm"}
+                                          pupper={tokenId}
+                                      />
+                              </Box>)}
                           </Flex>
                         </Box>
                       </Pane>

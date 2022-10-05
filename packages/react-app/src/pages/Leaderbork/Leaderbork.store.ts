@@ -27,8 +27,8 @@ interface PixelTransfer {
 }
 
 export enum SelectedOwnerTab {
-  Transfers = "Transfers",
-  Wallet = "Wallet"
+  Transfers = "transfers",
+  Wallet = "wallet"
 }
 
 class LeaderborkStore extends Reactionable(EmptyClass) {
@@ -57,7 +57,7 @@ class LeaderborkStore extends Reactionable(EmptyClass) {
   @observable
   selectedOwnerTab: SelectedOwnerTab = SelectedOwnerTab.Transfers
 
-  constructor(selectedAddress?: string, selectedPixelId?: number, transferId?: string) {
+  constructor(selectedAddress?: string, selectedPixelId?: number, transferId?: string, selectedOwnerTab?: SelectedOwnerTab) {
     super()
     makeObservable(this)
 
@@ -74,11 +74,19 @@ class LeaderborkStore extends Reactionable(EmptyClass) {
       this.selectedTransferId = transferId
     }
 
+    if (selectedOwnerTab) {
+      this.selectedOwnerTab = selectedOwnerTab
+    }
+
     this.react(() => this.searchValue, (value, prevValue) => {
       //@ts-ignore
       if ((this.selectedAddress && value.length === prevValue.length - 1) || value === "") {
         this.selectedAddress = undefined
         this.searchValue = ""
+      }
+
+      if (this.searchValue === "") {
+        this.getGlobalTransfers()
       }
     })
   }
@@ -105,39 +113,6 @@ class LeaderborkStore extends Reactionable(EmptyClass) {
   @computed
   get selectedOwner(): PixelOwnerInfo | undefined {
     return AppStore.web3.sortedPixelOwners.filter(dog => dog.address === this.selectedAddress)[0]
-  }
-
-  @computed
-  get selectedUserHasPixels() {
-    return this.selectedOwner !== undefined && this.selectedOwner.pixels.length > 0
-  }
-
-  @computed
-  get isSearchEmpty() {
-    return this.searchValue === ""
-  }
-
-  @computed
-  get selectedPixelCoordinates() {
-    if (this.selectedPixelId) {
-      return AppStore.web3.pupperToPixelCoordsLocal(this.selectedPixelId)
-    }
-    return []
-  }
-
-  @computed
-  get selectedPixelHexColor() {
-    return AppStore.web3.pupperToHexLocal(this.selectedPixelId!)
-  }
-
-  @computed
-  get seletedPixelIndex() {
-    return AppStore.web3.pupperToIndexLocal(this.selectedPixelId!)
-  }
-
-  @computed
-  get isSelectedAddressAuthedUser() {
-    return this.selectedAddress === AppStore.web3.address
   }
 
   @computed
@@ -179,18 +154,21 @@ class LeaderborkStore extends Reactionable(EmptyClass) {
     this.searchValue = this.selectedAddress
     await this.getSelectedUserTransfers()
     this.selectedTransferId = this.selectedOwnerTransfers[0].uniqueTransferId
-    this.pushWindowState(generatePath("/leaderbork/:address/activity/:activityId", {address: this.selectedAddress, activityId: this.selectedTransferId}))
+    this.pushWindowState(generatePath("/leaderbork/:address/:selectedOwnerTab/:activityId",
+        {selectedOwnerTab: SelectedOwnerTab.Transfers, address: this.selectedAddress, activityId: this.selectedTransferId}))
   }
 
   setSelectedPixelId(pixelId: number | null) {
     this.selectedPixelId = pixelId
-    this.pushWindowState(generatePath("/leaderbork/:address/:tokenId", {address: this.selectedAddress, tokenId: this.selectedPixelId}))
+    this.pushWindowState(generatePath("/leaderbork/:address/:selectedOwnerTab/:tokenId",
+        {selectedOwnerTab: SelectedOwnerTab.Wallet, address: this.selectedAddress, tokenId: this.selectedPixelId}))
   }
 
   setActivityId(activityId: string) {
     this.selectedTransferId = activityId;
     if (this.selectedOwner) {
-      this.pushWindowState(generatePath("/leaderbork/:address/activity/:activityId", {address: this.selectedAddress, activityId: this.selectedTransferId}))
+      this.pushWindowState(generatePath("/leaderbork/:address/:selectedOwnerTab/:activityId",
+          {selectedOwnerTab: SelectedOwnerTab.Transfers, address: this.selectedAddress, activityId: this.selectedTransferId}))
     } else {
       this.pushWindowState(generatePath("/leaderbork/activity/:activityId", {activityId: this.selectedTransferId}))
     }
@@ -241,6 +219,51 @@ class LeaderborkStore extends Reactionable(EmptyClass) {
     }).then(({data}) => {
       this.selectedOwnerTransfers = data
     })
+  }
+
+  @computed
+  get activityPaneTitle() {
+    if (!this.selectedAddress) {
+      return "Recent Activity"
+    } else {
+      if (this.selectedOwner) {
+        return this.selectedOwner.ens ? this.selectedOwner.ens : abbreviate(this.selectedOwner.address, 4)
+      }
+      return ""
+    }
+  }
+
+  setSelectedOwnerTab(tabType: SelectedOwnerTab) {
+    this.selectedOwnerTab = tabType
+    if (this.selectedOwnerTab === SelectedOwnerTab.Wallet) {
+      this.selectedPixelId = this.selectedOwner.pixels[0]
+      this.pushWindowState(generatePath("/leaderbork/:address/wallet/:tokenId", {address: this.selectedAddress, tokenId: this.selectedPixelId}))
+    } else if (this.selectedOwnerTab === SelectedOwnerTab.Transfers) {
+      this.selectedTransferId = this.selectedOwnerTransfers[0].uniqueTransferId
+      this.pushWindowState(generatePath("/leaderbork/:address/activity/:activityId", {address: this.selectedAddress, activityId: this.selectedTransferId}))
+    }
+  }
+
+  @computed
+  get previewPixels() {
+    if (this.selectedOwner) {
+      return this.selectedOwner.pixels
+    } else {
+      return [this.selectedActivityTokenId]
+    }
+  }
+
+  @computed
+  get previewSelectedPixel() {
+    if (this.selectedOwner) {
+      if (this.selectedOwnerTab === SelectedOwnerTab.Transfers) {
+        return this.selectedActivityTokenId
+      } else {
+        return this.selectedPixelId
+      }
+    } else {
+      return this.selectedActivityTokenId
+    }
   }
 }
 
