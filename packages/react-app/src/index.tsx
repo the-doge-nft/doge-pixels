@@ -22,32 +22,6 @@ ReactDOM.render(
     <ChakraProvider theme={theme} resetCSS>
       <Fonts />
       <div id={"react-modal-main"} style={{ minHeight: "100vh", display: "flex", flexDirection: "column" }}>
-        <a href={"https://www.coingecko.com/en/coins/the-doge-nft#markets"} target={"_blank"}>
-          <Box
-            py={1}
-            bg={"black"}
-            color={"white"}
-            _hover={{ bg: "yellow.700", color: "black" }}
-            whiteSpace={"nowrap"}
-            overflowX={"hidden"}
-          >
-            <Marquee>
-              {new Array(10).fill(undefined).map((item, index) => (
-                <Typography
-                  key={`dev-banner-${index}`}
-                  variant={TVariant.PresStart12}
-                  display={"flex"}
-                  alignItems={"center"}
-                  color={"inherit"}
-                  // eslint-disable-next-line
-                  mx={5}
-                >
-                  ✨✨✨ Don't have DOG? Click here to get it ✨✨✨
-                </Typography>
-              ))}
-            </Marquee>
-          </Box>
-        </a>
         <App />
       </div>
     </ChakraProvider>
