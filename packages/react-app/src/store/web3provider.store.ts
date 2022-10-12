@@ -4,11 +4,11 @@ import { Network } from "@ethersproject/networks";
 import { web3Modal } from "../services/web3Modal";
 import { providers, Signer } from "ethers";
 import { showDebugToast, showErrorToast } from "../DSL/Toast/Toast";
-import { isDevModeEnabled, isProduction, isStaging } from "../environment/helpers";
 import { Http } from "../services";
 import { abbreviate } from "../helpers/strings";
 import AppStore from "./App.store";
 import { Core } from "web3modal/dist/core";
+import env from "../environment";
 
 export interface EthersContractError {
   message: string;
@@ -64,16 +64,9 @@ class Web3providerStore {
 
   async validateNetwork() {
     if (this.network?.name) {
-      if (isDevModeEnabled() || isStaging()) {
-        if (this.network.name !== "rinkeby") {
-          showErrorToast("Please connect to Rinkeby.");
-          await this.disconnect();
-        }
-      } else if (isProduction()) {
-        if (this.network.name !== "homestead") {
-          showErrorToast("Please connect to Mainnet.");
-          await this.disconnect();
-        }
+      if (this.network.chainId !== env.app.targetChainId) {
+        await this.disconnect()
+        showErrorToast(`Please connect to ${env.app.targetNetworkName.toLocaleUpperCase()}`)
       }
     }
   }

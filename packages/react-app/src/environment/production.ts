@@ -12,6 +12,8 @@ const productionEnv = {
       WBTC: { decimals: 8, contractAddress: "0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599" },
       NFD: { decimals: 18, contractAddress: "0xDFDb7f72c1F195C5951a234e8DB9806EB0635346" },
     },
+    targetChainId: 1,
+    targetNetworkName: "mainnet"
   },
 };
 export default productionEnv;

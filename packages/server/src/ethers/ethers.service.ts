@@ -34,7 +34,7 @@ export class EthersService implements OnModuleInit {
     if (appEnv === AppEnv.production) {
       this.network = 'mainnet';
     } else if (appEnv === AppEnv.development || appEnv === AppEnv.staging) {
-      this.network = 'rinkeby';
+      this.network = 'goerli';
     } else if (appEnv === AppEnv.test) {
       this.network = 'localhost';
     } else {

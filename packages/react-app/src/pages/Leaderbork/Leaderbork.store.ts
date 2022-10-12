@@ -109,7 +109,7 @@ class LeaderborkStore extends Reactionable(EmptyClass) {
           this.selectedPixelId = this.selectedOwner.pixels?.[0];
           this.getSelectedUserTransfers().then(_ => {
             if (!this.selectedTransferId) {
-              this.selectedTransferId = this.selectedOwnerTransfers[0].uniqueTransferId;
+              this.selectedTransferId = this.selectedOwnerTransfers[0]?.uniqueTransferId;
             }
           });
         }
@@ -124,7 +124,7 @@ class LeaderborkStore extends Reactionable(EmptyClass) {
     AppStore.web3.getPixelOwnershipMap();
     if (!this.selectedAddress) {
       this.getGlobalTransfers().then(_ => {
-        this.selectedTransferId = this.globalTransfers[0].uniqueTransferId;
+        this.selectedTransferId = this.globalTransfers[0]?.uniqueTransferId;
       });
     }
   }
@@ -319,7 +319,7 @@ class LeaderborkStore extends Reactionable(EmptyClass) {
         }),
       );
     } else if (this.selectedOwnerTab === SelectedOwnerTab.Activity) {
-      this.selectedTransferId = this.selectedOwnerTransfers[0].uniqueTransferId;
+      this.selectedTransferId = this.selectedOwnerTransfers[0]?.uniqueTransferId;
       this.pushWindowState(
         generatePath(`/leaderbork/:address/${SelectedOwnerTab.Activity}/:activityId`, {
           address: this.selectedAddress,

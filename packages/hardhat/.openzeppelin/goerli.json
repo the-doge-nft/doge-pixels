@@ -1,0 +1,282 @@
+{
+  "manifestVersion": "3.2",
+  "admin": {
+    "address": "0x994fE4DC5a56F57d4b1d14da52B594fD396b8013",
+    "txHash": "0x13379e59cee7eff805b8c4447c8061d5dbedddc50fe5c5842f0f309c2d7ba00a"
+  },
+  "proxies": [
+    {
+      "address": "0x0eAADb89776e98B5D9a278f4a11f4b3f20226276",
+      "txHash": "0xdf45542dafba27c465e0a0c1d0bf4c036e6b9061a0cf092888855371d1a8f7f8",
+      "kind": "transparent"
+    }
+  ],
+  "impls": {
+    "cf4e5f90458aaf5e4302eccf2caa4e5521b0c5e292fd8d04de0274c57e8e2eab": {
+      "address": "0x92472188397439AF6C6B3aBfEe5db8786F5f4155",
+      "txHash": "0xb9946701329277482dddec376c95a6a66ca75bbddc5cc3373816294e9b9f4a4f",
+      "layout": {
+        "storage": [
+          {
+            "label": "_initialized",
+            "offset": 0,
+            "slot": "0",
+            "type": "t_bool",
+            "contract": "Initializable",
+            "src": "contracts/proxy/utils/Initializable.sol:37"
+          },
+          {
+            "label": "_initializing",
+            "offset": 1,
+            "slot": "0",
+            "type": "t_bool",
+            "contract": "Initializable",
+            "src": "contracts/proxy/utils/Initializable.sol:42"
+          },
+          {
+            "label": "__gap",
+            "offset": 0,
+            "slot": "1",
+            "type": "t_array(t_uint256)50_storage",
+            "contract": "ContextUpgradeable",
+            "src": "contracts/utils/ContextUpgradeable.sol:31"
+          },
+          {
+            "label": "__gap",
+            "offset": 0,
+            "slot": "51",
+            "type": "t_array(t_uint256)50_storage",
+            "contract": "ERC165Upgradeable",
+            "src": "contracts/utils/introspection/ERC165Upgradeable.sol:36"
+          },
+          {
+            "label": "_name",
+            "offset": 0,
+            "slot": "101",
+            "type": "t_string_storage",
+            "contract": "ERC721CustomUpgradeable",
+            "src": "contracts/token/PX/ERC721CustomUpgradeable.sol:25"
+          },
+          {
+            "label": "_symbol",
+            "offset": 0,
+            "slot": "102",
+            "type": "t_string_storage",
+            "contract": "ERC721CustomUpgradeable",
+            "src": "contracts/token/PX/ERC721CustomUpgradeable.sol:28"
+          },
+          {
+            "label": "_owners",
+            "offset": 0,
+            "slot": "103",
+            "type": "t_mapping(t_uint256,t_address)",
+            "contract": "ERC721CustomUpgradeable",
+            "src": "contracts/token/PX/ERC721CustomUpgradeable.sol:31"
+          },
+          {
+            "label": "_balances",
+            "offset": 0,
+            "slot": "104",
+            "type": "t_mapping(t_address,t_uint256)",
+            "contract": "ERC721CustomUpgradeable",
+            "src": "contracts/token/PX/ERC721CustomUpgradeable.sol:34"
+          },
+          {
+            "label": "_tokenApprovals",
+            "offset": 0,
+            "slot": "105",
+            "type": "t_mapping(t_uint256,t_address)",
+            "contract": "ERC721CustomUpgradeable",
+            "src": "contracts/token/PX/ERC721CustomUpgradeable.sol:37"
+          },
+          {
+            "label": "_operatorApprovals",
+            "offset": 0,
+            "slot": "106",
+            "type": "t_mapping(t_address,t_mapping(t_address,t_bool))",
+            "contract": "ERC721CustomUpgradeable",
+            "src": "contracts/token/PX/ERC721CustomUpgradeable.sol:40"
+          },
+          {
+            "label": "__gap",
+            "offset": 0,
+            "slot": "107",
+            "type": "t_array(t_uint256)44_storage",
+            "contract": "ERC721CustomUpgradeable",
+            "src": "contracts/token/PX/ERC721CustomUpgradeable.sol:432"
+          },
+          {
+            "label": "DOG20",
+            "offset": 0,
+            "slot": "151",
+            "type": "t_contract(IERC20)4708",
+            "contract": "PX",
+            "src": "contracts/token/PX/PX.sol:17"
+          },
+          {
+            "label": "puppersRemaining",
+            "offset": 0,
+            "slot": "152",
+            "type": "t_uint256",
+            "contract": "PX",
+            "src": "contracts/token/PX/PX.sol:27"
+          },
+          {
+            "label": "totalSupply",
+            "offset": 0,
+            "slot": "153",
+            "type": "t_uint256",
+            "contract": "PX",
+            "src": "contracts/token/PX/PX.sol:29"
+          },
+          {
+            "label": "indexToPupper",
+            "offset": 0,
+            "slot": "154",
+            "type": "t_mapping(t_uint256,t_uint256)",
+            "contract": "PX",
+            "src": "contracts/token/PX/PX.sol:32"
+          },
+          {
+            "label": "pupperToIndex",
+            "offset": 0,
+            "slot": "155",
+            "type": "t_mapping(t_uint256,t_uint256)",
+            "contract": "PX",
+            "src": "contracts/token/PX/PX.sol:34"
+          },
+          {
+            "label": "DOG_TO_PIXEL_SATOSHIS",
+            "offset": 0,
+            "slot": "156",
+            "type": "t_uint256",
+            "contract": "PX",
+            "src": "contracts/token/PX/PX.sol:36"
+          },
+          {
+            "label": "INDEX_OFFSET",
+            "offset": 0,
+            "slot": "157",
+            "type": "t_uint256",
+            "contract": "PX",
+            "src": "contracts/token/PX/PX.sol:38"
+          },
+          {
+            "label": "MAGIC_NULL",
+            "offset": 0,
+            "slot": "158",
+            "type": "t_uint256",
+            "contract": "PX",
+            "src": "contracts/token/PX/PX.sol:40"
+          },
+          {
+            "label": "SHIBA_WIDTH",
+            "offset": 0,
+            "slot": "159",
+            "type": "t_uint256",
+            "contract": "PX",
+            "src": "contracts/token/PX/PX.sol:42"
+          },
+          {
+            "label": "SHIBA_HEIGHT",
+            "offset": 0,
+            "slot": "160",
+            "type": "t_uint256",
+            "contract": "PX",
+            "src": "contracts/token/PX/PX.sol:43"
+          },
+          {
+            "label": "BASE_URI",
+            "offset": 0,
+            "slot": "161",
+            "type": "t_string_storage",
+            "contract": "PX",
+            "src": "contracts/token/PX/PX.sol:44"
+          },
+          {
+            "label": "DOG20_FEES_ADDRESS_DEV",
+            "offset": 0,
+            "slot": "162",
+            "type": "t_address",
+            "contract": "PX",
+            "src": "contracts/token/PX/PX.sol:46"
+          },
+          {
+            "label": "DOG20_FEES_ADDRESS_PLEASR",
+            "offset": 0,
+            "slot": "163",
+            "type": "t_address",
+            "contract": "PX",
+            "src": "contracts/token/PX/PX.sol:47"
+          },
+          {
+            "label": "DOG20_FEES_AMOUNT_DEV",
+            "offset": 0,
+            "slot": "164",
+            "type": "t_uint256",
+            "contract": "PX",
+            "src": "contracts/token/PX/PX.sol:48"
+          },
+          {
+            "label": "DOG20_FEES_AMOUNT_PLEASR",
+            "offset": 0,
+            "slot": "165",
+            "type": "t_uint256",
+            "contract": "PX",
+            "src": "contracts/token/PX/PX.sol:49"
+          }
+        ],
+        "types": {
+          "t_address": {
+            "label": "address",
+            "numberOfBytes": "20"
+          },
+          "t_array(t_uint256)44_storage": {
+            "label": "uint256[44]",
+            "numberOfBytes": "1408"
+          },
+          "t_array(t_uint256)50_storage": {
+            "label": "uint256[50]",
+            "numberOfBytes": "1600"
+          },
+          "t_bool": {
+            "label": "bool",
+            "numberOfBytes": "1"
+          },
+          "t_contract(IERC20)4708": {
+            "label": "contract IERC20",
+            "numberOfBytes": "20"
+          },
+          "t_mapping(t_address,t_bool)": {
+            "label": "mapping(address => bool)",
+            "numberOfBytes": "32"
+          },
+          "t_mapping(t_address,t_mapping(t_address,t_bool))": {
+            "label": "mapping(address => mapping(address => bool))",
+            "numberOfBytes": "32"
+          },
+          "t_mapping(t_address,t_uint256)": {
+            "label": "mapping(address => uint256)",
+            "numberOfBytes": "32"
+          },
+          "t_mapping(t_uint256,t_address)": {
+            "label": "mapping(uint256 => address)",
+            "numberOfBytes": "32"
+          },
+          "t_mapping(t_uint256,t_uint256)": {
+            "label": "mapping(uint256 => uint256)",
+            "numberOfBytes": "32"
+          },
+          "t_string_storage": {
+            "label": "string",
+            "numberOfBytes": "32"
+          },
+          "t_uint256": {
+            "label": "uint256",
+            "numberOfBytes": "32"
+          }
+        }
+      }
+    }
+  }
+}

@@ -16,7 +16,7 @@ export DOG_IPFS_DEPLOY_BASE_URI="https://therealdoge.mypinata.cloud/ipfs/$CID/"
 export DEPLOY_ID=$(date '+%Y-%m-%d_%H_%M_%S')
 export DOG_IPFS_KEY="dog_deploy_$DEPLOY_ID"
 
-NETWORK="hardhat"
+NETWORK="goerli"
 
 pushd $HARDHAT_PATH
   echo "deploying to $NETWORK"

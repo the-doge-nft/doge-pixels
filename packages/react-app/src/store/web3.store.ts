@@ -17,6 +17,7 @@ import { ObjectKeys } from "../helpers/objects";
 import AppStore from "./App.store";
 import { PixelOwnerInfo } from "../pages/Leaderbork/Leaderbork.store";
 import { Reactionable } from "../services/mixins/reactionable";
+import env from "../environment";
 
 interface AddressToPuppers {
   [k: string]: {
@@ -32,6 +33,8 @@ class Web3Store extends Reactionable(Web3providerStore) {
   WIDTH = 640;
   HEIGHT = 480;
   DOG_BURN_FEES_PERCENT = 1;
+  targetChainId = env.app.targetChainId
+  targetNetworkName = env.app.targetNetworkName
 
   @observable
   dogBalance: BigNumber | null = null;
@@ -66,19 +69,8 @@ class Web3Store extends Reactionable(Web3providerStore) {
     this.addressToPuppers = {};
     this.cowStore = new CowStore();
 
-    if (isDevModeEnabled() || isStaging()) {
-      this.pxContractAddress = deployedContracts["4"]["rinkeby"]["contracts"]["PX"]["address"];
-      this.dogContractAddress = deployedContracts["4"]["rinkeby"]["contracts"]["DOG20"]["address"];
-
-      // todo -- remove this
-      // this.pxContractAddress = deployedContracts["1"]["mainnet"]["contracts"]["PX"]["address"]
-      // this.dogContractAddress = deployedContracts["1"]["mainnet"]["contracts"]["DOG20"]["address"]
-    } else if (isProduction()) {
-      this.pxContractAddress = deployedContracts["1"]["mainnet"]["contracts"]["PX"]["address"];
-      this.dogContractAddress = deployedContracts["1"]["mainnet"]["contracts"]["DOG20"]["address"];
-    } else {
-      throw Error("Unknown environment");
-    }
+    this.pxContractAddress = deployedContracts[this.targetChainId.toString()][this.targetNetworkName]["contracts"]["PX"]["address"]
+    this.dogContractAddress = deployedContracts[this.targetChainId.toString()][this.targetNetworkName]["contracts"]["DOG20"]["address"]
   }
 
   init() {
@@ -110,23 +102,17 @@ class Web3Store extends Reactionable(Web3providerStore) {
   }
 
   connectToContracts(signerOrProvider?: Signer | Provider) {
-    let pxABI: ContractInterface;
-    let dogABI: ContractInterface;
-
-    if (isDevModeEnabled() || isStaging()) {
-      pxABI = deployedContracts["4"]["rinkeby"]["contracts"]["PX"].abi;
-      dogABI = deployedContracts["4"]["rinkeby"]["contracts"]["DOG20"].abi;
-    } else if (isProduction()) {
-      pxABI = deployedContracts["1"]["mainnet"]["contracts"]["PX"].abi;
-      dogABI = deployedContracts["1"]["mainnet"]["contracts"]["DOG20"].abi;
-    } else {
-      throw Error("Uknown environment found when connecting to contracts");
-    }
-
-    const px = new Contract(this.pxContractAddress, pxABI, signerOrProvider) as unknown;
+    const px = new Contract(
+        this.pxContractAddress,
+        deployedContracts[this.targetChainId.toString()][this.targetNetworkName]["contracts"]["PX"].abi,
+        signerOrProvider) as unknown;
     this.pxContract = px as PX;
 
-    const dog = new Contract(this.dogContractAddress, dogABI, signerOrProvider) as unknown;
+    const dog = new Contract(
+        this.dogContractAddress,
+        deployedContracts[this.targetChainId.toString()][this.targetNetworkName]["contracts"]["DOG20"].abi,
+        signerOrProvider
+    ) as unknown;
     this.dogContract = dog as DOG20;
 
     //@ts-ignore
