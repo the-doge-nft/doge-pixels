@@ -105,9 +105,11 @@ export class PixelsService implements OnModuleInit {
   }
 
   async getPixelTransferLogs(fromBlock: number, _toBlock?: number) {
+    this.logger.log(`Getting transfers from block: ${fromBlock}`)
     // get logs from the chain chunked by 5k blocks
     // infura will only return 10k logs per request
     const toBlock = _toBlock ? _toBlock : await this.ethersService.provider.getBlockNumber()
+    this.logger.log(`To block: ${toBlock}`)
     const logs = [];
     const step = 5000;
     const filter = this.pxContract.filters.Transfer(null, null);
@@ -115,6 +117,7 @@ export class PixelsService implements OnModuleInit {
       const _logs = await this.pxContract.queryFilter(filter, i, i + step);
       logs.push(..._logs);
     }
+    this.logger.log(`Got logs of length: ${logs.length}`)
     return logs;
   }
 
