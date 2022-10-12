@@ -45,17 +45,18 @@ const LeaderborkPage = observer(function DogParkPage() {
 
   return (
     <Grid
+        w={"full"}
       p={{ base: 5, md: 0 }}
       templateRows={{ base: "1fr 1fr", xl: "1fr" }}
       templateColumns={{ base: "1fr", xl: "0.35fr 1fr" }}
     >
-      <GridItem display={"flex"} flexDirection={"column"} flexGrow={1} order={{ base: 2, xl: 1 }}>
+      <GridItem gap={8} display={"flex"} flexDirection={"column"} mt={{base: 8, xl: 0}} flexGrow={1} order={{ base: 2, xl: 1 }}>
         <TopDogs store={store} />
-        <Box mt={8}>
+        <Box>
           <DogLocked dogLocked={store.lockedDog} />
         </Box>
       </GridItem>
-      <GridItem order={{ base: 1, xl: 3 }} ml={{ base: 0, lg: 10 }} display={"flex"} flexDirection={"column"}>
+      <GridItem order={{ base: 1, xl: 3 }} ml={{ base: 0, xl: 10 }} display={"flex"} flexDirection={"column"}>
         <Box mb={8}>
           <Typeahead
             onItemSelect={value => (store.selectedAddress = value as unknown as string)}

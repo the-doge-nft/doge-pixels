@@ -11,7 +11,7 @@ import React from "react";
 const TopDogs = observer(({ store }: { store: LeaderborkStore }) => {
   const { colorMode } = useColorMode();
   return (
-    <Pane display={"flex"} flexDirection={"column"} h={"full"}>
+    <Pane display={"flex"} flexDirection={"column"} h={"full"} maxH={{base: "300px", lg: "full"}}>
       <Flex mb={4} alignItems={"center"}>
         <Typography variant={TVariant.PresStart18} block height={"max-content"}>
           Top Dogs
@@ -27,7 +27,7 @@ const TopDogs = observer(({ store }: { store: LeaderborkStore }) => {
         </Typography>
       </Flex>
       <Box overflowY={"auto"} flexGrow={1}>
-        <Flex flexWrap={"wrap"} maxHeight={"300px"} sx={{ flexGap: "10px" }}>
+        <Flex flexWrap={"wrap"} sx={{ flexGap: "10px" }}>
           {AppStore.web3.sortedPixelOwners.map(owner => (
             <UserCard
               isSelected={store.selectedOwner && store.selectedOwner.address === owner.address}
