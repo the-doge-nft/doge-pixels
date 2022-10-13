@@ -73,6 +73,7 @@ class LeaderborkStore extends Reactionable(EmptyClass) {
     if (selectedAddress) {
       this.searchValue = selectedAddress;
       this.selectedAddress = selectedAddress;
+      this.getSelectedUserTransfers()
     }
 
     if (selectedPixelId) {
@@ -322,12 +323,15 @@ class LeaderborkStore extends Reactionable(EmptyClass) {
       );
     } else if (this.selectedOwnerTab === SelectedOwnerTab.Activity) {
       this.selectedTransferId = this.selectedOwnerTransfers[0]?.uniqueTransferId;
+      console.log("debug:: TEST", this.selectedTransferId)
       this.pushWindowState(
         generatePath(`/leaderbork/:address/${SelectedOwnerTab.Activity}/:activityId`, {
           address: this.selectedAddress,
           activityId: this.selectedTransferId,
         }),
       );
+    } else {
+      throw new Error("Unknown selected owner tab type")
     }
   }
 
@@ -351,6 +355,12 @@ class LeaderborkStore extends Reactionable(EmptyClass) {
     } else {
       return this.selectedActivityTokenId;
     }
+  }
+
+  @computed
+  get showDetails() {
+    return (this.selectedPixelId && this.selectedOwnerTab === SelectedOwnerTab.Wallet) ||
+      (this.selectedActivityTransfer && this.selectedOwnerTab === SelectedOwnerTab.Activity)
   }
 }
 

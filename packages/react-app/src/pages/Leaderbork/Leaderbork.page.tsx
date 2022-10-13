@@ -88,7 +88,7 @@ const LeaderborkPage = observer(function DogParkPage() {
               </Pane>
             </Flex>
             <Pane flexGrow={1}>
-              <Flex flexDir={"column"} h={"full"}>
+              {store.showDetails && <Flex flexDir={"column"} h={"full"}>
                 <Flex gap={10} flexDir={{base: "column", md: "row"}}>
                   {store.previewSelectedPixelId && (
                     <Box>
@@ -191,7 +191,7 @@ const LeaderborkPage = observer(function DogParkPage() {
                     <Button onClick={() => console.log()}>Portal</Button>
                   </Link>
                 </Flex>
-              </Flex>
+              </Flex>}
             </Pane>
           </Flex>
           <Pane
