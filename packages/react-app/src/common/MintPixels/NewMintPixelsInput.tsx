@@ -66,7 +66,7 @@ const NewMintPixelsInput: React.FC<{ store: MintPixelsDialogStore }> = observer(
             <Icon icon={"chevron-down"} boxSize={5} />
           </Button>
         </VStack>
-        <Pane px={4} py={2} display={"flex"}>
+        <Pane px={4} py={2} display={"flex"} w={"full"}>
           <BigText size={"md"}>{store.pixelCount}</BigText>
           <Flex flexDirection={"column"} justifyContent={"center"} alignItems={"center"}>
             <BigText isLight size={"sm"}>

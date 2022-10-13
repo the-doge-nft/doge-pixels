@@ -7,15 +7,27 @@
 #   ./dev-local.sh up
 #   ./dev-local.sh down
 
+set -eu
+
+export SCRIPTPATH="$( cd "$(dirname "$0")" >/dev/null 2>&1 ; pwd -P )"
+
+
 spacedEcho() {
     echo ""
     echo "$1"
     echo ""
 }
 
-up() {
+removePreviousBuildMaybe() {
+  if [ -d "$SCRIPTPATH/dist" ]
+  then
     spacedEcho "removing old dist"
     rm -r dist/
+  fi
+}
+
+up() {
+    removePreviousBuildMaybe
 
     spacedEcho "spinning up db"
     docker-compose up -d db
@@ -59,10 +71,10 @@ HELP_USAGE
     exit 0
 }
 
-if [[ $1 == "down" ]]; then
+if [[ $1 == "down" && $2 ]]; then
     down
 elif [[ $1 == "up" ]]; then
-    up $2
+    up ${2-""}
 else
     usage
 fi
