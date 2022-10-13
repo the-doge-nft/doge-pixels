@@ -68,7 +68,7 @@ const ViewerPage = observer(function ViewerPage() {
     <>
       <Grid templateColumns={{ base: "2fr 2fr", sm: "2fr 1.5fr", lg: "2fr 0.8fr" }} templateRows={"1fr"} flexGrow={1}>
         <GridItem mr={{ base: 0, md: 5 }} colSpan={{ base: 3, md: 1 }} zIndex={2}>
-          <Pane w={"100%"} h={"100%"} p={0}>
+          <Pane w={"full"} h={"full"} p={0}>
             <Suspense
               fallback={
                 <Flex justifyContent={"center"} alignItems={"center"} position={"absolute"} w={"full"} h={"full"}>
@@ -82,6 +82,7 @@ const ViewerPage = observer(function ViewerPage() {
         </GridItem>
         <GridItem ml={5} colSpan={{ base: 0, md: 1 }} display={{ base: "none", md: "block" }}>
           <Pane
+            h={"full"}
             display={"flex"}
             flexDirection={"column"}
             justifyContent={"space-between"}

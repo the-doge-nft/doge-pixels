@@ -1,24 +1,24 @@
-import { Box, Flex, Grid, GridItem, useColorMode } from "@chakra-ui/react";
-import { observer } from "mobx-react-lite";
-import React, { useEffect, useMemo } from "react";
+import {Box, Flex, Grid, GridItem, useColorMode} from "@chakra-ui/react";
+import {observer} from "mobx-react-lite";
+import React, {useEffect, useMemo} from "react";
 import Pane from "../../DSL/Pane/Pane";
-import Typography, { TVariant } from "../../DSL/Typography/Typography";
-import LeaderborkStore, { SelectedOwnerTab } from "./Leaderbork.store";
+import Typography, {TVariant} from "../../DSL/Typography/Typography";
+import LeaderborkStore, {SelectedOwnerTab} from "./Leaderbork.store";
 import model from "../../DSL/Form/model";
-import { useLocation, useParams } from "react-router-dom";
+import {useLocation, useParams} from "react-router-dom";
 import PixelPane from "../../DSL/PixelPane/PixelPane";
 import Button from "../../DSL/Button/Button";
-import { darkModeSecondary, lightModePrimary } from "../../DSL/Theme";
-import { NamedRoutes, route, SELECTED_PIXEL_PARAM } from "../../App.routes";
+import {darkModeSecondary, lightModePrimary} from "../../DSL/Theme";
+import {NamedRoutes, route, SELECTED_PIXEL_PARAM} from "../../App.routes";
 import * as ethers from "ethers";
-import PixelPreview, { PixelPreviewSize } from "../../DSL/PixelPreview/PixelPreview";
+import PixelPreview, {PixelPreviewSize} from "../../DSL/PixelPreview/PixelPreview";
 import Link from "../../DSL/Link/Link";
 import Typeahead from "../../DSL/Typeahead/Typeahead";
 import DogLocked from "./DogLocked";
 import TopDogs from "./TopDogs";
-import { getEtherscanURL } from "../../helpers/links";
+import {getEtherscanURL} from "../../helpers/links";
 import Icon from "../../DSL/Icon/Icon";
-import { Type } from "../../DSL/Fonts/Fonts";
+import {Type} from "../../DSL/Fonts/Fonts";
 import AppStore from "../../store/App.store";
 
 const LeaderborkPage = observer(function DogParkPage() {
@@ -45,8 +45,7 @@ const LeaderborkPage = observer(function DogParkPage() {
 
   return (
     <Grid
-        w={"full"}
-      p={{ base: 5, md: 0 }}
+      w={"full"}
       templateRows={{ base: "1fr 1fr", xl: "1fr" }}
       templateColumns={{ base: "1fr", xl: "0.35fr 1fr" }}
     >
@@ -66,7 +65,6 @@ const LeaderborkPage = observer(function DogParkPage() {
             placeholder={"Search pixel owners"}
             value={store.searchValue}
             onChange={value => {
-              console.log("debug:: value", value);
               store.searchValue = value;
             }}
             {...model(store, "searchValue")}
@@ -78,7 +76,7 @@ const LeaderborkPage = observer(function DogParkPage() {
               <Flex justifyContent={"center"} flexGrow={0}>
                 <Pane margin={"auto"} maxW={"fit-content"} p={0} borderWidth={"0px"}>
                   <PixelPreview
-                    size={PixelPreviewSize.lg}
+                    size={AppStore.rwd.isMobile ? PixelPreviewSize.sm : PixelPreviewSize.lg}
                     id={"dog-park-pixels"}
                     selectedTokenId={store.previewSelectedPixelId}
                     previewPixels={store.previewPixels}
@@ -92,7 +90,7 @@ const LeaderborkPage = observer(function DogParkPage() {
               </Flex>
               <Pane flexGrow={1}>
                 <Flex flexDir={"column"} h={"full"}>
-                  <Flex gap={10}>
+                  <Flex gap={10} flexDir={{base: "column", md: "row"}}>
                     {store.previewSelectedPixelId && (
                       <Box>
                         <PixelPane size={"md"} pupper={store.previewSelectedPixelId} variant={"shadow"} />
@@ -185,7 +183,7 @@ const LeaderborkPage = observer(function DogParkPage() {
                       </Flex>
                     </Flex>
                   </Flex>
-                  <Flex justifyContent={"center"} alignItems={"center"} flexGrow={1}>
+                  <Flex justifyContent={"center"} alignItems={"center"} flexGrow={1} mt={{base: 4, md: 0}}>
                     <Link
                       display={"inline-block"}
                       isNav

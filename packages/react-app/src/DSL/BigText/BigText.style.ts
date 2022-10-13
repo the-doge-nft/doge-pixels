@@ -53,22 +53,8 @@ const BigTextStyle = {
     },
   }),
   sizes: {
-    sm: ({ colorMode }: { colorMode: colorModeType }) => ({
-      // main: {
-      //   filter: lightOrDark(colorMode, "drop-shadow(4px 4px 0px black)", "none")
-      // },
-      // label: {
-      //   filter: "drop-shadow(4px 4px 0px black)"
-      // }
-    }),
-    md: ({ colorMode }: { colorMode: colorModeType }) => ({
-      // main: {
-      //   filter: lightOrDark(colorMode, "drop-shadow(6px 6px 0px black)", "none")
-      // },
-      // label: {
-      //   filter: "drop-shadow(6px 6px 0px black)"
-      // }
-    }),
+    sm: ({ colorMode }: { colorMode: colorModeType }) => ({}),
+    md: ({ colorMode }: { colorMode: colorModeType }) => ({}),
   },
 };
 

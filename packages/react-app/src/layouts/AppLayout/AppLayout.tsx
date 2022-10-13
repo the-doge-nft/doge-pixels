@@ -21,14 +21,15 @@ const AppLayout = observer(function AppLayout({ children }: AppLayoutProps) {
         flexGrow={1}
         w={"full"}
         maxW={"8xl"}
-        p={{ base: 0, md: 8 }}
-        pb={{ base: 0, md: 3 }}
+        p={4}
         flexDirection={"column"}
       >
         <Header />
         <Flex grow={1}>{children}</Flex>
-        {AppStore.rwd.isMobile && <MobileNav />}
-        {!AppStore.rwd.isMobile && <Footer />}
+        <Footer/>
+
+        {/*{AppStore.rwd.isMobile && <MobileNav />}*/}
+        {/*{!AppStore.rwd.isMobile && <Footer />}*/}
       </Flex>
     </Flex>
   );

@@ -6,6 +6,7 @@ import { Box, Flex } from "@chakra-ui/react";
 import Typography, { TVariant } from "../../DSL/Typography/Typography";
 import BigText from "../../DSL/BigText/BigText";
 import React from "react";
+import AppStore from "../../store/App.store";
 
 const DogLocked = observer(({ dogLocked }: { dogLocked?: number }) => {
   const [num, abbr] = dogLocked ? convertToAbbreviation(Math.trunc(dogLocked)) : ["N/A", ""];
@@ -19,7 +20,7 @@ const DogLocked = observer(({ dogLocked }: { dogLocked?: number }) => {
         </Flex>
         <Flex flexGrow={1} alignItems={"center"}>
           <Box>
-            <BigText size={"md"} label={abbr}>
+            <BigText size={AppStore.rwd.isMobile ? "sm" : "md"} label={abbr}>
               {num}
             </BigText>
           </Box>

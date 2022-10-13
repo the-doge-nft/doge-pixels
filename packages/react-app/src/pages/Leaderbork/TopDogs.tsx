@@ -11,21 +11,27 @@ import React from "react";
 const TopDogs = observer(({ store }: { store: LeaderborkStore }) => {
   const { colorMode } = useColorMode();
   return (
-    <Pane display={"flex"} flexDirection={"column"} h={"full"} maxH={{base: "300px", lg: "full"}}>
-      <Flex mb={4} alignItems={"center"}>
-        <Typography variant={TVariant.PresStart18} block height={"max-content"}>
-          Top Dogs
-        </Typography>
-        <Typography
-          variant={TVariant.PresStart14}
-          ml={3}
-          height={"max-content"}
-          block
-          color={lightOrDarkMode(colorMode, "yellow.100", "gray.300")}
-        >
-          ({AppStore.web3.sortedPixelOwners.length})
-        </Typography>
-      </Flex>
+    <Pane
+        display={"flex"}
+        flexDirection={"column"}
+        title={
+            <Flex alignItems={"center"}>
+                <Typography variant={TVariant.PresStart18} block height={"max-content"}>
+                    Top Dogs
+                </Typography>
+                <Typography
+                    variant={TVariant.PresStart14}
+                    ml={3}
+                    height={"max-content"}
+                    block
+                    color={lightOrDarkMode(colorMode, "yellow.100", "gray.300")}
+                >
+                    ({AppStore.web3.sortedPixelOwners.length})
+                </Typography>
+            </Flex>}
+        h={{xl: "full"}}
+        maxH={{base: "300px", lg: "full"}}
+    >
       <Box overflowY={"auto"} flexGrow={1}>
         <Flex flexWrap={"wrap"} sx={{ flexGap: "10px" }}>
           {AppStore.web3.sortedPixelOwners.map(owner => (
