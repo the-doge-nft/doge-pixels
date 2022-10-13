@@ -33,7 +33,7 @@ const TopDogs = observer(({ store }: { store: LeaderborkStore }) => {
         maxH={{base: "300px", lg: "full"}}
     >
       <Box overflowY={"auto"} flexGrow={1}>
-        <Flex flexWrap={"wrap"} sx={{ flexGap: "10px" }}>
+        <Flex flexWrap={"wrap"} gap={1}>
           {AppStore.web3.sortedPixelOwners.map(owner => (
             <UserCard
               isSelected={store.selectedOwner && store.selectedOwner.address === owner.address}

@@ -12,7 +12,7 @@ interface PaneProps extends AllowedStyleProps {
 const Pane = ({ children, title, size = "lg", ...rest }: PaneProps) => {
   const styles = useMultiStyleConfig("Pane", { size });
   return (
-    <Box position={"relative"} zIndex={0} w={"100%"} {...rest}>
+    <Box position={"relative"} zIndex={0} {...rest}>
       <Box __css={styles.container} cursor={rest.onClick ? "pointer" : "inherit"} {...rest}>
         {title && <Box __css={styles.title}>{title}</Box>}
         {children && children}

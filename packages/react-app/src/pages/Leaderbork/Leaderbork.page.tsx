@@ -45,13 +45,13 @@ const LeaderborkPage = observer(function DogParkPage() {
 
   return (
     <Flex flexDir={{base: "column", xl: "row"}}>
-      <Flex gap={8} display={"flex"} flexDirection={"column"} mt={{base: 8, xl: 0}} flexGrow={1} order={{ base: 2, xl: 1 }}>
+      <Flex flexBasis={0} grow={0} gap={8} display={"flex"} flexDirection={"column"} mt={{base: 8, xl: 0}} order={{ base: 2, xl: 1 }}>
         <TopDogs store={store} />
         <Box>
           <DogLocked dogLocked={store.lockedDog} />
         </Box>
       </Flex>
-      <Flex order={{ base: 1, xl: 3 }} ml={{ base: 0, xl: 10 }} display={"flex"} flexDirection={"column"}>
+      <Flex flexGrow={1} order={{ base: 1, xl: 3 }} ml={{ base: 0, xl: 10 }} display={"flex"} flexDirection={"column"}>
         <Box mb={8}>
           <Typeahead
             onItemSelect={value => (store.selectedAddress = value as unknown as string)}
