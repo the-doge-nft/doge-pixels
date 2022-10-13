@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import {useCallback, useEffect, useMemo, useState} from "react";
 import Kobosu from "../../images/THE_ACTUAL_NFT_IMAGE.png";
 import { Box, useColorMode } from "@chakra-ui/react";
 import AppStore from "../../store/App.store";
@@ -59,19 +59,19 @@ const PixelPreview = observer(
   ({ size = PixelPreviewSize.md, selectedTokenId, previewPixels = [], onPupperClick, id }: ParkPixelsProps) => {
     const { colorMode } = useColorMode();
     const [pupperPositions, setPupperPositions] = useState<IPupperRectPosition[]>([]);
-    const properties = imageProperties[size];
+    const properties = useMemo(()=> imageProperties[size], [size]);
 
     const PIXEL_OFFSET_X = properties.width / 9;
     const TOP_PIXEL_OFFSET_Y = properties.height / 16.875;
     const BOTTOM_PIXEL_OFFSET_Y = properties.height / 1.6875;
 
-    const getPixelOffsets = (y: number) => {
+    const getPixelOffsets = useCallback((y: number) => {
       if (y * properties.scale <= properties.height / 2) {
         return [PIXEL_OFFSET_X, BOTTOM_PIXEL_OFFSET_Y];
       } else {
         return [PIXEL_OFFSET_X, TOP_PIXEL_OFFSET_Y];
       }
-    };
+    }, [properties]);
 
     useEffect(() => {
       const length = previewPixels?.length;
@@ -86,14 +86,15 @@ const PixelPreview = observer(
       }
 
       setPupperPositions(positions);
-    }, [previewPixels]);
+    }, [previewPixels, properties]);
 
     useEffect(() => {
       // @next there are some rendering issues where pupperPositions is 0
       if (pupperPositions.length !== 0) {
+        updateResolution()
         drawBackground();
       }
-    }, [pupperPositions, selectedTokenId]);
+    }, [pupperPositions, selectedTokenId, size]);
 
     const drawSelectedPixel = (ctx: CanvasRenderingContext2D) => {
       if (!selectedTokenId) return;
@@ -326,7 +327,7 @@ const PixelPreview = observer(
       }
     };
 
-    const drawOnMount = useCallback((node: any) => {
+    const updateResolution = () => {
       // scale the canvas so we don't see pixelated shapes
       let ratio = window.devicePixelRatio;
       let cv = document.getElementById(id) as HTMLCanvasElement;
@@ -338,7 +339,7 @@ const PixelPreview = observer(
         cv.getContext("2d")!.scale(ratio, ratio);
         drawBackground();
       }
-    }, []);
+    }
 
     return (
       <Box
@@ -350,7 +351,6 @@ const PixelPreview = observer(
         _focus={{ boxShadow: "none" }}
       >
         <canvas
-          ref={drawOnMount}
           id={id}
           onMouseMove={e => onCanvasMouseMove(e)}
           onMouseDown={e => onCanvasMouseDown(e)}
