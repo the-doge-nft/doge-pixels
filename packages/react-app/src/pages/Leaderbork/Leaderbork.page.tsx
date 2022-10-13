@@ -8,7 +8,7 @@ import model from "../../DSL/Form/model";
 import {useLocation, useParams} from "react-router-dom";
 import PixelPane from "../../DSL/PixelPane/PixelPane";
 import Button from "../../DSL/Button/Button";
-import {darkModeSecondary, lightModePrimary} from "../../DSL/Theme";
+import {darkModeSecondary, lightModePrimary, lightOrDarkMode} from "../../DSL/Theme";
 import {NamedRoutes, route, SELECTED_PIXEL_PARAM} from "../../App.routes";
 import * as ethers from "ethers";
 import PixelPreview, {PixelPreviewSize} from "../../DSL/PixelPreview/PixelPreview";
@@ -190,6 +190,16 @@ const LeaderborkPage = observer(function DogParkPage() {
                   >
                     <Button onClick={() => console.log()}>Portal</Button>
                   </Link>
+                </Flex>
+              </Flex>}
+              {!store.showDetails && <Flex flexDir={"column"} h={"full"}>
+                <Box opacity={0.5}>
+                  <PixelPane pupper={1268869} size={"md"} variant={"shadow"}/>
+                </Box>
+                <Flex alignItems={"center"} flexGrow={1} justifyContent={"center"}>
+                  <Typography variant={TVariant.PresStart16} color={lightOrDarkMode(colorMode, "yellow.100", "gray.300")}>
+                    Select a pixel
+                  </Typography>
                 </Flex>
               </Flex>}
             </Pane>
