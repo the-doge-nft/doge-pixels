@@ -9,11 +9,12 @@ interface PixelPaneProps {
   pupper: number;
   onClick?: (pupper: number) => void;
   variant?: "solid" | "shadow";
-  size?: "xs" | "sm" | "md" | "lg";
+  size?: "xxs" | "xs" | "sm" | "md" | "lg";
   isNew?: boolean;
 }
 
 const sizeToTypeMap = {
+  xxs: TVariant.PresStart7,
   xs: TVariant.PresStart7,
   sm: TVariant.PresStart8,
   md: TVariant.PresStart10,
@@ -26,6 +27,7 @@ const PixelPane = observer(({ pupper, onClick, variant = "solid", size = "md", i
   const color = AppStore.web3.pupperToHexLocal(pupper);
   return (
     <Box
+
       __css={styles.container}
       _hover={
         onClick
@@ -43,10 +45,10 @@ const PixelPane = observer(({ pupper, onClick, variant = "solid", size = "md", i
         </Box>
       )}
       <Box __css={styles.swatch} bg={color} />
-      <Box __css={styles.textContainer}>
+      {size !== "xxs" && <Box __css={styles.textContainer}>
         <Typography variant={sizeToTypeMap[size]}>{`(${coordinates[0]},${coordinates[1]})`}</Typography>
-      </Box>
-      <Box __css={styles.drop} />
+      </Box>}
+      {size !== "xxs" && <Box __css={styles.drop} />}
     </Box>
   );
 });

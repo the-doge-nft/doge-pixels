@@ -3,7 +3,7 @@ import AppStore from "../../store/App.store";
 import Button from "../../DSL/Button/Button";
 import UserDropdown from "../UserDropdown";
 import { observer } from "mobx-react-lite";
-import { Box, Flex, HStack } from "@chakra-ui/react";
+import {Box, Flex, HStack} from "@chakra-ui/react";
 import { NamedRoutes, route } from "../../App.routes";
 import BigText from "../../DSL/BigText/BigText";
 import { useHistory } from "react-router-dom";

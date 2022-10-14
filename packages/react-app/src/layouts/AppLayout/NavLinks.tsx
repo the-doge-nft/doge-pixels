@@ -1,8 +1,8 @@
 import routes, { AppRouteInterface, NamedRoutes, route, SELECTED_PIXEL_PARAM } from "../../App.routes";
-import AppStore from "../../store/App.store";
 import Link from "../../DSL/Link/Link";
 import { matchPath, useLocation } from "react-router-dom";
 import { SelectedOwnerTab } from "../../pages/Leaderbork/Leaderbork.store";
+import Icon from "../../DSL/Icon/Icon";
 
 const NavLinks = ({ isMobile }: { isMobile?: boolean }) => {
   const location = useLocation();
@@ -80,7 +80,8 @@ const NavLinks = ({ isMobile }: { isMobile?: boolean }) => {
                 to={getPath(appRoute.name)}
                 textDecoration={getMatch(appRoute.path) ? "underline" : "none"}
               >
-                {appRoute.desktopName}
+                {/*{appRoute.desktopName}*/}
+                <Icon icon={appRoute.icon} boxSize={4}/>
               </Link>
             ))}
     </>
