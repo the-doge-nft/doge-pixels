@@ -26,7 +26,7 @@ export interface Metadata {
 
 export const VIEWED_PIXELS_LS_KEY = "viewed_pixels_by_id";
 
-class ViewerStore extends Eventable(Reactionable(Navigable<ViewerView, Constructor>(EmptyClass))) {
+class ViewerStore extends Eventable(Reactionable(EmptyClass)) {
   @observable
   selectedPupper: number | null = null;
 
@@ -48,7 +48,6 @@ class ViewerStore extends Eventable(Reactionable(Navigable<ViewerView, Construct
   constructor(private defaultSelectedPupper: number | null) {
     super();
     makeObservable(this);
-    this.pushNavigation(ViewerView.Index);
 
     if (defaultSelectedPupper) {
       // @TODO - run some validation on default selected pixel
@@ -56,7 +55,6 @@ class ViewerStore extends Eventable(Reactionable(Navigable<ViewerView, Construct
       // - make sure it is a number
 
       this.selectedPupper = Number(defaultSelectedPupper);
-      this.pushNavigation(ViewerView.Selected);
     }
   }
 
@@ -138,14 +136,17 @@ class ViewerStore extends Eventable(Reactionable(Navigable<ViewerView, Construct
   @computed
   get selectedPupperHEX() {
     //@TODO: mock for now
-    return AppStore.web3.pupperToHexLocal(this.selectedPupper!);
+    if (this.selectedPupper) {
+      return AppStore.web3.pupperToHexLocal(this.selectedPupper);
+    }
   }
 
   // @TODO selecting PixelPane in ManagePane.tsx & SelectedPixelPane.tsx should call
   // similar functions from this store
   async onManagePixelClick(pupper: number) {
-    AppStore.modals.isViewerModalOpen = true;
-    this.pushNavigation(ViewerView.Selected);
+    if (!AppStore.modals.isSelectedPixelModalOpen) {
+      AppStore.modals.isSelectedPixelModalOpen = true;
+    }
     this.selectedPupper = pupper;
     this.setPupperSeen(pupper);
     const [x, y] = await AppStore.web3.pupperToPixelCoords(pupper);

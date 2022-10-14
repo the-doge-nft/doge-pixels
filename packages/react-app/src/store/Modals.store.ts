@@ -33,6 +33,9 @@ class ModalsStore {
   @observable
   isMyPixelsModalOpen = false;
 
+  @observable
+  isSelectedPixelModalOpen = false;
+
   constructor() {
     makeObservable(this);
   }

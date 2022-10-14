@@ -24,7 +24,6 @@ const Header = observer(() => {
         </Box>
         <Box display={{ base: "none", md: "flex" }} alignItems={"center"} justifyContent={"flex-end"} w={"full"}>
           <Flex mr={8} alignItems={"center"}>
-              {AppStore.web3.isConnected && <MintBurnButtons/>}
               <Box>
                   <ColorModeToggle />
               </Box>

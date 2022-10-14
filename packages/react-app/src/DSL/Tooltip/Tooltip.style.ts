@@ -9,6 +9,8 @@ const TooltipStyle = {
     borderColor: lightOrDarkMode(colorMode, "black", "white"),
     borderRadius: "0px",
     fontFamily: Type.ComicSans,
+    px: 1,
+    py: 0
   }),
   variants: {},
 };

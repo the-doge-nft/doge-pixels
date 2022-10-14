@@ -55,14 +55,10 @@ const ViewerPage = observer(function ViewerPage() {
 
   const onPixelSelect: onPixelSelectType = useCallback((x: number, y: number) => {
     store.selectedPupper = AppStore.web3.coordinateToPupperLocal(x, y);
-    if (!AppStore.modals.isViewerModalOpen) {
-      AppStore.modals.isViewerModalOpen = true;
+    if (!AppStore.modals.isSelectedPixelModalOpen) {
+      AppStore.modals.isSelectedPixelModalOpen = true;
     }
     window.history.pushState({}, "", route(NamedRoutes.PIXELS, { [SELECTED_PIXEL_PARAM]: store.selectedPupper }));
-
-    if (store.currentView !== ViewerView.Selected) {
-      store.pushNavigation(ViewerView.Selected);
-    }
     // eslint-disable-next-line
   }, []);
 
@@ -111,32 +107,18 @@ const ViewerPage = observer(function ViewerPage() {
       {AppStore.modals.isViewerModalOpen && defaultPosition !== null && (
         <Modal
           defaultPosition={defaultPosition}
-          title={store.currentView === ViewerView.Index ? "Own the Doge" : ""}
+          title={"Own The Doge"}
           onClose={() => (AppStore.modals.isViewerModalOpen = false)}
           isOpen={true}
         >
           <Box display={"flex"} flexDirection={"column"} justifyContent={"space-between"}>
-            {/*{store.showGoBack && (*/}
-            {/*  <Box mt={8} position={"relative"} left={"-20px"} top={"-20px"}>*/}
-            {/*    <Box*/}
-            {/*      p={0}*/}
-            {/*      _hover={{ cursor: "pointer" }}*/}
-            {/*      _active={{ transform: "translate(4px, 4px)" }}*/}
-            {/*      onClick={() => {*/}
-            {/*        store.popNavigation();*/}
-            {/*        store.clearSelectedPupper();*/}
-            {/*      }}*/}
-            {/*    >*/}
-            {/*      <Icon icon={"back"} boxSize={6} />*/}
-            {/*    </Box>*/}
-            {/*  </Box>*/}
-            {/*)}*/}
-            {store.currentView === ViewerView.Index && <IndexPane store={store} />}
-            {store.currentView === ViewerView.Manage && <ManagePane store={store} />}
-            {store.currentView === ViewerView.Selected && <SelectedPixelPane store={store} />}
+            <IndexPane store={store} />
           </Box>
         </Modal>
       )}
+      {AppStore.modals.isSelectedPixelModalOpen && <Modal onClose={() => AppStore.modals.isSelectedPixelModalOpen = false} isOpen={AppStore.modals.isSelectedPixelModalOpen}>
+        <SelectedPixelPane store={store} />
+      </Modal>}
       {AppStore.modals.isMyPixelsModalOpen && (
         <Modal
           onClose={() => (AppStore.modals.isMyPixelsModalOpen = false)}
@@ -155,9 +137,6 @@ const ViewerPage = observer(function ViewerPage() {
           goToPixels={() => {
             AppStore.modals.isMintModalOpen = false;
             AppStore.modals.isMintMemeModalOpen = false;
-            if (store.currentView !== ViewerView.Manage) {
-              store.pushNavigation(ViewerView.Manage);
-            }
           }}
         />
       )}

@@ -21,7 +21,7 @@ const BurnPixelsModal = observer(
 
     return (
       <Modal size={"lg"} isOpen={isOpen} onClose={onClose} title={store.modalTitle} description={store.description}>
-        <Box pt={store.currentView === BurnPixelsModalView.Select ? 0 : 12} pb={6}>
+        <Box>
           <BurnPixelsDialog store={store} onSuccess={onSuccess} onCompleteClose={onCompleteClose} />
         </Box>
       </Modal>

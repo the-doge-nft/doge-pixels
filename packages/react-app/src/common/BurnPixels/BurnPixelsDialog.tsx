@@ -46,7 +46,7 @@ const SelectPixels = observer(({ store }: { store: BurnPixelsModalStore }) => {
   const { colorMode } = useColorMode();
   return (
     <Flex flexDirection={"column"}>
-      <Flex justifyContent={"center"} mt={4}>
+      <Flex justifyContent={"center"}>
         <PixelPreview
           size={PixelPreviewSize.sm}
           previewPixels={store.selectedPixels}

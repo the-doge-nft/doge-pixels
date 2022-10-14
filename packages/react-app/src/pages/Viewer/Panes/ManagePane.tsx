@@ -42,14 +42,14 @@ const ManagePane = observer(function ManagePane({store}: { store: ViewerStore })
                                     bg: colorMode === "light" ? lightModePrimary : darkModeSecondary,
                                 }}
                             >
-                                {/*<Tooltip label={`(${x}, ${y})`}>*/}
+                                <Tooltip label={`(${x}, ${y})`}>
                                     <PixelPane
                                         isNew={store.getIsPupperNew(px)}
                                         size={"xxs"}
                                         onClick={() => store.onManagePixelClick(px)}
                                         pupper={px}
                                     />
-                                {/*</Tooltip>*/}
+                                </Tooltip>
                             </Box>
                         );
                     })}
