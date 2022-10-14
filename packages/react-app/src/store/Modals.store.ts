@@ -19,7 +19,7 @@ class ModalsStore {
   isBurnModalOpen = false;
 
   @observable
-  isHelperModalOpen = false;
+  isScrollModalOpen = false;
 
   @observable
   isMintMemeModalOpen = false;
@@ -27,12 +27,15 @@ class ModalsStore {
   @observable
   isBurnMemeModalOpen = false;
 
+  @observable
+  isViewerModalOpen = true;
+
   constructor() {
     makeObservable(this);
   }
 
   init() {
-    this.isHelperModalOpen = LocalStorage.getItem(SHOW_HELPER_MODAL, LocalStorage.PARSE_JSON, true);
+    this.isScrollModalOpen = LocalStorage.getItem(SHOW_HELPER_MODAL, LocalStorage.PARSE_JSON, true);
     LocalStorage.setItem(SHOW_HELPER_MODAL, false);
   }
 }

@@ -27,9 +27,9 @@ const Link = ({ isNav, variant = Type.PresStart, size = "md", to, ...rest }: Lin
   const styles = useStyleConfig("Link", { variant, size });
   const fontSize = styles.fontSize as string;
   if (isNav) {
-    return <NavLink to={to} fontSize={fontSize} variant={variant} __css={styles} {...rest}/>;
+    return <NavLink to={to} fontSize={fontSize} variant={variant} __css={styles} {...rest} />;
   } else {
-    return <NormalLink href={to} fontSize={fontSize} variant={variant} __css={styles} {...rest}/>;
+    return <NormalLink href={to} fontSize={fontSize} variant={variant} __css={styles} {...rest} />;
   }
 };
 

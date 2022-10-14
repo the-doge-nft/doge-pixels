@@ -65,8 +65,8 @@ class Web3providerStore {
   async validateNetwork() {
     if (this.network?.name) {
       if (this.network.chainId !== env.app.targetChainId) {
-        await this.disconnect()
-        showErrorToast(`Please connect to ${env.app.targetNetworkName.toLocaleUpperCase()}`)
+        await this.disconnect();
+        showErrorToast(`Please connect to ${env.app.targetNetworkName.toLocaleUpperCase()}`);
       }
     }
   }

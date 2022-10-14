@@ -13,8 +13,8 @@ const IndexPane = observer(function IndexPane({ store }: { store: ViewerStore })
   return (
     <>
       <Flex flexDirection={"column"} flexGrow={0} h={"100%"}>
-        <Box overflowY={"auto"} flexGrow={1} h={"full"} mt={4}>
-          <Box maxHeight={"300px"}>
+        <Box overflowY={"auto"} flexGrow={1} h={"full"}>
+          <Box maxHeight={"450px"}>
             <Typography variant={TVariant.ComicSans16} block>
               Welcome to the Doge Pixel Portal - your gateway to collective ownership of{" "}
               <Link

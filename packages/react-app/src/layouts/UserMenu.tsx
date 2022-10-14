@@ -17,7 +17,15 @@ const UserMenu = observer(() => {
       <Box position={"relative"} zIndex={1}>
         <MenuButton overflow={"hidden"}>
           <Flex alignItems={"center"} overflow={"hidden"} mx={1}>
-            <Typography variant={TVariant.PresStart14}>{AppStore.web3.addressForDisplay}</Typography>
+            <Typography
+              variant={TVariant.PresStart14}
+              maxW={"200px"}
+              overflowX={"hidden"}
+              overflowWrap={"initial"}
+              textOverflow={"ellipsis"}
+            >
+              {AppStore.web3.addressForDisplay}
+            </Typography>
           </Flex>
         </MenuButton>
         <Box __css={styles.drop} />

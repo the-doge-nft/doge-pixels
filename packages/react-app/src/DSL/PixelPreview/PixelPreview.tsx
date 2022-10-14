@@ -1,4 +1,4 @@
-import {useCallback, useEffect, useMemo, useState} from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import Kobosu from "../../images/THE_ACTUAL_NFT_IMAGE.png";
 import { Box, useColorMode } from "@chakra-ui/react";
 import AppStore from "../../store/App.store";
@@ -59,19 +59,22 @@ const PixelPreview = observer(
   ({ size = PixelPreviewSize.md, selectedTokenId, previewPixels = [], onPupperClick, id }: ParkPixelsProps) => {
     const { colorMode } = useColorMode();
     const [pupperPositions, setPupperPositions] = useState<IPupperRectPosition[]>([]);
-    const properties = useMemo(()=> imageProperties[size], [size]);
+    const properties = useMemo(() => imageProperties[size], [size]);
 
     const PIXEL_OFFSET_X = properties.width / 9;
     const TOP_PIXEL_OFFSET_Y = properties.height / 16.875;
     const BOTTOM_PIXEL_OFFSET_Y = properties.height / 1.6875;
 
-    const getPixelOffsets = useCallback((y: number) => {
-      if (y * properties.scale <= properties.height / 2) {
-        return [PIXEL_OFFSET_X, BOTTOM_PIXEL_OFFSET_Y];
-      } else {
-        return [PIXEL_OFFSET_X, TOP_PIXEL_OFFSET_Y];
-      }
-    }, [properties]);
+    const getPixelOffsets = useCallback(
+      (y: number) => {
+        if (y * properties.scale <= properties.height / 2) {
+          return [PIXEL_OFFSET_X, BOTTOM_PIXEL_OFFSET_Y];
+        } else {
+          return [PIXEL_OFFSET_X, TOP_PIXEL_OFFSET_Y];
+        }
+      },
+      [properties],
+    );
 
     useEffect(() => {
       const length = previewPixels?.length;
@@ -91,7 +94,7 @@ const PixelPreview = observer(
     useEffect(() => {
       // @next there are some rendering issues where pupperPositions is 0
       if (pupperPositions.length !== 0) {
-        updateResolution()
+        updateResolution();
         drawBackground();
       }
     }, [pupperPositions, selectedTokenId, size]);
@@ -339,7 +342,7 @@ const PixelPreview = observer(
         cv.getContext("2d")!.scale(ratio, ratio);
         drawBackground();
       }
-    }
+    };
 
     return (
       <Box
@@ -350,11 +353,7 @@ const PixelPreview = observer(
         borderColor={lightOrDarkMode(colorMode, "black", "white")}
         _focus={{ boxShadow: "none" }}
       >
-        <canvas
-          id={id}
-          onMouseMove={e => onCanvasMouseMove(e)}
-          onMouseDown={e => onCanvasMouseDown(e)}
-        />
+        <canvas id={id} onMouseMove={e => onCanvasMouseMove(e)} onMouseDown={e => onCanvasMouseDown(e)} />
       </Box>
     );
   },

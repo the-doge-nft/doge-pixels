@@ -37,7 +37,7 @@ let styleOverrides: { overlay: object; content: object } = {
     pointerEvents: "none",
     display: "flex",
     justifyContent: "center",
-    width: "100%",
+    // width: "100%",
   },
 };
 
@@ -63,7 +63,7 @@ const Modal = ({
       onRequestClose={onClose}
       isOpen={isOpen}
       style={styleOverrides}
-      // ariaHideApp={false}
+      ariaHideApp={false}
       {...rest}
     >
       <>

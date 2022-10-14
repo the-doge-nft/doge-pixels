@@ -13,7 +13,7 @@ const ManagePane = observer(function ManagePane({ store }: { store: ViewerStore 
   return (
     <>
       <Flex flexDirection={"column"} flexGrow={1}>
-        <Typography block mt={1} mb={5} variant={TVariant.PresStart16}>
+        <Typography block mb={5} variant={TVariant.PresStart16}>
           Your Pixels ({AppStore.web3.puppersOwned.length})
         </Typography>
         <Box overflow={"auto"} h={"full"} mt={3}>
@@ -22,7 +22,6 @@ const ManagePane = observer(function ManagePane({ store }: { store: ViewerStore 
               return (
                 <Box
                   p={2}
-                  m={1}
                   display={"inline-block"}
                   key={`manage-${px}`}
                   _hover={{
@@ -31,7 +30,7 @@ const ManagePane = observer(function ManagePane({ store }: { store: ViewerStore 
                 >
                   <PixelPane
                     isNew={store.getIsPupperNew(px)}
-                    size={"sm"}
+                    size={"xs"}
                     onClick={() => store.onManagePixelClick(px)}
                     pupper={px}
                   />

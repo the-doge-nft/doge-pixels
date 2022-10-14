@@ -33,8 +33,8 @@ class Web3Store extends Reactionable(Web3providerStore) {
   WIDTH = 640;
   HEIGHT = 480;
   DOG_BURN_FEES_PERCENT = 1;
-  targetChainId = env.app.targetChainId
-  targetNetworkName = env.app.targetNetworkName
+  targetChainId = env.app.targetChainId;
+  targetNetworkName = env.app.targetNetworkName;
 
   @observable
   dogBalance: BigNumber | null = null;
@@ -69,8 +69,10 @@ class Web3Store extends Reactionable(Web3providerStore) {
     this.addressToPuppers = {};
     this.cowStore = new CowStore();
 
-    this.pxContractAddress = deployedContracts[this.targetChainId.toString()][this.targetNetworkName]["contracts"]["PX"]["address"]
-    this.dogContractAddress = deployedContracts[this.targetChainId.toString()][this.targetNetworkName]["contracts"]["DOG20"]["address"]
+    this.pxContractAddress =
+      deployedContracts[this.targetChainId.toString()][this.targetNetworkName]["contracts"]["PX"]["address"];
+    this.dogContractAddress =
+      deployedContracts[this.targetChainId.toString()][this.targetNetworkName]["contracts"]["DOG20"]["address"];
   }
 
   init() {
@@ -79,7 +81,7 @@ class Web3Store extends Reactionable(Web3providerStore) {
     }
     this.getPixelOwnershipMap();
     this.getShibaDimensions();
-    this.getUSDPerPixel()
+    this.getUSDPerPixel();
   }
 
   async connect() {
@@ -103,15 +105,16 @@ class Web3Store extends Reactionable(Web3providerStore) {
 
   connectToContracts(signerOrProvider?: Signer | Provider) {
     const px = new Contract(
-        this.pxContractAddress,
-        deployedContracts[this.targetChainId.toString()][this.targetNetworkName]["contracts"]["PX"].abi,
-        signerOrProvider) as unknown;
+      this.pxContractAddress,
+      deployedContracts[this.targetChainId.toString()][this.targetNetworkName]["contracts"]["PX"].abi,
+      signerOrProvider,
+    ) as unknown;
     this.pxContract = px as PX;
 
     const dog = new Contract(
-        this.dogContractAddress,
-        deployedContracts[this.targetChainId.toString()][this.targetNetworkName]["contracts"]["DOG20"].abi,
-        signerOrProvider
+      this.dogContractAddress,
+      deployedContracts[this.targetChainId.toString()][this.targetNetworkName]["contracts"]["DOG20"].abi,
+      signerOrProvider,
     ) as unknown;
     this.dogContract = dog as DOG20;
 

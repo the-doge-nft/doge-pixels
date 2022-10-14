@@ -6,10 +6,13 @@ const developmentEnv = {
   },
   app: {
     availableTokens: {
-      DOG: { decimals: 18, contractAddress: deployedContracts["5"]["goerli"]["contracts"]["DOG20"] as unknown as string },
+      DOG: {
+        decimals: 18,
+        contractAddress: deployedContracts["5"]["goerli"]["contracts"]["DOG20"] as unknown as string,
+      },
     },
     targetChainId: 5,
-    targetNetworkName: "goerli"
+    targetNetworkName: "goerli",
   },
 };
 export default developmentEnv;

@@ -17,16 +17,10 @@ interface AppLayoutProps {
 const AppLayout = observer(function AppLayout({ children }: AppLayoutProps) {
   return (
     <Flex justifyContent={"center"} flexGrow={1}>
-      <Flex
-        flexGrow={1}
-        w={"full"}
-        maxW={"8xl"}
-        p={4}
-        flexDirection={"column"}
-      >
+      <Flex flexGrow={1} w={"full"} maxW={"8xl"} pt={6} pb={4} pl={4} pr={7} flexDirection={"column"}>
         <Header />
         <Flex grow={1}>{children}</Flex>
-        <Footer/>
+        <Footer />
 
         {/*{AppStore.rwd.isMobile && <MobileNav />}*/}
         {/*{!AppStore.rwd.isMobile && <Footer />}*/}

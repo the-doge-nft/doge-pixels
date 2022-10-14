@@ -1,5 +1,5 @@
 import React, { Suspense, useCallback, useEffect, useMemo } from "react";
-import { Box, Flex, Grid, GridItem } from "@chakra-ui/react";
+import { Box, Flex } from "@chakra-ui/react";
 import DogeExplorer from "./DogeExplorer";
 import ViewerStore, { ViewerView } from "./Viewer.store";
 import { observer } from "mobx-react-lite";
@@ -13,11 +13,11 @@ import AppStore from "../../store/App.store";
 import Icon from "../../DSL/Icon/Icon";
 import Loading from "../../DSL/Loading/Loading";
 import ScrollHelperModal from "../../DSL/Modal/ScrollHelperModal";
-import Typography, { TVariant } from "../../DSL/Typography/Typography";
 import MemeModal from "../../DSL/Modal/MemeModal";
 import Drawer from "../../DSL/Drawer/Drawer";
 import { useLocation, useParams } from "react-router-dom";
 import { NamedRoutes, route, SELECTED_PIXEL_PARAM } from "../../App.routes";
+import Modal from "../../DSL/Modal/Modal";
 
 /*
   Hack to reload page even if we are already on the route that renders this page
@@ -54,6 +54,9 @@ const ViewerPage = observer(function ViewerPage() {
 
   const onPixelSelect: onPixelSelectType = useCallback((x: number, y: number) => {
     store.selectedPupper = AppStore.web3.coordinateToPupperLocal(x, y);
+    if (!store.modals.isViewerModalOpen) {
+      store.modals.isViewerModalOpen = true
+    }
     window.history.pushState({}, "", route(NamedRoutes.PIXELS, { [SELECTED_PIXEL_PARAM]: store.selectedPupper }));
 
     if (store.currentView !== ViewerView.Selected) {
@@ -66,34 +69,30 @@ const ViewerPage = observer(function ViewerPage() {
   }, []);
   return (
     <>
-      <Grid templateColumns={{ base: "2fr 2fr", sm: "2fr 1.5fr", lg: "2fr 0.8fr" }} templateRows={"1fr"} flexGrow={1}>
-        <GridItem mr={{ base: 0, md: 5 }} colSpan={{ base: 3, md: 1 }} zIndex={2}>
-          <Pane w={"full"} h={"full"} p={0}>
-            <Suspense
-              fallback={
-                <Flex justifyContent={"center"} alignItems={"center"} position={"absolute"} w={"full"} h={"full"}>
-                  <Loading />
-                </Flex>
-              }
-            >
-              <DogeExplorer onPixelSelect={onPixelSelect} store={store} />
-            </Suspense>
-          </Pane>
-        </GridItem>
-        <GridItem ml={5} colSpan={{ base: 0, md: 1 }} display={{ base: "none", md: "block" }}>
-          <Pane
-            h={"full"}
+      <Flex flexGrow={1}>
+        <Pane w={"full"} h={"full"} p={0}>
+          <Suspense
+            fallback={
+              <Flex justifyContent={"center"} alignItems={"center"} position={"absolute"} w={"full"} h={"full"}>
+                <Loading />
+              </Flex>
+            }
+          >
+            <DogeExplorer onPixelSelect={onPixelSelect} store={store} />
+          </Suspense>
+        </Pane>
+        {store.modals.isViewerModalOpen && <Modal
+          title={store.currentView === ViewerView.Index ? "Own the Doge" : ""}
+          onClose={() => store.modals.isViewerModalOpen = false}
+          isOpen={true}
+        >
+          <Box
             display={"flex"}
             flexDirection={"column"}
             justifyContent={"space-between"}
-            title={
-              store.currentView === ViewerView.Index && (
-                <Typography variant={TVariant.PresStart16}>Own the Doge</Typography>
-              )
-            }
           >
             {store.showGoBack && (
-              <Box position={"relative"} left={"-20px"} top={"-20px"}>
+              <Box mt={8} position={"relative"} left={"-20px"} top={"-20px"}>
                 <Box
                   p={0}
                   _hover={{ cursor: "pointer" }}
@@ -110,9 +109,9 @@ const ViewerPage = observer(function ViewerPage() {
             {store.currentView === ViewerView.Index && <IndexPane store={store} />}
             {store.currentView === ViewerView.Manage && <ManagePane store={store} />}
             {store.currentView === ViewerView.Selected && <SelectedPixelPane store={store} />}
-          </Pane>
-        </GridItem>
-      </Grid>
+          </Box>
+        </Modal>}
+      </Flex>
       {store.modals.isMintModalOpen && (
         <MintPixelsModal
           isOpen={store.modals.isMintModalOpen}
@@ -148,10 +147,10 @@ const ViewerPage = observer(function ViewerPage() {
           }}
         />
       )}
-      {store.modals.isHelperModalOpen && (
+      {store.modals.isScrollModalOpen && (
         <ScrollHelperModal
-          isOpen={store.modals.isHelperModalOpen}
-          onClose={() => (store.modals.isHelperModalOpen = false)}
+          isOpen={store.modals.isScrollModalOpen}
+          onClose={() => (store.modals.isScrollModalOpen = false)}
         />
       )}
       {store.modals.isMintMemeModalOpen && (

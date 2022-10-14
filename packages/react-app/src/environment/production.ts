@@ -13,7 +13,7 @@ const productionEnv = {
       NFD: { decimals: 18, contractAddress: "0xDFDb7f72c1F195C5951a234e8DB9806EB0635346" },
     },
     targetChainId: 1,
-    targetNetworkName: "mainnet"
+    targetNetworkName: "mainnet",
   },
 };
 export default productionEnv;

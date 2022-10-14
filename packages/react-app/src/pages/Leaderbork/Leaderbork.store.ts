@@ -73,11 +73,11 @@ class LeaderborkStore extends Reactionable(EmptyClass) {
     if (selectedAddress) {
       this.searchValue = selectedAddress;
       this.selectedAddress = selectedAddress;
-      this.getSelectedUserTransfers()
+      this.getSelectedUserTransfers();
     }
 
     if (selectedPixelId) {
-      console.log("debug:: selected pixel id", selectedPixelId)
+      console.log("debug:: selected pixel id", selectedPixelId);
       this.selectedPixelId = selectedPixelId;
     }
 
@@ -86,7 +86,7 @@ class LeaderborkStore extends Reactionable(EmptyClass) {
     }
 
     if (selectedOwnerTab) {
-      console.log("debug:: selected owner tab", selectedOwnerTab)
+      console.log("debug:: selected owner tab", selectedOwnerTab);
       this.selectedOwnerTab = selectedOwnerTab;
     }
 
@@ -323,7 +323,7 @@ class LeaderborkStore extends Reactionable(EmptyClass) {
       );
     } else if (this.selectedOwnerTab === SelectedOwnerTab.Activity) {
       this.selectedTransferId = this.selectedOwnerTransfers[0]?.uniqueTransferId;
-      console.log("debug:: TEST", this.selectedTransferId)
+      console.log("debug:: TEST", this.selectedTransferId);
       this.pushWindowState(
         generatePath(`/leaderbork/:address/${SelectedOwnerTab.Activity}/:activityId`, {
           address: this.selectedAddress,
@@ -331,7 +331,7 @@ class LeaderborkStore extends Reactionable(EmptyClass) {
         }),
       );
     } else {
-      throw new Error("Unknown selected owner tab type")
+      throw new Error("Unknown selected owner tab type");
     }
   }
 
@@ -359,8 +359,10 @@ class LeaderborkStore extends Reactionable(EmptyClass) {
 
   @computed
   get showDetails() {
-    return (this.selectedPixelId && this.selectedOwnerTab === SelectedOwnerTab.Wallet) ||
+    return (
+      (this.selectedPixelId && this.selectedOwnerTab === SelectedOwnerTab.Wallet) ||
       (this.selectedActivityTransfer && this.selectedOwnerTab === SelectedOwnerTab.Activity)
+    );
   }
 }
 

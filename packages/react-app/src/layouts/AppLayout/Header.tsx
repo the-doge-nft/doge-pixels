@@ -20,9 +20,7 @@ const Header = observer(() => {
       <Flex>
         <Box mr={6} display={{ base: "none", xl: "block" }}>
           <Flex w={"full"} h={"full"} alignItems={"center"} justifyContent={"center"}>
-            <HStack spacing={12}>
-              <NavLinks />
-            </HStack>
+            <HStack spacing={12}>{/*<NavLinks />*/}</HStack>
           </Flex>
         </Box>
         <Box display={{ base: "none", md: "flex" }} alignItems={"center"} justifyContent={"flex-end"} w={"full"}>
@@ -59,7 +57,6 @@ const Title = () => {
       onClick={() => {
         history.push(route(NamedRoutes.VIEWER));
       }}
-      w={"full"}
       userSelect={"none"}
     >
       <BigText size={"sm"}>DOGE PIXEL PORTAL</BigText>
