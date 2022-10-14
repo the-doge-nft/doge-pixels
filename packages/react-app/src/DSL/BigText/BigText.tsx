@@ -6,11 +6,12 @@ import { darkModeGradient } from "../Theme";
 interface BigTextProps {
   children: string | number;
   label?: string | number;
-  size?: "sm" | "md" | "lg";
+  size?: "xs" | "sm" | "md" | "lg";
   isLight?: boolean;
 }
 
 const sizeToTypeMap = {
+  xs: TVariant.PresStart24,
   sm: TVariant.PresStart26,
   md: TVariant.PresStart45,
   lg: TVariant.PresStart65,

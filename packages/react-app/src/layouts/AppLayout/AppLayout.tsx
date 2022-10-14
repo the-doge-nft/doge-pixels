@@ -21,7 +21,6 @@ const AppLayout = observer(function AppLayout({ children }: AppLayoutProps) {
         <Header />
         <Flex grow={1}>{children}</Flex>
         <Footer />
-
         {/*{AppStore.rwd.isMobile && <MobileNav />}*/}
         {/*{!AppStore.rwd.isMobile && <Footer />}*/}
       </Flex>
