@@ -45,13 +45,9 @@ class ViewerStore extends Eventable(Reactionable(Navigable<ViewerView, Construct
   @observable
   metaData: Metadata | null = null;
 
-  @observable
-  modals: ModalsStore;
-
   constructor(private defaultSelectedPupper: number | null) {
     super();
     makeObservable(this);
-    this.modals = new ModalsStore();
     this.pushNavigation(ViewerView.Index);
 
     if (defaultSelectedPupper) {
@@ -65,7 +61,6 @@ class ViewerStore extends Eventable(Reactionable(Navigable<ViewerView, Construct
   }
 
   init() {
-    this.modals.init();
     this.react(
       () => this.selectedPupper,
       async () => {
@@ -149,6 +144,7 @@ class ViewerStore extends Eventable(Reactionable(Navigable<ViewerView, Construct
   // @TODO selecting PixelPane in ManagePane.tsx & SelectedPixelPane.tsx should call
   // similar functions from this store
   async onManagePixelClick(pupper: number) {
+    AppStore.modals.isViewerModalOpen = true;
     this.pushNavigation(ViewerView.Selected);
     this.selectedPupper = pupper;
     this.setPupperSeen(pupper);

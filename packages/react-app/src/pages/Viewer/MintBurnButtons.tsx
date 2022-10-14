@@ -10,11 +10,11 @@ export const MintBurnButtons = observer(({ store }: { store: ViewerStore }) => {
     <Flex direction={"column"} alignItems={"center"} flexGrow={0}>
       {AppStore.web3.web3Provider && (
         <Flex mb={6}>
-          <Button mr={3} width={"fit-content"} onClick={() => (store.modals.isMintModalOpen = true)}>
+          <Button mr={3} width={"fit-content"} onClick={() => (AppStore.modals.isMintModalOpen = true)}>
             Mint
           </Button>
           {AppStore.web3.puppersOwned.length > 0 && (
-            <Button ml={3} width={"fit-content"} onClick={() => (store.modals.isBurnModalOpen = true)}>
+            <Button ml={3} width={"fit-content"} onClick={() => (AppStore.modals.isBurnModalOpen = true)}>
               Burn
             </Button>
           )}

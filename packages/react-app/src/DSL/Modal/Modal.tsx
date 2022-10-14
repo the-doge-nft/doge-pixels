@@ -37,7 +37,6 @@ let styleOverrides: { overlay: object; content: object } = {
     pointerEvents: "none",
     display: "flex",
     justifyContent: "center",
-    // width: "100%",
   },
 };
 
@@ -59,15 +58,9 @@ const Modal = ({
   const NotTypeSafeDraggable: any = Draggable;
 
   return (
-    <ReactModal
-      onRequestClose={onClose}
-      isOpen={isOpen}
-      style={styleOverrides}
-      ariaHideApp={false}
-      {...rest}
-    >
+    <ReactModal onRequestClose={onClose} isOpen={isOpen} style={styleOverrides} ariaHideApp={false} {...rest}>
       <>
-        <NotTypeSafeDraggable handle={".handle"} defaultPosition={defaultPosition}>
+        <NotTypeSafeDraggable bounds={"body"} handle={".handle"} defaultPosition={defaultPosition}>
           <Box
             position={"relative"}
             overflow={"hidden"}

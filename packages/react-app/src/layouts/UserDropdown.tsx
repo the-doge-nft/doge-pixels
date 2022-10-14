@@ -8,8 +8,11 @@ import { ethers } from "ethers";
 import Dev from "../common/Dev";
 import { showDebugToast, showErrorToast } from "../DSL/Toast/Toast";
 import { lightOrDarkMode } from "../DSL/Theme";
+import Link from "../DSL/Link/Link";
+import { generatePath } from "react-router-dom";
+import { SelectedOwnerTab } from "../pages/Leaderbork/Leaderbork.store";
 
-const UserMenu = observer(() => {
+const UserDropdown = observer(() => {
   const styles = useMultiStyleConfig("Menu", {});
   const { colorMode } = useColorMode();
   return (
@@ -33,7 +36,18 @@ const UserMenu = observer(() => {
 
       <MenuList maxWidth={"fit-content"}>
         <Balances />
-        <MenuItem mt={8} onClick={() => AppStore.web3.disconnect()}>
+        <Box mt={8} px={3}>
+          <Link
+            isNav
+            to={generatePath(`/leaderbork/:address/${SelectedOwnerTab.Wallet}`, { address: AppStore.web3.address })}
+          >
+            Profile
+          </Link>
+        </Box>
+        <MenuItem mt={0} onClick={() => (AppStore.modals.isMyPixelsModalOpen = true)}>
+          <Typography variant={TVariant.PresStart16}>My Pixels</Typography>
+        </MenuItem>
+        <MenuItem mt={4} onClick={() => AppStore.web3.disconnect()}>
           <Typography variant={TVariant.PresStart12}>Disconnect {">"}</Typography>
         </MenuItem>
         <Flex mt={1} px={3} alignItems={"center"}>
@@ -53,7 +67,7 @@ const Balances = observer(function Balances() {
         <>
           <Box>
             <Flex alignItems={"center"} justifyContent={"space-between"}>
-              <Typography variant={TVariant.PresStart15}>DOG</Typography>
+              <Typography variant={TVariant.PresStart16}>DOG</Typography>
               <Dev>
                 <Flex>
                   <Box
@@ -88,7 +102,7 @@ const Balances = observer(function Balances() {
           <Box mt={4}>
             <Box>
               <Flex alignItems={"center"} justifyContent={"space-between"}>
-                <Typography variant={TVariant.PresStart15}>Pixels</Typography>
+                <Typography variant={TVariant.PresStart16}>Pixels</Typography>
                 <Dev>
                   <Box onClick={async () => AppStore.web3.refreshPupperBalance()}>🔄</Box>
                 </Dev>
@@ -104,4 +118,4 @@ const Balances = observer(function Balances() {
   );
 });
 
-export default UserMenu;
+export default UserDropdown;

@@ -1,4 +1,4 @@
-import React, { Suspense, useCallback, useEffect, useMemo } from "react";
+import React, { LegacyRef, Suspense, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Box, Flex } from "@chakra-ui/react";
 import DogeExplorer from "./DogeExplorer";
 import ViewerStore, { ViewerView } from "./Viewer.store";
@@ -18,6 +18,7 @@ import Drawer from "../../DSL/Drawer/Drawer";
 import { useLocation, useParams } from "react-router-dom";
 import { NamedRoutes, route, SELECTED_PIXEL_PARAM } from "../../App.routes";
 import Modal from "../../DSL/Modal/Modal";
+import { paneDropOffset } from "../../DSL/Pane/Pane.styles";
 
 /*
   Hack to reload page even if we are already on the route that renders this page
@@ -54,23 +55,48 @@ const ViewerPage = observer(function ViewerPage() {
 
   const onPixelSelect: onPixelSelectType = useCallback((x: number, y: number) => {
     store.selectedPupper = AppStore.web3.coordinateToPupperLocal(x, y);
-    if (!store.modals.isViewerModalOpen) {
-      store.modals.isViewerModalOpen = true
+    if (!AppStore.modals.isViewerModalOpen) {
+      AppStore.modals.isViewerModalOpen = true;
     }
     window.history.pushState({}, "", route(NamedRoutes.PIXELS, { [SELECTED_PIXEL_PARAM]: store.selectedPupper }));
 
     if (store.currentView !== ViewerView.Selected) {
       store.pushNavigation(ViewerView.Selected);
     }
-    // if (AppStore.rwd.isMobile) {
-    //   store.isSelectedDrawerOpen = true;
-    // }
     // eslint-disable-next-line
   }, []);
+
+  const ref = useRef<HTMLDivElement>();
+
+  const defaultPosition = useMemo(() => {
+    if (ref.current) {
+      const boundingRect = ref.current.getBoundingClientRect();
+      const bottomRightX = boundingRect.left + boundingRect.width;
+      const bottomRightY = boundingRect.top + boundingRect.height;
+      const x = bottomRightX - 12 - 2 * paneDropOffset;
+      const y = bottomRightY - 12 - 2 * paneDropOffset;
+
+      const oldX = (1 * window.innerWidth) / 3;
+      const oldY = window.innerHeight / 4;
+
+      console.log("debug::", boundingRect);
+      console.log("debug::", x, oldX, y, oldY);
+
+      return { x: oldX, y: oldY };
+
+      // if (AppStore.rwd.isMobile) {
+      //   return {x: (1 * window.innerWidth) / 10, y: (window.innerHeight / 5)}
+      // }
+      // return {x: (1 * window.innerWidth) / 3, y: (window.innerHeight / 4)}
+    }
+    return null;
+  }, [AppStore.rwd.isMobile, ref.current]);
+
   return (
     <>
+      {/*<Box ref={anotherRef} position={"absolute"} width={10} height={10} bg={"red"} zIndex={10000}/>*/}
       <Flex flexGrow={1}>
-        <Pane w={"full"} h={"full"} p={0}>
+        <Pane w={"full"} h={"full"} p={0} ref={ref}>
           <Suspense
             fallback={
               <Flex justifyContent={"center"} alignItems={"center"} position={"absolute"} w={"full"} h={"full"}>
@@ -81,16 +107,15 @@ const ViewerPage = observer(function ViewerPage() {
             <DogeExplorer onPixelSelect={onPixelSelect} store={store} />
           </Suspense>
         </Pane>
-        {store.modals.isViewerModalOpen && <Modal
+      </Flex>
+      {AppStore.modals.isViewerModalOpen && defaultPosition !== null && (
+        <Modal
+          defaultPosition={defaultPosition}
           title={store.currentView === ViewerView.Index ? "Own the Doge" : ""}
-          onClose={() => store.modals.isViewerModalOpen = false}
+          onClose={() => (AppStore.modals.isViewerModalOpen = false)}
           isOpen={true}
         >
-          <Box
-            display={"flex"}
-            flexDirection={"column"}
-            justifyContent={"space-between"}
-          >
+          <Box display={"flex"} flexDirection={"column"} justifyContent={"space-between"}>
             {/*{store.showGoBack && (*/}
             {/*  <Box mt={8} position={"relative"} left={"-20px"} top={"-20px"}>*/}
             {/*    <Box*/}
@@ -110,31 +135,39 @@ const ViewerPage = observer(function ViewerPage() {
             {store.currentView === ViewerView.Manage && <ManagePane store={store} />}
             {store.currentView === ViewerView.Selected && <SelectedPixelPane store={store} />}
           </Box>
-        </Modal>}
-      </Flex>
-      {store.modals.isMintModalOpen && (
+        </Modal>
+      )}
+      {AppStore.modals.isMyPixelsModalOpen && (
+        <Modal
+          onClose={() => (AppStore.modals.isMyPixelsModalOpen = false)}
+          isOpen={AppStore.modals.isMyPixelsModalOpen}
+        >
+          <ManagePane store={store} />
+        </Modal>
+      )}
+      {AppStore.modals.isMintModalOpen && (
         <MintPixelsModal
-          isOpen={store.modals.isMintModalOpen}
-          onClose={() => (store.modals.isMintModalOpen = false)}
+          isOpen={AppStore.modals.isMintModalOpen}
+          onClose={() => (AppStore.modals.isMintModalOpen = false)}
           onSuccess={() => {
-            store.modals.isMintMemeModalOpen = true;
+            AppStore.modals.isMintMemeModalOpen = true;
           }}
           goToPixels={() => {
-            store.modals.isMintModalOpen = false;
-            store.modals.isMintMemeModalOpen = false;
+            AppStore.modals.isMintModalOpen = false;
+            AppStore.modals.isMintMemeModalOpen = false;
             if (store.currentView !== ViewerView.Manage) {
               store.pushNavigation(ViewerView.Manage);
             }
           }}
         />
       )}
-      {store.modals.isBurnModalOpen && (
+      {AppStore.modals.isBurnModalOpen && (
         <BurnPixelsModal
           defaultPixel={store.selectedPupper}
-          isOpen={store.modals.isBurnModalOpen}
-          onClose={() => (store.modals.isBurnModalOpen = false)}
+          isOpen={AppStore.modals.isBurnModalOpen}
+          onClose={() => (AppStore.modals.isBurnModalOpen = false)}
           onSuccess={burnedPixelIDs => {
-            store.modals.isBurnMemeModalOpen = true;
+            AppStore.modals.isBurnMemeModalOpen = true;
             if (store.selectedPupper) {
               if (burnedPixelIDs.includes(store.selectedPupper)) {
                 store.getTokenOwner(store.selectedPupper);
@@ -142,29 +175,29 @@ const ViewerPage = observer(function ViewerPage() {
             }
           }}
           onCompleteClose={() => {
-            store.modals.isBurnModalOpen = false;
-            store.modals.isBurnMemeModalOpen = false;
+            AppStore.modals.isBurnModalOpen = false;
+            AppStore.modals.isBurnMemeModalOpen = false;
           }}
         />
       )}
-      {store.modals.isScrollModalOpen && (
+      {AppStore.modals.isScrollModalOpen && (
         <ScrollHelperModal
-          isOpen={store.modals.isScrollModalOpen}
-          onClose={() => (store.modals.isScrollModalOpen = false)}
+          isOpen={AppStore.modals.isScrollModalOpen}
+          onClose={() => (AppStore.modals.isScrollModalOpen = false)}
         />
       )}
-      {store.modals.isMintMemeModalOpen && (
+      {AppStore.modals.isMintMemeModalOpen && (
         <MemeModal
           type={"mint"}
-          isOpen={store.modals.isMintMemeModalOpen}
-          onClose={() => (store.modals.isMintMemeModalOpen = false)}
+          isOpen={AppStore.modals.isMintMemeModalOpen}
+          onClose={() => (AppStore.modals.isMintMemeModalOpen = false)}
         />
       )}
-      {store.modals.isBurnMemeModalOpen && (
+      {AppStore.modals.isBurnMemeModalOpen && (
         <MemeModal
           type={"burn"}
-          isOpen={store.modals.isBurnMemeModalOpen}
-          onClose={() => (store.modals.isBurnMemeModalOpen = false)}
+          isOpen={AppStore.modals.isBurnMemeModalOpen}
+          onClose={() => (AppStore.modals.isBurnMemeModalOpen = false)}
         />
       )}
     </>

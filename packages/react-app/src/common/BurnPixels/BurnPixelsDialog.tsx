@@ -15,7 +15,7 @@ import BurnPixelsDialogStore, { BurnPixelsModalView } from "./BurnPixelsDialog.s
 import Link from "../../DSL/Link/Link";
 import { getEtherscanURL } from "../../helpers/links";
 import SharePixelsDialog from "../SharePixelsDialog/SharePixelsDialog";
-import jsonify from "../../helpers/jsonify";
+import PixelPreview, { PixelPreviewSize } from "../../DSL/PixelPreview/PixelPreview";
 
 interface BurnPixelsDialogProps {
   store: BurnPixelsDialogStore;
@@ -46,26 +46,27 @@ const SelectPixels = observer(({ store }: { store: BurnPixelsModalStore }) => {
   const { colorMode } = useColorMode();
   return (
     <Flex flexDirection={"column"}>
+      <Flex justifyContent={"center"} mt={4}>
+        <PixelPreview
+          size={PixelPreviewSize.sm}
+          previewPixels={store.selectedPixels}
+          id={"burn-pixels"}
+          selectedTokenId={null}
+        />
+      </Flex>
       {store.isUserPixelOwner && (
         <>
           <Flex overflow={"auto"} flexGrow={1} h={"full"} mt={6} justifyContent={"center"}>
             <Box maxHeight={AppStore.rwd.isMobile ? "250px" : "350px"} width={"416px"}>
               {AppStore.web3.puppersOwned.map(px => {
-                const hex = AppStore.web3.pupperToHexLocal(px);
-                const index = AppStore.web3.pupperToIndexLocal(px);
                 const isPixelSelected = store.selectedPixels.includes(px);
                 return (
                   <Box
-                    mt={1}
-                    mx={1}
                     p={2}
                     display={"inline-block"}
                     bg={isPixelSelected ? (colorMode === "light" ? lightModePrimary : darkModeSecondary) : "inherit"}
-                    // _touch={{
-                    //   bg: (colorMode === "light" ? lightModePrimary : darkModeSecondary)
-                    // }}
                   >
-                    <PixelPane size={"sm"} pupper={px} onClick={() => store.handlePixelSelect(px)} />
+                    <PixelPane size={"xs"} pupper={px} onClick={() => store.handlePixelSelect(px)} />
                   </Box>
                 );
               })}

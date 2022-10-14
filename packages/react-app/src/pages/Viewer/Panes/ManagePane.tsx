@@ -17,7 +17,7 @@ const ManagePane = observer(function ManagePane({ store }: { store: ViewerStore 
           Your Pixels ({AppStore.web3.puppersOwned.length})
         </Typography>
         <Box overflow={"auto"} h={"full"} mt={3}>
-          <Box maxHeight={"350px"}>
+          <Box maxHeight={"300px"} maxW={"300px"}>
             {AppStore.web3.puppersOwned.map(px => {
               return (
                 <Box
@@ -39,9 +39,9 @@ const ManagePane = observer(function ManagePane({ store }: { store: ViewerStore 
             })}
           </Box>
         </Box>
-        <Box mt={10}>
-          <MintBurnButtons store={store} />
-        </Box>
+        {/*<Box mt={10}>*/}
+        {/*  <MintBurnButtons store={store} />*/}
+        {/*</Box>*/}
       </Flex>
     </>
   );

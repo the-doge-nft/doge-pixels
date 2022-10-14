@@ -28,7 +28,10 @@ class ModalsStore {
   isBurnMemeModalOpen = false;
 
   @observable
-  isViewerModalOpen = true;
+  isViewerModalOpen = false;
+
+  @observable
+  isMyPixelsModalOpen = false;
 
   constructor() {
     makeObservable(this);
