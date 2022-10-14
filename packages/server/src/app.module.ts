@@ -18,6 +18,7 @@ import { ServeStaticModule } from "@nestjs/serve-static";
 import { join } from 'path'
 import { PixelTransferService } from './pixel-transfer/pixel-transfer.service';
 import { CoinGeckoService } from './coin-gecko/coin-gecko.service';
+import { UnstoppableDomainsService } from './unstoppable-domains/unstoppable-domains.service';
 import * as redisStore from 'cache-manager-redis-store'
 
 @Module({
@@ -67,6 +68,7 @@ import * as redisStore from 'cache-manager-redis-store'
     AwsService,
     CoinGeckoService,
     PixelTransferService,
+    UnstoppableDomainsService,
   ],
 })
 export class AppModule {}

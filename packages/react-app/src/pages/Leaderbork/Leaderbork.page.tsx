@@ -44,7 +44,7 @@ const LeaderborkPage = observer(function DogParkPage() {
   }, []);
 
   return (
-    <Flex flexDir={{base: "column", xl: "row"}}>
+    <Flex w={"full"} flexDir={{base: "column", xl: "row"}}>
       <Flex flexBasis={0} grow={0} gap={8} display={"flex"} flexDirection={"column"} mt={{base: 8, xl: 0}} order={{ base: 2, xl: 1 }}>
         <TopDogs store={store} />
         <Box>
@@ -203,7 +203,7 @@ const LeaderborkPage = observer(function DogParkPage() {
           <Pane
             title={
               store.selectedAddress ? (
-                <Link target={"_blank"} to={getEtherscanURL(store.selectedAddress, "address")} mb={2}>
+                <Link w={"full"} textOverflow={"ellipsis"} overflow={"hidden"} wordBreak={"break-all"} whiteSpace={"nowrap"} target={"_blank"} to={getEtherscanURL(store.selectedAddress, "address")} mb={2}>
                   {store.activityPaneTitle}
                 </Link>
               ) : (
@@ -236,7 +236,7 @@ const LeaderborkPage = observer(function DogParkPage() {
               </Flex>
             )}
 
-            <Box overflowY={"scroll"} flexGrow={1}>
+            <Box overflowY={"auto"} flexGrow={1}>
               <Flex flexWrap={"wrap"} gap={0} maxHeight={"250px"}>
                 {(store.selectedOwnerTab === SelectedOwnerTab.Activity || !store.selectedAddress) &&
                   store.transfers.map(transfer => (

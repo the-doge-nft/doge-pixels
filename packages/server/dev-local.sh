@@ -71,7 +71,7 @@ HELP_USAGE
     exit 0
 }
 
-if [[ $1 == "down" && $2 ]]; then
+if [[ $1 == "down" ]]; then
     down
 elif [[ $1 == "up" ]]; then
     up ${2-""}

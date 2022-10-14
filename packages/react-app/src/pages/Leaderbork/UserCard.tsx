@@ -38,6 +38,7 @@ const UserCard: React.FC<PropsWithChildren<UserCardProps>> = observer(
             overflow={"hidden"}
             textOverflow={"ellipsis"}
             overflowWrap={"initial"}
+            maxW={250}
           >
             {pixelOwner.ens ? pixelOwner.ens : abbreviate(pixelOwner.address, 4)}
           </Typography>
