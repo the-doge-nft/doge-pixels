@@ -14,7 +14,7 @@ const MintPixelsModal = observer(({ isOpen, onClose, onSuccess, goToPixels }: Mi
   const store = useMemo(() => new MintPixelsDialogStore(), []);
   return (
     <Modal size={"lg"} isOpen={isOpen} title={store.title} onClose={onClose} description={store.description}>
-      <Box pt={store.currentView === MintModalView.Form ? 0 : 12} pb={2}>
+      <Box pb={2}>
         <MintPixelsDialog store={store} onSuccess={onSuccess} onGoToPixelsClick={goToPixels} />
       </Box>
     </Modal>

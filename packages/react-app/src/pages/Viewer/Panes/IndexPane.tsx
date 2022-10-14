@@ -98,7 +98,7 @@ const IndexPane = observer(function IndexPane({ store }: { store: ViewerStore })
         </Box>
       </Flex>
       <Box mt={10}>
-        <MintBurnButtons store={store} />
+        <MintBurnButtons />
       </Box>
     </>
   );

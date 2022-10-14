@@ -263,10 +263,10 @@ const CowSwap: React.FC<{ store: MintPixelsDialogStore }> = observer(({ store })
 const Complete = observer(({ store, txHash }: { store: MintPixelsDialogStore; txHash: string | null }) => {
   return (
     <Box>
-      <Typography variant={TVariant.PresStart28} textAlign={"center"} block>
+      <Typography variant={TVariant.PresStart18} textAlign={"center"} block>
         Pixels Minted
       </Typography>
-      <Typography variant={TVariant.PresStart28} textAlign={"center"} mt={4} block>
+      <Typography variant={TVariant.PresStart18} textAlign={"center"} mt={4} block>
         🌟🦄💫🐸🐕🚀
       </Typography>
       <Box mt={4}>

@@ -8,7 +8,7 @@ const Loading = ({ title, showSigningHint = false }: { title?: string; showSigni
   return (
     <Flex flexDirection={"column"} alignItems={"center"}>
       <Box>
-        <Typography variant={TVariant.PresStart20} mb={4} block>
+        <Typography variant={TVariant.PresStart18} mb={4} block>
           {title ? title : "Loading..."}
         </Typography>
       </Box>

@@ -1,11 +1,10 @@
 import React from "react";
-import ViewerStore, { ViewerView } from "./Viewer.store";
 import { Flex } from "@chakra-ui/react";
 import AppStore from "../../store/App.store";
-import Button, { ButtonVariant } from "../../DSL/Button/Button";
+import Button  from "../../DSL/Button/Button";
 import { observer } from "mobx-react-lite";
 
-export const MintBurnButtons = observer(({ store }: { store: ViewerStore }) => {
+export const MintBurnButtons = observer(() => {
   return (
     <Flex direction={"column"} alignItems={"center"} flexGrow={0}>
       {AppStore.web3.web3Provider && (
@@ -19,17 +18,6 @@ export const MintBurnButtons = observer(({ store }: { store: ViewerStore }) => {
             </Button>
           )}
         </Flex>
-      )}
-      {AppStore.web3.puppersOwned.length > 0 && store.currentView !== ViewerView.Manage && (
-        <Button
-          width={"fit-content"}
-          display={"block"}
-          variant={ButtonVariant.Text}
-          size={"md"}
-          onClick={() => store.pushNavigation(ViewerView.Manage)}
-        >
-          My pixels
-        </Button>
       )}
     </Flex>
   );

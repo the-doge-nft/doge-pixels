@@ -8,6 +8,7 @@ import { NamedRoutes, route } from "../../App.routes";
 import BigText from "../../DSL/BigText/BigText";
 import { useHistory } from "react-router-dom";
 import { useMemo } from "react";
+import MintBurnButtons from "../../pages/Viewer/MintBurnButtons";
 
 const Header = observer(() => {
   return (
@@ -22,8 +23,11 @@ const Header = observer(() => {
           </Flex>
         </Box>
         <Box display={{ base: "none", md: "flex" }} alignItems={"center"} justifyContent={"flex-end"} w={"full"}>
-          <Flex mr={8}>
-            <ColorModeToggle />
+          <Flex mr={8} alignItems={"center"}>
+              {AppStore.web3.isConnected && <MintBurnButtons/>}
+              <Box>
+                  <ColorModeToggle />
+              </Box>
           </Flex>
           {!AppStore.web3.web3Provider && (
             <Button
