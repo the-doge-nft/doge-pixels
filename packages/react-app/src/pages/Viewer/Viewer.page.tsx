@@ -62,9 +62,9 @@ const ViewerPage = observer(function ViewerPage() {
     if (store.currentView !== ViewerView.Selected) {
       store.pushNavigation(ViewerView.Selected);
     }
-    if (AppStore.rwd.isMobile) {
-      store.isSelectedDrawerOpen = true;
-    }
+    // if (AppStore.rwd.isMobile) {
+    //   store.isSelectedDrawerOpen = true;
+    // }
     // eslint-disable-next-line
   }, []);
   return (
@@ -91,21 +91,21 @@ const ViewerPage = observer(function ViewerPage() {
             flexDirection={"column"}
             justifyContent={"space-between"}
           >
-            {store.showGoBack && (
-              <Box mt={8} position={"relative"} left={"-20px"} top={"-20px"}>
-                <Box
-                  p={0}
-                  _hover={{ cursor: "pointer" }}
-                  _active={{ transform: "translate(4px, 4px)" }}
-                  onClick={() => {
-                    store.popNavigation();
-                    store.clearSelectedPupper();
-                  }}
-                >
-                  <Icon icon={"back"} boxSize={6} />
-                </Box>
-              </Box>
-            )}
+            {/*{store.showGoBack && (*/}
+            {/*  <Box mt={8} position={"relative"} left={"-20px"} top={"-20px"}>*/}
+            {/*    <Box*/}
+            {/*      p={0}*/}
+            {/*      _hover={{ cursor: "pointer" }}*/}
+            {/*      _active={{ transform: "translate(4px, 4px)" }}*/}
+            {/*      onClick={() => {*/}
+            {/*        store.popNavigation();*/}
+            {/*        store.clearSelectedPupper();*/}
+            {/*      }}*/}
+            {/*    >*/}
+            {/*      <Icon icon={"back"} boxSize={6} />*/}
+            {/*    </Box>*/}
+            {/*  </Box>*/}
+            {/*)}*/}
             {store.currentView === ViewerView.Index && <IndexPane store={store} />}
             {store.currentView === ViewerView.Manage && <ManagePane store={store} />}
             {store.currentView === ViewerView.Selected && <SelectedPixelPane store={store} />}
@@ -166,11 +166,6 @@ const ViewerPage = observer(function ViewerPage() {
           isOpen={store.modals.isBurnMemeModalOpen}
           onClose={() => (store.modals.isBurnMemeModalOpen = false)}
         />
-      )}
-      {store.isSelectedDrawerOpen && (
-        <Drawer isOpen={store.isSelectedDrawerOpen} onClose={() => (store.isSelectedDrawerOpen = false)}>
-          <SelectedPixelPane store={store} />
-        </Drawer>
       )}
     </>
   );

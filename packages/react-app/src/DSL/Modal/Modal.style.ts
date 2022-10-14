@@ -31,6 +31,9 @@ const ModalStyle = {
     description: {
       mt: 2,
     },
+    body: {
+      p: 4
+    }
   }),
   sizes: {
     xs: {
@@ -45,10 +48,6 @@ const ModalStyle = {
       container: {
         maxWidth: "24rem",
       },
-      body: {
-        px: 8,
-        pb: 12,
-      },
       title: {
         mt: 8,
       },
@@ -56,10 +55,6 @@ const ModalStyle = {
     md: {
       container: {
         maxWidth: "28rem",
-      },
-      body: {
-        px: 8,
-        pb: 12,
       },
       title: {
         mt: 8,
@@ -71,10 +66,6 @@ const ModalStyle = {
       },
       drop: {
         maxWidth: "36rem",
-      },
-      body: {
-        px: 10,
-        pb: 12,
       },
       title: {
         mt: 8,

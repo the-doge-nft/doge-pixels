@@ -46,9 +46,6 @@ class ViewerStore extends Eventable(Reactionable(Navigable<ViewerView, Construct
   metaData: Metadata | null = null;
 
   @observable
-  isSelectedDrawerOpen = false;
-
-  @observable
   modals: ModalsStore;
 
   constructor(private defaultSelectedPupper: number | null) {
@@ -63,11 +60,7 @@ class ViewerStore extends Eventable(Reactionable(Navigable<ViewerView, Construct
       // - make sure it is a number
 
       this.selectedPupper = Number(defaultSelectedPupper);
-      if (AppStore.rwd.isMobile) {
-        this.isSelectedDrawerOpen = true;
-      } else {
-        this.pushNavigation(ViewerView.Selected);
-      }
+      this.pushNavigation(ViewerView.Selected);
     }
   }
 
