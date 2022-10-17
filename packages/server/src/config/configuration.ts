@@ -33,14 +33,15 @@ export interface Configuration {
     accessKey: string;
     accessKeySecret: string;
     region: string;
-    bucketName: string
-  },
+    bucketName: string;
+  };
   redis: {
     host: string;
     port: number;
     password: string;
-  },
+  };
   nomicsKey: string;
+  etherscanKey: string;
 }
 
 const configuration: Configuration = {
@@ -72,14 +73,15 @@ const configuration: Configuration = {
     accessKey: process.env.AWS_ACCESS_KEY,
     accessKeySecret: process.env.AWS_ACCESS_KEY_SECRET,
     region: process.env.AWS_REGION,
-    bucketName: process.env.AWS_S3_BUCKET_NAME
+    bucketName: process.env.AWS_S3_BUCKET_NAME,
   },
   redis: {
     host: process.env.REDIS_HOST,
     port: parseInt(process.env.REDIS_PORT),
-    password: process.env.REDIS_PASSWORD
+    password: process.env.REDIS_PASSWORD,
   },
   nomicsKey: process.env.NOMICS_API_KEY,
+  etherscanKey: process.env.ETHERSCAN_API_KEY,
 };
 
 export default configuration;
