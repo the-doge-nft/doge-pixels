@@ -3,6 +3,7 @@ import Link from "../../DSL/Link/Link";
 import { matchPath, useLocation } from "react-router-dom";
 import { SelectedOwnerTab } from "../../pages/Leaderbork/Leaderbork.store";
 import Icon from "../../DSL/Icon/Icon";
+import { Type } from "../../DSL/Fonts/Fonts";
 
 const NavLinks = ({ isMobile }: { isMobile?: boolean }) => {
   const location = useLocation();
@@ -74,14 +75,16 @@ const NavLinks = ({ isMobile }: { isMobile?: boolean }) => {
             .filter(route => route.showOnDesktop)
             .map(appRoute => (
               <Link
+                variant={Type.PresStart}
                 size={"sm"}
                 isNav
                 key={`desktop-nav-${appRoute.path}`}
                 to={getPath(appRoute.name)}
-                textDecoration={getMatch(appRoute.path) ? "underline" : "none"}
+                fontWeight={getMatch(appRoute.path) ? "bold" : "normal"}
+                // textDecoration={getMatch(appRoute.path) ? "underline" : "none"}
               >
-                {/*{appRoute.desktopName}*/}
-                <Icon icon={appRoute.icon} boxSize={4}/>
+                {appRoute.desktopName}
+                {/* <Icon icon={appRoute.icon} boxSize={4} /> */}
               </Link>
             ))}
     </>

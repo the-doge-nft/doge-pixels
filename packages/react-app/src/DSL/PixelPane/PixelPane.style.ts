@@ -41,11 +41,11 @@ const PixelPaneStyle = {
     xxs: {
       swatch: {
         w: "20px",
-        h: "20px"
+        h: "20px",
       },
       textContainer: {
-        display: "none"
-      }
+        display: "none",
+      },
     },
     xs: {
       swatch: {

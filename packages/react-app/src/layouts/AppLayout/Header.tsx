@@ -3,30 +3,40 @@ import AppStore from "../../store/App.store";
 import Button from "../../DSL/Button/Button";
 import UserDropdown from "../UserDropdown";
 import { observer } from "mobx-react-lite";
-import {Box, Flex, HStack} from "@chakra-ui/react";
+import { Box, Flex, HStack } from "@chakra-ui/react";
 import { NamedRoutes, route } from "../../App.routes";
 import BigText from "../../DSL/BigText/BigText";
 import { useHistory } from "react-router-dom";
-import { useMemo } from "react";
-import MintBurnButtons from "../../pages/Viewer/MintBurnButtons";
+import NavLinks from "./NavLinks";
+import DPPLogo from "../../images/logo.png"
 
 const Header = observer(() => {
+  const history = useHistory();
   return (
     <Box mb={6} display={"flex"}>
-      <Flex alignItems={"center"} w={"full"}>
-        <Title />
+      <Flex alignItems={"center"} w={"full"} gap={6}>
+        <Box
+          _hover={{
+            cursor: "pointer",
+          }}
+          _active={{
+            transform: "translate(4px, 4px)",
+          }}
+          onClick={() => {
+            history.push(route(NamedRoutes.VIEWER));
+          }}
+          userSelect={"none"}
+        >
+          <img src={DPPLogo} width={50}/>
+        </Box>
+        <NavLinks />
       </Flex>
       <Flex>
-        <Box mr={6} display={{ base: "none", xl: "block" }}>
-          <Flex w={"full"} h={"full"} alignItems={"center"} justifyContent={"center"}>
-            <HStack spacing={12}>{/*<NavLinks />*/}</HStack>
-          </Flex>
-        </Box>
         <Box display={{ base: "none", md: "flex" }} alignItems={"center"} justifyContent={"flex-end"} w={"full"}>
           <Flex mr={8} alignItems={"center"}>
-              <Box>
-                  <ColorModeToggle />
-              </Box>
+            <Box>
+              <ColorModeToggle />
+            </Box>
           </Flex>
           {!AppStore.web3.web3Provider && (
             <Button
@@ -44,31 +54,5 @@ const Header = observer(() => {
     </Box>
   );
 });
-
-const Title = () => {
-  const history = useHistory();
-  const text = useMemo(() => {
-    if (AppStore.rwd.isMobile) {
-      return "PIXEL PORTAL";
-    }
-    return "DOGE PIXEL PORTAL";
-  }, [AppStore.rwd.isMobile]);
-  return (
-    <Box
-      _hover={{
-        cursor: "pointer",
-      }}
-      _active={{
-        transform: "translate(4px, 4px)",
-      }}
-      onClick={() => {
-        history.push(route(NamedRoutes.VIEWER));
-      }}
-      userSelect={"none"}
-    >
-      <BigText size={AppStore.rwd.isMobile ? "xs" : "sm"}>{text}</BigText>
-    </Box>
-  );
-};
 
 export default Header;

@@ -1,8 +1,8 @@
-import React, {Suspense, useCallback, useEffect, useMemo} from "react";
-import {Box, Flex} from "@chakra-ui/react";
+import React, { Suspense, useCallback, useEffect, useMemo } from "react";
+import { Box, Flex } from "@chakra-ui/react";
 import DogeExplorer from "./DogeExplorer";
 import ViewerStore from "./Viewer.store";
-import {observer} from "mobx-react-lite";
+import { observer } from "mobx-react-lite";
 import Pane from "../../DSL/Pane/Pane";
 import BurnPixelsModal from "./BurnPixelsModal/BurnPixelsModal";
 import ManagePane from "./Panes/ManagePane";
@@ -13,8 +13,8 @@ import AppStore from "../../store/App.store";
 import Loading from "../../DSL/Loading/Loading";
 import ScrollHelperModal from "../../DSL/Modal/ScrollHelperModal";
 import MemeModal from "../../DSL/Modal/MemeModal";
-import {useLocation, useParams} from "react-router-dom";
-import {NamedRoutes, route, SELECTED_PIXEL_PARAM} from "../../App.routes";
+import { useLocation, useParams } from "react-router-dom";
+import { NamedRoutes, route, SELECTED_PIXEL_PARAM } from "../../App.routes";
 import Modal from "../../DSL/Modal/Modal";
 
 /*
@@ -72,7 +72,7 @@ const ViewerPage = observer(function ViewerPage() {
       )}
       {AppStore.modals.isSelectedPixelModalOpen && (
         <Modal
-          defaultPosition={{x: window.innerWidth / 3, y: window.innerHeight / 4}}
+          defaultPosition={{ x: window.innerWidth / 3, y: window.innerHeight / 4 }}
           onClose={() => (AppStore.modals.isSelectedPixelModalOpen = false)}
           isOpen={AppStore.modals.isSelectedPixelModalOpen}
         >
@@ -81,7 +81,7 @@ const ViewerPage = observer(function ViewerPage() {
       )}
       {AppStore.modals.isMyPixelsModalOpen && (
         <Modal
-          defaultPosition={{x: window.innerWidth / 3, y: -window.innerHeight / 4}}
+          defaultPosition={{ x: window.innerWidth / 3, y: -window.innerHeight / 4 }}
           onClose={() => (AppStore.modals.isMyPixelsModalOpen = false)}
           isOpen={AppStore.modals.isMyPixelsModalOpen}
         >

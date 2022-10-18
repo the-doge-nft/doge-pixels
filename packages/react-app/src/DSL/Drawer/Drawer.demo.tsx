@@ -3,7 +3,6 @@ import Demo from "../Demo/Demo";
 import { useDisclosure } from "@chakra-ui/react";
 import Drawer from "./Drawer";
 import Button from "../Button/Button";
-import MetaDoge from "../../images/meme/mint/meta.gif";
 import VibinDoge from "../../images/meme/mint/vibin.gif";
 import { Image } from "@chakra-ui/react";
 

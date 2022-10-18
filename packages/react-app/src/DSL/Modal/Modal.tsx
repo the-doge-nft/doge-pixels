@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef } from "react";
 import { Box, Flex, useColorMode, useMultiStyleConfig } from "@chakra-ui/react";
 import Icon from "../Icon/Icon";
 import Draggable from "react-draggable";
@@ -53,15 +53,18 @@ const Modal = ({
 }: ModalProps) => {
   const chakraStyles = useMultiStyleConfig("Modal", { size: size });
   const { colorMode } = useColorMode();
+  const nodeRef = useRef(null)
 
   ReactModal.setAppElement("#root");
+
+  // https://github.com/react-grid-layout/react-draggable/issues/652
   const NotTypeSafeDraggable: any = Draggable;
 
   return (
     <ReactModal onRequestClose={onClose} isOpen={isOpen} style={styleOverrides} ariaHideApp={false} {...rest}>
-      <>
-        <NotTypeSafeDraggable bounds={"body"} handle={".handle"} defaultPosition={defaultPosition}>
+        <NotTypeSafeDraggable nodeRef={nodeRef} bounds={"body"} handle={".handle"} defaultPosition={defaultPosition}>
           <Box
+            ref={nodeRef}
             position={"relative"}
             overflow={"hidden"}
             zIndex={1}
@@ -116,7 +119,6 @@ const Modal = ({
             <Box sx={chakraStyles.drop} />
           </Box>
         </NotTypeSafeDraggable>
-      </>
     </ReactModal>
   );
 };

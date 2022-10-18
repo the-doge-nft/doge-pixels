@@ -11,7 +11,7 @@ import PixelArtPage from "./pages/PixelArt/PixelArt.page";
 import PerksPage from "./pages/Perks/Perks.page";
 import FourOhFour from "./pages/FourOhFour";
 import { SelectedOwnerTab } from "./pages/Leaderbork/Leaderbork.store";
-import {IconName} from "./DSL/Icon/Icon";
+import { IconName } from "./DSL/Icon/Icon";
 
 export enum NamedRoutes {
   VIEWER = "viewer",
@@ -37,7 +37,7 @@ export interface AppRouteInterface {
   showOnMobile: boolean;
   showOnDesktop: boolean;
   displayOrder: number;
-  icon?: IconName
+  icon?: IconName;
 }
 
 export const route = (name: NamedRoutes, params?: {}) => {
@@ -80,7 +80,7 @@ const routes: AppRouteInterface[] = [
     showOnDesktop: true,
     showOnMobile: true,
     displayOrder: 1,
-    icon: "person"
+    icon: "person",
   },
   {
     path: "/perks",
@@ -93,7 +93,7 @@ const routes: AppRouteInterface[] = [
     showOnMobile: true,
     showOnDesktop: true,
     displayOrder: 2,
-    icon: "person"
+    icon: "person",
   },
   {
     path: "/art",
@@ -106,7 +106,7 @@ const routes: AppRouteInterface[] = [
     showOnMobile: true,
     showOnDesktop: true,
     displayOrder: 1,
-    icon: "person"
+    icon: "person",
   },
   {
     path: "/pixels",
@@ -119,7 +119,7 @@ const routes: AppRouteInterface[] = [
     showOnMobile: true,
     showOnDesktop: false,
     displayOrder: 0,
-    icon: "person"
+    icon: "person",
   },
   {
     path: `/px/:${SELECTED_PIXEL_PARAM}?`,
@@ -132,7 +132,7 @@ const routes: AppRouteInterface[] = [
     showOnDesktop: false,
     showOnMobile: false,
     displayOrder: 0,
-    icon: "person"
+    icon: "person",
   },
   {
     path: "/",
@@ -145,7 +145,7 @@ const routes: AppRouteInterface[] = [
     showOnMobile: true,
     showOnDesktop: true,
     displayOrder: 0,
-    icon: "person"
+    icon: "person",
   },
 ];
 
@@ -161,7 +161,7 @@ if (isDevModeEnabled()) {
     showOnMobile: true,
     showOnDesktop: true,
     displayOrder: 4,
-    icon: "person"
+    icon: "person",
   });
 }
 

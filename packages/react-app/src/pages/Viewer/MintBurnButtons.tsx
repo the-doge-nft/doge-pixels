@@ -1,7 +1,7 @@
 import React from "react";
 import { Flex } from "@chakra-ui/react";
 import AppStore from "../../store/App.store";
-import Button  from "../../DSL/Button/Button";
+import Button from "../../DSL/Button/Button";
 import { observer } from "mobx-react-lite";
 
 export const MintBurnButtons = observer(() => {

@@ -27,18 +27,20 @@ const PixelPane = observer(({ pupper, onClick, variant = "solid", size = "md", i
   const color = AppStore.web3.pupperToHexLocal(pupper);
 
   if (size === "xxs") {
-    return <Box 
-      __css={styles.swatch} 
-      _hover={onClick ? {cursor: "pointer"}: {}} 
-      onClick={() => onClick && onClick(pupper)} 
-      bg={color} 
+    return (
+      <Box
+        __css={styles.swatch}
+        _hover={onClick ? { cursor: "pointer" } : {}}
+        onClick={() => onClick && onClick(pupper)}
+        bg={color}
       />
+    );
   }
 
   return (
     <Box
       __css={styles.container}
-      _hover={onClick ? {cursor: "pointer"}: {}}
+      _hover={onClick ? { cursor: "pointer" } : {}}
       onClick={() => onClick && onClick(pupper)}
       zIndex={1}
     >

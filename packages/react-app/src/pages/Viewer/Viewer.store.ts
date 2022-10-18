@@ -72,6 +72,7 @@ class ViewerStore extends Eventable(Reactionable(EmptyClass)) {
     );
   }
 
+  @action
   async getTokenOwner(tokenId: number) {
     try {
       this.tokenOwner = await AppStore.web3.getPxOwnerByTokenId(tokenId);
@@ -189,12 +190,18 @@ class ViewerStore extends Eventable(Reactionable(EmptyClass)) {
     this.disposeReactions();
   }
 
+  @action
   onPixelSelected(x: number, y: number) {
-    this.selectedPupper = AppStore.web3.coordinateToPupperLocal(x, y)
+    this.selectedPupper = AppStore.web3.coordinateToPupperLocal(x, y);
     if (!AppStore.modals.isSelectedPixelModalOpen) {
-      AppStore.modals.isSelectedPixelModalOpen = true
+      AppStore.modals.isSelectedPixelModalOpen = true;
     }
-    window.history.pushState({}, "", route(NamedRoutes.PIXELS, { [SELECTED_PIXEL_PARAM]: this.selectedPupper }))
+    window.history.pushState({}, "", route(NamedRoutes.PIXELS, { [SELECTED_PIXEL_PARAM]: this.selectedPupper }));
+  }
+
+  onCoordsSearch(x: number, y: number) {
+    this.onPixelSelected(x, y)
+    this.publish(SELECT_PIXEL, [x, y])
   }
 }
 

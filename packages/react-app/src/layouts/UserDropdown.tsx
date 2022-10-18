@@ -20,62 +20,62 @@ const UserDropdown = observer(() => {
   const { colorMode } = useColorMode();
   const [isOpen, setIsOpen] = useState(false);
   return (
-      <Box zIndex={10000}>
-        <Menu isOpen={isOpen} onOpen={() => setIsOpen(true)} onClose={() => setIsOpen(false)}>
-          <Box position={"relative"} zIndex={1}>
-            <MenuButton overflow={"hidden"}>
-              <Flex alignItems={"center"} overflow={"hidden"} mx={1}>
-                <Typography
-                    variant={TVariant.PresStart14}
-                    maxW={"200px"}
-                    overflowX={"hidden"}
-                    overflowWrap={"initial"}
-                    textOverflow={"ellipsis"}
-                >
-                  {AppStore.web3.addressForDisplay}
-                </Typography>
-              </Flex>
-            </MenuButton>
-            <Box __css={styles.drop} />
-          </Box>
-
-          <MenuList maxWidth={"fit-content"}>
-            <Balances />
-            <Box mt={8} px={3}>
-              <Link
-                  isNav
-                  to={generatePath(`/leaderbork/:address/${SelectedOwnerTab.Wallet}`, { address: AppStore.web3.address })}
-              >
-                Profile
-              </Link>
-            </Box>
-            <Box mt={1} px={3}>
+    <Box zIndex={10000}>
+      <Menu isOpen={isOpen} onOpen={() => setIsOpen(true)} onClose={() => setIsOpen(false)}>
+        <Box position={"relative"} zIndex={1}>
+          <MenuButton overflow={"hidden"}>
+            <Flex alignItems={"center"} overflow={"hidden"} mx={1}>
               <Typography
-                  cursor={"pointer"}
-                  _hover={{textDecoration: "underline"}}
-                  variant={TVariant.PresStart16}
-                  onClick={() => {
-                    if (location.pathname !== "/" && !location.pathname.includes("/px")) {
-                      history.push("/");
-                    }
-                    AppStore.modals.isMyPixelsModalOpen = true
-                    setIsOpen(false)
-                  }}
+                variant={TVariant.PresStart14}
+                maxW={"200px"}
+                overflowX={"hidden"}
+                overflowWrap={"initial"}
+                textOverflow={"ellipsis"}
               >
-                My Pixels
-              </Typography>
-            </Box>
-            <MenuItem mt={4} onClick={() => AppStore.web3.disconnect()}>
-              <Typography variant={TVariant.PresStart12}>Disconnect {">"}</Typography>
-            </MenuItem>
-            <Flex mt={1} px={3} alignItems={"center"}>
-              <Typography color={lightOrDarkMode(colorMode, "yellow.100", "gray.300")} variant={TVariant.PresStart10}>
-                connected: {AppStore.web3.network?.name}
+                {AppStore.web3.addressForDisplay}
               </Typography>
             </Flex>
-          </MenuList>
-        </Menu>
-      </Box>
+          </MenuButton>
+          <Box __css={styles.drop} />
+        </Box>
+
+        <MenuList maxWidth={"fit-content"}>
+          <Balances />
+          <Box mt={8} px={3}>
+            <Link
+              isNav
+              to={generatePath(`/leaderbork/:address/${SelectedOwnerTab.Wallet}`, { address: AppStore.web3.address })}
+            >
+              Profile
+            </Link>
+          </Box>
+          <Box mt={1} px={3}>
+            <Typography
+              cursor={"pointer"}
+              _hover={{ textDecoration: "underline" }}
+              variant={TVariant.PresStart16}
+              onClick={() => {
+                if (location.pathname !== "/" && !location.pathname.includes("/px")) {
+                  history.push("/");
+                }
+                AppStore.modals.isMyPixelsModalOpen = true;
+                setIsOpen(false);
+              }}
+            >
+              My Pixels
+            </Typography>
+          </Box>
+          <MenuItem mt={4} onClick={() => AppStore.web3.disconnect()}>
+            <Typography variant={TVariant.PresStart12}>Disconnect {">"}</Typography>
+          </MenuItem>
+          <Flex mt={1} px={3} alignItems={"center"}>
+            <Typography color={lightOrDarkMode(colorMode, "yellow.100", "gray.300")} variant={TVariant.PresStart10}>
+              connected: {AppStore.web3.network?.name}
+            </Typography>
+          </Flex>
+        </MenuList>
+      </Menu>
+    </Box>
   );
 });
 

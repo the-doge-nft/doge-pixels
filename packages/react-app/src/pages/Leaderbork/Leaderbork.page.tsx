@@ -149,7 +149,7 @@ const LeaderborkPage = observer(function DogParkPage() {
                                   <>
                                     <Typography variant={TVariant.ComicSans16}>by:</Typography>
                                     <Link
-                                        isNav
+                                      isNav
                                       to={`/leaderbork/${
                                         store.selectedActivityTransferDetails.description.from
                                           ? store.selectedActivityTransferDetails.description.from.address

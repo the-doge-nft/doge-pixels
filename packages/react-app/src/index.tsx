@@ -1,7 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import App from "./App";
-import { Box, ChakraProvider, ColorModeScript } from "@chakra-ui/react";
+import { Box, ChakraProvider, ColorModeScript, Flex, HStack } from "@chakra-ui/react";
 import theme from "./DSL/Theme";
 import Fonts from "./DSL/Fonts/Fonts";
 import * as Sentry from "@sentry/react";
@@ -9,6 +9,11 @@ import { Integrations } from "@sentry/tracing";
 import { motion } from "framer-motion";
 import Typography, { TVariant } from "./DSL/Typography/Typography";
 import Marquee from "./DSL/Marquee/Marquee";
+import { observer } from "mobx-react-lite";
+import Icon from "./DSL/Icon/Icon";
+import AppStore from "./store/App.store";
+import { formatWithThousandsSeparators } from "./helpers/numberFormatter";
+import Footer from "./common/Footer/Footer";
 
 Sentry.init({
   dsn: process.env.REACT_APP_SENTRY_DSN,
@@ -21,9 +26,12 @@ ReactDOM.render(
     <ColorModeScript initialColorMode={theme.config.initialColorMode} />
     <ChakraProvider theme={theme} resetCSS>
       <Fonts />
-      <div id={"react-modal-main"} style={{ minHeight: "100vh", display: "flex", flexDirection: "column" }}>
+      <Flex flexDir={"column"} id={"react-modal-main"} minH={"100vh"} mb={8}>
         <App />
-      </div>
+      </Flex>
+      <Flex justifyContent={"center"} px={{base: 4, md: 4, xl: 16}} mb={6}>
+        <Footer/>
+      </Flex>
     </ChakraProvider>
   </React.StrictMode>,
   document.getElementById("root"),
