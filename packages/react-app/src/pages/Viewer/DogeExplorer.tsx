@@ -5,7 +5,6 @@ import { Canvas, useLoader } from "@react-three/fiber";
 import Kobosu from "../../images/THE_ACTUAL_NFT_IMAGE.png";
 import { Box, Flex, Input, useColorMode } from "@chakra-ui/react";
 import { createCanvasPixelSelectionSetter, getWorldPixelCoordinate, resizeCanvas } from "./helpers";
-import { onPixelSelectType } from "./Viewer.page";
 import ViewerStore from "./Viewer.store";
 import { SELECT_PIXEL } from "../../services/mixins/eventable";
 import Button, { ButtonVariant } from "../../DSL/Button/Button";
@@ -18,7 +17,6 @@ import Typography, { TVariant } from "../../DSL/Typography/Typography";
 import Icon from "../../DSL/Icon/Icon";
 
 interface ThreeSceneProps {
-  onPixelSelect: onPixelSelectType;
   store?: ViewerStore;
 }
 
@@ -31,7 +29,7 @@ export enum CameraPositionZ {
 export const IMAGE_WIDTH = 640;
 export const IMAGE_HEIGHT = 480;
 
-const DogeExplorer = observer(({ onPixelSelect, store }: ThreeSceneProps) => {
+const DogeExplorer = observer(({ store }: ThreeSceneProps) => {
   const { colorMode } = useColorMode();
   //@ts-ignore
   const selectedPixelColor = colorMode === "light" ? Colors["red"]["50"] : Colors["magenta"]["50"];
@@ -115,7 +113,7 @@ const DogeExplorer = observer(({ onPixelSelect, store }: ThreeSceneProps) => {
       const [pixelX, pixelY] = getWorldPixelCoordinate(e.point, overlayLength);
       const indexX = Math.floor(pixelX + overlayLength);
       const indexY = Math.floor(pixelY + overlayLength);
-      onPixelSelect(indexX, -1 * indexY);
+      store.onPixelSelected(indexX, -1 * indexY);
 
       if (selectedPixelOverlayRef.current) {
         selectedPixelOverlayRef.current.visible = true;
@@ -129,7 +127,7 @@ const DogeExplorer = observer(({ onPixelSelect, store }: ThreeSceneProps) => {
     if (x < 640 && x >= 0 && y < 480 && y >= 0) {
       const indexX = Math.floor(x);
       const indexY = Math.floor(-1 * y);
-      onPixelSelect(indexX, -1 * indexY);
+      store.onPixelSelected(indexX, -1 * indexY);
       if (selectedPixelOverlayRef.current) {
         selectedPixelOverlayRef.current.visible = true;
         [selectedPixelOverlayRef.current.position.x, selectedPixelOverlayRef.current.position.y] = [x, -1 * y];

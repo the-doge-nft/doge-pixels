@@ -3,7 +3,7 @@ import { PrismaService } from '../prisma.service';
 import { ethers } from 'ethers';
 import { EthersService } from '../ethers/ethers.service';
 import { Cache } from 'cache-manager';
-import {PixelTransfers, PrismaClient} from '@prisma/client';
+import { PixelTransfers, PrismaClient } from '@prisma/client';
 
 @Injectable()
 export class PixelTransferRepository {
@@ -16,36 +16,45 @@ export class PixelTransferRepository {
   ) {}
 
   private async afterTransfersQuery(transfers: PixelTransfers[]) {
-    const data = []
+    const data = [];
     for (let i = 0; i < transfers.length; i++) {
-      const toEns = await this.ethers.getEnsName(transfers[i].to)
-      const fromEns = await this.ethers.getEnsName(transfers[i].from)
+      const toEns = await this.ethers.getEnsName(transfers[i].to);
+      const fromEns = await this.ethers.getEnsName(transfers[i].from);
       data.push({
         ...transfers[i],
         to: {
           address: transfers[i].to,
-          ens: toEns
+          ens: toEns,
         },
         from: {
           address: transfers[i].from,
-          ens: fromEns
-        }
-      })
+          ens: fromEns,
+        },
+      });
     }
-    return data
+    return data;
   }
 
   async findOwnerByTokenId(tokenId: number) {
-    return (await this.prisma.pixelTransfers.findMany({
-      where: { tokenId },
-      orderBy: {
-        blockNumber: 'desc'
-      },
-      take: 1
-    }))[0]
+    return (
+      await this.prisma.pixelTransfers.findMany({
+        where: { tokenId },
+        orderBy: {
+          blockNumber: 'desc',
+        },
+        take: 1,
+      })
+    )[0];
   }
 
-  create({ tokenId, from, to, blockNumber, uniqueTransferId, blockCreatedAt }: Omit<PixelTransfers, 'updatedAt' | 'insertedAt' | 'id'>) {
+  create({
+    tokenId,
+    from,
+    to,
+    blockNumber,
+    uniqueTransferId,
+    blockCreatedAt,
+  }: Omit<PixelTransfers, 'updatedAt' | 'insertedAt' | 'id'>) {
     return this.prisma.pixelTransfers.create({
       data: {
         tokenId,
@@ -53,7 +62,7 @@ export class PixelTransferRepository {
         to,
         blockNumber,
         uniqueTransferId,
-        blockCreatedAt
+        blockCreatedAt,
       },
     });
   }
@@ -64,64 +73,76 @@ export class PixelTransferRepository {
       filterQuery['from'] = {
         equals: filter.from,
         mode: 'insensitive',
-      }
+      };
     }
 
     if (filter?.to) {
       filterQuery['to'] = {
         equals: filter.to,
         mode: 'insensitive',
-      }
+      };
     }
 
     if (filter?.tokenId) {
       filterQuery['tokenId'] = {
         equals: filter.tokenId,
-      }
+      };
     }
 
-    if (filter?.fromBlockNumber !== null && filter?.fromBlockNumber !== undefined) {
+    if (
+      filter?.fromBlockNumber !== null &&
+      filter?.fromBlockNumber !== undefined
+    ) {
       filterQuery['blockNumber'] = {
         gte: filter.fromBlockNumber,
-      }
+      };
     }
     if (filter?.toBlockNumber) {
       filterQuery['blockNumber'] = {
         lte: filter.toBlockNumber,
-      }
+      };
     }
     return filterQuery;
   }
 
   generateSortQuery(sort) {
     const sortQuery = {};
-    for(const key in sort) {
+    for (const key in sort) {
       sortQuery[key] = sort[key].toLowerCase();
     }
     return sortQuery;
   }
 
   async searchPixelTransfersByAddress(address, filter, sort) {
-    const defaultFilter = {OR: [{from: address}, {to: address}]}
+    const defaultFilter = { OR: [{ from: address }, { to: address }] };
     const data = await this.prisma.pixelTransfers.findMany({
-      where: filter ? {...this.generateFilterQuery(filter), ...defaultFilter} : defaultFilter,
-      orderBy: sort ? this.generateSortQuery(sort) : {blockCreatedAt: 'desc'},
-      take: 100
-    })
-    return this.afterTransfersQuery(data)
+      where: filter
+        ? { ...this.generateFilterQuery(filter), ...defaultFilter }
+        : defaultFilter,
+      orderBy: sort ? this.generateSortQuery(sort) : { blockCreatedAt: 'desc' },
+      take: 100,
+    });
+    return this.afterTransfersQuery(data);
   }
 
   // @next TODO: acccept array of filters & add paging
   async searchPixelTransfers(filter, sort) {
     const data = await this.prisma.pixelTransfers.findMany({
       where: filter ? this.generateFilterQuery(filter) : undefined,
-      orderBy: sort ? this.generateSortQuery(sort) : {blockCreatedAt: 'desc'},
-      take: 100
+      orderBy: sort ? this.generateSortQuery(sort) : { blockCreatedAt: 'desc' },
+      take: 100,
     });
-    return this.afterTransfersQuery(data)
+    return this.afterTransfersQuery(data);
   }
 
-  async upsert({ tokenId, from, to, blockNumber, uniqueTransferId, blockCreatedAt }: Omit<PixelTransfers, 'updatedAt' | 'insertedAt' | 'id'>) {
+  async upsert({
+    tokenId,
+    from,
+    to,
+    blockNumber,
+    uniqueTransferId,
+    blockCreatedAt,
+  }: Omit<PixelTransfers, 'updatedAt' | 'insertedAt' | 'id'>) {
     return this.prisma.pixelTransfers.upsert({
       where: { uniqueTransferId },
       create: {
@@ -130,31 +151,33 @@ export class PixelTransferRepository {
         to,
         blockNumber,
         uniqueTransferId,
-        blockCreatedAt
+        blockCreatedAt,
       },
       update: {
         from,
         to,
         tokenId,
-        blockCreatedAt
-      }
-    })
+        blockCreatedAt,
+      },
+    });
   }
 
   async getMostRecentTransferBlockNumber() {
-    return (await this.prisma.pixelTransfers.findMany({
-      orderBy: {
-        blockNumber: "desc"
-      },
-      take: 1
-    }))[0]?.blockNumber
+    return (
+      await this.prisma.pixelTransfers.findMany({
+        orderBy: {
+          blockNumber: 'desc',
+        },
+        take: 1,
+      })
+    )[0]?.blockNumber;
   }
 
   dropAll() {
-    return this.prisma.pixelTransfers.deleteMany()
+    return this.prisma.pixelTransfers.deleteMany();
   }
 
   findMany(args: any) {
-    return this.prisma.pixelTransfers.findMany(args)
+    return this.prisma.pixelTransfers.findMany(args);
   }
 }

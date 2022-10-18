@@ -1,4 +1,10 @@
-import {forwardRef, Inject, Injectable, Logger, OnModuleInit} from '@nestjs/common';
+import {
+  forwardRef,
+  Inject,
+  Injectable,
+  Logger,
+  OnModuleInit,
+} from '@nestjs/common';
 import { EventEmitter2, OnEvent } from '@nestjs/event-emitter';
 import { Events, PixelTransferEventPayload } from '../events';
 import { ethers } from 'ethers';
@@ -8,8 +14,8 @@ import { ConfigService } from '@nestjs/config';
 import { Configuration } from '../config/configuration';
 import * as KobosuJson from '../constants/kobosu.json';
 import { InjectSentry, SentryService } from '@travelerdev/nestjs-sentry';
-import { PixelTransferService } from "../pixel-transfer/pixel-transfer.service";
-import {HttpService} from "@nestjs/axios";
+import { PixelTransferService } from '../pixel-transfer/pixel-transfer.service';
+import { HttpService } from '@nestjs/axios';
 
 @Injectable()
 export class PixelsService implements OnModuleInit {
@@ -43,73 +49,78 @@ export class PixelsService implements OnModuleInit {
   }
 
   private get isConnectedToContracts() {
-    return this.pxContract!! && this.dogContract!!
+    return this.pxContract!! && this.dogContract!!;
   }
 
-  private async onProviderConnected(provider: ethers.providers.WebSocketProvider) {
+  private async onProviderConnected(
+    provider: ethers.providers.WebSocketProvider,
+  ) {
     const logMessage = 'Provider connected';
     this.logger.log(logMessage);
     this.sentryClient.instance().captureMessage(logMessage);
 
     await this.connectToContracts(provider);
     this.initPixelListener();
-    await this.pixelTransferService.syncRecentTransfers()
+    await this.pixelTransferService.syncRecentTransfers();
   }
 
   private async connectToContracts(
-      provider: ethers.providers.WebSocketProvider,
+    provider: ethers.providers.WebSocketProvider,
   ) {
     const { chainId } = await provider.getNetwork();
     const pxContractInfo =
-        ABI[chainId][this.ethersService.network].contracts['PX'];
+      ABI[chainId][this.ethersService.network].contracts['PX'];
 
     const dogContractInfo =
-        ABI[chainId][this.ethersService.network].contracts['DOG20'];
+      ABI[chainId][this.ethersService.network].contracts['DOG20'];
 
     this.pxContract = new ethers.Contract(
-        pxContractInfo.address,
-        pxContractInfo.abi,
-        provider,
+      pxContractInfo.address,
+      pxContractInfo.abi,
+      provider,
     );
 
     this.dogContract = new ethers.Contract(
-        dogContractInfo.address,
-        dogContractInfo.abi,
-        provider,
+      dogContractInfo.address,
+      dogContractInfo.abi,
+      provider,
     );
   }
 
   private initPixelListener() {
     this.logger.log(`Listening to transfer events`);
     this.pxContract.on('Transfer', async (from, to, tokenId, event) => {
-      this.logger.log(`new transfer event hit: (${tokenId.toNumber()}) ${from} -> ${to}`);
-      const blockNumber = event.blockNumber
-      const blockCreatedAt = await this.ethersService.getDateTimeFromBlockNumber(blockNumber)
+      this.logger.log(
+        `new transfer event hit: (${tokenId.toNumber()}) ${from} -> ${to}`,
+      );
+      const blockNumber = event.blockNumber;
+      const blockCreatedAt =
+        await this.ethersService.getDateTimeFromBlockNumber(blockNumber);
       const payload: PixelTransferEventPayload = {
         from,
         to,
         tokenId: tokenId.toNumber(),
         blockNumber,
         blockCreatedAt,
-        event: event
+        event: event,
       };
       this.eventEmitter.emit(Events.PIXEL_TRANSFER, payload);
     });
   }
 
   async getAllPixelTransferLogs() {
-    const from = this.configService.get(
-      'pixelContractDeploymentBlockNumber',
-    );
-    return this.getPixelTransferLogs(from)
+    const from = this.configService.get('pixelContractDeploymentBlockNumber');
+    return this.getPixelTransferLogs(from);
   }
 
   async getPixelTransferLogs(fromBlock: number, _toBlock?: number) {
-    this.logger.log(`Getting transfers from block: ${fromBlock}`)
+    this.logger.log(`Getting transfers from block: ${fromBlock}`);
     // get logs from the chain chunked by 5k blocks
     // infura will only return 10k logs per request
-    const toBlock = _toBlock ? _toBlock : await this.ethersService.provider.getBlockNumber()
-    this.logger.log(`To block: ${toBlock}`)
+    const toBlock = _toBlock
+      ? _toBlock
+      : await this.ethersService.provider.getBlockNumber();
+    this.logger.log(`To block: ${toBlock}`);
     const logs = [];
     const step = 5000;
     const filter = this.pxContract.filters.Transfer(null, null);
@@ -117,7 +128,7 @@ export class PixelsService implements OnModuleInit {
       const _logs = await this.pxContract.queryFilter(filter, i, i + step);
       logs.push(..._logs);
     }
-    this.logger.log(`Got logs of length: ${logs.length}`)
+    this.logger.log(`Got logs of length: ${logs.length}`);
     return logs;
   }
 
@@ -169,7 +180,7 @@ export class PixelsService implements OnModuleInit {
 
   async getTokenMetadata(tokenId: string) {
     // todo instead of querying the contract -- query the DB first to ensure the token has been minted actually
-    const uri = await this.getPixelURI(tokenId)
-    return this.http.get(uri).toPromise()
+    const uri = await this.getPixelURI(tokenId);
+    return this.http.get(uri).toPromise();
   }
 }

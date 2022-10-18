@@ -25,13 +25,12 @@ export class ImageGeneratorService implements OnModuleInit {
   public mintedImage: any;
   public burnedImage: any;
   public backgroundImage: any;
-  public font: any
+  public font: any;
 
-  private pathToBgImage: string
-  private pathToMintImage: string
-  private pathToBurnImage: string
-  private pathToFont: string
-
+  private pathToBgImage: string;
+  private pathToMintImage: string;
+  private pathToBurnImage: string;
+  private pathToFont: string;
 
   constructor(
     private pixels: PixelsService,
@@ -41,15 +40,23 @@ export class ImageGeneratorService implements OnModuleInit {
   ) {
     this.pathToMintImage = path.join(__dirname, '..', 'assets/images/mint.png');
     this.pathToBurnImage = path.join(__dirname, '..', 'assets/images/burn.png');
-    this.pathToBgImage = path.join(__dirname, '..', 'assets/images/background.png')
-    this.pathToFont = path.join(__dirname, '..', 'assets/fonts/PressStart2P-Regular.ttf.fnt')
+    this.pathToBgImage = path.join(
+      __dirname,
+      '..',
+      'assets/images/background.png',
+    );
+    this.pathToFont = path.join(
+      __dirname,
+      '..',
+      'assets/fonts/PressStart2P-Regular.ttf.fnt',
+    );
   }
 
   async onModuleInit() {
     this.mintedImage = await Jimp.read(this.pathToMintImage);
     this.burnedImage = await Jimp.read(this.pathToBurnImage);
-    this.backgroundImage = await Jimp.read(this.pathToBgImage)
-    this.font = await Jimp.loadFont(this.pathToFont)
+    this.backgroundImage = await Jimp.read(this.pathToBgImage);
+    this.font = await Jimp.loadFont(this.pathToFont);
   }
 
   /**
@@ -203,7 +210,7 @@ export class ImageGeneratorService implements OnModuleInit {
     const color = this.pixels.pixelToHexLocal(tokenId);
 
     // merge pointer image with background image
-    let _image = await Jimp.read(this.pathToBgImage)
+    let _image = await Jimp.read(this.pathToBgImage);
     let image = _image.composite(pointerImg, 0, 0);
 
     // merge pixel image with background image

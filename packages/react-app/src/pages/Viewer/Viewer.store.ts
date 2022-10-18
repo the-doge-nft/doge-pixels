@@ -1,12 +1,10 @@
 import { action, computed, makeObservable, observable } from "mobx";
-import { Constructor, EmptyClass } from "../../helpers/mixins";
-import { Navigable } from "../../services/mixins/navigable";
+import { EmptyClass } from "../../helpers/mixins";
 import AppStore from "../../store/App.store";
 import { Eventable, SELECT_PIXEL } from "../../services/mixins/eventable";
 import { Reactionable } from "../../services/mixins/reactionable";
 import LocalStorage from "../../services/local-storage";
 import { abbreviate } from "../../helpers/strings";
-import ModalsStore from "../../store/Modals.store";
 import { NamedRoutes, route, SELECTED_PIXEL_PARAM } from "../../App.routes";
 import { Http } from "../../services";
 
@@ -45,16 +43,17 @@ class ViewerStore extends Eventable(Reactionable(EmptyClass)) {
   @observable
   metaData: Metadata | null = null;
 
-  constructor(private defaultSelectedPupper: number | null) {
+  constructor(private defaultSelectedPupper?: number) {
     super();
     makeObservable(this);
 
-    if (defaultSelectedPupper) {
-      // @TODO - run some validation on default selected pixel
-      // - make sure it is within bounds of image
-      // - make sure it is a number
-
+    if (defaultSelectedPupper && AppStore.web3.isPixelIDValid(Number(defaultSelectedPupper))) {
       this.selectedPupper = Number(defaultSelectedPupper);
+      AppStore.modals.isSelectedPixelModalOpen = true;
+    }
+
+    if (!defaultSelectedPupper && AppStore.modals.isSelectedPixelModalOpen) {
+      AppStore.modals.isSelectedPixelModalOpen = false;
     }
   }
 
@@ -188,6 +187,14 @@ class ViewerStore extends Eventable(Reactionable(EmptyClass)) {
 
   destroy() {
     this.disposeReactions();
+  }
+
+  onPixelSelected(x: number, y: number) {
+    this.selectedPupper = AppStore.web3.coordinateToPupperLocal(x, y)
+    if (!AppStore.modals.isSelectedPixelModalOpen) {
+      AppStore.modals.isSelectedPixelModalOpen = true
+    }
+    window.history.pushState({}, "", route(NamedRoutes.PIXELS, { [SELECTED_PIXEL_PARAM]: this.selectedPupper }))
   }
 }
 

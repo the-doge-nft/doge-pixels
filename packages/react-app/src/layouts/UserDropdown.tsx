@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Box, Flex, Menu, MenuButton, MenuItem, MenuList, useColorMode, useMultiStyleConfig } from "@chakra-ui/react";
 import Typography, { TVariant } from "../DSL/Typography/Typography";
 import AppStore from "../store/App.store";
@@ -9,15 +9,19 @@ import Dev from "../common/Dev";
 import { showDebugToast, showErrorToast } from "../DSL/Toast/Toast";
 import { lightOrDarkMode } from "../DSL/Theme";
 import Link from "../DSL/Link/Link";
-import { generatePath } from "react-router-dom";
+import { generatePath, useHistory, useLocation } from "react-router-dom";
 import { SelectedOwnerTab } from "../pages/Leaderbork/Leaderbork.store";
+import { NamedRoutes, route } from "../App.routes";
 
 const UserDropdown = observer(() => {
   const styles = useMultiStyleConfig("Menu", {});
+  const history = useHistory();
+  const location = useLocation();
   const { colorMode } = useColorMode();
+  const [isOpen, setIsOpen] = useState(false);
   return (
       <Box zIndex={10000}>
-        <Menu>
+        <Menu isOpen={isOpen} onOpen={() => setIsOpen(true)} onClose={() => setIsOpen(false)}>
           <Box position={"relative"} zIndex={1}>
             <MenuButton overflow={"hidden"}>
               <Flex alignItems={"center"} overflow={"hidden"} mx={1}>
@@ -46,15 +50,20 @@ const UserDropdown = observer(() => {
               </Link>
             </Box>
             <Box mt={1} px={3}>
-              <Link
-                  isNav
-                  to={generatePath(`/`)}
+              <Typography
+                  cursor={"pointer"}
+                  _hover={{textDecoration: "underline"}}
+                  variant={TVariant.PresStart16}
                   onClick={() => {
+                    if (location.pathname !== "/" && !location.pathname.includes("/px")) {
+                      history.push("/");
+                    }
                     AppStore.modals.isMyPixelsModalOpen = true
+                    setIsOpen(false)
                   }}
               >
                 My Pixels
-              </Link>
+              </Typography>
             </Box>
             <MenuItem mt={4} onClick={() => AppStore.web3.disconnect()}>
               <Typography variant={TVariant.PresStart12}>Disconnect {">"}</Typography>

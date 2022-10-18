@@ -25,17 +25,20 @@ const PixelPane = observer(({ pupper, onClick, variant = "solid", size = "md", i
   const styles = useMultiStyleConfig("PixelPane", { size: size, variant: variant });
   const coordinates = AppStore.web3.pupperToPixelCoordsLocal(pupper);
   const color = AppStore.web3.pupperToHexLocal(pupper);
+
+  if (size === "xxs") {
+    return <Box 
+      __css={styles.swatch} 
+      _hover={onClick ? {cursor: "pointer"}: {}} 
+      onClick={() => onClick && onClick(pupper)} 
+      bg={color} 
+      />
+  }
+
   return (
     <Box
-
       __css={styles.container}
-      _hover={
-        onClick
-          ? {
-              cursor: "pointer",
-            }
-          : {}
-      }
+      _hover={onClick ? {cursor: "pointer"}: {}}
       onClick={() => onClick && onClick(pupper)}
       zIndex={1}
     >
@@ -45,10 +48,10 @@ const PixelPane = observer(({ pupper, onClick, variant = "solid", size = "md", i
         </Box>
       )}
       <Box __css={styles.swatch} bg={color} />
-      {size !== "xxs" && <Box __css={styles.textContainer}>
+      <Box __css={styles.textContainer}>
         <Typography variant={sizeToTypeMap[size]}>{`(${coordinates[0]},${coordinates[1]})`}</Typography>
-      </Box>}
-      {size !== "xxs" && <Box __css={styles.drop} />}
+      </Box>
+      <Box __css={styles.drop} />
     </Box>
   );
 });

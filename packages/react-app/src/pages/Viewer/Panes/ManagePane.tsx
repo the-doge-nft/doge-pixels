@@ -13,33 +13,24 @@ const ManagePane = observer(function ManagePane({store}: { store: ViewerStore })
     return (
         <>
             <Box>
-                <Box mb={3}>
+                <Box mb={1}>
                     <Typography variant={TVariant.PresStart12}>
                         Your Pixels
                     </Typography>
-                    <Typography ml={2} color={lightOrDarkMode(colorMode, "yellow.100", "gray.300")}
-                                variant={TVariant.PresStart14}>
+                    <Typography ml={1} color={lightOrDarkMode(colorMode, "yellow.100", "gray.300")}
+                                variant={TVariant.PresStart12}>
                         ({AppStore.web3.puppersOwned.length})
                     </Typography>
                 </Box>
-                {/*<PixelPreview*/}
-                {/*    onPupperClick={(pixelId) => store.selectedPupper = pixelId}*/}
-                {/*    size={PixelPreviewSize.sm}*/}
-                {/*    previewPixels={AppStore.web3.puppersOwned}*/}
-                {/*    selectedTokenId={store.selectedPupper}*/}
-                {/*    id={'your-pixels-manage'}*/}
-                {/*/>*/}
-                <Box maxHeight={"300px"} maxW={"300px"}>
+                <Flex maxHeight={"300px"} maxW={"300px"}>
                     {AppStore.web3.puppersOwned.map(px => {
                         const [x, y] = AppStore.web3.pupperToPixelCoordsLocal(px)
                         return (
                             <Box
-                                flexGrow={0}
                                 p={1}
-                                display={"inline-block"}
                                 key={`manage-${px}`}
                                 _hover={{
-                                    bg: colorMode === "light" ? lightModePrimary : darkModeSecondary,
+                                    bg: lightOrDarkMode(colorMode, lightModePrimary, darkModeSecondary),
                                 }}
                             >
                                 <Tooltip label={`(${x}, ${y})`}>
@@ -53,7 +44,7 @@ const ManagePane = observer(function ManagePane({store}: { store: ViewerStore })
                             </Box>
                         );
                     })}
-                </Box>
+                </Flex>
             </Box>
         </>
     );

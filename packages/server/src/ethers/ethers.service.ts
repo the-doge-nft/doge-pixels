@@ -146,7 +146,7 @@ export class EthersService implements OnModuleInit {
   }
 
   private queryEnsName(address: string) {
-    this.logger.log(`querying fresh ens: ${address}`)
+    this.logger.log(`querying fresh ens: ${address}`);
     return this.provider.lookupAddress(address);
   }
 
@@ -160,7 +160,7 @@ export class EthersService implements OnModuleInit {
   }
 
   async getDateTimeFromBlockNumber(blockNumber: number) {
-    const block = await this.provider.getBlock(blockNumber)
-    return new Date(block.timestamp * 1000)
+    const block = await this.provider.getBlock(blockNumber);
+    return new Date(block.timestamp * 1000);
   }
 }

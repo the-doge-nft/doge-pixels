@@ -9,7 +9,7 @@ import { InjectSentry, SentryService } from '@travelerdev/nestjs-sentry';
 
 import * as Twitter from 'twitter';
 import { AwsService } from '../aws/aws.service';
-import * as crypto from 'crypto'
+import * as crypto from 'crypto';
 
 @Injectable()
 export class TwitterService implements OnModuleInit {
@@ -34,7 +34,14 @@ export class TwitterService implements OnModuleInit {
   }
 
   @OnEvent(Events.PIXEL_TRANSFER)
-  async tweetPixelEventImage({ from, to, tokenId }: Omit<PixelTransferEventPayload, 'event' | 'blockCreatedAt' | 'blockNumber'>) {
+  async tweetPixelEventImage({
+    from,
+    to,
+    tokenId,
+  }: Omit<
+    PixelTransferEventPayload,
+    'event' | 'blockCreatedAt' | 'blockNumber'
+  >) {
     this.logger.log(`Posting to twitter:: (${tokenId}) ${from} -> ${to}`);
     const textContent = await this.imageGenerator.getTextContent(
       from,
@@ -89,12 +96,12 @@ export class TwitterService implements OnModuleInit {
   }
 
   public async uploadImageToS3(data: string) {
-    const uuid = crypto.randomUUID()
+    const uuid = crypto.randomUUID();
     const filename = `${uuid}.png`;
     const _data = new Buffer(data, 'base64');
     const res = await this.aws.uploadToS3(filename, _data, 'image/png');
     console.log('debug:: res', res);
-    return {uuid};
+    return { uuid };
   }
 
   public DEBUG_TEST() {

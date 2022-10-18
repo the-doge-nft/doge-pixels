@@ -19,9 +19,9 @@ import { TwitterService } from './twitter/twitter.service';
 import { ConfigService } from '@nestjs/config';
 import { DiscordService } from './discord/discord.service';
 import { Cache } from 'cache-manager';
-import {PixelTransferService} from "./pixel-transfer/pixel-transfer.service";
-import {PostTransfersDto} from "./dto/PostTransfers.dto";
-import {CoinGeckoService} from "./coin-gecko/coin-gecko.service";
+import { PixelTransferService } from './pixel-transfer/pixel-transfer.service';
+import { PostTransfersDto } from './dto/PostTransfers.dto';
+import { CoinGeckoService } from './coin-gecko/coin-gecko.service';
 
 @Controller('/v1')
 export class AppController {
@@ -82,14 +82,18 @@ export class AppController {
 
   @Post('transfers/:address')
   async postTransfersByAddress(
-      @Param() {address}: {address: string},
-      @Body() {filter, sort}: PostTransfersDto
+    @Param() { address }: { address: string },
+    @Body() { filter, sort }: PostTransfersDto,
   ) {
-    return this.pixelTransferRepo.searchPixelTransfersByAddress(address, filter, sort)
+    return this.pixelTransferRepo.searchPixelTransfersByAddress(
+      address,
+      filter,
+      sort,
+    );
   }
 
   @Post('transfers')
-  async postTransfers(@Body() {filter, sort}: PostTransfersDto) {
+  async postTransfers(@Body() { filter, sort }: PostTransfersDto) {
     return this.pixelTransferRepo.searchPixelTransfers(filter, sort);
   }
 
@@ -100,20 +104,18 @@ export class AppController {
 
   @Get('px/balance/:address')
   async getPixelAddressBalance(@Param() params: { address: string }) {
-    const balance = await this.pixels.getPixelBalanceByAddress(
-      params.address,
-    );
+    const balance = await this.pixels.getPixelBalanceByAddress(params.address);
     return { balance: balance.toNumber() };
   }
 
   @Get('px/owner/:tokenId')
   async getOwnerByTokenId(@Param() params: { tokenId: number }) {
-    console.log('debug:: tokenid', Number(params.tokenId))
+    console.log('debug:: tokenid', Number(params.tokenId));
     const transfer = await this.pixelTransferRepo.findOwnerByTokenId(
       Number(params.tokenId),
     );
 
-    this.logger.log(transfer)
+    this.logger.log(transfer);
 
     if (!transfer) {
       throw new BadRequestException('Could not find token');
@@ -158,7 +160,7 @@ export class AppController {
         this.logger.log(tokenNotMintedMessage);
         throw new Error(tokenNotMintedMessage);
       } else {
-        const { data } = await this.pixelService.getTokenMetadata(tokenId)
+        const { data } = await this.pixelService.getTokenMetadata(tokenId);
         this.logger.log(
           `got metadata, setting to cache: ${JSON.stringify(data)}`,
         );
@@ -185,7 +187,7 @@ export class AppController {
 
   @Get('px/price')
   async getPixelUSDPrice() {
-    const usdPrice = await this.gecko.getDOGUSDPrice()
+    const usdPrice = await this.gecko.getDOGUSDPrice();
     const dogPerPixel = 55239.89899;
     const price = Number(usdPrice) * dogPerPixel;
     return {
@@ -196,37 +198,40 @@ export class AppController {
   @Get('twitter/share/:type/:id')
   @Render('twitter-share')
   async getTwitterShare(@Param() params) {
-    const { id, type } = params
+    const { id, type } = params;
 
-    if (!["mint", "burn", "art"].includes(type)) {
-      throw new BadRequestException("Unknown type of twitter share")
+    if (!['mint', 'burn', 'art'].includes(type)) {
+      throw new BadRequestException('Unknown type of twitter share');
     }
 
     const typeToTwitterDataMap = {
-      "mint": {
+      mint: {
         title: 'Doge Pixel Mint',
-        description: 'Doge Pixels minted'
+        description: 'Doge Pixels minted',
       },
-      "burn": {
+      burn: {
         title: 'Doge Pixel Burn',
-        description: 'Doge Pixels burned'
+        description: 'Doge Pixels burned',
       },
-      "art": {
+      art: {
         title: 'Doge Pixel Art',
-        description: 'Pixel Art created from Doge Pixels'
-      }
-    }
+        description: 'Pixel Art created from Doge Pixels',
+      },
+    };
 
-    const imageUrl = `https://s3.amazonaws.com/share.ownthedoge.com/${id}.png`
+    const imageUrl = `https://s3.amazonaws.com/share.ownthedoge.com/${id}.png`;
     return {
-      title: typeToTwitterDataMap[type].title, description: typeToTwitterDataMap[type].description, imageUrl, url: imageUrl
-    }
+      title: typeToTwitterDataMap[type].title,
+      description: typeToTwitterDataMap[type].description,
+      imageUrl,
+      url: imageUrl,
+    };
   }
 
   @Post('twitter/upload/image')
   async postToTwitter(@Body() body: { data: string }) {
-    const { uuid } = await this.twitter.uploadImageToS3(body.data)
-    return {id: uuid}
+    const { uuid } = await this.twitter.uploadImageToS3(body.data);
+    return { id: uuid };
   }
 
   @Get('twitter/test')

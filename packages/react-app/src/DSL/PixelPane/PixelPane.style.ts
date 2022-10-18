@@ -7,6 +7,7 @@ const PixelPaneStyle = {
       display: "inline-flex",
       flexDirection: "column",
       maxWidth: "fit-content",
+      maxHeight: "fit-content",
       position: "relative",
     },
     swatch: {
