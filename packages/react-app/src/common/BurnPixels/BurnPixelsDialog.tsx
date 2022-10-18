@@ -47,7 +47,7 @@ const SelectPixels = observer(({ store }: { store: BurnPixelsModalStore }) => {
   const { colorMode } = useColorMode();
   return (
     <Flex flexDirection={"column"}>
-      <Flex justifyContent={"center"} my={6}>
+      <Flex justifyContent={"center"} my={{base: 0, md: 6}} mb={{base: 3, md: 6}}>
         <PixelPreview
           size={PixelPreviewSize.sm}
           previewPixels={store.selectedPixels}
@@ -58,11 +58,11 @@ const SelectPixels = observer(({ store }: { store: BurnPixelsModalStore }) => {
       {store.isUserPixelOwner && (
         <>
           <Flex justifyContent={"center"}>
-            <Flex maxW={"400px"} flexWrap={"wrap"} >
+            <Flex maxH={{base: "150px", md: "300px"}} maxW={"400px"} flexWrap={"wrap"} overflowY={"auto"}>
               <SmallUserPixels selectedPixelIds={store.selectedPixels} onClick={(px) => store.handlePixelSelect(px)}/>
             </Flex>
           </Flex>
-          <Flex justifyContent={"space-between"} alignItems={"flex-start"} mt={12}>
+          <Flex justifyContent={"space-between"} alignItems={"flex-start"} mt={6}>
             <Flex flexDirection={"column"}>
               <Typography variant={TVariant.PresStart15}>DOG</Typography>
               <Typography variant={TVariant.ComicSans18}>
@@ -80,7 +80,7 @@ const SelectPixels = observer(({ store }: { store: BurnPixelsModalStore }) => {
               </Button>
             )}
           </Flex>
-          <Flex justifyContent={"center"} mt={14} w={"full"}>
+          <Flex justifyContent={"center"} mt={5} w={"full"}>
             <Box>
               <Form onSubmit={async () => store.pushNavigation(BurnPixelsModalView.LoadingBurning)}>
                 <Flex justifyContent={"center"} w={"100%"}>

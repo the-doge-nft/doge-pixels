@@ -26,7 +26,7 @@ const AppLayout = observer(function AppLayout({ children }: AppLayoutProps) {
       </Flex>
     </Flex>
     <Flex justifyContent={"center"}>
-      <Box w={"full"} maxW={"8xl"} pl={4} pr={7} mb={6}>
+      <Box display={{base: "none", md: "block"}} w={"full"} maxW={"8xl"} pl={4} pr={7} mb={6}>
         <Footer/>
       </Box>
     </Flex>

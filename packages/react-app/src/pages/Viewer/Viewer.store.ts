@@ -22,7 +22,6 @@ export interface Metadata {
   name: string;
 }
 
-export const VIEWED_PIXELS_LS_KEY = "viewed_pixels_by_id";
 
 class ViewerStore extends Eventable(Reactionable(EmptyClass)) {
   @observable
@@ -148,7 +147,7 @@ class ViewerStore extends Eventable(Reactionable(EmptyClass)) {
       AppStore.modals.isSelectedPixelModalOpen = true;
     }
     this.selectedPupper = pupper;
-    this.setPupperSeen(pupper);
+    AppStore.web3.setPupperSeen(pupper);
     const [x, y] = await AppStore.web3.pupperToPixelCoords(pupper);
     const [x1, y1] = AppStore.web3.pupperToPixelCoordsLocal(pupper);
     if (x.toNumber() !== x1 || y.toNumber() !== y1) {
@@ -167,23 +166,6 @@ class ViewerStore extends Eventable(Reactionable(EmptyClass)) {
     } else {
       return "-";
     }
-  }
-
-  setPupperSeen(pupper: number) {
-    const data = LocalStorage.getItem(VIEWED_PIXELS_LS_KEY, LocalStorage.PARSE_JSON, []);
-    if (!data.includes(pupper)) {
-      data.push(pupper);
-    }
-    LocalStorage.setItem(VIEWED_PIXELS_LS_KEY, data);
-  }
-
-  getIsPupperNew(pupper: number) {
-    const data = LocalStorage.getItem(VIEWED_PIXELS_LS_KEY, LocalStorage.PARSE_JSON, []);
-    let isNew = true;
-    if (data.includes(pupper)) {
-      isNew = false;
-    }
-    return isNew;
   }
 
   destroy() {

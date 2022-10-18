@@ -120,7 +120,7 @@ const ViewerPage = observer(function ViewerPage() {
           }}
         />
       )}
-      {AppStore.modals.isScrollModalOpen && (
+      {AppStore.modals.isScrollModalOpen && !AppStore.rwd.isMobile && (
         <ScrollHelperModal
           isOpen={AppStore.modals.isScrollModalOpen}
           onClose={() => (AppStore.modals.isScrollModalOpen = false)}

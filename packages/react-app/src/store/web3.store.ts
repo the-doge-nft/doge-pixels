@@ -18,6 +18,9 @@ import AppStore from "./App.store";
 import { PixelOwnerInfo } from "../pages/Leaderbork/Leaderbork.store";
 import { Reactionable } from "../services/mixins/reactionable";
 import env from "../environment";
+import LocalStorage from "../services/local-storage";
+
+const VIEWED_PIXELS_LS_KEY = "viewed_pixels_by_id";
 
 interface AddressToPuppers {
   [k: string]: {
@@ -228,7 +231,7 @@ class Web3Store extends Reactionable(Web3providerStore) {
   }
 
   async getDogToAccount() {
-    const freePixelsInDOG = 10;
+    const freePixelsInDOG = 50;
     //@ts-ignore
     return this.dogContract!.initMock([this.address!], this.DOG_TO_PIXEL_SATOSHIS.mul(freePixelsInDOG));
   }
@@ -310,6 +313,23 @@ class Web3Store extends Reactionable(Web3providerStore) {
           return 0;
         }
       });
+  }
+
+  getIsPupperNew(pupper: number) {
+    const data = LocalStorage.getItem(VIEWED_PIXELS_LS_KEY, LocalStorage.PARSE_JSON, []);
+    let isNew = true;
+    if (data.includes(pupper)) {
+      isNew = false;
+    }
+    return isNew;
+  }
+
+  setPupperSeen(pupper: number) {
+    const data = LocalStorage.getItem(VIEWED_PIXELS_LS_KEY, LocalStorage.PARSE_JSON, []);
+    if (!data.includes(pupper)) {
+      data.push(pupper);
+    }
+    LocalStorage.setItem(VIEWED_PIXELS_LS_KEY, data);
   }
 }
 

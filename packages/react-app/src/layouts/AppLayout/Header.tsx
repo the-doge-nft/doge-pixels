@@ -6,16 +6,17 @@ import { observer } from "mobx-react-lite";
 import { Box, Flex, HStack, useColorMode } from "@chakra-ui/react";
 import { NamedRoutes, route } from "../../App.routes";
 import BigText from "../../DSL/BigText/BigText";
-import { useHistory } from "react-router-dom";
+import { useHistory, useLocation } from "react-router-dom";
 import NavLinks from "./NavLinks";
 import DPPLogo from "../../images/logo.png"
 import { lightOrDarkMode } from "../../DSL/Theme";
 
 const Header = observer(() => {
   const history = useHistory();
+  const location = useLocation();
   const { colorMode } = useColorMode();
   return (
-    <Box mb={6} display={"flex"}>
+    <Box mb={6} display={{base: "none", md: "flex"}}>
       <Flex alignItems={"center"} w={"full"} gap={6}>
         <Box
           _hover={{
@@ -34,14 +35,26 @@ const Header = observer(() => {
         >
           <img src={DPPLogo} width={50}/>
         </Box>
-        <NavLinks />
+        <Flex gap={4} display={{base: "none", xl: "flex"}}>
+          <NavLinks />
+        </Flex>
       </Flex>
       <Flex>
         <Box display={{ base: "none", md: "flex" }} alignItems={"center"} justifyContent={"flex-end"} w={"full"}>
           <Flex mr={8} alignItems={"center"}>
             {AppStore.web3.isConnected && <Flex alignItems={"center"}>
-              <Button size="sm" mr={8} onClick={() => AppStore.modals.isMintModalOpen = true}>Mint</Button>
-              {AppStore.web3.puppersOwned.length > 0 && <Button size="sm" mr={8} onClick={() => AppStore.modals.isBurnModalOpen = true}>Burn</Button>}
+              <Button size="sm" mr={8} onClick={() => {
+                if (location.pathname !== "/" && !location.pathname.includes("/px")) {
+                  history.push("/");
+                }
+                AppStore.modals.isMintModalOpen = true
+              }}>Mint</Button>
+              {AppStore.web3.puppersOwned.length > 0 && <Button size="sm" mr={8} onClick={() => {
+                if (location.pathname !== "/" && !location.pathname.includes("/px")) {
+                  history.push("/");
+                }
+                AppStore.modals.isBurnModalOpen = true
+              }}>Burn</Button>}
             </Flex>}
             <Box>
               <ColorModeToggle />

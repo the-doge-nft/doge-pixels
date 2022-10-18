@@ -32,12 +32,9 @@ export class AppController {
     private readonly pixelTransferRepo: PixelTransferRepository,
     private readonly pixelTransferService: PixelTransferService,
     private readonly ethers: EthersService,
-    private readonly http: HttpService,
     private readonly pixelService: PixelsService,
-    private readonly ethersService: EthersService,
     private readonly twitter: TwitterService,
     private readonly discord: DiscordService,
-    private readonly config: ConfigService,
     private readonly gecko: CoinGeckoService,
     @Inject(CACHE_MANAGER) private cacheManager: Cache,
   ) {}

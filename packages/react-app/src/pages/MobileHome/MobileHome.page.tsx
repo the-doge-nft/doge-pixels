@@ -12,8 +12,9 @@ import MobileHomeStore from "./MobileHome.store";
 import MintPixelsDrawer from "./MintPixelsDrawer/MintPixelsDrawer";
 import BurnPixelsDrawer from "./BurnPixelsDrawer/BurnPixelsDrawer";
 import { NamedRoutes, route, SELECTED_PIXEL_PARAM } from "../../App.routes";
-import PixelPreview from "../../DSL/PixelPreview/PixelPreview";
+import PixelPreview, { PixelPreviewSize } from "../../DSL/PixelPreview/PixelPreview";
 import { darkModeSecondary, lightModePrimary } from "../../DSL/Theme";
+import SmallUserPixels from "../../common/SmallUserPixels";
 
 const MobileHomePage = observer(() => {
   const history = useHistory();
@@ -64,56 +65,23 @@ const MobileHomePage = observer(() => {
             </Flex>
           </Flex>
 
-          <Flex justifyContent={"center"} alignItems={"center"} mt={14}>
-            {store.selectedOwner && (
-              <PixelPreview
-                id={"home-pixels"}
-                selectedTokenId={store.selectedPixel}
-                previewPixels={store.selectedOwner?.pixels}
-                onPupperClick={pupper => {
-                  store.selectedPixel = pupper;
-                }}
-              />
-            )}
-          </Flex>
+          <Flex justifyContent={"center"} flexDir={"column"} flexGrow={1}>
+            <Flex justifyContent={"center"} alignItems={"center"} mt={14}>
+              {store.selectedOwner && (
+                <PixelPreview
+                  size={PixelPreviewSize.sm}
+                  id={"home-pixels"}
+                  selectedTokenId={store.selectedPixel}
+                  previewPixels={store.selectedOwner?.pixels}
+                  onPupperClick={pupper => {
+                    store.selectedPixel = pupper;
+                  }}
+                />
+              )}
+            </Flex>
 
-          <Flex my={10} flexGrow={1} overflowY={"auto"}>
-            <Flex
-              w={"full"}
-              h={"full"}
-              maxHeight={"300px"}
-              justifyContent={"center"}
-              alignItems={"center"}
-              flexWrap={"wrap"}
-            >
-              {AppStore.web3.puppersOwned.map(px => {
-                const hex = AppStore.web3.pupperToHexLocal(px);
-                const index = AppStore.web3.pupperToIndexLocal(px);
-                return (
-                  <Box
-                    key={`user-dog-${px}`}
-                    bg={
-                      store.selectedPixel === px
-                        ? colorMode === "light"
-                          ? lightModePrimary
-                          : darkModeSecondary
-                        : "inherit"
-                    }
-                    p={2}
-                    mt={0}
-                    _hover={{ bg: colorMode === "light" ? lightModePrimary : darkModeSecondary }}
-                  >
-                    <PixelPane
-                      size={"sm"}
-                      key={`top_dog_${px}`}
-                      pupper={px}
-                      onClick={px => {
-                        store.selectedPixel = px;
-                      }}
-                    />
-                  </Box>
-                );
-              })}
+            <Flex my={10} overflowY={"auto"} flexWrap={"wrap"} maxHeight={"150px"}>
+              <SmallUserPixels onClick={(px) => store.selectedPixel = px} />
             </Flex>
           </Flex>
 
