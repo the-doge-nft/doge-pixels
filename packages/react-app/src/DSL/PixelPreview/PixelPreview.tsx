@@ -4,6 +4,7 @@ import { Box, useColorMode } from "@chakra-ui/react";
 import AppStore from "../../store/App.store";
 import { observer } from "mobx-react-lite";
 import { lightOrDarkMode } from "../Theme";
+import jsonify from "../../helpers/jsonify";
 
 interface ParkPixelsProps {
   selectedTokenId: number | null;
@@ -61,6 +62,9 @@ const PixelPreview = observer(
     const [pupperPositions, setPupperPositions] = useState<IPupperRectPosition[]>([]);
     const properties = useMemo(() => imageProperties[size], [size]);
 
+    const [hasMounted, setHasMounted] = useState(false)
+    useEffect(() => setHasMounted(true), [])
+
     const PIXEL_OFFSET_X = properties.width / 9;
     const TOP_PIXEL_OFFSET_Y = properties.height / 16.875;
     const BOTTOM_PIXEL_OFFSET_Y = properties.height / 1.6875;
@@ -89,15 +93,15 @@ const PixelPreview = observer(
       }
 
       setPupperPositions(positions);
-    }, [previewPixels, properties]);
+    }, [jsonify(previewPixels), properties]);
 
     useEffect(() => {
       // @next there are some rendering issues where pupperPositions is 0
-      if (pupperPositions.length !== 0) {
+      if (pupperPositions.length !== 0 || hasMounted) {
         updateResolution();
         drawBackground();
       }
-    }, [pupperPositions, selectedTokenId, size]);
+    }, [jsonify(pupperPositions), selectedTokenId, size]);
 
     const drawSelectedPixel = (ctx: CanvasRenderingContext2D) => {
       if (!selectedTokenId) return;

@@ -20,7 +20,7 @@ const BurnPixelsModal = observer(
     const store = useMemo(() => new BurnPixelsModalStore(defaultPixel), [defaultPixel]);
 
     return (
-      <Modal size={"lg"} isOpen={isOpen} onClose={onClose} title={store.modalTitle} description={store.description}>
+      <Modal isOpen={isOpen} onClose={onClose} title={store.modalTitle} description={store.description}>
         <Box>
           <BurnPixelsDialog store={store} onSuccess={onSuccess} onCompleteClose={onCompleteClose} />
         </Box>

@@ -16,6 +16,7 @@ import Link from "../../DSL/Link/Link";
 import { getEtherscanURL } from "../../helpers/links";
 import SharePixelsDialog from "../SharePixelsDialog/SharePixelsDialog";
 import PixelPreview, { PixelPreviewSize } from "../../DSL/PixelPreview/PixelPreview";
+import SmallUserPixels from "../SmallUserPixels";
 
 interface BurnPixelsDialogProps {
   store: BurnPixelsDialogStore;
@@ -46,7 +47,7 @@ const SelectPixels = observer(({ store }: { store: BurnPixelsModalStore }) => {
   const { colorMode } = useColorMode();
   return (
     <Flex flexDirection={"column"}>
-      <Flex justifyContent={"center"}>
+      <Flex justifyContent={"center"} my={6}>
         <PixelPreview
           size={PixelPreviewSize.sm}
           previewPixels={store.selectedPixels}
@@ -56,21 +57,10 @@ const SelectPixels = observer(({ store }: { store: BurnPixelsModalStore }) => {
       </Flex>
       {store.isUserPixelOwner && (
         <>
-          <Flex overflow={"auto"} flexGrow={1} h={"full"} mt={6} justifyContent={"center"}>
-            <Box maxHeight={AppStore.rwd.isMobile ? "250px" : "350px"} width={"416px"}>
-              {AppStore.web3.puppersOwned.map(px => {
-                const isPixelSelected = store.selectedPixels.includes(px);
-                return (
-                  <Box
-                    p={2}
-                    display={"inline-block"}
-                    bg={isPixelSelected ? (colorMode === "light" ? lightModePrimary : darkModeSecondary) : "inherit"}
-                  >
-                    <PixelPane size={"xs"} pupper={px} onClick={() => store.handlePixelSelect(px)} />
-                  </Box>
-                );
-              })}
-            </Box>
+          <Flex justifyContent={"center"}>
+            <Flex maxW={"400px"} flexWrap={"wrap"} >
+              <SmallUserPixels selectedPixelIds={store.selectedPixels} onClick={(px) => store.handlePixelSelect(px)}/>
+            </Flex>
           </Flex>
           <Flex justifyContent={"space-between"} alignItems={"flex-start"} mt={12}>
             <Flex flexDirection={"column"}>
@@ -90,7 +80,6 @@ const SelectPixels = observer(({ store }: { store: BurnPixelsModalStore }) => {
               </Button>
             )}
           </Flex>
-
           <Flex justifyContent={"center"} mt={14} w={"full"}>
             <Box>
               <Form onSubmit={async () => store.pushNavigation(BurnPixelsModalView.LoadingBurning)}>
