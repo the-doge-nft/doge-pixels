@@ -39,10 +39,6 @@ const ViewerPage = observer(function ViewerPage() {
     // eslint-disable-next-line
   }, []);
 
-  // Hack to re-render page even if we are already on said page
-  // const location = useLocation();
-  // useEffect(() => {}, [location.key]);
-
   return (
     <>
       <Flex flexGrow={1}>
@@ -72,7 +68,7 @@ const ViewerPage = observer(function ViewerPage() {
       )}
       {AppStore.modals.isSelectedPixelModalOpen && (
         <Modal
-          defaultPosition={{ x: window.innerWidth / 3, y: window.innerHeight / 4 }}
+          defaultPosition={{ x: AppStore.rwd.isMobile ? (window.innerWidth / 7) : (window.innerWidth / 3), y: window.innerHeight / 4 }}
           onClose={() => (AppStore.modals.isSelectedPixelModalOpen = false)}
           isOpen={AppStore.modals.isSelectedPixelModalOpen}
         >
