@@ -26,12 +26,7 @@ ReactDOM.render(
     <ColorModeScript initialColorMode={theme.config.initialColorMode} />
     <ChakraProvider theme={theme} resetCSS>
       <Fonts />
-      <Flex flexDir={"column"} id={"react-modal-main"} minH={"100vh"} mb={8}>
-        <App />
-      </Flex>
-      <Flex justifyContent={"center"} px={{base: 4, md: 4, xl: 16}} mb={6}>
-        <Footer/>
-      </Flex>
+      <App />
     </ChakraProvider>
   </React.StrictMode>,
   document.getElementById("root"),

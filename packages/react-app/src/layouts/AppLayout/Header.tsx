@@ -3,15 +3,17 @@ import AppStore from "../../store/App.store";
 import Button from "../../DSL/Button/Button";
 import UserDropdown from "../UserDropdown";
 import { observer } from "mobx-react-lite";
-import { Box, Flex, HStack } from "@chakra-ui/react";
+import { Box, Flex, HStack, useColorMode } from "@chakra-ui/react";
 import { NamedRoutes, route } from "../../App.routes";
 import BigText from "../../DSL/BigText/BigText";
 import { useHistory } from "react-router-dom";
 import NavLinks from "./NavLinks";
 import DPPLogo from "../../images/logo.png"
+import { lightOrDarkMode } from "../../DSL/Theme";
 
 const Header = observer(() => {
   const history = useHistory();
+  const { colorMode } = useColorMode();
   return (
     <Box mb={6} display={"flex"}>
       <Flex alignItems={"center"} w={"full"} gap={6}>
@@ -26,6 +28,9 @@ const Header = observer(() => {
             history.push(route(NamedRoutes.VIEWER));
           }}
           userSelect={"none"}
+          borderWidth={1}
+          borderColor={lightOrDarkMode(colorMode, "black", "white")}
+          rounded={"full"}
         >
           <img src={DPPLogo} width={50}/>
         </Box>
@@ -34,6 +39,10 @@ const Header = observer(() => {
       <Flex>
         <Box display={{ base: "none", md: "flex" }} alignItems={"center"} justifyContent={"flex-end"} w={"full"}>
           <Flex mr={8} alignItems={"center"}>
+            {AppStore.web3.isConnected && <Flex alignItems={"center"}>
+              <Button size="sm" mr={8} onClick={() => AppStore.modals.isMintModalOpen = true}>Mint</Button>
+              {AppStore.web3.puppersOwned.length > 0 && <Button size="sm" mr={8} onClick={() => AppStore.modals.isBurnModalOpen = true}>Burn</Button>}
+            </Flex>}
             <Box>
               <ColorModeToggle />
             </Box>

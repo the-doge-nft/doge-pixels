@@ -4,7 +4,6 @@ import Typography, { TVariant } from "../../../DSL/Typography/Typography";
 import AppStore from "../../../store/App.store";
 import React from "react";
 import { observer } from "mobx-react-lite";
-import MintBurnButtons from "../MintBurnButtons";
 import Link from "../../../DSL/Link/Link";
 import { getEtherscanURL } from "../../../helpers/links";
 import { Type } from "../../../DSL/Fonts/Fonts";
@@ -97,9 +96,6 @@ const IndexPane = observer(function IndexPane({ store }: { store: ViewerStore })
           </Box>
         </Box>
       </Flex>
-      <Box mt={10}>
-        <MintBurnButtons />
-      </Box>
     </>
   );
 });

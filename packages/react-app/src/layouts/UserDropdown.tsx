@@ -20,7 +20,7 @@ const UserDropdown = observer(() => {
   const { colorMode } = useColorMode();
   const [isOpen, setIsOpen] = useState(false);
   return (
-    <Box zIndex={10000}>
+    <Box>
       <Menu isOpen={isOpen} onOpen={() => setIsOpen(true)} onClose={() => setIsOpen(false)}>
         <Box position={"relative"} zIndex={1}>
           <MenuButton overflow={"hidden"}>
@@ -39,7 +39,7 @@ const UserDropdown = observer(() => {
           <Box __css={styles.drop} />
         </Box>
 
-        <MenuList maxWidth={"fit-content"}>
+        <MenuList maxWidth={"fit-content"} zIndex={10000}>
           <Balances />
           <Box mt={8} px={3}>
             <Link

@@ -11,7 +11,7 @@ import { socialLinks, readLinks, actionLinks, tradeLinks } from "./Links";
 
 const Footer = observer(() => {
     return (
-      <Box maxW={"8xl"} w={"full"} borderY={1} borderStyle={"dashed"} borderColor={"yellow.100"} py={8}>
+      <Box flexGrow={1} borderY={1} borderStyle={"solid"} borderColor={"yellow.100"} py={8}>
         <Grid templateColumns={{base: "1fr", sm: "1fr 1fr", xl: "1fr 1fr 1fr 1fr"}} columnGap={10} rowGap={8}>
           <FooterItem title={"Talk"} items={socialLinks}/>
           <FooterItem title={"Read"} items={readLinks}/>

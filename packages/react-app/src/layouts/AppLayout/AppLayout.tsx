@@ -1,5 +1,5 @@
 import React from "react";
-import { Flex, HStack, useColorMode, VStack } from "@chakra-ui/react";
+import { Box, Flex, HStack, useColorMode, VStack } from "@chakra-ui/react";
 import { observer } from "mobx-react-lite";
 import AppStore from "../../store/App.store";
 import Typography, { TVariant } from "../../DSL/Typography/Typography";
@@ -8,6 +8,7 @@ import Header from "./Header";
 import { formatWithThousandsSeparators } from "../../helpers/numberFormatter";
 import Icon from "../../DSL/Icon/Icon";
 import Modal from "../../DSL/Modal/Modal";
+import Footer from "../../common/Footer/Footer";
 
 interface AppLayoutProps {
   children?: any;
@@ -16,11 +17,18 @@ interface AppLayoutProps {
 const AppLayout = observer(function AppLayout({ children }: AppLayoutProps) {
   return (
     <>
-    <Flex justifyContent={"center"} flexGrow={1}>
-      <Flex flexGrow={1} w={"full"} maxW={"8xl"} pt={6} pb={4} pl={4} pr={7} flexDirection={"column"}>
-        <Header />
-        <Flex grow={1}>{children}</Flex>
+    <Flex flexDir={"column"} id={"react-modal-main"} minH={"100vh"}>
+      <Flex justifyContent={"center"} flexGrow={1}>
+        <Flex flexGrow={1} w={"full"} maxW={"8xl"} pt={6} pb={8} pl={4} pr={7} flexDirection={"column"}>
+          <Header />
+          <Flex grow={1}>{children}</Flex>
+        </Flex>
       </Flex>
+    </Flex>
+    <Flex justifyContent={"center"}>
+      <Box w={"full"} maxW={"8xl"} pl={4} pr={7} mb={6}>
+        <Footer/>
+      </Box>
     </Flex>
     </>
   );

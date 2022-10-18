@@ -7,6 +7,7 @@ import AppStore from "../../../store/App.store";
 import PixelPane from "../../../DSL/PixelPane/PixelPane";
 import { darkModeSecondary, lightModePrimary, lightOrDarkMode } from "../../../DSL/Theme";
 import Tooltip from "../../../DSL/Tooltip/Tooltip";
+import SmallUserPixels from "../../../common/SmallUserPixels";
 
 const ManagePane = observer(function ManagePane({ store }: { store: ViewerStore }) {
   const { colorMode } = useColorMode();
@@ -23,28 +24,8 @@ const ManagePane = observer(function ManagePane({ store }: { store: ViewerStore 
             ({AppStore.web3.puppersOwned.length})
           </Typography>
         </Box>
-        <Flex maxHeight={"300px"} maxW={"300px"}>
-          {AppStore.web3.puppersOwned.map(px => {
-            const [x, y] = AppStore.web3.pupperToPixelCoordsLocal(px);
-            return (
-              <Box
-                p={1}
-                key={`manage-${px}`}
-                _hover={{
-                  bg: lightOrDarkMode(colorMode, lightModePrimary, darkModeSecondary),
-                }}
-              >
-                <Tooltip label={`(${x}, ${y})`}>
-                  <PixelPane
-                    isNew={store.getIsPupperNew(px)}
-                    size={"xxs"}
-                    onClick={() => store.onManagePixelClick(px)}
-                    pupper={px}
-                  />
-                </Tooltip>
-              </Box>
-            );
-          })}
+        <Flex maxHeight={"140px"} maxW={"224px"} flexWrap={"wrap"} overflowY={"auto"}>
+          <SmallUserPixels selectedPixelIds={[store.selectedPupper]} onClick={(px) => store.onManagePixelClick(px)}/>
         </Flex>
       </Box>
     </>
