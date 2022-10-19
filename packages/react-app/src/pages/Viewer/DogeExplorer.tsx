@@ -111,7 +111,6 @@ const DogeExplorer = observer(({ store }: ThreeSceneProps) => {
       const indexX = Math.floor(pixelX + overlayLength);
       const indexY = Math.floor(pixelY + overlayLength);
       store.onPixelSelected(indexX, -1 * indexY);
-
       if (selectedPixelOverlayRef.current) {
         selectedPixelOverlayRef.current.visible = true;
         [selectedPixelOverlayRef.current.position.x, selectedPixelOverlayRef.current.position.y] = [pixelX, pixelY];
@@ -340,7 +339,7 @@ const SearchInputs: React.FC<{store: ViewerStore}> = observer(({store}) => {
       zIndex={9999}
       borderRadius={0}
       type="number"
-      onChange={(e: any) => setX(e.target.value)}
+      onChange={(e: any) => setX(Number(e.target.value))}
       value={x}
     />
   </Box>
@@ -355,7 +354,7 @@ const SearchInputs: React.FC<{store: ViewerStore}> = observer(({store}) => {
       zIndex={9999}
       borderRadius={0}
       type="number"
-      onChange={(e: any) => setY(e.target.value)}
+      onChange={(e: any) => setY(Number(e.target.value))}
       value={y}
     />
   </Box>
