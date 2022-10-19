@@ -28,11 +28,11 @@ const AppLayout = observer(function AppLayout({ children }: AppLayoutProps) {
         </Flex>
       </Flex>
       <Flex justifyContent={"center"}>
-        <Box display={{base: "none", md: "block"}} w={"full"} maxW={"8xl"} pl={4} pr={7} mb={6}>
-          <Footer/>
+        <Box display={{ base: "none", md: "block" }} w={"full"} maxW={"8xl"} pl={4} pr={7} mb={6}>
+          <Footer />
         </Box>
       </Flex>
-      <MobileNav/>
+      <MobileNav />
     </>
   );
 });
@@ -40,51 +40,63 @@ const AppLayout = observer(function AppLayout({ children }: AppLayoutProps) {
 const MobileNav = observer(() => {
   const { colorMode } = useColorMode();
   useEffect(() => {
-    const closeOnEsc = (e) => {
-      if (e.key === 'Escape') {
+    const closeOnEsc = e => {
+      if (e.key === "Escape") {
         if (AppStore.rwd.isMobileNavOpen) {
-          AppStore.rwd.toggleMobileNav()
+          AppStore.rwd.toggleMobileNav();
         }
       }
-    }
-    document.addEventListener("keydown", closeOnEsc)
+    };
+    document.addEventListener("keydown", closeOnEsc);
     return () => {
-      document.removeEventListener("keydown", closeOnEsc)
-    }
-  }, [])
+      document.removeEventListener("keydown", closeOnEsc);
+    };
+  }, []);
   return (
     <AnimatePresence exitBeforeEnter>
-      {AppStore.rwd.isMobileNavOpen && <motion.div
-        style={{
-          display: "flex",
-          position: "absolute",
-          width: "100vw",
-          height: "100vh",
-          zIndex: 100,
-          background: "transparent",
-          justifyContent: "center",
-          alignItems: "center",
-          top: 0
-        }}
-        initial={{left: -window.innerWidth}}
-        animate={{left: 0}}
-        exit={{left: -window.innerWidth}}
-        transition={{duration: 0.25}}
-      >
-      <Box opacity={0.9} position={"absolute"} w={"full"} h={"full"} bg={lightOrDarkMode(colorMode, "yellow.50", "purple.700")}/>
-      <Box zIndex={101}>
-        <Flex flexDir={"column"} justifyContent={"center"} alignItems={"center"} gap={5}>
-          <NavLinks onClick={() => {
-              if (AppStore.rwd.isMobileNavOpen) {
-                AppStore.rwd.toggleMobileNav()
-              }
-            }} isMobile={AppStore.rwd.isMobile} size={"lg"}/>
-        </Flex>
-        <Box position={"absolute"} top={5} right={5}>
-          <Icon cursor={"pointer"} boxSize={35} icon={"close"} onClick={() => AppStore.rwd.toggleMobileNav()}/>
-        </Box>
-      </Box>
-    </motion.div>}
+      {AppStore.rwd.isMobileNavOpen && (
+        <motion.div
+          style={{
+            display: "flex",
+            position: "absolute",
+            width: "100vw",
+            height: "100vh",
+            zIndex: 100,
+            background: "transparent",
+            justifyContent: "center",
+            alignItems: "center",
+            top: 0,
+          }}
+          initial={{ left: -window.innerWidth }}
+          animate={{ left: 0 }}
+          exit={{ left: -window.innerWidth }}
+          transition={{ duration: 0.25 }}
+        >
+          <Box
+            opacity={0.9}
+            position={"absolute"}
+            w={"full"}
+            h={"full"}
+            bg={lightOrDarkMode(colorMode, "yellow.50", "purple.700")}
+          />
+          <Box zIndex={101}>
+            <Flex flexDir={"column"} justifyContent={"center"} alignItems={"center"} gap={5}>
+              <NavLinks
+                onClick={() => {
+                  if (AppStore.rwd.isMobileNavOpen) {
+                    AppStore.rwd.toggleMobileNav();
+                  }
+                }}
+                isMobile={AppStore.rwd.isMobile}
+                size={"lg"}
+              />
+            </Flex>
+            <Box position={"absolute"} top={5} right={5}>
+              <Icon cursor={"pointer"} boxSize={35} icon={"close"} onClick={() => AppStore.rwd.toggleMobileNav()} />
+            </Box>
+          </Box>
+        </motion.div>
+      )}
     </AnimatePresence>
   );
 });

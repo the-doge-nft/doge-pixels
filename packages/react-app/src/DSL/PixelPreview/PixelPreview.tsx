@@ -62,8 +62,8 @@ const PixelPreview = observer(
     const [pupperPositions, setPupperPositions] = useState<IPupperRectPosition[]>([]);
     const properties = useMemo(() => imageProperties[size], [size]);
 
-    const [hasMounted, setHasMounted] = useState(false)
-    useEffect(() => setHasMounted(true), [])
+    const [hasMounted, setHasMounted] = useState(false);
+    useEffect(() => setHasMounted(true), []);
 
     const PIXEL_OFFSET_X = properties.width / 9;
     const TOP_PIXEL_OFFSET_Y = properties.height / 16.875;

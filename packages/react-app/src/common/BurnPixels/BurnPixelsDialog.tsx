@@ -47,7 +47,7 @@ const SelectPixels = observer(({ store }: { store: BurnPixelsModalStore }) => {
   const { colorMode } = useColorMode();
   return (
     <Flex flexDirection={"column"}>
-      <Flex justifyContent={"center"} my={{base: 0, md: 6}} mb={{base: 3, md: 6}}>
+      <Flex justifyContent={"center"} my={{ base: 0, md: 6 }} mb={{ base: 3, md: 6 }}>
         <PixelPreview
           size={PixelPreviewSize.sm}
           previewPixels={store.selectedPixels}
@@ -58,8 +58,8 @@ const SelectPixels = observer(({ store }: { store: BurnPixelsModalStore }) => {
       {store.isUserPixelOwner && (
         <>
           <Flex justifyContent={"center"}>
-            <Flex maxH={{base: "150px", md: "300px"}} maxW={"400px"} flexWrap={"wrap"} overflowY={"auto"}>
-              <SmallUserPixels selectedPixelIds={store.selectedPixels} onClick={(px) => store.handlePixelSelect(px)}/>
+            <Flex maxH={{ base: "150px", md: "300px" }} maxW={"400px"} flexWrap={"wrap"} overflowY={"auto"}>
+              <SmallUserPixels selectedPixelIds={store.selectedPixels} onClick={px => store.handlePixelSelect(px)} />
             </Flex>
           </Flex>
           <Flex justifyContent={"space-between"} alignItems={"flex-start"} mt={6}>

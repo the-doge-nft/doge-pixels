@@ -8,7 +8,7 @@ import { NamedRoutes, route } from "../../App.routes";
 import BigText from "../../DSL/BigText/BigText";
 import { useHistory, useLocation } from "react-router-dom";
 import NavLinks from "./NavLinks";
-import DPPLogo from "../../images/logo.png"
+import DPPLogo from "../../images/logo.png";
 import { darkModeGradient, darkModeSecondary, lightModePrimary, lightOrDarkMode } from "../../DSL/Theme";
 import { GiHamburgerMenu } from "react-icons/gi";
 
@@ -16,21 +16,21 @@ const Header = observer(() => {
   const history = useHistory();
   const location = useLocation();
   const onLogoClick = useBreakpointValue({
-    base: () => AppStore.rwd.toggleMobileNav(), 
-    xl: () => history.push(route(NamedRoutes.VIEWER))
+    base: () => AppStore.rwd.toggleMobileNav(),
+    xl: () => history.push(route(NamedRoutes.VIEWER)),
   });
   const { colorMode } = useColorMode();
-  const showHamburger = useBreakpointValue({base: true, xl: false})
+  const showHamburger = useBreakpointValue({ base: true, xl: false });
   return (
     <Box>
-      <Flex mb={{base: 0, md: 6}}>
+      <Flex mb={{ base: 0, md: 6 }}>
         <Flex alignItems={"center"} w={"full"} gap={6}>
           <Box
-            top={{base: 8, md: 0}}
-            left={{base: 5, md: 0}}
+            top={{ base: 8, md: 0 }}
+            left={{ base: 5, md: 0 }}
             bg={lightOrDarkMode(colorMode, "yellow.50", darkModeGradient)}
             zIndex={10}
-            position={{base: "absolute", md: "relative"}}
+            position={{ base: "absolute", md: "relative" }}
             _hover={{
               cursor: "pointer",
             }}
@@ -43,40 +43,77 @@ const Header = observer(() => {
             borderColor={lightOrDarkMode(colorMode, "black", "white")}
             rounded={"full"}
           >
-            <img src={DPPLogo} width={50}/>
+            <img src={DPPLogo} width={50} />
 
-            {showHamburger && <>
-              <Box position={"absolute"} top={0} left={0} w={"full"} h={"full"} bg={lightOrDarkMode(colorMode, "yellow.50", "purple.700")} rounded={"full"} opacity={0.85}/>
-              <Flex justifyContent={"center"} alignItems={"center"} position={"absolute"} left={0} top={0} w={"full"} h={"full"}>
-                <GiHamburgerMenu color={lightOrDarkMode(colorMode, "black", "white")} size={24}/>
-              </Flex>
-            </>}
+            {showHamburger && (
+              <>
+                <Box
+                  position={"absolute"}
+                  top={0}
+                  left={0}
+                  w={"full"}
+                  h={"full"}
+                  bg={lightOrDarkMode(colorMode, "yellow.50", "purple.700")}
+                  rounded={"full"}
+                  opacity={0.85}
+                />
+                <Flex
+                  justifyContent={"center"}
+                  alignItems={"center"}
+                  position={"absolute"}
+                  left={0}
+                  top={0}
+                  w={"full"}
+                  h={"full"}
+                >
+                  <GiHamburgerMenu color={lightOrDarkMode(colorMode, "black", "white")} size={24} />
+                </Flex>
+              </>
+            )}
           </Box>
-          <Flex gap={6} display={{base: "none", xl: "flex"}}>
-            <NavLinks onClick={() => {
-              if (AppStore.rwd.isMobileNavOpen) {
-                AppStore.rwd.toggleMobileNav()
-              }
-            }}/>
+          <Flex gap={6} display={{ base: "none", xl: "flex" }}>
+            <NavLinks
+              onClick={() => {
+                if (AppStore.rwd.isMobileNavOpen) {
+                  AppStore.rwd.toggleMobileNav();
+                }
+              }}
+            />
           </Flex>
         </Flex>
         <Flex>
           <Box display={{ base: "none", md: "flex" }} alignItems={"center"} justifyContent={"flex-end"} w={"full"}>
             <Flex mr={8} alignItems={"center"}>
-              {AppStore.web3.isConnected && <Flex alignItems={"center"}>
-                <Button size="sm" mr={8} onClick={() => {
-                  if (location.pathname !== "/" && !location.pathname.includes("/px")) {
-                    history.push("/");
-                  }
-                  AppStore.modals.isMintModalOpen = true
-                }}>Mint</Button>
-                {AppStore.web3.puppersOwned.length > 0 && <Button size="sm" mr={8} onClick={() => {
-                  if (location.pathname !== "/" && !location.pathname.includes("/px")) {
-                    history.push("/");
-                  }
-                  AppStore.modals.isBurnModalOpen = true
-                }}>Burn</Button>}
-              </Flex>}
+              {AppStore.web3.isConnected && (
+                <Flex alignItems={"center"}>
+                  <Button
+                    size="sm"
+                    mr={8}
+                    onClick={() => {
+                      if (location.pathname !== "/" && !location.pathname.includes("/px")) {
+                        history.push("/");
+                      }
+                      AppStore.modals.isMintModalOpen = true;
+                    }}
+                  >
+                    Mint
+                  </Button>
+                  {AppStore.web3.puppersOwned.length > 0 && (
+                    <Button
+                      size="sm"
+                      mr={8}
+                      onClick={() => {
+                        if (location.pathname !== "/" && !location.pathname.includes("/px")) {
+                          history.push("/");
+                        }
+                        AppStore.modals.isBurnModalOpen = true;
+                      }}
+                    >
+                      Burn
+                    </Button>
+                  )}
+                </Flex>
+              )}
               <Box>
                 <ColorModeToggle />
               </Box>

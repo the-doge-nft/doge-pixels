@@ -25,7 +25,7 @@ const ManagePane = observer(function ManagePane({ store }: { store: ViewerStore 
           </Typography>
         </Box>
         <Flex maxHeight={"140px"} maxW={"224px"} flexWrap={"wrap"} overflowY={"auto"}>
-          <SmallUserPixels selectedPixelIds={[store.selectedPupper]} onClick={(px) => store.onManagePixelClick(px)}/>
+          <SmallUserPixels selectedPixelIds={[store.selectedPupper]} onClick={px => store.onManagePixelClick(px)} />
         </Flex>
       </Box>
     </>

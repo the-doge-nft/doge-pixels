@@ -7,13 +7,17 @@ import { Type } from "../../DSL/Fonts/Fonts";
 import AppStore from "../../store/App.store";
 import { useBreakpointValue } from "@chakra-ui/react";
 
-const NavLinks = ({ 
-  isMobile, 
-  size = "sm", 
-  onClick 
-}: { isMobile?: boolean, size?: "sm" | "lg", onClick?: (name: string) => any}) => {
+const NavLinks = ({
+  isMobile,
+  size = "sm",
+  onClick,
+}: {
+  isMobile?: boolean;
+  size?: "sm" | "lg";
+  onClick?: (name: string) => any;
+}) => {
   const location = useLocation();
-  const showOnXL = useBreakpointValue({base: true, xl: false})
+  const showOnXL = useBreakpointValue({ base: true, xl: false });
 
   const getPath = (routeName: NamedRoutes) => {
     if (routeName === NamedRoutes.LEADERBORK) {

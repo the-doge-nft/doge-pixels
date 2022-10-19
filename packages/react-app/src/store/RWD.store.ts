@@ -30,7 +30,7 @@ class RWDStore {
 
   @action
   toggleMobileNav() {
-    this.isMobileNavOpen = !this.isMobileNavOpen
+    this.isMobileNavOpen = !this.isMobileNavOpen;
   }
 }
 
