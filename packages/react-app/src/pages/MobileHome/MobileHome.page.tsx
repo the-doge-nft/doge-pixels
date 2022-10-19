@@ -32,7 +32,7 @@ const MobileHomePage = observer(() => {
   }, [AppStore.rwd.isMobile]);
 
   return (
-    <Flex flexGrow={1} px={4} mt={{base: 14, md: 0}}>
+    <Flex flexGrow={1} px={4} mt={{ base: 14, md: 0 }}>
       {!AppStore.web3.web3Provider && (
         <Flex justifyContent={"center"} alignItems={"center"} w={"full"}>
           <Button
@@ -79,7 +79,7 @@ const MobileHomePage = observer(() => {
             </Flex>
 
             <Flex my={10} overflowY={"auto"} flexWrap={"wrap"} maxHeight={"150px"}>
-              <SmallUserPixels onClick={(px) => store.selectedPixel = px} />
+              <SmallUserPixels onClick={px => (store.selectedPixel = px)} />
             </Flex>
           </Flex>
 

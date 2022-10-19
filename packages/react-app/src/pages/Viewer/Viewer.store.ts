@@ -22,7 +22,6 @@ export interface Metadata {
   name: string;
 }
 
-
 class ViewerStore extends Eventable(Reactionable(EmptyClass)) {
   @observable
   selectedPupper: number | null = null;
@@ -160,9 +159,9 @@ class ViewerStore extends Eventable(Reactionable(EmptyClass)) {
   @computed
   get selectedTokenOwnerDisplayName() {
     if (this.tokenOwner) {
-      return AppStore.web3.getAddressDisplayName(this.tokenOwner)
+      return AppStore.web3.getAddressDisplayName(this.tokenOwner);
     }
-    return "-"
+    return "-";
   }
 
   destroy() {
@@ -179,8 +178,8 @@ class ViewerStore extends Eventable(Reactionable(EmptyClass)) {
   }
 
   onCoordsSearch(x: number, y: number) {
-    this.onPixelSelected(x, y)
-    this.publish(SELECT_PIXEL, [x, y])
+    this.onPixelSelected(x, y);
+    this.publish(SELECT_PIXEL, [x, y]);
   }
 }
 

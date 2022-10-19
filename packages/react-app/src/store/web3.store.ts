@@ -302,7 +302,7 @@ class Web3Store extends Reactionable(Web3providerStore) {
       address: key,
       pixels: this.addressToPuppers![key].tokenIds,
       ens: this.addressToPuppers![key].ens,
-      ud: this.addressToPuppers![key].ud
+      ud: this.addressToPuppers![key].ud,
     }));
     return tds
       .filter(dog => dog.address !== ethers.constants.AddressZero)
@@ -337,13 +337,13 @@ class Web3Store extends Reactionable(Web3providerStore) {
 
   getAddressDisplayName(address: string, shouldAbbreviate = true) {
     if (Object.keys(this.addressToPuppers).includes(address)) {
-      const user = this.addressToPuppers[address]
+      const user = this.addressToPuppers[address];
       if (user?.ud) {
-        return user?.ud
+        return user?.ud;
       } else if (user.ens) {
-        return user.ens
+        return user.ens;
       }
-      return shouldAbbreviate ? abbreviate(address, 4) : address
+      return shouldAbbreviate ? abbreviate(address, 4) : address;
     }
   }
 }

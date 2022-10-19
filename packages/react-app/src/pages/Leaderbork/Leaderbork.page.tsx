@@ -44,7 +44,7 @@ const LeaderborkPage = observer(function DogParkPage() {
   }, []);
 
   return (
-    <Flex w={"full"} flexDir={{ base: "column", xl: "row" }} mt={{base: 20, md: 0}}>
+    <Flex w={"full"} flexDir={{ base: "column", xl: "row" }} mt={{ base: 20, md: 0 }}>
       <Flex
         flexBasis={0}
         grow={0}
@@ -195,15 +195,17 @@ const LeaderborkPage = observer(function DogParkPage() {
                       </Flex>
                     </Flex>
                   </Flex>
-                  {store.selectedPixelId && store.selectedAddress && <Flex justifyContent={"center"} alignItems={"center"} flexGrow={1} mt={{ base: 4, md: 0 }}>
-                    <Link
-                      display={"inline-block"}
-                      isNav
-                      to={route(NamedRoutes.PIXELS, { [SELECTED_PIXEL_PARAM]: store.previewSelectedPixelId })}
-                    >
-                      <Button onClick={() => {}}>Portal</Button>
-                    </Link>
-                  </Flex>}
+                  {store.selectedPixelId && store.selectedAddress && (
+                    <Flex justifyContent={"center"} alignItems={"center"} flexGrow={1} mt={{ base: 4, md: 0 }}>
+                      <Link
+                        display={"inline-block"}
+                        isNav
+                        to={route(NamedRoutes.PIXELS, { [SELECTED_PIXEL_PARAM]: store.previewSelectedPixelId })}
+                      >
+                        <Button onClick={() => {}}>Portal</Button>
+                      </Link>
+                    </Flex>
+                  )}
                 </Flex>
               )}
               {!store.showDetails && (
