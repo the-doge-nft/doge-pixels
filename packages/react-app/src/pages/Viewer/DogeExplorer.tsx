@@ -153,7 +153,7 @@ const DogeExplorer = observer(({ store }: ThreeSceneProps) => {
       >
         <mesh
           ref={dogeMeshRef}
-          position={[imageWorldUnitsWidth / 2 - 1, (-1 * imageWorldUnitsHeight) / 1.8, 0]}
+          position={[imageWorldUnitsWidth / 2 - 1, (-1 * imageWorldUnitsHeight) / 1.8 - 0.34, 0]}
           onPointerMove={e => {
             if (hoverOverlayRef.current) {
               [hoverOverlayRef.current.position.x, hoverOverlayRef.current.position.y] = getWorldPixelCoordinate(
