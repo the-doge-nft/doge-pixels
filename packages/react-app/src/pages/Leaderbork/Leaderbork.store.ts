@@ -77,7 +77,6 @@ class LeaderborkStore extends Reactionable(EmptyClass) {
     }
 
     if (selectedPixelId) {
-      console.log("debug:: selected pixel id", selectedPixelId);
       this.selectedPixelId = selectedPixelId;
     }
 
@@ -86,7 +85,6 @@ class LeaderborkStore extends Reactionable(EmptyClass) {
     }
 
     if (selectedOwnerTab) {
-      console.log("debug:: selected owner tab", selectedOwnerTab);
       this.selectedOwnerTab = selectedOwnerTab;
     }
 

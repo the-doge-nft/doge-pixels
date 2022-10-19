@@ -4,6 +4,7 @@ import { ethers } from 'ethers';
 import { EthersService } from '../ethers/ethers.service';
 import { Cache } from 'cache-manager';
 import { PixelTransfers, PrismaClient } from '@prisma/client';
+import { UnstoppableDomainsService } from '../unstoppable-domains/unstoppable-domains.service';
 
 @Injectable()
 export class PixelTransferRepository {
@@ -12,6 +13,7 @@ export class PixelTransferRepository {
   constructor(
     private prisma: PrismaService,
     private ethers: EthersService,
+    private ud: UnstoppableDomainsService,
     @Inject(CACHE_MANAGER) private cacheManager: Cache,
   ) {}
 
@@ -20,15 +22,19 @@ export class PixelTransferRepository {
     for (let i = 0; i < transfers.length; i++) {
       const toEns = await this.ethers.getEnsName(transfers[i].to);
       const fromEns = await this.ethers.getEnsName(transfers[i].from);
+      const toUD = await this.ud.getUDName(transfers[i].to)
+      const fromUD = await this.ud.getUDName(transfers[i].from)
       data.push({
         ...transfers[i],
         to: {
           address: transfers[i].to,
           ens: toEns,
+          ud: toUD
         },
         from: {
           address: transfers[i].from,
           ens: fromEns,
+          ud: fromUD
         },
       });
     }
