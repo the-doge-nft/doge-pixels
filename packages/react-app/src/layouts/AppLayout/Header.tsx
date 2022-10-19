@@ -44,8 +44,12 @@ const Header = observer(() => {
           >
             <img src={DPPLogo} width={50}/>
           </Box>
-          <Flex gap={4} display={{base: "none", xl: "flex"}}>
-            <NavLinks />
+          <Flex gap={6} display={{base: "none", xl: "flex"}}>
+            <NavLinks onClick={() => {
+              if (AppStore.rwd.isMobileNavOpen) {
+                AppStore.rwd.toggleMobileNav()
+              }
+            }}/>
           </Flex>
         </Flex>
         <Flex>
@@ -86,9 +90,5 @@ const Header = observer(() => {
     </Box>
   );
 });
-
-const Logo = () => {
-
-}
 
 export default Header;

@@ -72,7 +72,11 @@ const MobileNav = observer(() => {
       <Box opacity={0.85} position={"absolute"} w={"full"} h={"full"} bg={lightOrDarkMode(colorMode, "yellow.50", "purple.700")}/>
       <Box opacity={1} zIndex={101}>
         <Flex flexDir={"column"} justifyContent={"center"} alignItems={"center"} gap={5}>
-          <NavLinks isMobile />
+          <NavLinks onClick={() => {
+              if (AppStore.rwd.isMobileNavOpen) {
+                AppStore.rwd.toggleMobileNav()
+              }
+            }} isMobile={AppStore.rwd.isMobile} size={"lg"}/>
         </Flex>
         <Box position={"absolute"} top={5} right={5}>
           <Icon cursor={"pointer"} boxSize={35} icon={"close"} onClick={() => AppStore.rwd.toggleMobileNav()}/>

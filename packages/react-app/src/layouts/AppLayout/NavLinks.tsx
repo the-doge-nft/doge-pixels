@@ -5,9 +5,15 @@ import { SelectedOwnerTab } from "../../pages/Leaderbork/Leaderbork.store";
 import Icon from "../../DSL/Icon/Icon";
 import { Type } from "../../DSL/Fonts/Fonts";
 import AppStore from "../../store/App.store";
+import { useBreakpointValue } from "@chakra-ui/react";
 
-const NavLinks = ({ isMobile }: { isMobile?: boolean }) => {
+const NavLinks = ({ 
+  isMobile, 
+  size = "sm", 
+  onClick 
+}: { isMobile?: boolean, size?: "sm" | "lg", onClick?: (name: string) => any}) => {
   const location = useLocation();
+  const showOnXL = useBreakpointValue({base: true, xl: false})
 
   const getPath = (routeName: NamedRoutes) => {
     if (routeName === NamedRoutes.LEADERBORK) {
@@ -63,12 +69,12 @@ const NavLinks = ({ isMobile }: { isMobile?: boolean }) => {
             .filter(route => route.showOnMobile)
             .map(appRoute => (
               <Link
-                size={"lg"}
+                size={size}
                 isNav
                 to={getPath(appRoute.name)}
                 key={`mobile-nav-${appRoute.path}`}
                 textDecoration={getMatch(appRoute.path) ? "underline" : "none"}
-                onClick={() => AppStore.rwd.toggleMobileNav()}
+                onClick={() => onClick && onClick(appRoute.name)}
               >
                 {appRoute.mobileName}
               </Link>
@@ -79,11 +85,12 @@ const NavLinks = ({ isMobile }: { isMobile?: boolean }) => {
             .map(appRoute => (
               <Link
                 variant={Type.PresStart}
-                size={"sm"}
+                size={size}
                 isNav
                 key={`desktop-nav-${appRoute.path}`}
                 to={getPath(appRoute.name)}
                 fontWeight={getMatch(appRoute.path) ? "bold" : "normal"}
+                onClick={() => onClick && onClick(route.name)}
                 // textDecoration={getMatch(appRoute.path) ? "underline" : "none"}
               >
                 {appRoute.desktopName}

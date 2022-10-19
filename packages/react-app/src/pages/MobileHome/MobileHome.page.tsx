@@ -1,4 +1,4 @@
-import { Box, Flex, useColorMode } from "@chakra-ui/react";
+import { Box, Flex, useBreakpoint, useColorMode } from "@chakra-ui/react";
 import { observer } from "mobx-react-lite";
 import React, { useEffect, useMemo } from "react";
 import Button, { ButtonVariant } from "../../DSL/Button/Button";
@@ -30,8 +30,6 @@ const MobileHomePage = observer(() => {
     }
     // eslint-disable-next-line
   }, [AppStore.rwd.isMobile]);
-
-  const { colorMode } = useColorMode();
 
   return (
     <Flex flexGrow={1} px={4} mt={{base: 14, md: 0}}>
