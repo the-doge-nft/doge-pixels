@@ -1,4 +1,4 @@
-import { makeObservable, observable } from "mobx";
+import {makeObservable, observable} from "mobx";
 import Web3Store from "./web3.store";
 import RWDStore from "./RWD.store";
 import ModalsStore from "./Modals.store";
@@ -27,6 +27,5 @@ class _AppStore {
   }
 }
 
-const AppStore = new _AppStore();
-
+const AppStore = new _AppStore();;
 export default AppStore;
