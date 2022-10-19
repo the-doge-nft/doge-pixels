@@ -13,7 +13,7 @@ const TypographyStyle = {
     [TVariant.PresStart7]: {
       fontFamily: Type.PresStart,
       fontWeight: "normal",
-      fontSize: "7px"
+      fontSize: "7px",
     },
     [TVariant.PresStart8]: {
       fontFamily: Type.PresStart,
@@ -98,7 +98,7 @@ const TypographyStyle = {
     ComicSans10: {
       fontFamily: Type.ComicSans,
       fontWeight: "normal",
-      fontSize: "10px"
+      fontSize: "10px",
     },
     ComicSans12: {
       fontFamily: Type.ComicSans,

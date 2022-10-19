@@ -34,7 +34,7 @@ export class EthersService implements OnModuleInit {
     if (appEnv === AppEnv.production) {
       this.network = 'mainnet';
     } else if (appEnv === AppEnv.development || appEnv === AppEnv.staging) {
-      this.network = 'rinkeby';
+      this.network = 'goerli';
     } else if (appEnv === AppEnv.test) {
       this.network = 'localhost';
     } else {
@@ -146,7 +146,7 @@ export class EthersService implements OnModuleInit {
   }
 
   private queryEnsName(address: string) {
-    this.logger.log(`querying fresh ens: ${address}`)
+    this.logger.log(`querying fresh ens: ${address}`);
     return this.provider.lookupAddress(address);
   }
 
@@ -157,5 +157,10 @@ export class EthersService implements OnModuleInit {
     } catch (e) {
       return false;
     }
+  }
+
+  async getDateTimeFromBlockNumber(blockNumber: number) {
+    const block = await this.provider.getBlock(blockNumber);
+    return new Date(block.timestamp * 1000);
   }
 }

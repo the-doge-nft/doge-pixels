@@ -143,12 +143,12 @@ module.exports = async (args) => {
   console.log("====== ====== ====== ====== ====== ======");
   console.log("======      verify deployment      ======");
   console.log("====== ====== ====== ====== ====== ======");
-  console.log("BASE_URI= " + await PXProxy.BASE_URI());
-  console.log("puppersRemaining= " + await PXProxy.puppersRemaining());
+  console.log("BASE_URI:" + await PXProxy.BASE_URI());
+  console.log("puppersRemaining:" + await PXProxy.puppersRemaining());
   console.log("PROXY ADDR: " + PXProxy.address);
   console.log("IMPL ADDR: " + PXLogic.address);
-  console.log("https://rinkeby.etherscan.io/address/" + PXProxy.address);
-  console.log("https://rinkeby.etherscan.io/address/" + PXLogic.address);
+  console.log("https://goerli.etherscan.io/address/" + PXProxy.address);
+  console.log("https://goerli.etherscan.io/address/" + PXLogic.address);
   fs.writeFileSync(path.join(__dirname, '..', '.openzeppelin', 'px_proxy_address_' + chainId), PXProxy.address);
   fs.writeFileSync(
     path.join(__dirname, '..', '.openzeppelin', 'px_proxy_abi_' + chainId),
@@ -160,7 +160,7 @@ module.exports = async (args) => {
     JSON.stringify(PXLogic.interface.fragments, null, 2)
   );
   console.log(`FINISHED ALL`);
-  //
+
   // await tenderly.persistArtifacts({
   //                                       name: "PXPROXY",
   //                                       address: PXProxy.address

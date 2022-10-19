@@ -1,8 +1,8 @@
-import {Box, Flex} from "@chakra-ui/react";
+import { Box, Flex } from "@chakra-ui/react";
 import React from "react";
 import Demo from "../Demo/Demo";
 import Colors from "./Colors";
-import Typography, {TVariant} from "../Typography/Typography";
+import Typography, { TVariant } from "../Typography/Typography";
 
 const ColorBox = ({ name, hex }: { name: string; hex: string }) => {
   return (
@@ -42,7 +42,7 @@ const DemoColors = () => {
                 hex={Colors[color][hue] as string}
               />
             ));
-          } else return <></>
+          } else return <></>;
         })}
       </Flex>
     </Demo>

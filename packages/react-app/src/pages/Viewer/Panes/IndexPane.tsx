@@ -4,7 +4,6 @@ import Typography, { TVariant } from "../../../DSL/Typography/Typography";
 import AppStore from "../../../store/App.store";
 import React from "react";
 import { observer } from "mobx-react-lite";
-import MintBurnButtons from "../MintBurnButtons";
 import Link from "../../../DSL/Link/Link";
 import { getEtherscanURL } from "../../../helpers/links";
 import { Type } from "../../../DSL/Fonts/Fonts";
@@ -13,8 +12,8 @@ const IndexPane = observer(function IndexPane({ store }: { store: ViewerStore })
   return (
     <>
       <Flex flexDirection={"column"} flexGrow={0} h={"100%"}>
-        <Box overflowY={"auto"} flexGrow={1} h={"full"} mt={4}>
-          <Box maxHeight={"300px"}>
+        <Box overflowY={"auto"} flexGrow={1} h={"full"}>
+          <Box maxHeight={"450px"}>
             <Typography variant={TVariant.ComicSans16} block>
               Welcome to the Doge Pixel Portal - your gateway to collective ownership of{" "}
               <Link
@@ -97,9 +96,6 @@ const IndexPane = observer(function IndexPane({ store }: { store: ViewerStore })
           </Box>
         </Box>
       </Flex>
-      <Box mt={10}>
-        <MintBurnButtons store={store} />
-      </Box>
     </>
   );
 });

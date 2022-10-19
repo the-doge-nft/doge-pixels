@@ -1,0 +1,41 @@
+
+name: '[staging:ui]: build, deploy, invalidate CDN'
+
+on:
+  push:
+    branches: dev
+    paths:
+      - packages/react-app/**
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  build:
+    runs-on: ubuntu-18.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16
+      - name: Install deps
+        working-directory: packages/react-app
+        run: yarn install --frozen-lockfile
+      - name: Build
+        working-directory: packages/react-app
+        env:
+          NODE_OPTIONS: "--max_old_space_size=4096"
+        run: yarn _dev_build
+      - name: Configure AWS Creds
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+      - name: Deploy to S3 & Invalidate Cloudfront CDN
+        working-directory: packages/react-app
+        run: yarn _aws_dev_deploy && yarn _aws_dev_invalidate_cloudfront
+
+

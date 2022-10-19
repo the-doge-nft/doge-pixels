@@ -3,9 +3,11 @@ import Demo from "../Demo/Demo";
 import Link from "./Link";
 
 const DemoLink = () => {
-  return <Demo title={"Link"}>
-    <Link to={"/dsl"}>Click me!</Link>
-  </Demo>
-}
+  return (
+    <Demo title={"Link"}>
+      <Link to={"/dsl"}>Click me!</Link>
+    </Demo>
+  );
+};
 
 export default DemoLink;

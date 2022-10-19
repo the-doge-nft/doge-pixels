@@ -1,15 +1,15 @@
 import React from "react";
 import Control from "./Control";
-import {BaseInputProps} from "./interfaces";
-import {FormErrorMessage, Select} from "@chakra-ui/react";
-import {useControlledFormField, useFormField} from "./useFormField";
+import { BaseInputProps } from "./interfaces";
+import { FormErrorMessage, Select, SelectProps } from "@chakra-ui/react";
+import { useControlledFormField, useFormField } from "./useFormField";
 
 export type SelectItem = {
   id: string;
   name: string;
 };
 
-export interface SelectInputProps extends BaseInputProps {
+export interface SelectInputProps extends SelectProps, Pick<BaseInputProps, "label" | "validate" | "initialValue"> {
   items: SelectItem[];
   variant?: string;
 }
@@ -37,6 +37,7 @@ const SelectInput = ({
         onChange={e => {
           const value = e.target.value;
           if (onChange) {
+            //@ts-ignore
             onChange(value);
           }
           inputOnChange(value);

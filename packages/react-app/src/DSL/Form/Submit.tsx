@@ -1,9 +1,9 @@
 import React from "react";
-import Button, {ButtonProps} from "../Button/Button";
-import {useFormState} from "react-final-form";
-import {ObjectKeys} from "../../helpers/objects";
-import {t} from "@lingui/macro";
-import {observer} from "mobx-react-lite";
+import Button, { ButtonProps } from "../Button/Button";
+import { useFormState } from "react-final-form";
+import { ObjectKeys } from "../../helpers/objects";
+import { t } from "@lingui/macro";
+import { observer } from "mobx-react-lite";
 
 interface SubmitProps extends ButtonProps {
   label?: string;
@@ -19,7 +19,7 @@ const Submit = observer(({ label, onClick, isLoading, isDisabled, ...rest }: Sub
       submit
       onClick={onClick}
       isLoading={submitting || isLoading}
-      isDisabled={isDisabled || ObjectKeys(errors).length > 0 }
+      isDisabled={isDisabled || ObjectKeys(errors).length > 0}
       {...rest}
     >
       {label ? label : t`Submit`}

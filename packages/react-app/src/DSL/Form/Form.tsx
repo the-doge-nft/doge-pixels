@@ -1,7 +1,7 @@
-import {Form as ReactFinalForm} from "react-final-form";
+import { Form as ReactFinalForm } from "react-final-form";
 import React from "react";
 import FormError from "./FormError";
-import {FORM_ERROR, FormApi} from "final-form";
+import { FORM_ERROR, FormApi } from "final-form";
 import ApiError from "../../services/exceptions/api.error";
 
 export interface FormProps {

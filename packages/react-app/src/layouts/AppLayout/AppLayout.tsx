@@ -1,15 +1,16 @@
-import React from "react";
-import {Box, Flex, HStack, useColorMode} from "@chakra-ui/react";
+import React, { useEffect } from "react";
+import { Box, Button, Flex, HStack, useColorMode, VStack } from "@chakra-ui/react";
 import { observer } from "mobx-react-lite";
 import AppStore from "../../store/App.store";
 import Typography, { TVariant } from "../../DSL/Typography/Typography";
-import { Type } from "../../DSL/Fonts/Fonts";
 import NavLinks from "./NavLinks";
 import Header from "./Header";
 import { formatWithThousandsSeparators } from "../../helpers/numberFormatter";
 import Icon from "../../DSL/Icon/Icon";
-import {Link} from "react-router-dom";
-
+import Modal from "../../DSL/Modal/Modal";
+import Footer from "../../common/Footer/Footer";
+import { lightOrDarkMode } from "../../DSL/Theme";
+import { AnimatePresence, motion } from "framer-motion";
 
 interface AppLayoutProps {
   children?: any;
@@ -18,53 +19,73 @@ interface AppLayoutProps {
 const AppLayout = observer(function AppLayout({ children }: AppLayoutProps) {
   return (
     <>
-      <Flex flexGrow={1} w={"100vw"} p={{ base: 0, md: 8 }} pb={{ base: 0, md: 3 }} flexDirection={"column"}>
-        <Header />
-        <Flex grow={1}>
-          {children}
+      <Flex flexDir={"column"} id={"react-modal-main"} minH={"100vh"}>
+        <Flex justifyContent={"center"} flexGrow={1}>
+          <Flex flexGrow={1} w={"full"} maxW={"8xl"} pt={6} pb={8} pl={4} pr={7} flexDirection={"column"}>
+            <Header />
+            <Flex grow={1}>{children}</Flex>
+          </Flex>
         </Flex>
-        {AppStore.rwd.isMobile && <MobileNav />}
-        {!AppStore.rwd.isMobile && <Footer />}
       </Flex>
+      <Flex justifyContent={"center"}>
+        <Box display={{base: "none", md: "block"}} w={"full"} maxW={"8xl"} pl={4} pr={7} mb={6}>
+          <Footer/>
+        </Box>
+      </Flex>
+      <MobileNav/>
     </>
-  );
-});
-
-const Footer = observer(() => {
-  return (
-      <HStack mt={5} justifyContent={'flex-end'} alignItems={'center'} spacing={2}>
-        <a target={"_blank"} href={"https://discord.com/invite/thedogenft"} style={{ display: 'flex', alignItems: 'center' }}>
-          <Icon icon={'discord'} boxSize={5}/>
-        </a>
-        <a target={"_blank"} href={"https://twitter.com/ownthedoge"} style={{ display: 'flex', alignItems: 'center' }}>
-          <Icon icon={'twitter'} boxSize={4}/>
-        </a>
-        {AppStore.web3.usdPerPixel && <Typography variant={TVariant.ComicSans14}>
-          ${formatWithThousandsSeparators(AppStore.web3.usdPerPixel, 2)} / pixel
-        </Typography>}
-      </HStack>
   );
 });
 
 const MobileNav = observer(() => {
   const { colorMode } = useColorMode();
+  useEffect(() => {
+    const closeOnEsc = (e) => {
+      if (e.key === 'Escape') {
+        if (AppStore.rwd.isMobileNavOpen) {
+          AppStore.rwd.toggleMobileNav()
+        }
+      }
+    }
+    document.addEventListener("keydown", closeOnEsc)
+    return () => {
+      document.removeEventListener("keydown", closeOnEsc)
+    }
+  }, [])
   return (
-    <Flex
-      flexDirection={"column"}
-      bottom={0}
-      zIndex={3}
-      height={"100px"}
-      borderTopStyle={"solid"}
-      borderTopWidth={"1px"}
-      justifyContent={"center"}
-      alignItems={"space-around"}
-      bg={colorMode === "light" ? "yellow.50" : "purple.700"}
-      borderTopColor={colorMode === "light" ? "black" : "white"}
-    >
-      <Flex justifyContent={"space-around"}>
-        <NavLinks isMobile />
-      </Flex>
-    </Flex>
+    <AnimatePresence exitBeforeEnter>
+      {AppStore.rwd.isMobileNavOpen && <motion.div
+        style={{
+          display: "flex",
+          position: "absolute",
+          width: "100vw",
+          height: "100vh",
+          zIndex: 100,
+          background: "transparent",
+          justifyContent: "center",
+          alignItems: "center",
+          top: 0
+        }}
+        initial={{left: -window.innerWidth}}
+        animate={{left: 0}}
+        exit={{left: -window.innerWidth}}
+        transition={{duration: 0.25}}
+      >
+      <Box opacity={0.9} position={"absolute"} w={"full"} h={"full"} bg={lightOrDarkMode(colorMode, "yellow.50", "purple.700")}/>
+      <Box zIndex={101}>
+        <Flex flexDir={"column"} justifyContent={"center"} alignItems={"center"} gap={5}>
+          <NavLinks onClick={() => {
+              if (AppStore.rwd.isMobileNavOpen) {
+                AppStore.rwd.toggleMobileNav()
+              }
+            }} isMobile={AppStore.rwd.isMobile} size={"lg"}/>
+        </Flex>
+        <Box position={"absolute"} top={5} right={5}>
+          <Icon cursor={"pointer"} boxSize={35} icon={"close"} onClick={() => AppStore.rwd.toggleMobileNav()}/>
+        </Box>
+      </Box>
+    </motion.div>}
+    </AnimatePresence>
   );
 });
 

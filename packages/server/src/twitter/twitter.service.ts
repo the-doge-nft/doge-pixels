@@ -3,13 +3,13 @@ import { ConfigService } from '@nestjs/config';
 import { Configuration } from '../config/configuration';
 import { EthersService } from '../ethers/ethers.service';
 import { OnEvent } from '@nestjs/event-emitter';
-import { Events, PixelMintOrBurnPayload } from '../events';
-import { PixelImageGeneratorService } from '../pixel-image-generator/pixel-image-generator.service';
+import { Events, PixelTransferEventPayload } from '../events';
+import { ImageGeneratorService } from '../image-generator/image-generator.service';
 import { InjectSentry, SentryService } from '@travelerdev/nestjs-sentry';
 
 import * as Twitter from 'twitter';
 import { AwsService } from '../aws/aws.service';
-import * as crypto from 'crypto'
+import * as crypto from 'crypto';
 
 @Injectable()
 export class TwitterService implements OnModuleInit {
@@ -18,7 +18,7 @@ export class TwitterService implements OnModuleInit {
 
   constructor(
     private config: ConfigService<Configuration>,
-    private imageGenerator: PixelImageGeneratorService,
+    private imageGenerator: ImageGeneratorService,
     private ethers: EthersService,
     private aws: AwsService,
     @InjectSentry() private readonly sentryClient: SentryService,
@@ -33,8 +33,15 @@ export class TwitterService implements OnModuleInit {
     });
   }
 
-  @OnEvent(Events.PIXEL_MINT_OR_BURN)
-  async tweetPixelEventImage({ from, to, tokenId }: PixelMintOrBurnPayload) {
+  @OnEvent(Events.PIXEL_TRANSFER)
+  async tweetPixelEventImage({
+    from,
+    to,
+    tokenId,
+  }: Omit<
+    PixelTransferEventPayload,
+    'event' | 'blockCreatedAt' | 'blockNumber'
+  >) {
     this.logger.log(`Posting to twitter:: (${tokenId}) ${from} -> ${to}`);
     const textContent = await this.imageGenerator.getTextContent(
       from,
@@ -89,12 +96,12 @@ export class TwitterService implements OnModuleInit {
   }
 
   public async uploadImageToS3(data: string) {
-    const uuid = crypto.randomUUID()
+    const uuid = crypto.randomUUID();
     const filename = `${uuid}.png`;
     const _data = new Buffer(data, 'base64');
     const res = await this.aws.uploadToS3(filename, _data, 'image/png');
     console.log('debug:: res', res);
-    return {uuid};
+    return { uuid };
   }
 
   public DEBUG_TEST() {

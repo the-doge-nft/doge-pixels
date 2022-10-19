@@ -1,17 +1,17 @@
 const ToastStyle = {
-    baseStyle: {
-        borderStyle: "solid",
-        borderWidth: "2px",
-        color: "black"
+  baseStyle: {
+    borderStyle: "solid",
+    borderWidth: "2px",
+    color: "black",
+  },
+  variants: {
+    success: {
+      bg: "white",
     },
-    variants: {
-        success: {
-            bg: "white"
-        },
-        debug: {
-            bg: "yellow.700"
-        }
+    debug: {
+      bg: "yellow.700",
     },
-}
+  },
+};
 
-export default ToastStyle
+export default ToastStyle;

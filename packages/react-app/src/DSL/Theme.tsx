@@ -21,6 +21,7 @@ import CheckboxStyle from "./Form/CheckboxInput/Checkbox.style";
 import BigTextStyle from "./BigText/BigText.style";
 import DrawerStyle from "./Drawer/Drawer.style";
 import TooltipStyle from "./Tooltip/Tooltip.style";
+import TypeaheadStyle from "./Typeahead/Typeahead.style";
 
 export const lightModePrimary = "yellow.700";
 export const darkModePrimary = "purple.700";
@@ -96,7 +97,8 @@ const theme = extendTheme({
     Checkbox: CheckboxStyle,
     BigText: BigTextStyle,
     Drawer: DrawerStyle,
-    Tooltip: TooltipStyle
+    Tooltip: TooltipStyle,
+    Typeahead: TypeaheadStyle,
   },
 });
 

@@ -1,9 +1,10 @@
-.ReactModal__Overlay, .ReactModal__Overlay--after-open {
-    z-index: 3;
-    background-color: transparent!important;
-    /* display: none!important; */
+.ReactModal__Overlay,
+.ReactModal__Overlay--after-open {
+  z-index: 3;
+  background-color: transparent !important;
+  /* display: none!important; */
 }
 
 .react-draggable {
-    overflow: inherit!important;
+  overflow: inherit !important;
 }

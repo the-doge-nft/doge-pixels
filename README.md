@@ -4,9 +4,9 @@
 > fungies 🤝 non-fungies
 
 # Deployments
-[dev](https://squeamish-side.surge.sh/) 
+[dev](https://dev.pixels.ownthedoge.com) 
 
-[prod](https://pixels.thedao.ge/)
+[prod](https://pixels.ownthedoge.com)
 
 # 🏃️ Get it started
 Prerequisites: [Node](https://nodejs.org/en/download/) plus [Yarn](https://classic.yarnpkg.com/en/docs/install/) and [Git](https://git-scm.com/downloads)

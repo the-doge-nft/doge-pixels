@@ -1,113 +1,134 @@
 import React from "react";
 import { observer } from "mobx-react-lite";
-import { Box, Flex, Image, VStack } from "@chakra-ui/react";
+import { Box, Flex, Image } from "@chakra-ui/react";
 import Typography, { TVariant } from "../../../DSL/Typography/Typography";
 import ViewerStore from "../Viewer.store";
-import Button, { ButtonVariant } from "../../../DSL/Button/Button";
+import Button from "../../../DSL/Button/Button";
 import PixelPane from "../../../DSL/PixelPane/PixelPane";
 import { SELECT_PIXEL } from "../../../services/mixins/eventable";
 import AppStore from "../../../store/App.store";
 import Dev from "../../../common/Dev";
-import { isDevModeEnabled, isProduction, isStaging } from "../../../environment/helpers";
 import Link from "../../../DSL/Link/Link";
+import { generatePath } from "react-router-dom";
+import { isDevModeEnabled, isStaging } from "../../../environment/helpers";
+import Icon from "../../../DSL/Icon/Icon";
 
 const SelectedPixelPane = observer(function SelectedPixelPane({ store }: { store: ViewerStore }) {
   return (
-    <Flex flexDirection={"column"} justifyContent={"space-between"} h={"full"}>
-      <Box>
-        <Box mt={4}>
+    <Flex flexDir={"column"} gap={2}>
+      <Flex flexDir={{ base: "row", md: "column" }} gap={4}>
+        <Flex alignItems={"center"} gap={4}>
           {store.selectedPupper && (
             <PixelPane
-              showCoords
-              coordinates={AppStore.web3.pupperToPixelCoordsLocal(store.selectedPupper)}
-              size={"lg"}
+              size={AppStore.rwd.isMobile ? "xs" : "md"}
               pupper={store.selectedPupper}
-              color={store.selectedPupperHEX}
-              pupperIndex={store.selectedPupperIndex}
-              variant={"shadow"}
               onClick={() => store.publish(SELECT_PIXEL, [store.selectedPixelX, store.selectedPixelY])}
             />
           )}
-        </Box>
-
-        {store.metaData && (
-          <Dev>
-            <Box mt={10} border={"1px dashed black"} p={3}>
-              <Typography variant={TVariant.ComicSans12} fontWeight={"bold"} mb={2} block>
-                DEBUG METADATA
-              </Typography>
-              <Typography block variant={TVariant.ComicSans12}>
-                {store.metaData.name}
-              </Typography>
-              <Typography block variant={TVariant.ComicSans12}>
-                {store.metaData.description}
-              </Typography>
-              {store.metaData.attributes?.map(item => (
-                <Typography block variant={TVariant.ComicSans12}>
-                  {item.trait_type}: {item.value}
-                </Typography>
-              ))}
-              <Image src={store.metaData.image} height={25} width={25} />
+          {store.isSelectedPupperOwned && !AppStore.rwd.isMobile && (
+            <Box>
+              <Button onClick={() => (AppStore.modals.isBurnModalOpen = true)}>Burn</Button>
             </Box>
-          </Dev>
-        )}
-
-        <Box mt={8}>
+          )}
+        </Flex>
+        <Box>
           <Box>
-            <Typography variant={TVariant.ComicSans18} mr={2}>
+            <Typography variant={TVariant.ComicSans14} mr={2}>
+              Token ID:
+            </Typography>
+            <Typography variant={TVariant.ComicSans14}>{store.selectedPupper}</Typography>
+          </Box>
+          <Box>
+            <Typography variant={TVariant.ComicSans14} mr={2}>
               Index:
             </Typography>
-            <Typography variant={TVariant.ComicSans18}>{store.selectedPupperIndex}</Typography>
+            <Typography variant={TVariant.ComicSans14}>{store.selectedPupperIndex}</Typography>
           </Box>
           <Box>
-            <Typography variant={TVariant.ComicSans18} mr={2}>
+            <Typography variant={TVariant.ComicSans14} mr={2}>
               HEX:
             </Typography>
-            <Typography variant={TVariant.ComicSans18}>{store.selectedPupperHEX}</Typography>
+            <Typography variant={TVariant.ComicSans14}>{store.selectedPupperHEX}</Typography>
           </Box>
+
+          {store.metaData && (
+            <Dev>
+              <Box mt={10} border={"1px dashed black"} p={3}>
+                <Typography variant={TVariant.ComicSans12} fontWeight={"bold"} mb={2} block>
+                  DEBUG METADATA
+                </Typography>
+                <Typography block variant={TVariant.ComicSans12}>
+                  {store.metaData.name}
+                </Typography>
+                <Typography block variant={TVariant.ComicSans12}>
+                  {store.metaData.description}
+                </Typography>
+                {store.metaData.attributes?.map(item => (
+                  <Typography block variant={TVariant.ComicSans12}>
+                    {item.trait_type}: {item.value}
+                  </Typography>
+                ))}
+                <Image src={store.metaData.image} height={25} width={25} />
+              </Box>
+            </Dev>
+          )}
+
           {store.tokenOwner && (
-            <Box mt={12}>
-              <Typography variant={TVariant.ComicSans18} mr={2}>
+            <Box mt={4}>
+              <Typography variant={TVariant.ComicSans14} mr={2}>
                 Owned by
               </Typography>
 
-              <Flex alignItems={"center"} pt={AppStore.rwd.isMobile ? 3 : 0}>
-                {AppStore.rwd.isMobile && (
-                  <Box>
-                    <Typography block variant={TVariant.PresStart18}>
-                      {store.selectedTokenOwnerDisplayName}
-                    </Typography>
-                  </Box>
-                )}
-
-                {!AppStore.rwd.isMobile && (
-                  <Box mt={2}>
-                    <Link isNav to={`/park/${store.tokenOwner}/${store.selectedPupper}`}>
-                      {store.selectedTokenOwnerDisplayName}
-                    </Link>
-                  </Box>
-                )}
-              </Flex>
-
-              <Flex justifyContent={"center"} mt={12}>
-                <Link
-                  href={
-                    isDevModeEnabled() || isStaging()
-                      ? `https://testnets.opensea.io/assets/${AppStore.web3.pxContractAddress}/${store.selectedPupper}`
-                      : `https://opensea.io/assets/${AppStore.web3.pxContractAddress}/${store.selectedPupper}`
-                  }
-                >
-                  View on Opensea
-                </Link>
+              <Flex justifyContent={"center"} flexDir={"column"} gap={6}>
+                <Box mt={2}>
+                  <Link
+                    pb={1}
+                    size={"sm"}
+                    maxW={"200px"}
+                    overflowWrap={"initial"}
+                    overflow={"hidden"}
+                    textOverflow={"ellipsis"}
+                    isNav
+                    to={generatePath("/leaderbork/:address/wallet/:tokenId", {
+                      address: store.tokenOwner,
+                      tokenId: store.selectedPupper,
+                    })}
+                  >
+                    {store.selectedTokenOwnerDisplayName}
+                  </Link>
+                </Box>
               </Flex>
             </Box>
           )}
         </Box>
-      </Box>
-      {store.isSelectedPupperOwned && !AppStore.rwd.isMobile && (
-        <VStack spacing={9} mb={6}>
-          <Button onClick={() => (store.modals.isBurnModalOpen = true)}>Burn</Button>
-        </VStack>
+      </Flex>
+      {store.tokenOwner && (
+        <Flex justifyContent={"center"} gap={2}>
+          <Link
+            opacity={0.5}
+            target={"_blank"}
+            size={"sm"}
+            href={
+              isDevModeEnabled() || isStaging()
+                ? `https://testnets.opensea.io/assets/${AppStore.web3.pxContractAddress}/${store.selectedPupper}`
+                : `https://opensea.io/assets/${AppStore.web3.pxContractAddress}/${store.selectedPupper}`
+            }
+          >
+            <Icon fill={"white"} icon={"openSea"} boxSize={5} />
+          </Link>
+          <Link
+            opacity={0.5}
+            target={"_blank"}
+            size={"sm"}
+            href={
+              isDevModeEnabled() || isStaging()
+                ? `https://goerli.looksrare.org/collections/${AppStore.web3.pxContractAddress}/${store.selectedPupper}`
+                : `https://looksrare.org/collections/${AppStore.web3.pxContractAddress}/${store.selectedPupper}`
+            }
+          >
+            <Icon icon={"looksRare"} boxSize={5} />
+          </Link>
+        </Flex>
       )}
     </Flex>
   );

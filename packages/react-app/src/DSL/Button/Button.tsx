@@ -1,7 +1,7 @@
-import React, {useState} from "react";
-import {Box, Button as ChakraButton, useMultiStyleConfig} from "@chakra-ui/react";
-import Typography, {TVariant} from "../Typography/Typography";
-import {AllowedStyleProps} from "../Form/interfaces";
+import React, { useState } from "react";
+import { Box, Button as ChakraButton, useMultiStyleConfig } from "@chakra-ui/react";
+import Typography, { TVariant } from "../Typography/Typography";
+import { AllowedStyleProps } from "../Form/interfaces";
 
 export enum ButtonVariant {
   Primary = "primary",
@@ -19,27 +19,30 @@ export interface ButtonProps extends AllowedStyleProps {
   isLoading?: boolean;
 }
 
-type ButtonSize = "xs" | "sm" | "md" | "lg"
+type ButtonSize = "xs" | "sm" | "md" | "lg";
 
 const buttonTypographyMap: { [key in ButtonSize]: TVariant } = {
   xs: TVariant.PresStart10,
   sm: TVariant.PresStart12,
   md: TVariant.PresStart14,
-  lg: TVariant.PresStart28
+  lg: TVariant.PresStart28,
 };
 
-const Button = ({ submit, children, variant = ButtonVariant.Primary, size = "md", isDisabled = false, onClick, isLoading=false, ...rest }: ButtonProps) => {
-  const styles = useMultiStyleConfig("Button", {size, variant})
-  const [isHover, setIsHover] = useState(false)
+const Button = ({
+  submit,
+  children,
+  variant = ButtonVariant.Primary,
+  size = "md",
+  isDisabled = false,
+  onClick,
+  isLoading = false,
+  ...rest
+}: ButtonProps) => {
+  const styles = useMultiStyleConfig("Button", { size, variant });
+  const [isHover, setIsHover] = useState(false);
 
   return (
-    <Box
-      position={"relative"}
-      display={"inline-block"}
-      zIndex={1}
-      __css={styles.container}
-      {...rest}
-    >
+    <Box position={"relative"} display={"inline-block"} zIndex={1} __css={styles.container} {...rest}>
       <ChakraButton
         isDisabled={isDisabled}
         type={submit ? "submit" : "button"}
@@ -51,23 +54,18 @@ const Button = ({ submit, children, variant = ButtonVariant.Primary, size = "md"
         onMouseEnter={() => setIsHover(true)}
         onMouseLeave={() => setIsHover(false)}
         onTouchStart={() => {
-          setIsHover(true)
-          onClick && onClick()
+          setIsHover(true);
+          onClick && onClick();
         }}
         onTouchEnd={() => setIsHover(false)}
       >
-        <Typography
-          variant={buttonTypographyMap[size]}
-          color={"inherit"}
-          overflow={"hidden"}
-          textOverflow={"ellipsis"}
-        >
+        <Typography variant={buttonTypographyMap[size]} color={"inherit"} overflow={"hidden"} textOverflow={"ellipsis"}>
           {children}
         </Typography>
       </ChakraButton>
       <Box
         //@ts-ignore
-        sx={isHover ? {borderImageSource: styles.button["_hover"]?.borderImageSource} : {}}
+        sx={isHover ? { borderImageSource: styles.button["_hover"]?.borderImageSource } : {}}
         __css={styles.drop}
       />
     </Box>

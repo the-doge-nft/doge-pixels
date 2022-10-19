@@ -51,6 +51,7 @@
     "react-modal": "^3.14.4",
     "react-router-dom": "^5.3.0",
     "react-scripts": "^4.0.3",
+    "react-spring-bottom-sheet": "^3.4.1",
     "source-map-explorer": "^2.5.2",
     "three": "^0.134.0",
     "typescript": "^4.4.4",
@@ -68,9 +69,9 @@
     "@types/three": "^0.133.1",
     "cross-env": "^7.0.3",
     "customize-cra": "^1.0.0",
+    "prettier": "2.7.1",
     "react-app-rewired": "^2.1.8",
-    "react-error-overlay": "6.0.9",
-    "surge": "^0.21.5"
+    "react-error-overlay": "6.0.9"
   },
   "resolutions": {
     "react-error-overlay": "6.0.9"
@@ -82,8 +83,8 @@
     "analyze": "source-map-explorer 'build/static/js/*.js'",
     "build": "react-app-rewired build",
     "start": "cross-env PORT=3001 react-app-rewired start",
-    "_aws_dev_deploy": "aws s3 sync ./build s3://dev.pixels.ownthedoge.com",
-    "_aws_prod_deploy": "aws s3 sync ./build s3://pixels.ownthedoge.com",
+    "_aws_dev_deploy": "aws s3 sync ./build s3://dev.pixels.ownthedoge.com --delete",
+    "_aws_prod_deploy": "aws s3 sync ./build s3://pixels.ownthedoge.com --delete",
     "_aws_prod_old_deploy": "aws s3 sync ./build s3://pixels.thedao.ge",
     "_aws_dev_invalidate_cloudfront": "aws cloudfront create-invalidation --distribution-id EM5YGQYZPD5JN --paths '/*'",
     "_aws_prod_invalidate_cloudfront": "aws cloudfront create-invalidation --distribution-id E14PJ8YMLCOVWA --paths '/*'",
@@ -96,6 +97,7 @@
     "prestart": "yarn create-contracts && yarn write-build-number",
     "create-contracts": "node ./scripts/create_contracts.js",
     "write-build-number": "node ./scripts/write-build-number.js",
-    "test": "react-app-rewired test"
+    "test": "react-app-rewired test",
+    "format": "prettier --write './src/**/*.{js,jsx,ts,tsx,css}'"
   }
 }

@@ -1,159 +1,158 @@
 .web3modal-modal-lightbox {
-    z-index: 100!important;
+  z-index: 100 !important;
 }
 
 .walletconnect-modal__base {
-    color: black
+  color: black;
 }
 
 .web3modal-modal-card {
-    border-radius: 0px !important;
-    font-family: 'PressStart2P';
-    border-color: transparent;
-    grid-template-columns: repeat(1, minmax(320px, 1fr))!important;
+  border-radius: 0px !important;
+  font-family: "PressStart2P";
+  border-color: transparent;
+  grid-template-columns: repeat(1, minmax(320px, 1fr)) !important;
 }
 
 .web3modal-provider-container {
-    border-width: 1px;
-    border-style: solid;
-    border-color: transparent;
-    border-radius: 0px !important;
-    height: 100%;
+  border-width: 1px;
+  border-style: solid;
+  border-color: transparent;
+  border-radius: 0px !important;
+  height: 100%;
 }
 
 .web3modal-provider-description {
-    width: 57%!important;
+  width: 57% !important;
 }
 
 .web3modal-provider-name {
-    margin-top: 22px!important;
-    font-size: 20px!important;
+  margin-top: 22px !important;
+  font-size: 20px !important;
 }
 
 .web3modal-provider-description {
-    font-family: 'Comic Sans';
-    font-size: 16px!important;
-    /*display: none;*/
+  font-family: "Comic Sans";
+  font-size: 16px !important;
+  /*display: none;*/
 }
 
 .web3modal-modal-card {
-    height: 80%;
+  height: 80%;
 }
-
 
 /*extreme~css~pain~below*/
 
 /* LIGHT MODE */
 
 .chakra-ui-light
-> #WEB3_CONNECT_MODAL_ID
-> .web3modal-modal-lightbox
-> .web3modal-modal-container
-> .web3modal-modal-card {
-    background-color: var(--chakra-colors-yellow-50)!important;
-    box-shadow: 14px 14px 0px black;
+  > #WEB3_CONNECT_MODAL_ID
+  > .web3modal-modal-lightbox
+  > .web3modal-modal-container
+  > .web3modal-modal-card {
+  background-color: var(--chakra-colors-yellow-50) !important;
+  box-shadow: 14px 14px 0px black;
 }
 
 .chakra-ui-light
-> #WEB3_CONNECT_MODAL_ID
-> .web3modal-modal-lightbox
-> .web3modal-modal-container
-> .web3modal-modal-card
-> .web3modal-provider-wrapper {
-    border-color: var(--chakra-colors-black)!important;
+  > #WEB3_CONNECT_MODAL_ID
+  > .web3modal-modal-lightbox
+  > .web3modal-modal-container
+  > .web3modal-modal-card
+  > .web3modal-provider-wrapper {
+  border-color: var(--chakra-colors-black) !important;
 }
 
 .chakra-ui-light
-> #WEB3_CONNECT_MODAL_ID
-> .web3modal-modal-lightbox
-> .web3modal-modal-container
-> .web3modal-modal-card
-> .web3modal-provider-wrapper
-> .web3modal-provider-container {
-    background-color: var(--chakra-colors-yellow-50)!important;
-    border-bottom: none!important;
+  > #WEB3_CONNECT_MODAL_ID
+  > .web3modal-modal-lightbox
+  > .web3modal-modal-container
+  > .web3modal-modal-card
+  > .web3modal-provider-wrapper
+  > .web3modal-provider-container {
+  background-color: var(--chakra-colors-yellow-50) !important;
+  border-bottom: none !important;
 }
 
 .chakra-ui-light
-> #WEB3_CONNECT_MODAL_ID
-> .web3modal-modal-lightbox
-> .web3modal-modal-container
-> .web3modal-modal-card
-> .web3modal-provider-wrapper
-> .web3modal-provider-container:hover {
-    background-color: var(--chakra-colors-yellow-700)!important;
+  > #WEB3_CONNECT_MODAL_ID
+  > .web3modal-modal-lightbox
+  > .web3modal-modal-container
+  > .web3modal-modal-card
+  > .web3modal-provider-wrapper
+  > .web3modal-provider-container:hover {
+  background-color: var(--chakra-colors-yellow-700) !important;
 }
 
 .chakra-ui-light
-> #WEB3_CONNECT_MODAL_ID
-> .web3modal-modal-lightbox
-> .web3modal-modal-container
-> .web3modal-modal-card
-> .web3modal-provider-wrapper
-> .web3modal-provider-container
-> .web3modal-provider-description {
-    color: black!important;
+  > #WEB3_CONNECT_MODAL_ID
+  > .web3modal-modal-lightbox
+  > .web3modal-modal-container
+  > .web3modal-modal-card
+  > .web3modal-provider-wrapper
+  > .web3modal-provider-container
+  > .web3modal-provider-description {
+  color: black !important;
 }
 
 /* DARK MODE */
 
 .chakra-ui-dark
-> #WEB3_CONNECT_MODAL_ID
-> .web3modal-modal-lightbox
-> .web3modal-modal-container
-> .web3modal-modal-card {
-    background-color: var(--chakra-colors-purple-700)!important;
+  > #WEB3_CONNECT_MODAL_ID
+  > .web3modal-modal-lightbox
+  > .web3modal-modal-container
+  > .web3modal-modal-card {
+  background-color: var(--chakra-colors-purple-700) !important;
 }
 
 .chakra-ui-dark
-> #WEB3_CONNECT_MODAL_ID
-> .web3modal-modal-lightbox
-> .web3modal-modal-container
-> .web3modal-modal-card
-> .web3modal-provider-wrapper {
-    border-color: var(--chakra-colors-white)!important;
+  > #WEB3_CONNECT_MODAL_ID
+  > .web3modal-modal-lightbox
+  > .web3modal-modal-container
+  > .web3modal-modal-card
+  > .web3modal-provider-wrapper {
+  border-color: var(--chakra-colors-white) !important;
 }
 
 .chakra-ui-dark
-> #WEB3_CONNECT_MODAL_ID
-> .web3modal-modal-lightbox
-> .web3modal-modal-container
-> .web3modal-modal-card
-> .web3modal-provider-wrapper
-> .web3modal-provider-container {
-    background-color: var(--chakra-colors-magenta-700)!important;
-    color: white!important;
-    border-bottom: none!important;
+  > #WEB3_CONNECT_MODAL_ID
+  > .web3modal-modal-lightbox
+  > .web3modal-modal-container
+  > .web3modal-modal-card
+  > .web3modal-provider-wrapper
+  > .web3modal-provider-container {
+  background-color: var(--chakra-colors-magenta-700) !important;
+  color: white !important;
+  border-bottom: none !important;
 }
 
 .chakra-ui-dark
-> #WEB3_CONNECT_MODAL_ID
-> .web3modal-modal-lightbox
-> .web3modal-modal-container
-> .web3modal-modal-card
-> .web3modal-provider-wrapper
-> .web3modal-provider-container
-> .web3modal-provider-name {
-    color: white!important;
+  > #WEB3_CONNECT_MODAL_ID
+  > .web3modal-modal-lightbox
+  > .web3modal-modal-container
+  > .web3modal-modal-card
+  > .web3modal-provider-wrapper
+  > .web3modal-provider-container
+  > .web3modal-provider-name {
+  color: white !important;
 }
 
 .chakra-ui-dark
-> #WEB3_CONNECT_MODAL_ID
-> .web3modal-modal-lightbox
-> .web3modal-modal-container
-> .web3modal-modal-card
-> .web3modal-provider-wrapper
-> .web3modal-provider-container
-> .web3modal-provider-description {
-    color: white!important;
+  > #WEB3_CONNECT_MODAL_ID
+  > .web3modal-modal-lightbox
+  > .web3modal-modal-container
+  > .web3modal-modal-card
+  > .web3modal-provider-wrapper
+  > .web3modal-provider-container
+  > .web3modal-provider-description {
+  color: white !important;
 }
 
 .chakra-ui-dark
-> #WEB3_CONNECT_MODAL_ID
-> .web3modal-modal-lightbox
-> .web3modal-modal-container
-> .web3modal-modal-card
-> .web3modal-provider-wrapper
-> .web3modal-provider-container:hover {
-    background: linear-gradient(0deg, #5A19EC 0.03%, #FF3BEB 99.98%)!important;
+  > #WEB3_CONNECT_MODAL_ID
+  > .web3modal-modal-lightbox
+  > .web3modal-modal-container
+  > .web3modal-modal-card
+  > .web3modal-provider-wrapper
+  > .web3modal-provider-container:hover {
+  background: linear-gradient(0deg, #5a19ec 0.03%, #ff3beb 99.98%) !important;
 }

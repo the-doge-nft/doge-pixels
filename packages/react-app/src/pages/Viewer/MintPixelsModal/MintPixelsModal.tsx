@@ -1,8 +1,8 @@
-import {observer} from "mobx-react-lite";
-import Modal, {ModalProps} from "../../../DSL/Modal/Modal";
+import { observer } from "mobx-react-lite";
+import Modal, { ModalProps } from "../../../DSL/Modal/Modal";
 import MintPixelsDialog from "../../../common/MintPixels/MintPixelsDialog";
 import { Box } from "@chakra-ui/react";
-import MintPixelsDialogStore, {MintModalView} from "../../../common/MintPixels/MintPixelsDialog.store";
+import MintPixelsDialogStore, { MintModalView } from "../../../common/MintPixels/MintPixelsDialog.store";
 import { useMemo } from "react";
 
 export interface MintPixelsModalProps extends Pick<ModalProps, "isOpen" | "onClose"> {
@@ -11,20 +11,11 @@ export interface MintPixelsModalProps extends Pick<ModalProps, "isOpen" | "onClo
 }
 
 const MintPixelsModal = observer(({ isOpen, onClose, onSuccess, goToPixels }: MintPixelsModalProps) => {
-  const store = useMemo(() => new MintPixelsDialogStore(), [])
+  const store = useMemo(() => new MintPixelsDialogStore(), []);
   return (
-    <Modal
-      size={"lg"}
-      isOpen={isOpen}
-      title={store.title}
-      onClose={onClose}
-      description={store.description}
-    >
-      <Box pt={store.currentView === MintModalView.Form ? 0 : 12} pb={2}>
-        <MintPixelsDialog
-          store={store}
-          onSuccess={onSuccess}
-          onGoToPixelsClick={goToPixels}/>
+    <Modal size={"lg"} isOpen={isOpen} title={store.title} onClose={onClose} description={store.description}>
+      <Box pb={2}>
+        <MintPixelsDialog store={store} onSuccess={onSuccess} onGoToPixelsClick={goToPixels} />
       </Box>
     </Modal>
   );

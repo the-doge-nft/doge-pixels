@@ -3,6 +3,7 @@ import { Type } from "../Fonts/Fonts";
 
 const LinkStyle = {
   baseStyle: ({ colorMode }: { colorMode: colorModeType }) => ({
+    maxW: "fit-content",
     fontFamily: Type.PresStart,
     textDecoration: "none",
     color: lightOrDarkMode(colorMode, "black", "white"),
@@ -22,7 +23,7 @@ const LinkStyle = {
   }),
   sizes: {
     sm: {
-      fontSize: "10px",
+      fontSize: "13px",
     },
     md: {
       fontSize: "16px",
@@ -41,8 +42,8 @@ const LinkStyle = {
   },
   defaultProps: {
     size: "md",
-    variant: Type.PresStart
-  }
+    variant: Type.PresStart,
+  },
 };
 
 export default LinkStyle;

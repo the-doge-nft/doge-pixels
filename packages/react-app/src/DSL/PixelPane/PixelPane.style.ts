@@ -7,6 +7,7 @@ const PixelPaneStyle = {
       display: "inline-flex",
       flexDirection: "column",
       maxWidth: "fit-content",
+      maxHeight: "fit-content",
       position: "relative",
     },
     swatch: {
@@ -37,6 +38,15 @@ const PixelPaneStyle = {
     },
   }),
   sizes: {
+    xxs: {
+      swatch: {
+        w: "20px",
+        h: "20px",
+      },
+      textContainer: {
+        display: "none",
+      },
+    },
     xs: {
       swatch: {
         w: "70px",

@@ -1,4 +1,4 @@
-import {makeObservable, observable} from "mobx";
+import { makeObservable, observable } from "mobx";
 import LocalStorage from "../services/local-storage";
 
 export enum ModalName {
@@ -6,13 +6,12 @@ export enum ModalName {
   Burn = "burn",
   Helper = "helper",
   MintMeme = "mintmeme",
-  BurnMeme = "burnmeme"
+  BurnMeme = "burnmeme",
 }
 
-const SHOW_HELPER_MODAL = "show_helper_modal"
+const SHOW_HELPER_MODAL = "show_helper_modal";
 
 class ModalsStore {
-
   @observable
   isMintModalOpen = false;
 
@@ -20,7 +19,7 @@ class ModalsStore {
   isBurnModalOpen = false;
 
   @observable
-  isHelperModalOpen = false;
+  isScrollModalOpen = false;
 
   @observable
   isMintMemeModalOpen = false;
@@ -28,14 +27,23 @@ class ModalsStore {
   @observable
   isBurnMemeModalOpen = false;
 
+  @observable
+  isViewerModalOpen = false;
+
+  @observable
+  isMyPixelsModalOpen = false;
+
+  @observable
+  isSelectedPixelModalOpen = false;
+
   constructor() {
-    makeObservable(this)
+    makeObservable(this);
   }
 
   init() {
-    this.isHelperModalOpen = LocalStorage.getItem(SHOW_HELPER_MODAL, LocalStorage.PARSE_JSON, true)
-    LocalStorage.setItem(SHOW_HELPER_MODAL, false)
+    this.isScrollModalOpen = LocalStorage.getItem(SHOW_HELPER_MODAL, LocalStorage.PARSE_JSON, true);
+    LocalStorage.setItem(SHOW_HELPER_MODAL, false);
   }
 }
 
-export default ModalsStore
+export default ModalsStore;

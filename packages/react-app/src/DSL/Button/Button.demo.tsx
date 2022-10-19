@@ -1,9 +1,9 @@
 import React from "react";
-import Button, {ButtonVariant} from "./Button";
+import Button, { ButtonVariant } from "./Button";
 import Demo from "../Demo/Demo";
-import {Box} from "@chakra-ui/react";
-import {SubDemo} from "../Form/Form.demo";
-import {observer} from "mobx-react-lite";
+import { Box } from "@chakra-ui/react";
+import { SubDemo } from "../Form/Form.demo";
+import { observer } from "mobx-react-lite";
 
 const DemoButton = observer(() => {
   return (
