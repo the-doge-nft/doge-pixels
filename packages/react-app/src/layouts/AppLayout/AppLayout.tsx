@@ -69,8 +69,8 @@ const MobileNav = observer(() => {
         exit={{left: -window.innerWidth}}
         transition={{duration: 0.25}}
       >
-      <Box opacity={0.85} position={"absolute"} w={"full"} h={"full"} bg={lightOrDarkMode(colorMode, "yellow.50", "purple.700")}/>
-      <Box opacity={1} zIndex={101}>
+      <Box opacity={0.9} position={"absolute"} w={"full"} h={"full"} bg={lightOrDarkMode(colorMode, "yellow.50", "purple.700")}/>
+      <Box zIndex={101}>
         <Flex flexDir={"column"} justifyContent={"center"} alignItems={"center"} gap={5}>
           <NavLinks onClick={() => {
               if (AppStore.rwd.isMobileNavOpen) {

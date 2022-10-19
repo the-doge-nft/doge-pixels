@@ -20,6 +20,7 @@ const Header = observer(() => {
     xl: () => history.push(route(NamedRoutes.VIEWER))
   });
   const { colorMode } = useColorMode();
+  const showHamburger = useBreakpointValue({base: true, xl: false})
   return (
     <Box>
       <Flex mb={{base: 0, md: 6}}>
@@ -43,6 +44,13 @@ const Header = observer(() => {
             rounded={"full"}
           >
             <img src={DPPLogo} width={50}/>
+
+            {showHamburger && <>
+              <Box position={"absolute"} top={0} left={0} w={"full"} h={"full"} bg={lightOrDarkMode(colorMode, "yellow.50", "purple.700")} rounded={"full"} opacity={0.85}/>
+              <Flex justifyContent={"center"} alignItems={"center"} position={"absolute"} left={0} top={0} w={"full"} h={"full"}>
+                <GiHamburgerMenu color={lightOrDarkMode(colorMode, "black", "white")} size={24}/>
+              </Flex>
+            </>}
           </Box>
           <Flex gap={6} display={{base: "none", xl: "flex"}}>
             <NavLinks onClick={() => {
