@@ -42,7 +42,9 @@ const MobileNav = observer(() => {
   useEffect(() => {
     const closeOnEsc = (e) => {
       if (e.key === 'Escape') {
-        AppStore.rwd.toggleMobileNav()
+        if (AppStore.rwd.isMobileNavOpen) {
+          AppStore.rwd.toggleMobileNav()
+        }
       }
     }
     document.addEventListener("keydown", closeOnEsc)
