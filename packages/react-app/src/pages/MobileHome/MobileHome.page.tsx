@@ -34,7 +34,7 @@ const MobileHomePage = observer(() => {
   const { colorMode } = useColorMode();
 
   return (
-    <Flex flexGrow={1} px={4}>
+    <Flex flexGrow={1} px={4} mt={{base: 14, md: 0}}>
       {!AppStore.web3.web3Provider && (
         <Flex justifyContent={"center"} alignItems={"center"} w={"full"}>
           <Button

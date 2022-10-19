@@ -64,13 +64,14 @@ const MobileNav = observer(() => {
           alignItems: "center",
           top: 0
         }}
-        initial={{left: -1500}}
+        initial={{left: -window.innerWidth}}
         animate={{left: 0}}
-        exit={{left: -1500}}
+        exit={{left: -window.innerWidth}}
+        transition={{duration: 0.25}}
       >
       <Box opacity={0.85} position={"absolute"} w={"full"} h={"full"} bg={lightOrDarkMode(colorMode, "yellow.50", "purple.700")}/>
       <Box opacity={1} zIndex={101}>
-        <Flex flexDir={"column"} justifyContent={"center"} textAlign={"center"} gap={3}>
+        <Flex flexDir={"column"} justifyContent={"center"} alignItems={"center"} gap={5}>
           <NavLinks isMobile />
         </Flex>
         <Box position={"absolute"} top={5} right={5}>
