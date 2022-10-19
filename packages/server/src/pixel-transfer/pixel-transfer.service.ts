@@ -8,7 +8,7 @@ import {
 import { PixelsService } from '../pixels/pixels.service';
 import { Event } from '@ethersproject/contracts/src.ts/index';
 import { PixelTransferRepository } from './pixel-transfer.repository';
-import { EthersService } from '../ethers/ethers.service';
+import { EthersService } from '../ethers/ethers.service'
 import { Events, PixelTransferEventPayload } from '../events';
 import { OnEvent } from '@nestjs/event-emitter';
 import { ethers } from 'ethers';
