@@ -21,7 +21,7 @@ interface ThreeSceneProps {
 }
 
 export enum CameraPositionZ {
-  far = 4800,
+  far = 4200,
   medium = 300,
   close = 80,
 }
@@ -153,7 +153,7 @@ const DogeExplorer = observer(({ store }: ThreeSceneProps) => {
       >
         <mesh
           ref={dogeMeshRef}
-          position={[imageWorldUnitsWidth / 2 - 1, (-1 * imageWorldUnitsHeight) / 2, 0]}
+          position={[imageWorldUnitsWidth / 2 - 1, (-1 * imageWorldUnitsHeight) / 1.8, 0]}
           onPointerMove={e => {
             if (hoverOverlayRef.current) {
               [hoverOverlayRef.current.position.x, hoverOverlayRef.current.position.y] = getWorldPixelCoordinate(
