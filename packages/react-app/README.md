@@ -8,4 +8,4 @@ Peep the API for the base components here [https://chakra-ui.com/](https://chakr
 Each component has a .style.ts that defines the styles for each variant of said component.
 
 Dev:
-[http://dev.dog.s3-website-us-east-1.amazonaws.com/](http://dev.dog.s3-website-us-east-1.amazonaws.com/)
+[http://dev.pixels.ownthedoge.com](http://dev.pixels.ownthedoge.com)
