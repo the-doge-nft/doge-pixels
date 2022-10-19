@@ -195,15 +195,15 @@ const LeaderborkPage = observer(function DogParkPage() {
                       </Flex>
                     </Flex>
                   </Flex>
-                  <Flex justifyContent={"center"} alignItems={"center"} flexGrow={1} mt={{ base: 4, md: 0 }}>
+                  {store.selectedPixelId && store.selectedAddress && <Flex justifyContent={"center"} alignItems={"center"} flexGrow={1} mt={{ base: 4, md: 0 }}>
                     <Link
                       display={"inline-block"}
                       isNav
                       to={route(NamedRoutes.PIXELS, { [SELECTED_PIXEL_PARAM]: store.previewSelectedPixelId })}
                     >
-                      <Button onClick={() => console.log()}>Portal</Button>
+                      <Button onClick={() => {}}>Portal</Button>
                     </Link>
-                  </Flex>
+                  </Flex>}
                 </Flex>
               )}
               {!store.showDetails && (

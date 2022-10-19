@@ -137,7 +137,7 @@ class LeaderborkStore extends Reactionable(EmptyClass) {
   get ownersTypeaheadItems() {
     return AppStore.web3.sortedPixelOwners.map(item => ({
       value: item.address,
-      name: item.ens ? item.ens : item.address,
+      name: AppStore.web3.getAddressDisplayName(item.address, false),
     }));
   }
 
@@ -172,10 +172,7 @@ class LeaderborkStore extends Reactionable(EmptyClass) {
       description = {
         to: {
           address: this.selectedActivityTransfer.to.address,
-          ens: this.selectedActivityTransfer.to.ens,
-          displayName: this.selectedActivityTransfer.to.ens
-            ? this.selectedActivityTransfer.to.ens
-            : abbreviate(this.selectedActivityTransfer.to.address, 4),
+          displayName: AppStore.web3.getAddressDisplayName(this.selectedActivityTransfer.to.address),
         },
         from: null,
       };
@@ -184,10 +181,7 @@ class LeaderborkStore extends Reactionable(EmptyClass) {
       description = {
         from: {
           address: this.selectedActivityTransfer.from.address,
-          ens: this.selectedActivityTransfer.from.ens,
-          displayName: this.selectedActivityTransfer.from.ens
-            ? this.selectedActivityTransfer.from.ens
-            : abbreviate(this.selectedActivityTransfer.from.address, 4),
+          displayName: AppStore.web3.getAddressDisplayName(this.selectedActivityTransfer.from.address),
         },
         to: null,
       };
@@ -196,17 +190,11 @@ class LeaderborkStore extends Reactionable(EmptyClass) {
       description = {
         from: {
           address: this.selectedActivityTransfer.from.address,
-          ens: this.selectedActivityTransfer.from.ens,
-          displayName: this.selectedActivityTransfer.from.ens
-            ? this.selectedActivityTransfer.from.ens
-            : abbreviate(this.selectedActivityTransfer.from.address, 4),
+          displayName: AppStore.web3.getAddressDisplayName(this.selectedActivityTransfer.from.address),
         },
         to: {
           address: this.selectedActivityTransfer.to.address,
-          ens: this.selectedActivityTransfer.to.ens,
-          displayName: this.selectedActivityTransfer.to.ens
-            ? this.selectedActivityTransfer.to.ens
-            : abbreviate(this.selectedActivityTransfer.to.address, 4),
+          displayName: AppStore.web3.getAddressDisplayName(this.selectedActivityTransfer.to.address),
         },
       };
     }
@@ -306,7 +294,7 @@ class LeaderborkStore extends Reactionable(EmptyClass) {
       return "Recent Activity";
     } else {
       if (this.selectedOwner) {
-        return this.selectedOwner.ens ? this.selectedOwner.ens : abbreviate(this.selectedOwner.address, 4);
+        return AppStore.web3.getAddressDisplayName(this.selectedOwner.address)
       }
       return "";
     }
@@ -324,7 +312,6 @@ class LeaderborkStore extends Reactionable(EmptyClass) {
       );
     } else if (this.selectedOwnerTab === SelectedOwnerTab.Activity) {
       this.selectedTransferId = this.selectedOwnerTransfers[0]?.uniqueTransferId;
-      console.log("debug:: TEST", this.selectedTransferId);
       this.pushWindowState(
         generatePath(`/leaderbork/:address/${SelectedOwnerTab.Activity}/:activityId`, {
           address: this.selectedAddress,
