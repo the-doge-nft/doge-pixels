@@ -37,6 +37,8 @@ export class UnstoppableDomainsService implements OnModuleInit {
           await this.cacheManager.set(cacheKey, noUD, {ttl: cacheSeconds})
           return null
         }
+      } else if (ud === noUD) {
+        return null
       }
       return ud
     } else {
