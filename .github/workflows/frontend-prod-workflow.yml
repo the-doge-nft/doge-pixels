@@ -25,6 +25,8 @@ jobs:
         run: yarn install --frozen-lockfile
       - name: Build
         working-directory: packages/react-app
+        env:
+          NODE_OPTIONS: "--max_old_space_size=4096"
         run: yarn _prod_build
       - name: Configure AWS Creds
         uses: aws-actions/configure-aws-credentials@v1

@@ -8,13 +8,11 @@ import {
 import { PixelsService } from '../pixels/pixels.service';
 import { Event } from '@ethersproject/contracts/src.ts/index';
 import { PixelTransferRepository } from './pixel-transfer.repository';
-import { ConfigService } from '@nestjs/config';
-import { Configuration } from '../config/configuration';
 import { EthersService } from '../ethers/ethers.service';
 import { Events, PixelTransferEventPayload } from '../events';
 import { OnEvent } from '@nestjs/event-emitter';
 import { ethers } from 'ethers';
-import { UnstoppableDomainsService } from 'src/unstoppable-domains/unstoppable-domains.service';
+import { UnstoppableDomainsService } from '../unstoppable-domains/unstoppable-domains.service';
 
 @Injectable()
 export class PixelTransferService implements OnModuleInit {
