@@ -17,8 +17,9 @@ export class UnstoppableDomainsService implements OnModuleInit {
   }
 
   private async reverseUrl(address: string) {
-    this.logger.log(`UD reverse lookup: ${address}`);
-    return this.resolution.reverse(address);
+    const ud = await this.resolution.reverse(address);
+    this.logger.log(`UD reverse lookup: ${address}:${ud}`);
+    return ud
   }
 
   async getUDName(address: string, withCache = true) {
