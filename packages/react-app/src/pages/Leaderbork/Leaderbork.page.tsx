@@ -20,6 +20,7 @@ import { getEtherscanURL } from "../../helpers/links";
 import Icon from "../../DSL/Icon/Icon";
 import { Type } from "../../DSL/Fonts/Fonts";
 import AppStore from "../../store/App.store";
+import jsonify from "../../helpers/jsonify";
 
 const LeaderborkPage = observer(function DogParkPage() {
   const location = useLocation();
