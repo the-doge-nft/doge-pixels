@@ -28,5 +28,4 @@ class _AppStore {
 }
 
 const AppStore = new _AppStore();
-
 export default AppStore;

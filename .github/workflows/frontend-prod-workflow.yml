@@ -38,7 +38,7 @@ jobs:
         working-directory: packages/react-app
         run: yarn _aws_prod_deploy
       - name: Invalidate Cloudfront cache
-        working-directory: packages/react-apps
+        working-directory: packages/react-app
         run: yarn _aws_prod_invalidate_cloudfront
 
 
