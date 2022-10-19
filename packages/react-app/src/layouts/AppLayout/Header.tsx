@@ -3,7 +3,7 @@ import AppStore from "../../store/App.store";
 import Button from "../../DSL/Button/Button";
 import UserDropdown from "../UserDropdown";
 import { observer } from "mobx-react-lite";
-import { Box, Flex, HStack, useColorMode } from "@chakra-ui/react";
+import { Box, Flex, HStack, useBreakpointValue, useColorMode } from "@chakra-ui/react";
 import { NamedRoutes, route } from "../../App.routes";
 import BigText from "../../DSL/BigText/BigText";
 import { useHistory, useLocation } from "react-router-dom";
@@ -15,6 +15,10 @@ import { GiHamburgerMenu } from "react-icons/gi";
 const Header = observer(() => {
   const history = useHistory();
   const location = useLocation();
+  const onLogoClick = useBreakpointValue({
+    base: () => AppStore.rwd.toggleMobileNav(), 
+    xl: () => history.push(route(NamedRoutes.VIEWER))
+  });
   const { colorMode } = useColorMode();
   return (
     <Box>
@@ -24,7 +28,7 @@ const Header = observer(() => {
             top={{base: 8, md: 0}}
             left={{base: 5, md: 0}}
             bg={lightOrDarkMode(colorMode, "yellow.50", darkModeGradient)}
-            zIndex={1000}
+            zIndex={10}
             position={{base: "absolute", md: "relative"}}
             _hover={{
               cursor: "pointer",
@@ -32,13 +36,7 @@ const Header = observer(() => {
             _active={{
               transform: "translate(4px, 4px)",
             }}
-            onClick={() => {
-              if (AppStore.rwd.isMobile) {
-                alert("show nav!")
-              } else {
-                history.push(route(NamedRoutes.VIEWER));
-              }
-            }}
+            onClick={onLogoClick}
             userSelect={"none"}
             borderWidth={1}
             borderColor={lightOrDarkMode(colorMode, "black", "white")}
@@ -88,5 +86,9 @@ const Header = observer(() => {
     </Box>
   );
 });
+
+const Logo = () => {
+
+}
 
 export default Header;

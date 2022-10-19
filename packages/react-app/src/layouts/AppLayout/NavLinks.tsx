@@ -4,6 +4,7 @@ import { matchPath, useLocation } from "react-router-dom";
 import { SelectedOwnerTab } from "../../pages/Leaderbork/Leaderbork.store";
 import Icon from "../../DSL/Icon/Icon";
 import { Type } from "../../DSL/Fonts/Fonts";
+import AppStore from "../../store/App.store";
 
 const NavLinks = ({ isMobile }: { isMobile?: boolean }) => {
   const location = useLocation();
@@ -62,10 +63,12 @@ const NavLinks = ({ isMobile }: { isMobile?: boolean }) => {
             .filter(route => route.showOnMobile)
             .map(appRoute => (
               <Link
+                size={"lg"}
                 isNav
                 to={getPath(appRoute.name)}
                 key={`mobile-nav-${appRoute.path}`}
                 textDecoration={getMatch(appRoute.path) ? "underline" : "none"}
+                onClick={() => AppStore.rwd.toggleMobileNav()}
               >
                 {appRoute.mobileName}
               </Link>

@@ -10,7 +10,8 @@ import Pill from "../../DSL/Pill/Pill";
 const PerksPage = observer(() => {
   const store = useMemo(() => new PerksStore(), []);
   return (
-    <Box w={"full"} p={{ base: 8, md: 0 }}>
+    <Box w={"full"} mt={6} p={{ base: 8, md: 0 }}>
+      <Typography mb={4} block textAlign={"center"} variant={TVariant.PresStart24}>Pixel Perks</Typography>
       <Flex justifyContent={"center"}>
         <Box maxW={"3xl"}>
           <Box textAlign={"center"}>

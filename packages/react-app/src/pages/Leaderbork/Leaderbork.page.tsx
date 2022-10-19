@@ -44,7 +44,7 @@ const LeaderborkPage = observer(function DogParkPage() {
   }, []);
 
   return (
-    <Flex w={"full"} flexDir={{ base: "column", xl: "row" }}>
+    <Flex w={"full"} flexDir={{ base: "column", xl: "row" }} mt={{base: 20, md: 0}}>
       <Flex
         flexBasis={0}
         grow={0}

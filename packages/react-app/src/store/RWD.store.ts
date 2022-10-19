@@ -1,4 +1,4 @@
-import { makeObservable, observable } from "mobx";
+import { action, makeObservable, observable } from "mobx";
 import theme from "../DSL/Theme";
 
 class RWDStore {
@@ -8,6 +8,9 @@ class RWDStore {
 
   @observable
   isMobile = false;
+
+  @observable
+  isMobileNavOpen = false;
 
   constructor() {
     makeObservable(this);
@@ -21,8 +24,13 @@ class RWDStore {
   }
 
   private getIsMobile() {
-    const mdBreakPoint = Number(theme.breakpoints.md.split("px")[0]);
+    const mdBreakPoint = theme.breakpoints.md.split("px")[0];
     return window.innerWidth < mdBreakPoint;
+  }
+
+  @action
+  toggleMobileNav() {
+    this.isMobileNavOpen = !this.isMobileNavOpen
   }
 }
 
