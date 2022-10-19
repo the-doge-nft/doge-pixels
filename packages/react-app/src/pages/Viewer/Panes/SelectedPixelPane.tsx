@@ -85,7 +85,7 @@ const SelectedPixelPane = observer(function SelectedPixelPane({ store }: { store
                     pb={1}
                     size={"sm"}
                     maxW={"200px"}
-                    overflowWrap={"initial"}
+                    overflowWrap={"anywhere"}
                     overflow={"hidden"}
                     textOverflow={"ellipsis"}
                     isNav

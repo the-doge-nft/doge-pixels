@@ -159,13 +159,10 @@ class ViewerStore extends Eventable(Reactionable(EmptyClass)) {
 
   @computed
   get selectedTokenOwnerDisplayName() {
-    if (this.tokenOwnerENS) {
-      return this.tokenOwnerENS;
-    } else if (this.tokenOwner) {
-      return abbreviate(this.tokenOwner);
-    } else {
-      return "-";
+    if (this.tokenOwner) {
+      return AppStore.web3.getAddressDisplayName(this.tokenOwner)
     }
+    return "-"
   }
 
   destroy() {

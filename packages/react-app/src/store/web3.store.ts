@@ -19,6 +19,7 @@ import { PixelOwnerInfo } from "../pages/Leaderbork/Leaderbork.store";
 import { Reactionable } from "../services/mixins/reactionable";
 import env from "../environment";
 import LocalStorage from "../services/local-storage";
+import { abbreviate } from "../helpers/strings";
 
 const VIEWED_PIXELS_LS_KEY = "viewed_pixels_by_id";
 
@@ -332,6 +333,18 @@ class Web3Store extends Reactionable(Web3providerStore) {
       data.push(pupper);
     }
     LocalStorage.setItem(VIEWED_PIXELS_LS_KEY, data);
+  }
+
+  getAddressDisplayName(address: string, shouldAbbreviate = true) {
+    if (Object.keys(this.addressToPuppers).includes(address)) {
+      const user = this.addressToPuppers[address]
+      if (user?.ud) {
+        return user?.ud
+      } else if (user.ens) {
+        return user.ens
+      }
+      return shouldAbbreviate ? abbreviate(address, 4) : address
+    }
   }
 }
 

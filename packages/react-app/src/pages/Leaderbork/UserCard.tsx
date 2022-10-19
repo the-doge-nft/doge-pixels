@@ -7,6 +7,7 @@ import PxPill from "./PxPill";
 import { darkModeSecondary, lightModePrimary, lightOrDarkMode } from "../../DSL/Theme";
 import { NamedRoutes, route } from "../../App.routes";
 import { observer } from "mobx-react-lite";
+import AppStore from "../../store/App.store";
 
 interface UserCardProps {
   store: LeaderborkStore;
@@ -24,7 +25,7 @@ const UserCard: React.FC<PropsWithChildren<UserCardProps>> = observer(
         alignItems={"center"}
         key={`${pixelOwner.address}`}
         px={2}
-        py={2}
+        py={1}
         _hover={{
           cursor: "pointer",
           bg: colorMode === "light" ? lightModePrimary : darkModeSecondary,
@@ -32,16 +33,18 @@ const UserCard: React.FC<PropsWithChildren<UserCardProps>> = observer(
         onClick={() => store.setSelectedAddress(pixelOwner.address)}
       >
         <Flex alignItems={"center"} overflow={"hidden"}>
-          <Typography
-            variant={TVariant.PresStart14}
-            block
-            overflow={"hidden"}
-            textOverflow={"ellipsis"}
-            overflowWrap={"initial"}
-            maxW={250}
-          >
-            {pixelOwner.ens ? pixelOwner.ens : abbreviate(pixelOwner.address, 4)}
-          </Typography>
+          <Box>
+            <Typography
+              variant={TVariant.PresStart12}
+              block
+              overflow={"hidden"}
+              textOverflow={"ellipsis"}
+              overflowWrap={"initial"}
+              maxW={250}
+            >
+              {AppStore.web3.getAddressDisplayName(pixelOwner.address)}
+            </Typography>
+          </Box>
           {children}
         </Flex>
         <Box ml={4}>
