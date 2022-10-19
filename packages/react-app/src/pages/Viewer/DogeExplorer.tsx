@@ -153,7 +153,7 @@ const DogeExplorer = observer(({ store }: ThreeSceneProps) => {
       >
         <mesh
           ref={dogeMeshRef}
-          position={[imageWorldUnitsWidth / 2 - 1, (-1 * imageWorldUnitsHeight) / 1.8 - 0.34, 0]}
+          position={[imageWorldUnitsWidth / 2 - 1, (-1 * imageWorldUnitsHeight) / 2, 0]}
           onPointerMove={e => {
             if (hoverOverlayRef.current) {
               [hoverOverlayRef.current.position.x, hoverOverlayRef.current.position.y] = getWorldPixelCoordinate(
@@ -310,58 +310,60 @@ const DogeExplorer = observer(({ store }: ThreeSceneProps) => {
   );
 });
 
-const SearchInputs: React.FC<{store: ViewerStore}> = observer(({store}) => {
+const SearchInputs: React.FC<{ store: ViewerStore }> = observer(({ store }) => {
   const [x, setX] = useState(0);
   const [y, setY] = useState(0);
 
   useEffect(() => {
     if (store.selectedPupper) {
-      setX(store.selectedPixelX)
-      setY(store.selectedPixelY)
+      setX(store.selectedPixelX);
+      setY(store.selectedPixelY);
     }
-  }, [store.selectedPupper])
+  }, [store.selectedPupper]);
 
   const search = () => {
     if (x < 640 && x >= 0 && y < 480 && y >= 0) {
-      store.onCoordsSearch(x, y)
+      store.onCoordsSearch(x, y);
     }
   };
 
-  return <Flex alignItems={"center"} gap={2}>
-  <Box>
-    <Typography variant={TVariant.PresStart10}>X:</Typography>
-    <Input
-      w={10}
-      h={5}
-      fontSize={8}
-      padding={0}
-      textAlign="center"
-      zIndex={9999}
-      borderRadius={0}
-      type="number"
-      onChange={(e: any) => setX(Number(e.target.value))}
-      value={x}
-    />
-  </Box>
-  <Box>
-    <Typography variant={TVariant.PresStart10}>Y:</Typography>
-    <Input
-      w={10}
-      h={5}
-      fontSize={8}
-      padding={0}
-      textAlign="center"
-      zIndex={9999}
-      borderRadius={0}
-      type="number"
-      onChange={(e: any) => setY(Number(e.target.value))}
-      value={y}
-    />
-  </Box>
-  <Box cursor="pointer" onClick={() => search()}>
-    <Icon icon={"search"} boxSize={4} />
-  </Box>
-</Flex>
-})
+  return (
+    <Flex alignItems={"center"} gap={2}>
+      <Box>
+        <Typography variant={TVariant.PresStart10}>X:</Typography>
+        <Input
+          w={10}
+          h={5}
+          fontSize={8}
+          padding={0}
+          textAlign="center"
+          zIndex={9999}
+          borderRadius={0}
+          type="number"
+          onChange={(e: any) => setX(Number(e.target.value))}
+          value={x}
+        />
+      </Box>
+      <Box>
+        <Typography variant={TVariant.PresStart10}>Y:</Typography>
+        <Input
+          w={10}
+          h={5}
+          fontSize={8}
+          padding={0}
+          textAlign="center"
+          zIndex={9999}
+          borderRadius={0}
+          type="number"
+          onChange={(e: any) => setY(Number(e.target.value))}
+          value={y}
+        />
+      </Box>
+      <Box cursor="pointer" onClick={() => search()}>
+        <Icon icon={"search"} boxSize={4} />
+      </Box>
+    </Flex>
+  );
+});
 
 export default DogeExplorer;
