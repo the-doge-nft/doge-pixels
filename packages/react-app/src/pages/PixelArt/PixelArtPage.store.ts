@@ -310,7 +310,6 @@ class PixelArtPageStore extends Reactionable(EmptyClass) {
     console.log("debug:: getting random palette");
     const palette: Palette[] = [];
     const count = 25;
-    //@ts-ignore
     const height = KobosuJson.length;
     for (let i = 0; i < count; i++) {
       const y = getRandomIntInclusive(0, height - 1);

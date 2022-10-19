@@ -14,6 +14,7 @@ import { EthersService } from '../ethers/ethers.service';
 import { Events, PixelTransferEventPayload } from '../events';
 import { OnEvent } from '@nestjs/event-emitter';
 import { ethers } from 'ethers';
+import { UnstoppableDomainsService } from 'src/unstoppable-domains/unstoppable-domains.service';
 
 @Injectable()
 export class PixelTransferService implements OnModuleInit {
@@ -25,6 +26,7 @@ export class PixelTransferService implements OnModuleInit {
     private readonly ethersService: EthersService,
     private readonly pixelTransfers: PixelTransferRepository,
     private readonly ethers: EthersService,
+    private readonly ud: UnstoppableDomainsService
   ) {}
 
   async onModuleInit() {
@@ -118,9 +120,11 @@ export class PixelTransferService implements OnModuleInit {
         map[item.to].tokenIds.push(item.tokenId);
       } else {
         const ens = await this.ethers.getEnsName(item.to);
+        const ud = await this.ud.getUDName(item.to);
         map[item.to] = {
           tokenIds: [item.tokenId],
-          ens: ens,
+          ens,
+          ud
         };
       }
     }

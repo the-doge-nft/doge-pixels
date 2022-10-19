@@ -79,6 +79,6 @@ else
     usage
 fi
 
-trap handler SIGINT
+trap handler SIGQUIT
 down
 
