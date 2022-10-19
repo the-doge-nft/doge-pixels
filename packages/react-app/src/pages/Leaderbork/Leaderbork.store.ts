@@ -11,6 +11,7 @@ export interface PixelOwnerInfo {
   address: string;
   pixels: number[];
   ens: string | null;
+  ud: string | null;
 }
 
 interface PixelTransfer {
@@ -18,11 +19,13 @@ interface PixelTransfer {
   from: {
     address: string;
     ens: string | null;
+    ud: string | null;
   };
   insertedAt: string;
   to: {
     address: string;
     ens: string | null;
+    ud: string | null;
   };
   tokenId: number;
   uniqueTransferId: string;

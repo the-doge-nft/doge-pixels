@@ -26,6 +26,7 @@ interface AddressToPuppers {
   [k: string]: {
     tokenIds: number[];
     ens: string | null;
+    ud: string | null;
   };
 }
 
@@ -300,6 +301,7 @@ class Web3Store extends Reactionable(Web3providerStore) {
       address: key,
       pixels: this.addressToPuppers![key].tokenIds,
       ens: this.addressToPuppers![key].ens,
+      ud: this.addressToPuppers![key].ud
     }));
     return tds
       .filter(dog => dog.address !== ethers.constants.AddressZero)
