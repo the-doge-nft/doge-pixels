@@ -6,6 +6,7 @@ import {
   Get,
   Inject,
   Logger,
+  OnModuleInit,
   Param,
   Post,
   Render,
@@ -109,12 +110,9 @@ export class AppController {
 
   @Get('px/owner/:tokenId')
   async getOwnerByTokenId(@Param() params: { tokenId: number }) {
-    console.log('debug:: tokenid', Number(params.tokenId));
     const transfer = await this.pixelTransferRepo.findOwnerByTokenId(
       Number(params.tokenId),
     );
-
-    this.logger.log(transfer);
 
     if (!transfer) {
       throw new BadRequestException('Could not find token');
