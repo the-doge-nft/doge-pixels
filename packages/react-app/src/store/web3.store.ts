@@ -293,7 +293,7 @@ class Web3Store extends Reactionable(Web3providerStore) {
   getUSDPerPixel() {
     return Http.get("/v1/px/price").then(({ data }) => {
       this.usdPerPixel = data.price;
-    });
+    })
   }
 
   @computed

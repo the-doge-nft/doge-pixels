@@ -30,7 +30,7 @@ export class CoinGeckoService {
         throw new Error('Could not get DOG price');
       }
       usdPrice = Number(data[dogID][vsCurrency]);
-      await this.cacheManager.set(cacheKey, usdPrice, { ttl: 60 });
+      await this.cacheManager.set(cacheKey, usdPrice, { ttl: 3 * 60 });
       return usdPrice;
     } else {
       return usdPrice;
