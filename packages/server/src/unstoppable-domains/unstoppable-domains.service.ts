@@ -2,6 +2,7 @@ import { CACHE_MANAGER, Inject, Injectable, Logger, OnModuleInit } from '@nestjs
 import { Resolution } from '@unstoppabledomains/resolution';
 import { UnsLocation } from '@unstoppabledomains/resolution/build/types/publicTypes';
 import { Cache } from 'cache-manager';
+import { getRandomIntInclusive } from '../helpers/numbers';
 
 @Injectable()
 export class UnstoppableDomainsService implements OnModuleInit {
@@ -12,8 +13,6 @@ export class UnstoppableDomainsService implements OnModuleInit {
 
   async onModuleInit() {
     this.resolution = new Resolution();
-    this.logger.log('UD init');
-    await this.reverseUrl('0xd801d86C10e2185a8FCBccFB7D7baF0A6C5B6BD5');
   }
 
   private async reverseUrl(address: string) {
@@ -24,7 +23,7 @@ export class UnstoppableDomainsService implements OnModuleInit {
 
   async getUDName(address: string, withCache = true) {
     const cacheKey = `ud:${address}`;
-    const cacheSeconds = 60 * 60 * 5;
+    const cacheSeconds = getRandomIntInclusive(60 * 60 * 3, 60 * 60 * 5)
     const noUD = 'NOUD';
     if (withCache) {
       const ud = await this.cacheManager.get(cacheKey)

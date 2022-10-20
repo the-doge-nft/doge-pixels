@@ -12,6 +12,7 @@ import { Events } from '../events';
 import { AppEnv } from '../config/configuration';
 import { InjectSentry, SentryService } from '@travelerdev/nestjs-sentry';
 import { Cache } from 'cache-manager';
+import { getRandomIntInclusive } from '../helpers/numbers';
 
 @Injectable()
 export class EthersService implements OnModuleInit {
@@ -119,7 +120,7 @@ export class EthersService implements OnModuleInit {
 
   async getEnsName(address: string, withCache = true) {
     const cacheKey = `ens:${address}`;
-    const cacheSeconds = 60 * 60 * 5;
+    const cacheSeconds = getRandomIntInclusive(60 * 60 * 3, 60 * 60 * 5);
     const noEns = 'NOENS';
     if (withCache) {
       const ens = await this.cacheManager.get(cacheKey);
