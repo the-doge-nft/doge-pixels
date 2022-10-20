@@ -23,6 +23,7 @@ const logAppVersionToConsole = () => {
 };
 
 AppStore.init();
+console.log("vercel deploy test")
 
 function App() {
   useEffect(logAppVersionToConsole, []);
