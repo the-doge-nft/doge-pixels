@@ -9,9 +9,6 @@ import { getEtherscanURL } from "../../../helpers/links";
 import { Type } from "../../../DSL/Fonts/Fonts";
 
 const IndexPane = observer(function IndexPane({ store }: { store: ViewerStore }) {
-
-  throw new Error("An error occured right here!")
-
   return (
     <>
       <Flex flexDirection={"column"} flexGrow={0} h={"100%"}>
