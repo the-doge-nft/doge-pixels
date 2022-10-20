@@ -26,7 +26,7 @@ import { CoinGeckoService } from './coin-gecko/coin-gecko.service';
 import { InjectSentry, SentryService } from '@travelerdev/nestjs-sentry';
 
 @Controller('/v1')
-export class AppController implements OnModuleInit {
+export class AppController {
   private logger = new Logger(AppController.name);
 
   constructor(
@@ -41,10 +41,6 @@ export class AppController implements OnModuleInit {
     @Inject(CACHE_MANAGER) private cacheManager: Cache,
     @InjectSentry() private readonly sentryClient: SentryService,
   ) {}
-
-    onModuleInit() {
-      this.sentryClient.instance().captureMessage("APP CONTROLLER INIT")
-    }
 
   @Get('status')
   getStatus() {
