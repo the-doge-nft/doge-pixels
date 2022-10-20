@@ -294,7 +294,7 @@ class LeaderborkStore extends Reactionable(EmptyClass) {
       return "Recent Activity";
     } else {
       if (this.selectedOwner) {
-        return AppStore.web3.getAddressDisplayName(this.selectedOwner.address)
+        return AppStore.web3.getAddressDisplayName(this.selectedOwner.address);
       }
       return "";
     }

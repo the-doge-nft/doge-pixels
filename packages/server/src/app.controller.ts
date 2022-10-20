@@ -6,6 +6,7 @@ import {
   Get,
   Inject,
   Logger,
+  OnModuleInit,
   Param,
   Post,
   Render,
@@ -22,6 +23,7 @@ import { Cache } from 'cache-manager';
 import { PixelTransferService } from './pixel-transfer/pixel-transfer.service';
 import { PostTransfersDto } from './dto/PostTransfers.dto';
 import { CoinGeckoService } from './coin-gecko/coin-gecko.service';
+import { InjectSentry, SentryService } from '@travelerdev/nestjs-sentry';
 
 @Controller('/v1')
 export class AppController {
@@ -37,6 +39,7 @@ export class AppController {
     private readonly discord: DiscordService,
     private readonly gecko: CoinGeckoService,
     @Inject(CACHE_MANAGER) private cacheManager: Cache,
+    @InjectSentry() private readonly sentryClient: SentryService,
   ) {}
 
   @Get('status')
@@ -107,12 +110,9 @@ export class AppController {
 
   @Get('px/owner/:tokenId')
   async getOwnerByTokenId(@Param() params: { tokenId: number }) {
-    console.log('debug:: tokenid', Number(params.tokenId));
     const transfer = await this.pixelTransferRepo.findOwnerByTokenId(
       Number(params.tokenId),
     );
-
-    this.logger.log(transfer);
 
     if (!transfer) {
       throw new BadRequestException('Could not find token');
@@ -184,12 +184,16 @@ export class AppController {
 
   @Get('px/price')
   async getPixelUSDPrice() {
-    const usdPrice = await this.gecko.getDOGUSDPrice();
-    const dogPerPixel = 55239.89899;
-    const price = Number(usdPrice) * dogPerPixel;
-    return {
-      price,
-    };
+    try {
+      const usdPrice = await this.gecko.getDOGUSDPrice();
+      const dogPerPixel = 55239.89899;
+      const price = Number(usdPrice) * dogPerPixel;
+      return { price };
+    } catch (e) {
+      this.sentryClient.instance().captureException(e)
+      this.logger.error("Could not get coingecko price")
+      return {price: null}
+    }
   }
 
   @Get('twitter/share/:type/:id')
