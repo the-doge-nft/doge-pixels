@@ -6,6 +6,7 @@ import {
   Get,
   Inject,
   Logger,
+  OnModuleInit,
   Param,
   Post,
   Render,
@@ -25,7 +26,7 @@ import { CoinGeckoService } from './coin-gecko/coin-gecko.service';
 import { InjectSentry, SentryService } from '@travelerdev/nestjs-sentry';
 
 @Controller('/v1')
-export class AppController {
+export class AppController implements OnModuleInit {
   private logger = new Logger(AppController.name);
 
   constructor(
@@ -40,6 +41,10 @@ export class AppController {
     @Inject(CACHE_MANAGER) private cacheManager: Cache,
     @InjectSentry() private readonly sentryClient: SentryService,
   ) {}
+
+    onModuleInit() {
+      this.sentryClient.instance().captureMessage("APP CONTROLLER INIT")
+    }
 
   @Get('status')
   getStatus() {
@@ -109,12 +114,9 @@ export class AppController {
 
   @Get('px/owner/:tokenId')
   async getOwnerByTokenId(@Param() params: { tokenId: number }) {
-    console.log('debug:: tokenid', Number(params.tokenId));
     const transfer = await this.pixelTransferRepo.findOwnerByTokenId(
       Number(params.tokenId),
     );
-
-    this.logger.log(transfer);
 
     if (!transfer) {
       throw new BadRequestException('Could not find token');
