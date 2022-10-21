@@ -120,7 +120,7 @@ const DogeExplorer = observer(({ store }: ThreeSceneProps) => {
   };
 
   return (
-    <Box w={"100%"} h={"100%"} position={"absolute"} zIndex={2} _focus={{ boxShadow: "none", borderColor: "inherit" }}>
+    <Box w={"100%"} h={"100%"} position={"absolute"} zIndex={10} _focus={{ boxShadow: "none", borderColor: "inherit" }}>
       <Canvas
         camera={camera}
         onCreated={({ gl }) => {
@@ -164,17 +164,19 @@ const DogeExplorer = observer(({ store }: ThreeSceneProps) => {
 
             if (tooltipRef.current) {
               //@ts-ignore
-              const { pageX, pageY } = e;
+              const { pageX: mouseX, pageY: mouseY} = e;
               const box = tooltipRef.current?.getBoundingClientRect();
               //@ts-ignore
               const canvas = e.srcElement as HTMLCanvasElement;
               const { left: canvasLeft, top: canvasTop } = canvas.getBoundingClientRect();
               const tooltipOffset = 45;
 
-              const x = pageX - canvasLeft + tooltipOffset;
+              const x = mouseX - canvasLeft + tooltipOffset;
               tooltipRef.current.style.left = x + "px";
 
-              const y = pageY - canvasTop + tooltipOffset;
+              // getBoundingClientRect() is relative to the viewport *not* the document
+              // so we must account for document scroll here
+              const y = mouseY - (canvasTop + window.scrollY) + tooltipOffset;
               const futureY = y + box.height;
               if (futureY < window.innerHeight - canvasTop) {
                 tooltipRef.current.style.top = y + "px";
@@ -294,7 +296,7 @@ const DogeExplorer = observer(({ store }: ThreeSceneProps) => {
         )}
       </Canvas>
       {!AppStore.rwd.isMobile && (
-        <Box ref={tooltipRef} position={"absolute"} zIndex={2} display={"none"} pointerEvents={"none"}>
+        <Box ref={tooltipRef} position={"absolute"} zIndex={10} display={"none"} pointerEvents={"none"}>
           <PixelPane size={"md"} pupper={1113825} />
         </Box>
       )}
