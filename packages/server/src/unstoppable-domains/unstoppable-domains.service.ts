@@ -22,8 +22,8 @@ export class UnstoppableDomainsService implements OnModuleInit {
   }
 
   async getUDName(address: string, withCache = true) {
-    const cacheKey = `ud:${address}`;
-    const cacheSeconds = getRandomIntInclusive(60 * 60 * 3, 60 * 60 * 5)
+  const cacheKey = `ud:${address}`;
+    const cacheSeconds = getRandomIntInclusive(60 * 60 * 3, 60 * 60 * 8)
     const noUD = 'NOUD';
     if (withCache) {
       const ud = await this.cacheManager.get(cacheKey)
