@@ -12,27 +12,37 @@ const rainbowSwapContractAddress = "0x00000000009726632680FB29d3F7A9734E3010E2"
 const dogAddress = "0xBAac2B4491727D78D2b78815144570b9f2Fe8899"
 
 const main = async () => {
-    const getDogBuys = async () => {
+    const getDogOrders = async () => {
         const toTxs = await alchemy.core.getAssetTransfers({
             order: alchemySDK.AssetTransfersOrder.DESCENDING,
             toAddress: rainbowSwapContractAddress,
             contractAddresses: [dogAddress],
             category: [
                 alchemySDK.AssetTransfersCategory.ERC20, 
-                // alchemySDK.AssetTransfersCategory.EXTERNAL, 
-                // alchemySDK.AssetTransfersCategory.INTERNAL
             ],
             maxCount: 3
         })
         const testTx = toTxs.transfers[0]
         const blockNumber = ethers.BigNumber.from(testTx.blockNum).toNumber()
+        const hash = testTx.hash
         console.log(testTx)
-        console.log(ethers.BigNumber.from(testTx.blockNum).toNumber())
-        await getAllTransfersForBlock(blockNumber)
+
+        const transfers = await getAllTransfersForBlock(blockNumber, hash)
+        transfers.sort((a, b) => {
+            const aLogNumber = Number(a.uniqueId.split(":")[2])
+            const bLogNumber = Number(b.uniqueId.split(":")[2])
+            if (aLogNumber < bLogNumber) {
+                return -1
+            }
+            return 1
+        })
+        console.log(transfers)
+        
+        const order = {}
     }
 
-    const getAllTransfersForBlock = async (block) => {
-        const toTxs = await alchemy.core.getAssetTransfers({
+    const getAllTransfersForBlock = async (block, txHash) => {
+        const toTxs = (await alchemy.core.getAssetTransfers({
             order: alchemySDK.AssetTransfersOrder.DESCENDING,
             toAddress: rainbowSwapContractAddress,
             category: [
@@ -40,8 +50,8 @@ const main = async () => {
             ],
             fromBlock: block,
             toBlock: block
-        })
-        const fromTxs = await alchemy.core.getAssetTransfers({
+        })).transfers
+        const fromTxs = (await alchemy.core.getAssetTransfers({
             order: alchemySDK.AssetTransfersOrder.DESCENDING,
             fromAddress: rainbowSwapContractAddress,
             category: [
@@ -49,43 +59,10 @@ const main = async () => {
             ],
             fromBlock: block,
             toBlock: block
-        })
-        console.log("toTxs\n", toTxs)
-        console.log("fromTxs\n", fromTxs)
+        })).transfers
+        return toTxs.concat(fromTxs).filter(tx => tx.hash === txHash)
     }
-
-    await getDogBuys()
-
-    // const fromTxs = await alchemy.core.getAssetTransfers({
-    //     order: alchemySDK.AssetTransfersOrder.DESCENDING,
-    //     fromAddress: rainbowSwapContractAddress,
-    //     category: [
-    //         alchemySDK.AssetTransfersCategory.ERC20, 
-    //         alchemySDK.AssetTransfersCategory.EXTERNAL, 
-    //         // alchemySDK.AssetTransfersCategory.INTERNAL
-    //     ],
-    //     maxCount: 3
-    // })
-    // console.log(fromTxs)
-
-    // const tx = await alchemy.core.getTransactionReceipt("0x28bddc12c8e30b411c9058d6518ff9d2f65363b449c9650095aa15faa309f482")
-    // console.log(tx)
-
-    // const iface = new ethers.utils.Interface(rainbowSwapABI)
-    // tx.logs.forEach(log => {
-    //     const test = iface.parseLog(log)
-    //     console.log(test)
-    //     const topics = log.topics
-    //     const data = log.data
-    //     console.log(topics)
-    //     console.log(data)
-    // })
-
-    // const provider = new ethers.providers.InfuraProvider("homestead", process.env.INFURA_KEY)
-    // const contract = new ethers.Contract(rainbowSwapContractAddress, rainbowSwapABI, provider)
-    // const events = await contract.queryFilter("*")
-    // console.log(events)
-
+    await getDogOrders()
     return 1
 }
 
@@ -105,11 +82,7 @@ main()
 
 /*
 QUERYING SWAP NOTES
-- incoming currency could be DOG (user is selling DOG)
-    * we can query toAddress = rainbowSwapAddress && contract addresses DOG
-    * follow the chain out
-- outgoing currency could be DOG
-    * we need to listen to all outgoing swaps 
+    - query for 
 
 */
 
