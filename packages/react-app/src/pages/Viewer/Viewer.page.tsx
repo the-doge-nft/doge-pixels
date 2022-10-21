@@ -18,15 +18,6 @@ import { NamedRoutes, route, SELECTED_PIXEL_PARAM } from "../../App.routes";
 import Modal from "../../DSL/Modal/Modal";
 import Modals from "./Modals";
 
-/*
-  Hack to reload page even if we are already on the route that renders this page
-  https://github.com/remix-run/react-router/issues/7416
- */
-const ReloadViewerPage = () => {
-  const location = useLocation();
-  return <ViewerPage key={location.key} />;
-};
-
 const ViewerPage = observer(function ViewerPage() {
   const params = useParams<any>();
   const defaultPixel = params?.[SELECTED_PIXEL_PARAM];
@@ -60,4 +51,4 @@ const ViewerPage = observer(function ViewerPage() {
   );
 });
 
-export default ReloadViewerPage;
+export default ViewerPage;

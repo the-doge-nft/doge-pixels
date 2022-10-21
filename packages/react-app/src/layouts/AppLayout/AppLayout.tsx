@@ -20,14 +20,14 @@ const AppLayout = observer(function AppLayout({ children }: AppLayoutProps) {
   return (
     <>
       <Flex flexDir={"column"} id={"react-modal-main"} minH={"100vh"}>
-        <Flex justifyContent={"center"} flexGrow={1}>
+        <Flex justifyContent={"center"} flexGrow={1} zIndex={1}>
           <Flex flexGrow={1} w={"full"} maxW={"8xl"} pt={6} pb={8} pl={4} pr={7} flexDirection={"column"}>
             <Header />
             <Flex grow={1}>{children}</Flex>
           </Flex>
         </Flex>
       </Flex>
-      <Flex justifyContent={"center"}>
+      <Flex position={"relative"} zIndex={0} justifyContent={"center"}>
         <Box display={{ base: "none", md: "block" }} w={"full"} maxW={"8xl"} pl={4} pr={7} mb={6}>
           <Footer />
         </Box>
