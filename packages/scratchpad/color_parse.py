@@ -2,7 +2,7 @@ from PIL import Image
 import json
 
 # image = Image.open('../THE_ACTUAL_NFT_IMAGE.png')
-image = Image.open('../packages/react-app/src/images/monalisa.png')
+image = Image.open('../react-app/src/images/monalisa.png')
 pixels = image.load()
 width, height = image.size
 

@@ -20,6 +20,7 @@ import { PixelTransferService } from './pixel-transfer/pixel-transfer.service';
 import { CoinGeckoService } from './coin-gecko/coin-gecko.service';
 import { UnstoppableDomainsService } from './unstoppable-domains/unstoppable-domains.service';
 import { IndexController } from './index/index.controller';
+import { RainbowService } from './rainbow/rainbow.service';
 import * as redisStore from 'cache-manager-redis-store';
 
 @Module({
@@ -70,6 +71,7 @@ import * as redisStore from 'cache-manager-redis-store';
     CoinGeckoService,
     PixelTransferService,
     UnstoppableDomainsService,
+    RainbowService,
   ],
 })
 export class AppModule {}
