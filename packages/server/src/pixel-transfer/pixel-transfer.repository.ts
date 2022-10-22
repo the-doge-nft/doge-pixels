@@ -17,6 +17,7 @@ export class PixelTransferRepository {
     @Inject(CACHE_MANAGER) private cacheManager: Cache,
   ) {}
 
+  // this should move to the pixel transfers service
   private async afterTransfersQuery(transfers: PixelTransfers[]) {
     const data = [];
     for (let i = 0; i < transfers.length; i++) {

@@ -22,6 +22,7 @@ import { UnstoppableDomainsService } from './unstoppable-domains/unstoppable-dom
 import { IndexController } from './index/index.controller';
 import { RainbowService } from './rainbow/rainbow.service';
 import { AlchemyService } from './alchemy/alchemy.service';
+import { RainbowSwapsRepository } from './rainbow-swaps/rainbow-swaps.repository';
 import * as redisStore from 'cache-manager-redis-store';
 
 @Module({
@@ -74,6 +75,7 @@ import * as redisStore from 'cache-manager-redis-store';
     UnstoppableDomainsService,
     RainbowService,
     AlchemyService,
+    RainbowSwapsRepository,
   ],
 })
 export class AppModule {}

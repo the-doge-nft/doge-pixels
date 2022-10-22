@@ -164,4 +164,8 @@ export class EthersService implements OnModuleInit {
     const block = await this.provider.getBlock(blockNumber);
     return new Date(block.timestamp * 1000);
   }
+
+  getIsAddressEqual(addr1: string, addr2: string) {
+    return ethers.utils.getAddress(addr1) === ethers.utils.getAddress(addr2)
+  }
 }

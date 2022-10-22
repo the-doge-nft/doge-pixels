@@ -23,6 +23,11 @@ model PixelTransfers {
   uniqueTransferId  String @unique
 }
 
+enum ClientSide {
+  BUY
+  SELL
+}
+
 model RainbowSwaps {
   id                Int @id @default(autoincrement())
   blockNumber       Int
@@ -31,8 +36,9 @@ model RainbowSwaps {
   updatedAt         DateTime @default(now())
   baseCurrency      String
   quoteCurrency     String
-  baseAmount        String
-  quoteAmount       String
+  baseAmount        Float
+  quoteAmount       Float
+  clientSide        ClientSide
 }
 
 model Donations {
