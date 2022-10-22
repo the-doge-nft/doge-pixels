@@ -22,3 +22,22 @@ model PixelTransfers {
   tokenId           Int
   uniqueTransferId  String @unique
 }
+
+model RainbowSwaps {
+  id                Int @id @default(autoincrement())
+  blockNumber       Int
+  blockCreatedAt    DateTime
+  insertedAt        DateTime @default(now())
+  updatedAt         DateTime @default(now())
+  baseCurrency      String
+  quoteCurrency     String
+  baseAmount        String
+  quoteAmount       String
+}
+
+model Donations {
+  id                Int @id @default(autoincrement())
+  currency          String
+  txHash            String
+  amount            String
+}

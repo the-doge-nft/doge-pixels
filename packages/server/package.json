@@ -37,6 +37,7 @@
     "@sentry/node": "^7.12.1",
     "@travelerdev/nestjs-sentry": "^4.0.1",
     "@unstoppabledomains/resolution": "^8.3.3",
+    "alchemy-sdk": "^2.2.0",
     "aws-sdk": "^2.1211.0",
     "body-parser": "^1.20.0",
     "cache-manager": "^4.1.0",
