@@ -32,20 +32,20 @@ export class PixelTransferService implements OnModuleInit {
   }
 
   async syncAll() {
-    this.logger.log('Syncing all transfer events');
+    this.logger.log('Syncing all pixel transfer events');
     return this.upsertTransfersFromLogs(
       await this.pixels.getAllPixelTransferLogs(),
     ).then((res) => {
-      this.logger.log('Done syncing transfer events');
+      this.logger.log('Done syncing pixel transfer events');
     });
   }
 
   async syncFromBlockNumber(block: number) {
-    this.logger.log(`Syncing transfers from block: ${block}`);
+    this.logger.log(`Syncing pixel transfers from block: ${block}`);
     return this.upsertTransfersFromLogs(
       await this.pixels.getPixelTransferLogs(block),
     ).then((_) => {
-      this.logger.log(`Done syncing transfers from block: ${block}`);
+      this.logger.log(`Done syncing pixel transfers from block: ${block}`);
     });
   }
 

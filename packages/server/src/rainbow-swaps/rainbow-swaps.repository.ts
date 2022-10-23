@@ -19,4 +19,15 @@ export class RainbowSwapsRepository {
             create: { ...create }
         })
     }
+
+    async getMostRecentSwapBlockNumber() {
+        return (
+            await this.prisma.rainbowSwaps.findMany({
+                orderBy: {
+                    blockNumber: 'desc'
+                },
+                take: 1
+            })
+        )[0]?.blockNumber
+    }
 }

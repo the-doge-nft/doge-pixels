@@ -58,6 +58,7 @@ import * as redisStore from 'cache-manager-redis-store';
       }),
       inject: [ConfigService],
     }),
+    ScheduleModule.forRoot()
   ],
   controllers: [AppController, IndexController],
   providers: [

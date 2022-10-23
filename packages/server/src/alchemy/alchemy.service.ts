@@ -19,10 +19,17 @@ export class AlchemyService implements OnModuleInit {
     }
 
     onModuleInit() {
-        this.logger.log("Alchemy init")   
+        this.logger.log(`Alchemy init on network: ${Network.ETH_MAINNET}`)   
     }
 
     getAssetTransfers(params: AssetTransfersWithMetadataParams) {
         return this.alchemy.core.getAssetTransfers(params)
+    }
+
+    initWs(address: string, callback: (payload: any) => any) {
+        this.logger.log(`init alchemy ws: ${address}`)
+        this.alchemy.ws.on({
+            address
+        }, (payload) => callback(payload))
     }
 }

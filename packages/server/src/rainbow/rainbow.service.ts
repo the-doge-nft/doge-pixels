@@ -7,6 +7,8 @@ import { AssetTransfersOrder, AssetTransfersCategory, AssetTransfersWithMetadata
 import * as ABI from '../contracts/hardhat_contracts.json';
 import { RainbowSwapsRepository } from '../rainbow-swaps/rainbow-swaps.repository';
 import { ClientSide, RainbowSwaps } from '@prisma/client';
+import sleep from '../helpers/sleep';
+import { Cron, CronExpression } from '@nestjs/schedule';
 
 @Injectable()
 export class RainbowService implements OnModuleInit {
@@ -16,7 +18,8 @@ export class RainbowService implements OnModuleInit {
 
     async onModuleInit() {
         this.logger.log("Rainbow init 🌈")
-        await this.DEBUG_ORDERS()
+        this.listenForTransfersThroughRouter()
+        this.syncRecentDOGSwaps()
     }
 
     constructor(
@@ -25,7 +28,27 @@ export class RainbowService implements OnModuleInit {
         private readonly rainbowSwapRepo: RainbowSwapsRepository
     ) {}
 
-    async getDOGTransfersToRouter(maxCount: number) {
+    @Cron(CronExpression.EVERY_10_SECONDS)
+    private async syncRecentDOGSwaps() {
+        this.logger.log('Syncing rainbow DOG swaps')
+        const block = await this.rainbowSwapRepo.getMostRecentSwapBlockNumber()
+        if (!block) {
+            await this.syncAllDOGSwaps()
+        } else {
+            await this.syncDOGSwapsFromBlock(block)
+        }
+    }
+
+    private listenForTransfersThroughRouter() {
+        this.alchemy.initWs(this.routerContractAddress, this.onNewTransfer)
+    }
+
+    private onNewTransfer(payload: any) {
+        console.log("NEW DOG TRANSFER TO THE ROUTER")
+        console.log(payload)
+    }
+
+    private async getDOGTransfersToRouterFromBlock(fromBlock: string) {
         const data = await this.alchemy.getAssetTransfers({
             order: AssetTransfersOrder.DESCENDING,
             toAddress: this.routerContractAddress,
@@ -34,12 +57,33 @@ export class RainbowService implements OnModuleInit {
             category: [
                 AssetTransfersCategory.ERC20
             ],
-            maxCount
+            maxCount: 1000,
+            fromBlock
         })
+        if (data.pageKey) {
+            throw new Error("There is paging data we don't handle currently")
+        }
         return data?.transfers
     }
 
-    async getRouterTransfersByBlock(block: string) {
+    private async getAllDOGTransfersToRouter() {
+        const data = await this.alchemy.getAssetTransfers({
+            order: AssetTransfersOrder.DESCENDING,
+            toAddress: this.routerContractAddress,
+            contractAddresses: [this.dogAddress],
+            withMetadata: true,
+            category: [
+                AssetTransfersCategory.ERC20
+            ],
+            maxCount: 1000
+        })
+        if (data.pageKey) {
+            throw new Error("There is paging data we don't handle currently")
+        }
+        return data?.transfers
+    }
+
+    private async getRouterTransfersByBlock(block: string) {
         const toTxs = (await this.alchemy.getAssetTransfers({
             order: AssetTransfersOrder.DESCENDING,
             toAddress: this.routerContractAddress,
@@ -67,29 +111,40 @@ export class RainbowService implements OnModuleInit {
         return toTxs.concat(fromTxs)
     }
 
-    async DEBUG_ORDERS() {
-        const transfers = await this.getDOGTransfersToRouter(1000)
+    private async syncDOGSwapsFromBlock(blockNumber: number) {
+        this.logger.log(`Syncing DOG swaps from block: ${blockNumber}`)
+        const transfers = await this.getDOGTransfersToRouterFromBlock(ethers.BigNumber.from(blockNumber).toHexString())
+        await this.insertDOGSwaps(transfers)
+    }
+
+    private async syncAllDOGSwaps() {
+        this.logger.log("Syncing all DOG swaps")
+        const transfers = await this.getAllDOGTransfersToRouter()
+        this.insertDOGSwaps(transfers)
+    }
+
+    private async insertDOGSwaps(transfers) {
         for (let i = 0; i < transfers.length; i++) {
             const transfer = transfers[i]
-            this.logger.log(`processing tx: ${transfer.hash}`)
+            this.logger.log(`processing DOG swap in tx: ${transfer.hash}`)
         
             const blockNumber = ethers.BigNumber.from(transfer.blockNum)
             const allTransfers = (await this.getRouterTransfersByBlock(blockNumber.toHexString())).filter(tx => tx.hash === transfer.hash)
             try {
                 const order = this.getOrderFromAssetTransfers(allTransfers)
-                this.logger.log({...order, txHash: transfer.hash})
                 await this.rainbowSwapRepo.upsert(transfer.hash, order)
             } catch (e) {
                 this.logger.error(`Could not insert rainbow swap: ${transfer.hash}`)
             }
+            // make sure we don't make alchemy angry!
+            await sleep(1)
         }
     }
 
-    getOrderFromAssetTransfers(trace: AssetTransfersWithMetadataResult[]): Omit<RainbowSwaps, 'id' | 'insertedAt' | 'updatedAt'> {
+    private getOrderFromAssetTransfers(trace: AssetTransfersWithMetadataResult[]): Omit<RainbowSwaps, 'id' | 'insertedAt' | 'updatedAt'> {
         const external = trace.filter(tx => tx.category === AssetTransfersCategory.EXTERNAL)
         const internal = trace.filter(tx => tx.category === AssetTransfersCategory.INTERNAL)
         const erc20 = trace.filter(tx => tx.category === AssetTransfersCategory.ERC20)
-        console.log("erc20 --", JSON.stringify(erc20))
         erc20.sort((a, b) => {
             // uniqueId is missing from the type for some reason
             // https://docs.alchemy.com/changelog/08262022-unique-ids-for-alchemy_getassettransfers
@@ -126,11 +181,9 @@ export class RainbowService implements OnModuleInit {
                 soldOrder = externalToContract[0]
                 boughtOrder = erc20[erc20.length - 1]
             } else if (externalToContract.length === 0) {
-                console.log('hit 1')
                 boughtOrder = internalFromContract[0]
                 soldOrder = erc20[0]
             } else {
-                console.log('hit 2')
                 soldOrder = externalToContract[0]
                 boughtOrder = erc20[erc20.length - 1]
             }
