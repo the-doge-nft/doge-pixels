@@ -21,9 +21,19 @@ export class RainbowSwapsRepository {
       const clientEns = await this.ethers.getEnsName(swap.clientAddress)
 
       // @next @TODO: get USD notional value from token price lookup
-      // const contractAddress = await this.alchemy.getContractAddress(swap.donatedCurrency)
-      // const donatedUSDNotional = await this.coingecko.getPriceByContractAddress(contractAddress)
-      data.push({...swap, clientEns, donatedUSDNotional: 0})
+      let donatedCurrencyPrice: number
+      try {
+        if (swap.donatedCurrencyAddress === null) {
+            donatedCurrencyPrice = await this.coingecko.getETHPrice()
+        } else {
+            donatedCurrencyPrice = await this.coingecko.getPriceByContractAddress(swap.donatedCurrencyAddress)  
+        }
+      } catch (e) {
+        donatedCurrencyPrice = 0
+      }
+
+      const donatedUSDNotional = donatedCurrencyPrice * swap.donatedAmount
+      data.push({...swap, clientEns, donatedUSDNotional})
     }
     return data
   }

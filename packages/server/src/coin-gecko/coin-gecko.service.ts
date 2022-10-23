@@ -14,11 +14,11 @@ export class CoinGeckoService {
     return this.getPriceByContractAddress("0xBAac2B4491727D78D2b78815144570b9f2Fe8899")
   }
 
-  async getPriceByContractAddress(contractAddress: string, withCache = true) {
+  async getPriceByContractAddress(contractAddress: string) {
       const address = contractAddress.toLowerCase()
       const cacheKey = `COINGECKO:${address}`
       const vsCurrency = "usd"
-      let usdPrice = await this.cacheManager.get(cacheKey)
+      let usdPrice = await this.cacheManager.get<number>(cacheKey)
       if (usdPrice) {
         return usdPrice
       } else {
@@ -37,5 +37,31 @@ export class CoinGeckoService {
         await this.cacheManager.set(cacheKey, usdPrice, { ttl: 5 * 60 })
         return usdPrice
       }
+  }
+
+  async getETHPrice() {
+    const cacheKey = "COINGECKO:ETH"
+    const vsCurrency = "usd"
+    const ethCurrencyId = "ethereum"
+
+    let usdPrice = await this.cacheManager.get<number>(cacheKey)
+    if (usdPrice) {
+      return usdPrice
+    } else {
+      const { data } = await this.http.get(
+        `https://api.coingecko.com/api/v3/simple/price`, {
+          params: {
+            ids: ethCurrencyId,
+            vs_currencies: vsCurrency
+          }
+        }
+      ).toPromise()
+      if (!data) {
+        throw new Error(`Could not get price for ETH`)
+      }
+      usdPrice = data[ethCurrencyId][vsCurrency]
+      await this.cacheManager.set(cacheKey, usdPrice, { ttl: 5 * 60 })
+      return usdPrice
+    }
   }
 }

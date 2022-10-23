@@ -216,21 +216,40 @@ export class RainbowSwapsService {
       throw new Error('One of these orders should be an order for DOG');
     }
 
-    let clientSide, quoteCurrency, quoteAmount, baseAmount;
+    let clientSide, quoteCurrency, quoteAmount, baseAmount, baseCurrencyAddress, quoteCurrencyAddress;
 
     const baseCurrency = 'DOG';
+
+    console.log(JSON.stringify(boughtOrder, undefined, 2))
+    console.log(JSON.stringify(soldOrder, undefined, 2))
+
 
     if (soldOrder.asset === 'DOG') {
       clientSide = ClientSide.SELL;
       quoteCurrency = boughtOrder.asset;
       quoteAmount = boughtOrder.value;
+      quoteCurrencyAddress = boughtOrder.rawContract.address;
       baseAmount = soldOrder.value;
+      baseCurrencyAddress = soldOrder.rawContract.address as string | null;
     } else {
       clientSide = ClientSide.BUY;
       quoteCurrency = soldOrder.asset;
+      quoteCurrencyAddress = soldOrder.rawContract.address
       quoteAmount = soldOrder.value;
       baseAmount = boughtOrder.value;
+      baseCurrencyAddress = boughtOrder.rawContract.address as string | null
     }
+
+    const rainbowProfitBips = 8
+
+    // rainbow router always keeps the tokens that were sent *to* the contract from the user
+    const donatedCurrency = soldOrder.asset
+    const donatedCurrencyAddress = soldOrder.rawContract.address as string | null
+    const donatedAmount = soldOrder.value * (rainbowProfitBips / 10000)
+    const blockCreatedAt = new Date(boughtOrder.metadata.blockTimestamp)
+    const txHash = boughtOrder.hash
+    const blockNumber = ethers.BigNumber.from(boughtOrder.blockNum).toNumber()
+    const clientAddress = boughtOrder.to
 
     return {
       clientSide,
@@ -238,12 +257,15 @@ export class RainbowSwapsService {
       quoteCurrency,
       quoteAmount,
       baseAmount,
-      blockCreatedAt: new Date(boughtOrder.metadata.blockTimestamp),
-      txHash: boughtOrder.hash,
-      blockNumber: ethers.BigNumber.from(boughtOrder.blockNum).toNumber(),
-      clientAddress: boughtOrder.to,
-      donatedCurrency: boughtOrder.asset,
-      donatedAmount: boughtOrder.value
+      blockCreatedAt,
+      txHash,
+      blockNumber,
+      clientAddress,
+      donatedCurrency,
+      donatedAmount,
+      baseCurrencyAddress,
+      quoteCurrencyAddress,
+      donatedCurrencyAddress
     };
   }
 }
