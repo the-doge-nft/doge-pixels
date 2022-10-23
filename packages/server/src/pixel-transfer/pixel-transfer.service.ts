@@ -1,21 +1,20 @@
+import { Event } from '@ethersproject/contracts/src.ts/index';
 import {
   forwardRef,
   Inject,
   Injectable,
-  Logger,
-  OnModuleInit,
+  Logger
 } from '@nestjs/common';
-import { OwnTheDogeContractService } from '../ownthedoge-contracts/ownthedoge-contracts.service';
-import { Event } from '@ethersproject/contracts/src.ts/index';
-import { PixelTransferRepository } from './pixel-transfer.repository';
-import { EthersService } from '../ethers/ethers.service'
-import { Events, PixelTransferEventPayload } from '../events';
 import { OnEvent } from '@nestjs/event-emitter';
 import { ethers } from 'ethers';
+import { EthersService } from '../ethers/ethers.service';
+import { Events, PixelTransferEventPayload } from '../events';
+import { OwnTheDogeContractService } from '../ownthedoge-contracts/ownthedoge-contracts.service';
 import { UnstoppableDomainsService } from '../unstoppable-domains/unstoppable-domains.service';
+import { PixelTransferRepository } from './pixel-transfer.repository';
 
 @Injectable()
-export class PixelTransferService implements OnModuleInit {
+export class PixelTransferService {
   private readonly logger = new Logger(PixelTransferService.name);
 
   constructor(
@@ -24,12 +23,8 @@ export class PixelTransferService implements OnModuleInit {
     private readonly ethersService: EthersService,
     private readonly pixelTransfers: PixelTransferRepository,
     private readonly ethers: EthersService,
-    private readonly ud: UnstoppableDomainsService
+    private readonly ud: UnstoppableDomainsService,
   ) {}
-
-  async onModuleInit() {
-    // await this.pixelTransfers.dropAllTransfers()
-  }
 
   async syncAll() {
     this.logger.log('Syncing all pixel transfer events');
@@ -122,7 +117,7 @@ export class PixelTransferService implements OnModuleInit {
         map[item.to] = {
           tokenIds: [item.tokenId],
           ens,
-          ud
+          ud,
         };
       }
     }

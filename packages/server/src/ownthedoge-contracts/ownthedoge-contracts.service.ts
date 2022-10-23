@@ -119,7 +119,9 @@ export class OwnTheDogeContractService implements OnModuleInit {
     const toBlock = _toBlock
       ? _toBlock
       : await this.ethersService.provider.getBlockNumber();
-    this.logger.log(`Getting pixel transfers from block: ${fromBlock} to block: ${toBlock}`);
+    this.logger.log(
+      `Getting pixel transfers from block: ${fromBlock} to block: ${toBlock}`,
+    );
     const logs = [];
     const step = 5000;
     const filter = this.pxContract.filters.Transfer(null, null);

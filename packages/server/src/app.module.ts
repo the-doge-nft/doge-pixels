@@ -20,9 +20,11 @@ import { PixelTransferService } from './pixel-transfer/pixel-transfer.service';
 import { CoinGeckoService } from './coin-gecko/coin-gecko.service';
 import { UnstoppableDomainsService } from './unstoppable-domains/unstoppable-domains.service';
 import { IndexController } from './index/index.controller';
-import { RainbowService } from './rainbow/rainbow.service';
+import { StatueCampaignService } from './statue-campaign/statue-campaign.service';
 import { AlchemyService } from './alchemy/alchemy.service';
 import { RainbowSwapsRepository } from './rainbow-swaps/rainbow-swaps.repository';
+import { DonationController } from './statue-campaign/statue-campaign.controller';
+import { RainbowSwapsService } from './rainbow-swaps/rainbow-swaps.service';
 import * as redisStore from 'cache-manager-redis-store';
 
 @Module({
@@ -58,9 +60,9 @@ import * as redisStore from 'cache-manager-redis-store';
       }),
       inject: [ConfigService],
     }),
-    ScheduleModule.forRoot()
+    ScheduleModule.forRoot(),
   ],
-  controllers: [AppController, IndexController],
+  controllers: [AppController, IndexController, DonationController],
   providers: [
     PrismaService,
     EthersService,
@@ -74,9 +76,10 @@ import * as redisStore from 'cache-manager-redis-store';
     CoinGeckoService,
     PixelTransferService,
     UnstoppableDomainsService,
-    RainbowService,
+    StatueCampaignService,
     AlchemyService,
     RainbowSwapsRepository,
+    RainbowSwapsService,
   ],
 })
 export class AppModule {}

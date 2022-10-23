@@ -190,9 +190,9 @@ export class AppController {
       const price = Number(usdPrice) * dogPerPixel;
       return { price };
     } catch (e) {
-      this.sentryClient.instance().captureException(e)
-      this.logger.error("Could not get coingecko price")
-      return {price: null}
+      this.sentryClient.instance().captureException(e);
+      this.logger.error('Could not get coingecko price');
+      return { price: null };
     }
   }
 

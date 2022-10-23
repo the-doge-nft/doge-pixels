@@ -1,4 +1,10 @@
-import { CACHE_MANAGER, Inject, Injectable, Logger, OnModuleInit } from '@nestjs/common';
+import {
+  CACHE_MANAGER,
+  Inject,
+  Injectable,
+  Logger,
+  OnModuleInit,
+} from '@nestjs/common';
 import { Resolution } from '@unstoppabledomains/resolution';
 import { UnsLocation } from '@unstoppabledomains/resolution/build/types/publicTypes';
 import { Cache } from 'cache-manager';
@@ -18,30 +24,30 @@ export class UnstoppableDomainsService implements OnModuleInit {
   private async reverseUrl(address: string) {
     const ud = await this.resolution.reverse(address);
     this.logger.log(`UD reverse lookup: ${address}:${ud}`);
-    return ud
+    return ud;
   }
 
   async getUDName(address: string, withCache = true) {
     const cacheKey = `ud:${address}`;
-    const cacheSeconds = getRandomIntInclusive(60 * 60 * 3, 60 * 60 * 5)
+    const cacheSeconds = getRandomIntInclusive(60 * 60 * 3, 60 * 60 * 5);
     const noUD = 'NOUD';
     if (withCache) {
-      const ud = await this.cacheManager.get(cacheKey)
+      const ud = await this.cacheManager.get(cacheKey);
       if (!ud) {
-        const freshUD = await this.reverseUrl(address)
+        const freshUD = await this.reverseUrl(address);
         if (freshUD) {
-          await this.cacheManager.set(cacheKey, freshUD, {ttl: cacheSeconds})
-          return freshUD
+          await this.cacheManager.set(cacheKey, freshUD, { ttl: cacheSeconds });
+          return freshUD;
         } else {
-          await this.cacheManager.set(cacheKey, noUD, {ttl: cacheSeconds})
-          return null
+          await this.cacheManager.set(cacheKey, noUD, { ttl: cacheSeconds });
+          return null;
         }
       } else if (ud === noUD) {
-        return null
+        return null;
       }
-      return ud
+      return ud;
     } else {
-      return this.reverseUrl(address)
+      return this.reverseUrl(address);
     }
   }
 }

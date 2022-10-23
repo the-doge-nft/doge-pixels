@@ -1,5 +1,5 @@
-import { CACHE_MANAGER, Inject, Injectable } from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
+import { CACHE_MANAGER, Inject, Injectable } from '@nestjs/common';
 import { Cache } from 'cache-manager';
 
 @Injectable()
@@ -9,31 +9,33 @@ export class CoinGeckoService {
     @Inject(CACHE_MANAGER) private cacheManager: Cache,
   ) {}
 
+  // TODO test this works
   async getDOGUSDPrice() {
-    const cacheKey = 'COINGECKO:DOG';
-    const dogID = 'the-doge-nft';
-    const vsCurrency = 'usd';
-    let usdPrice = await this.cacheManager.get(cacheKey);
-    if (!usdPrice) {
-      const { data } = await this.http
-        .get('https://api.coingecko.com/api/v3/simple/price', {
-          params: {
-            ids: dogID,
-            vs_currencies: vsCurrency,
-          },
-          headers: {
-            accept: 'application/json',
-          },
-        })
-        .toPromise();
-      if (!data) {
-        throw new Error('Could not get DOG price');
+    return this.getPriceByContractAddress("0xBAac2B4491727D78D2b78815144570b9f2Fe8899")
+  }
+
+  async getPriceByContractAddress(contractAddress: string, withCache = true) {
+      const address = contractAddress.toLowerCase()
+      const cacheKey = `COINGECKO:${address}`
+      const vsCurrency = "usd"
+      let usdPrice = await this.cacheManager.get(cacheKey)
+      if (usdPrice) {
+        return usdPrice
+      } else {
+        const { data } = await this.http.get(
+          `https://api.coingecko.com/api/v3/simple/token_price/ethereum`, {
+            params: {
+              contract_addresses: address,
+              vs_currencies: vsCurrency
+            }
+          }
+        ).toPromise()
+        if (!data) {
+          throw new Error(`Could not get price for: ${address}`)
+        }
+        usdPrice = data[address][vsCurrency]
+        await this.cacheManager.set(cacheKey, usdPrice, { ttl: 5 * 60 })
+        return usdPrice
       }
-      usdPrice = Number(data[dogID][vsCurrency]);
-      await this.cacheManager.set(cacheKey, usdPrice, { ttl: 3 * 60 });
-      return usdPrice;
-    } else {
-      return usdPrice;
-    }
   }
 }

@@ -40,6 +40,9 @@ model RainbowSwaps {
   quoteAmount       Float
   clientSide        ClientSide
   txHash            String @unique
+  clientAddress     String
+  donatedCurrency   String
+  donatedAmount     Float
 }
 
 model Donations {

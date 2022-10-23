@@ -81,7 +81,7 @@ const configuration: Configuration = {
     password: process.env.REDIS_PASSWORD,
   },
   nomicsKey: process.env.NOMICS_API_KEY,
-  alchemyKey: process.env.ALCHEMY_KEY
+  alchemyKey: process.env.ALCHEMY_KEY,
 };
 
 export default configuration;
