@@ -3,7 +3,7 @@ import { AppController } from './app.controller';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import configuration, { Configuration } from './config/configuration';
 import { ScheduleModule } from '@nestjs/schedule';
-import { PixelsService } from './pixels/pixels.service';
+import { OwnTheDogeContractService } from './ownthedoge-contracts/ownthedoge-contracts.service';
 import { PrismaService } from './prisma.service';
 import { EthersService } from './ethers/ethers.service';
 import { EventEmitterModule } from '@nestjs/event-emitter';
@@ -64,7 +64,7 @@ import * as redisStore from 'cache-manager-redis-store';
   providers: [
     PrismaService,
     EthersService,
-    PixelsService,
+    OwnTheDogeContractService,
     PixelTransferRepository,
     TwitterService,
     DiscordService,

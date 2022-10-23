@@ -11,7 +11,7 @@ import {
   Post,
   Render,
 } from '@nestjs/common';
-import { PixelsService } from './pixels/pixels.service';
+import { OwnTheDogeContractService } from './ownthedoge-contracts/ownthedoge-contracts.service';
 import { ethers } from 'ethers';
 import { EthersService } from './ethers/ethers.service';
 import { HttpService } from '@nestjs/axios';
@@ -30,11 +30,11 @@ export class AppController {
   private logger = new Logger(AppController.name);
 
   constructor(
-    private readonly pixels: PixelsService,
+    private readonly pixels: OwnTheDogeContractService,
     private readonly pixelTransferRepo: PixelTransferRepository,
     private readonly pixelTransferService: PixelTransferService,
     private readonly ethers: EthersService,
-    private readonly pixelService: PixelsService,
+    private readonly pixelService: OwnTheDogeContractService,
     private readonly twitter: TwitterService,
     private readonly discord: DiscordService,
     private readonly gecko: CoinGeckoService,

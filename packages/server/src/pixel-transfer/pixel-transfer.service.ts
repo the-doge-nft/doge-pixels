@@ -5,7 +5,7 @@ import {
   Logger,
   OnModuleInit,
 } from '@nestjs/common';
-import { PixelsService } from '../pixels/pixels.service';
+import { OwnTheDogeContractService } from '../ownthedoge-contracts/ownthedoge-contracts.service';
 import { Event } from '@ethersproject/contracts/src.ts/index';
 import { PixelTransferRepository } from './pixel-transfer.repository';
 import { EthersService } from '../ethers/ethers.service'
@@ -19,8 +19,8 @@ export class PixelTransferService implements OnModuleInit {
   private readonly logger = new Logger(PixelTransferService.name);
 
   constructor(
-    @Inject(forwardRef(() => PixelsService))
-    private readonly pixels: PixelsService,
+    @Inject(forwardRef(() => OwnTheDogeContractService))
+    private readonly pixels: OwnTheDogeContractService,
     private readonly ethersService: EthersService,
     private readonly pixelTransfers: PixelTransferRepository,
     private readonly ethers: EthersService,

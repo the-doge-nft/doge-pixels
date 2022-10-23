@@ -18,8 +18,8 @@ import { PixelTransferService } from '../pixel-transfer/pixel-transfer.service';
 import { HttpService } from '@nestjs/axios';
 
 @Injectable()
-export class PixelsService implements OnModuleInit {
-  private readonly logger = new Logger(PixelsService.name);
+export class OwnTheDogeContractService implements OnModuleInit {
+  private readonly logger = new Logger(OwnTheDogeContractService.name);
   private pxContract: ethers.Contract;
   private dogContract: ethers.Contract;
 

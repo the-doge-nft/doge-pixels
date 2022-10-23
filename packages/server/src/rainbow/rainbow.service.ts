@@ -1,6 +1,6 @@
 import { EthersService } from './../ethers/ethers.service';
 import { BigNumber, ethers } from 'ethers';
-import { PixelsService } from './../pixels/pixels.service';
+import { OwnTheDogeContractService } from '../ownthedoge-contracts/ownthedoge-contracts.service';
 import { AlchemyService } from './../alchemy/alchemy.service';
 import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { AssetTransfersOrder, AssetTransfersCategory, AssetTransfersWithMetadataResult } from 'alchemy-sdk';
@@ -28,7 +28,7 @@ export class RainbowService implements OnModuleInit {
         private readonly rainbowSwapRepo: RainbowSwapsRepository
     ) {}
 
-    @Cron(CronExpression.EVERY_10_SECONDS)
+    @Cron(CronExpression.EVERY_10_MINUTES)
     private async syncRecentDOGSwaps() {
         this.logger.log('Syncing rainbow DOG swaps')
         const block = await this.rainbowSwapRepo.getMostRecentSwapBlockNumber()
