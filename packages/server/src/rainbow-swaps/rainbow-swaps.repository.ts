@@ -19,8 +19,6 @@ export class RainbowSwapsRepository {
     for (let i = 0; i < swaps.length; i++) {
       const swap = swaps[i]
       const clientEns = await this.ethers.getEnsName(swap.clientAddress)
-
-      // @next @TODO: get USD notional value from token price lookup
       let donatedCurrencyPrice: number
       try {
         if (swap.donatedCurrencyAddress === null) {
