@@ -6,7 +6,7 @@ import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { AssetTransfersOrder, AssetTransfersCategory, AssetTransfersWithMetadataResult } from 'alchemy-sdk';
 import * as ABI from '../contracts/hardhat_contracts.json';
 import { RainbowSwapsRepository } from '../rainbow-swaps/rainbow-swaps.repository';
-import { ClientSide } from '@prisma/client';
+import { ClientSide, RainbowSwaps } from '@prisma/client';
 
 @Injectable()
 export class RainbowService implements OnModuleInit {
@@ -75,26 +75,24 @@ export class RainbowService implements OnModuleInit {
         
             const blockNumber = ethers.BigNumber.from(transfer.blockNum)
             const allTransfers = (await this.getRouterTransfersByBlock(blockNumber.toHexString())).filter(tx => tx.hash === transfer.hash)
-            const order = this.getOrderFromAssetTransfers(allTransfers)
-            this.logger.log({...order, txHash: transfer.hash})
-            await this.rainbowSwapRepo.create({
-                blockNumber: blockNumber.toNumber(),
-                blockCreatedAt: new Date(),
-                baseCurrency: order.baseCurrency,
-                quoteCurrency: order.quoteCurrency,
-                baseAmount: order.baseAmount,
-                quoteAmount: order.quoteAmount,
-                clientSide: order.clientSide === "sell" ? ClientSide.SELL : ClientSide.BUY,
-                txHash: transfer.hash
-            })
+            try {
+                const order = this.getOrderFromAssetTransfers(allTransfers)
+                this.logger.log({...order, txHash: transfer.hash})
+                await this.rainbowSwapRepo.upsert(transfer.hash, order)
+            } catch (e) {
+                this.logger.error(`Could not insert rainbow swap: ${transfer.hash}`)
+            }
         }
     }
 
-    getOrderFromAssetTransfers(trace: AssetTransfersWithMetadataResult[]) {
+    getOrderFromAssetTransfers(trace: AssetTransfersWithMetadataResult[]): Omit<RainbowSwaps, 'id' | 'insertedAt' | 'updatedAt'> {
         const external = trace.filter(tx => tx.category === AssetTransfersCategory.EXTERNAL)
         const internal = trace.filter(tx => tx.category === AssetTransfersCategory.INTERNAL)
         const erc20 = trace.filter(tx => tx.category === AssetTransfersCategory.ERC20)
+        console.log("erc20 --", JSON.stringify(erc20))
         erc20.sort((a, b) => {
+            // uniqueId is missing from the type for some reason
+            // https://docs.alchemy.com/changelog/08262022-unique-ids-for-alchemy_getassettransfers
             // @ts-ignore
             const aLogNumber = Number(a.uniqueId.split(":")[2])
             // @ts-ignore
@@ -113,12 +111,14 @@ export class RainbowService implements OnModuleInit {
             soldOrder = erc20[0]
             boughtOrder = erc20[erc20.length - 1]
         } else {
+            // ETH transfer to OR from the contract
             const externalToContract = external.filter(tx => this.ethers.getIsAddressEqual(tx.to, this.routerContractAddress))
             const internalFromContract = internal.filter(tx => this.ethers.getIsAddressEqual(tx.from, this.routerContractAddress))
 
             if (externalToContract.length > 1 || internalFromContract.length > 1) {
-                console.log(externalToContract)
-                console.log(internalFromContract)
+                this.logger.error("There are multiple external to contract & internal from contract calls -- not prepared to handle")
+                this.logger.error(`external to contract: ${JSON.stringify(externalToContract)}`)
+                this.logger.error(`internal from contract: ${JSON.stringify(internalFromContract)}`)
                 throw new Error("Shouldn't hit")
             }
 
@@ -145,12 +145,12 @@ export class RainbowService implements OnModuleInit {
         const baseCurrency = "DOG"
 
         if (soldOrder.asset === "DOG") {
-            clientSide = "sell"
+            clientSide = ClientSide.SELL
             quoteCurrency = boughtOrder.asset
             quoteAmount = boughtOrder.value
             baseAmount = soldOrder.value
         } else {
-            clientSide = "buy"
+            clientSide = ClientSide.BUY
             quoteCurrency = soldOrder.asset
             quoteAmount = soldOrder.value
             baseAmount = boughtOrder.value
@@ -161,7 +161,10 @@ export class RainbowService implements OnModuleInit {
             baseCurrency,
             quoteCurrency,
             quoteAmount,
-            baseAmount
+            baseAmount,
+            blockCreatedAt: new Date(boughtOrder.metadata.blockTimestamp),
+            txHash: boughtOrder.hash,
+            blockNumber: ethers.BigNumber.from(boughtOrder.blockNum).toNumber()
         }
     }
 

@@ -1,6 +1,6 @@
 import { PrismaService } from './../prisma.service';
 import { Injectable } from '@nestjs/common';
-import { RainbowSwaps } from '@prisma/client';
+import { Prisma } from '@prisma/client';
 
 @Injectable()
 export class RainbowSwapsRepository {
@@ -8,7 +8,15 @@ export class RainbowSwapsRepository {
         private readonly prisma: PrismaService
     ) {}
 
-    create(args: any) {
+    create(args: Prisma.RainbowSwapsCreateInput) {
         return this.prisma.rainbowSwaps.create({data: args})
+    }
+
+    upsert(txHash: string, create: Prisma.RainbowSwapsCreateInput, update?: Prisma.RainbowSwapsUpdateInput) {
+        return this.prisma.rainbowSwaps.upsert({
+            where: { txHash },
+            update: { ...update },
+            create: { ...create }
+        })
     }
 }
