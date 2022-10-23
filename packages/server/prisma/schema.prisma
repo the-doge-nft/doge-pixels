@@ -39,6 +39,7 @@ model RainbowSwaps {
   baseAmount        Float
   quoteAmount       Float
   clientSide        ClientSide
+  txHash            String
 }
 
 model Donations {

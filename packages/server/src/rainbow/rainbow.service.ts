@@ -84,7 +84,8 @@ export class RainbowService implements OnModuleInit {
                 quoteCurrency: order.quoteCurrency,
                 baseAmount: order.baseAmount,
                 quoteAmount: order.quoteAmount,
-                clientSide: order.clientSide === "sell" ? ClientSide.SELL : ClientSide.BUY
+                clientSide: order.clientSide === "sell" ? ClientSide.SELL : ClientSide.BUY,
+                txHash: transfer.hash
             })
         }
     }
