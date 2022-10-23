@@ -1,5 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { Prisma, RainbowSwaps } from '@prisma/client';
+import { AlchemyService } from '../alchemy/alchemy.service';
+import { CoinGeckoService } from '../coin-gecko/coin-gecko.service';
 import { EthersService } from '../ethers/ethers.service';
 import { PrismaService } from './../prisma.service';
 
@@ -7,7 +9,9 @@ import { PrismaService } from './../prisma.service';
 export class RainbowSwapsRepository {
   constructor(
     private readonly prisma: PrismaService,
-    private readonly ethers: EthersService
+    private readonly ethers: EthersService,
+    private readonly alchemy: AlchemyService,
+    private readonly coingecko: CoinGeckoService
     ) {}
 
   private async afterGetSwaps(swaps: RainbowSwaps[]) {
@@ -17,6 +21,8 @@ export class RainbowSwapsRepository {
       const clientEns = await this.ethers.getEnsName(swap.clientAddress)
 
       // @next @TODO: get USD notional value from token price lookup
+      // const contractAddress = await this.alchemy.getContractAddress(swap.donatedCurrency)
+      // const donatedUSDNotional = await this.coingecko.getPriceByContractAddress(contractAddress)
       data.push({...swap, clientEns, donatedUSDNotional: 0})
     }
     return data
