@@ -44,7 +44,8 @@ up() {
     yarn prisma:migratedev
 
     spacedEcho "spinning up api"
-    if [[ $1 = "--build" ]]; then
+    if [[ "${1-false}" == true ]]; then
+      spacedEcho "building api image"
       docker-compose up --build -d api;
     else
       docker-compose up -d api
@@ -63,10 +64,10 @@ usage() {
     cat <<HELP_USAGE
 Usage:
     dev-local.sh up:
-        spins up api & db
+        spins up containers for local development
 
     dev-local.sh down:
-        pulls down api and db containers
+        pulls down local development containers
 HELP_USAGE
     exit 0
 }
@@ -74,11 +75,11 @@ HELP_USAGE
 if [[ $1 == "down" ]]; then
     down
 elif [[ $1 == "up" ]]; then
-    up ${2-""}
+    if [[ "${2-""}" == "--build" ]]; then
+        up true
+    else
+        up
+    fi
 else
     usage
 fi
-
-trap handler SIGQUIT
-down
-

@@ -3,15 +3,15 @@ import {
   Inject,
   Injectable,
   Logger,
-  OnModuleInit,
+  OnModuleInit
 } from '@nestjs/common';
-import { ethers } from 'ethers';
 import { ConfigService } from '@nestjs/config';
 import { EventEmitter2 } from '@nestjs/event-emitter';
-import { Events } from '../events';
-import { AppEnv } from '../config/configuration';
 import { InjectSentry, SentryService } from '@travelerdev/nestjs-sentry';
 import { Cache } from 'cache-manager';
+import { ethers } from 'ethers';
+import { AppEnv } from '../config/configuration';
+import { Events } from '../events';
 import { getRandomIntInclusive } from '../helpers/numbers';
 
 @Injectable()
@@ -123,7 +123,7 @@ export class EthersService implements OnModuleInit {
     const cacheSeconds = getRandomIntInclusive(60 * 60 * 3, 60 * 60 * 8);
     const noEns = 'NOENS';
     if (withCache) {
-      const ens = await this.cacheManager.get(cacheKey);
+      const ens = await this.cacheManager.get<string>(cacheKey);
       if (!ens) {
         // does not exist in cache
         const freshEns = await this.queryEnsName(address);
@@ -163,5 +163,9 @@ export class EthersService implements OnModuleInit {
   async getDateTimeFromBlockNumber(blockNumber: number) {
     const block = await this.provider.getBlock(blockNumber);
     return new Date(block.timestamp * 1000);
+  }
+
+  getIsAddressEqual(addr1: string, addr2: string) {
+    return ethers.utils.getAddress(addr1) === ethers.utils.getAddress(addr2);
   }
 }
