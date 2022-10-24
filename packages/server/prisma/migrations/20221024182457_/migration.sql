@@ -24,15 +24,5 @@ CREATE TABLE "RainbowSwaps" (
     CONSTRAINT "RainbowSwaps_pkey" PRIMARY KEY ("id")
 );
 
--- CreateTable
-CREATE TABLE "Donations" (
-    "id" SERIAL NOT NULL,
-    "currency" TEXT NOT NULL,
-    "txHash" TEXT NOT NULL,
-    "amount" TEXT NOT NULL,
-
-    CONSTRAINT "Donations_pkey" PRIMARY KEY ("id")
-);
-
 -- CreateIndex
 CREATE UNIQUE INDEX "RainbowSwaps_txHash_key" ON "RainbowSwaps"("txHash");

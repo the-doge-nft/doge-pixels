@@ -47,10 +47,3 @@ model RainbowSwaps {
   quoteCurrencyAddress    String?
   donatedCurrencyAddress  String?
 }
-
-model Donations {
-  id                Int @id @default(autoincrement())
-  currency          String
-  txHash            String
-  amount            String
-}
