@@ -49,20 +49,22 @@ const main = async () => {
     const myAddress = "DFEmbNXw53xLWYwgmSP6w2SKhawKz3XZaU"
 
     const wss = new Websocket("wss://ws.dogechain.info/inv")
+
+    const subToAddress = () => {
+        console.log("subbing to address: " + myAddress)
+        wss.send(JSON.stringify({op: "addr_sub", addr: myAddress}))
+    }
+
     wss.onopen = function() {
         console.log("ws open")
-        wss.send(JSON.stringify({op: "addr_sub", addr: myAddress}))
+        // subToAddress()
+        wss.send(JSON.stringify({op: "blocks_sub"}))
     }
 
     wss.onmessage = function(e) {
         const data = JSON.parse(e.data)
         console.log(data)
     }
-
-    wss.onclose = function(e) {
-        console.log("ws closed")
-    }
-
 }
 
 main()
