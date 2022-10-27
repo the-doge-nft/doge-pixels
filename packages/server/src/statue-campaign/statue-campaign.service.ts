@@ -1,5 +1,6 @@
 import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { Cron, CronExpression } from '@nestjs/schedule';
+import { DonationsService } from '../donations/donations.service';
 import { RainbowSwapsRepository } from '../rainbow-swaps/rainbow-swaps.repository';
 import { RainbowSwapsService } from '../rainbow-swaps/rainbow-swaps.service';
 
@@ -14,12 +15,23 @@ export class StatueCampaignService implements OnModuleInit {
 
   constructor(
     private readonly rainbowSwaps: RainbowSwapsService,
-    private readonly rainbowSwapsRepo: RainbowSwapsRepository
+    private readonly rainbowSwapsRepo: RainbowSwapsRepository,
+    private readonly donationsService: DonationsService
     ) {}
 
   @Cron(CronExpression.EVERY_10_MINUTES)
   private syncRainbowSwaps() {
     this.rainbowSwaps.syncRecentDOGSwaps();
+  }
+
+  @Cron(CronExpression.EVERY_10_SECONDS)
+  private syncDogeTxs() {
+    this.donationsService.syncDogeDonations()
+  }
+
+  @Cron(CronExpression.EVERY_10_SECONDS)
+  private syncEthereumDonations() {
+    this.donationsService.syncEthereumDonations()
   }
 
   async getLeaderBoard() {

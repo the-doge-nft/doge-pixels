@@ -33,10 +33,15 @@ export class RainbowSwapsService {
   async syncRecentDOGSwaps() {
     this.logger.log('Syncing rainbow DOG swaps');
     const block = await this.rainbowSwapRepo.getMostRecentSwapBlockNumber();
-    if (!block) {
-      await this.syncAllDOGSwaps();
-    } else {
-      await this.syncDOGSwapsFromBlock(block);
+    try {
+      if (!block) {
+        await this.syncAllDOGSwaps();
+      } else {
+        await this.syncDOGSwapsFromBlock(block);
+      }
+    } catch (e) {
+      this.logger.error(`Error getting recent DOG swaps`)
+      this.logger.error(e)
     }
   }
 
@@ -219,10 +224,6 @@ export class RainbowSwapsService {
     let clientSide, quoteCurrency, quoteAmount, baseAmount, baseCurrencyAddress, quoteCurrencyAddress;
 
     const baseCurrency = 'DOG';
-
-    console.log(JSON.stringify(boughtOrder, undefined, 2))
-    console.log(JSON.stringify(soldOrder, undefined, 2))
-
 
     if (soldOrder.asset === 'DOG') {
       clientSide = ClientSide.SELL;
