@@ -19,10 +19,10 @@ export class StatueCampaignService implements OnModuleInit {
     private readonly donationsService: DonationsService
     ) {}
 
-  @Cron(CronExpression.EVERY_10_MINUTES)
-  private syncRainbowSwaps() {
-    this.rainbowSwaps.syncRecentDOGSwaps();
-  }
+  // @Cron(CronExpression.EVERY_10_MINUTES)
+  // private syncRainbowSwaps() {
+  //   this.rainbowSwaps.syncRecentDOGSwaps();
+  // }
 
   @Cron(CronExpression.EVERY_10_SECONDS)
   private syncDogeTxs() {

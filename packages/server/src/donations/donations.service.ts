@@ -8,7 +8,7 @@ import { AlchemyService } from '../alchemy/alchemy.service';
 export class DonationsService implements OnModuleInit {
     private logger = new Logger(DonationsService.name);
     private dogeCoinAddress = "D8HjKf37rF3Ho7tjwe17MPN8xQ2UbHSUhB"
-    private ethereumAddress = "0x9f632a96587B7c8A7a12A13cFcc1b3678dc37958"
+    private ethereumAddress = "0x633aC73fB70247257E0c3A1142278235aFa358ac"
 
     constructor(
         private readonly http: HttpService,

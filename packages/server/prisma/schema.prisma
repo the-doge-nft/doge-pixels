@@ -48,13 +48,18 @@ model RainbowSwaps {
   donatedCurrencyAddress  String?
 }
 
+enum ChainName {
+  DOGE
+  ETHEREUM
+}
+
 model Donations {
   id                      Int @id @default(autoincrement())
   blockCreatedAt          DateTime
   fromAddress             String
   toAddress               String
-  blockchain              String
+  blockchain              ChainName
   currency                String
-  txHash                  String
+  txHash                  String @unique
   amount                  String
 }
