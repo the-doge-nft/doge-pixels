@@ -57,6 +57,7 @@ class DogeChain {
     }
 }
 
+<<<<<<< HEAD
 class ChainSo {
     baseUrl = "https://chain.so/api/v2"
 
@@ -70,12 +71,31 @@ class ChainSo {
         */
         const { data } = await axios.get(this.baseUrl +  `/get_tx_received/DOGE/${address}`)
         return data
+=======
+    const client = new DogeChain()
+
+    const address = "D8HjKf37rF3Ho7tjwe17MPN8xQ2UbHSUhB"
+    const myAddress = "DFEmbNXw53xLWYwgmSP6w2SKhawKz3XZaU"
+
+    const wss = new Websocket("wss://ws.dogechain.info/inv")
+
+    const subToAddress = () => {
+        console.log("subbing to address: " + myAddress)
+        wss.send(JSON.stringify({op: "addr_sub", addr: myAddress}))
+    }
+
+    wss.onopen = function() {
+        console.log("ws open")
+        // subToAddress()
+        wss.send(JSON.stringify({op: "blocks_sub"}))
+>>>>>>> fcc57604f55ce6cec1110fb0f15931dece992c35
     }
 
     async getDogeInfo() {
         const { data } = await axios.get(this.baseUrl + "/get_info/DOGE")
         return data
     }
+<<<<<<< HEAD
 
     listenForBalanceUpdates(address) {
         // Pusher.host = 'pusher.chain.so'
@@ -113,6 +133,8 @@ const main = async () => {
     // const data = await chainSo.getReceivedTxs(myAddress)
     // console.log(data.data.txs)
     chainSo.listenForBalanceUpdates(myAddress)
+=======
+>>>>>>> fcc57604f55ce6cec1110fb0f15931dece992c35
 }
 
 main()
