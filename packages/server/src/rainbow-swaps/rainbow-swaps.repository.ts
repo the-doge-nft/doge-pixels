@@ -11,44 +11,45 @@ export class RainbowSwapsRepository {
     private readonly prisma: PrismaService,
     private readonly ethers: EthersService,
     private readonly alchemy: AlchemyService,
-    private readonly coingecko: CoinGeckoService
-    ) {}
+    private readonly coingecko: CoinGeckoService,
+  ) {}
 
   private async afterGetSwaps(swaps: RainbowSwaps[]) {
-    const data: (RainbowSwaps & {clientEns: string, donatedUSDNotional: number})[] = []
+    const data: (RainbowSwaps & {
+      clientEns: string;
+      donatedUSDNotional: number;
+    })[] = [];
     for (let i = 0; i < swaps.length; i++) {
-      const swap = swaps[i]
-      const clientEns = await this.ethers.getEnsName(swap.clientAddress)
-      let donatedCurrencyPrice: number
+      const swap = swaps[i];
+      const clientEns = await this.ethers.getEnsName(swap.clientAddress);
+      let donatedCurrencyPrice: number;
       try {
         if (swap.donatedCurrencyAddress === null) {
-            donatedCurrencyPrice = await this.coingecko.getETHPrice()
+          donatedCurrencyPrice = await this.coingecko.getETHPrice();
         } else {
-            donatedCurrencyPrice = await this.coingecko.getPriceByContractAddress(swap.donatedCurrencyAddress)  
+          donatedCurrencyPrice = await this.coingecko.getPriceByContractAddress(
+            swap.donatedCurrencyAddress,
+          );
         }
       } catch (e) {
-        donatedCurrencyPrice = 0
+        donatedCurrencyPrice = 0;
       }
 
-      const donatedUSDNotional = donatedCurrencyPrice * swap.donatedAmount
-      data.push({...swap, clientEns, donatedUSDNotional})
+      const donatedUSDNotional = donatedCurrencyPrice * swap.donatedAmount;
+      data.push({ ...swap, clientEns, donatedUSDNotional });
     }
-    return data
+    return data;
   }
-    
+
   create(args: Prisma.RainbowSwapsCreateInput) {
     return this.prisma.rainbowSwaps.create({ data: args });
   }
 
-  upsert(
-    txHash: string,
-    create: Prisma.RainbowSwapsCreateInput,
-    update?: Prisma.RainbowSwapsUpdateInput,
-  ) {
+  upsert(swap: Prisma.RainbowSwapsCreateInput) {
     return this.prisma.rainbowSwaps.upsert({
-      where: { txHash },
-      update: { ...update },
-      create: { ...create },
+      where: { txHash: swap.txHash },
+      create: { ...swap },
+      update: {},
     });
   }
 
@@ -69,6 +70,6 @@ export class RainbowSwapsRepository {
         blockCreatedAt: 'desc',
       },
     });
-    return this.afterGetSwaps(swaps)
+    return this.afterGetSwaps(swaps);
   }
 }

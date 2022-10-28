@@ -3,7 +3,7 @@ import { ClientSide, RainbowSwaps } from '@prisma/client';
 import {
   AssetTransfersCategory,
   AssetTransfersOrder,
-  AssetTransfersWithMetadataResult
+  AssetTransfersWithMetadataResult,
 } from 'alchemy-sdk';
 import { ethers } from 'ethers';
 import { AlchemyService } from '../alchemy/alchemy.service';
@@ -18,31 +18,16 @@ export class RainbowSwapsService {
   private routerContractAddress = '0x00000000009726632680FB29d3F7A9734E3010E2';
   private dogAddress = ABI[1]['mainnet'].contracts['DOG20'].address;
 
-  init() {
-    this.logger.log('🌈 Rainbow swap serivce');
-    this.listenForTransfersThroughRouter();
-    this.syncRecentDOGSwaps();
-  }
-
   constructor(
     private readonly alchemy: AlchemyService,
     private readonly ethers: EthersService,
     private readonly rainbowSwapRepo: RainbowSwapsRepository,
   ) {}
 
-  async syncRecentDOGSwaps() {
-    this.logger.log('Syncing rainbow DOG swaps');
-    const block = await this.rainbowSwapRepo.getMostRecentSwapBlockNumber();
-    try {
-      if (!block) {
-        await this.syncAllDOGSwaps();
-      } else {
-        await this.syncDOGSwapsFromBlock(block);
-      }
-    } catch (e) {
-      this.logger.error(`Error getting recent DOG swaps`)
-      this.logger.error(e)
-    }
+  init() {
+    this.logger.log('🌈 Rainbow swap serivce');
+    // this.listenForTransfersThroughRouter();
+    // this.syncRecentDOGSwaps();
   }
 
   private listenForTransfersThroughRouter() {
@@ -54,6 +39,40 @@ export class RainbowSwapsService {
     console.log(payload);
   }
 
+  async syncRecentDOGSwaps() {
+    this.logger.log('Syncing rainbow DOG swaps');
+    const block = await this.rainbowSwapRepo.getMostRecentSwapBlockNumber();
+    try {
+      if (block) {
+        await this.syncDOGSwapsFromBlock(block);
+      } else {
+        await this.syncAllDOGSwaps();
+      }
+    } catch (e) {
+      this.logger.error(`Error getting recent DOG swaps`);
+      this.logger.error(e);
+    }
+  }
+
+  private async syncDOGSwapsFromBlock(blockNumber: number) {
+    this.logger.log(`Syncing DOG swaps from block: ${blockNumber}`);
+    const transfers = await this.getDOGTransfersToRouterFromBlock(
+      ethers.BigNumber.from(blockNumber).toHexString(),
+    );
+    await this.upsertDOGSwaps(transfers);
+  }
+
+  private async syncAllDOGSwaps() {
+    this.logger.log('Syncing all DOG swaps');
+    try {
+      const transfers = await this.getAllDOGTransfersToRouter();
+      this.upsertDOGSwaps(transfers);
+    } catch (e) {
+      this.logger.error('Could sync all dog swaps');
+    }
+  }
+
+  // @next -- investigate if we should be listening to transfers on all networks or not
   private async getDOGTransfersToRouterFromBlock(fromBlock: string) {
     const data = await this.alchemy.getAssetTransfers({
       order: AssetTransfersOrder.ASCENDING,
@@ -117,21 +136,7 @@ export class RainbowSwapsService {
     return toTxs.concat(fromTxs);
   }
 
-  private async syncDOGSwapsFromBlock(blockNumber: number) {
-    this.logger.log(`Syncing DOG swaps from block: ${blockNumber}`);
-    const transfers = await this.getDOGTransfersToRouterFromBlock(
-      ethers.BigNumber.from(blockNumber).toHexString(),
-    );
-    await this.insertDOGSwaps(transfers);
-  }
-
-  private async syncAllDOGSwaps() {
-    this.logger.log('Syncing all DOG swaps');
-    const transfers = await this.getAllDOGTransfersToRouter();
-    this.insertDOGSwaps(transfers);
-  }
-
-  private async insertDOGSwaps(transfers) {
+  private async upsertDOGSwaps(transfers) {
     for (let i = 0; i < transfers.length; i++) {
       const transfer = transfers[i];
       this.logger.log(`processing DOG swap in tx: ${transfer.hash}`);
@@ -142,7 +147,7 @@ export class RainbowSwapsService {
       ).filter((tx) => tx.hash === transfer.hash);
       try {
         const order = this.getOrderFromAssetTransfers(allTransfers);
-        await this.rainbowSwapRepo.upsert(transfer.hash, order);
+        await this.rainbowSwapRepo.upsert(order);
       } catch (e) {
         this.logger.error(`Could not insert rainbow swap: ${transfer.hash}`);
       }
@@ -221,7 +226,12 @@ export class RainbowSwapsService {
       throw new Error('One of these orders should be an order for DOG');
     }
 
-    let clientSide, quoteCurrency, quoteAmount, baseAmount, baseCurrencyAddress, quoteCurrencyAddress;
+    let clientSide,
+      quoteCurrency,
+      quoteAmount,
+      baseAmount,
+      baseCurrencyAddress,
+      quoteCurrencyAddress;
 
     const baseCurrency = 'DOG';
 
@@ -235,22 +245,24 @@ export class RainbowSwapsService {
     } else {
       clientSide = ClientSide.BUY;
       quoteCurrency = soldOrder.asset;
-      quoteCurrencyAddress = soldOrder.rawContract.address
+      quoteCurrencyAddress = soldOrder.rawContract.address;
       quoteAmount = soldOrder.value;
       baseAmount = boughtOrder.value;
-      baseCurrencyAddress = boughtOrder.rawContract.address as string | null
+      baseCurrencyAddress = boughtOrder.rawContract.address as string | null;
     }
 
-    const rainbowProfitBips = 8
+    const rainbowProfitBips = 8;
 
     // rainbow router always keeps the tokens that were sent *to* the contract from the user
-    const donatedCurrency = soldOrder.asset
-    const donatedCurrencyAddress = soldOrder.rawContract.address as string | null
-    const donatedAmount = soldOrder.value * (rainbowProfitBips / 10000)
-    const blockCreatedAt = new Date(boughtOrder.metadata.blockTimestamp)
-    const txHash = boughtOrder.hash
-    const blockNumber = ethers.BigNumber.from(boughtOrder.blockNum).toNumber()
-    const clientAddress = boughtOrder.to
+    const donatedCurrency = soldOrder.asset;
+    const donatedCurrencyAddress = soldOrder.rawContract.address as
+      | string
+      | null;
+    const donatedAmount = soldOrder.value * (rainbowProfitBips / 10000);
+    const blockCreatedAt = new Date(boughtOrder.metadata.blockTimestamp);
+    const txHash = boughtOrder.hash;
+    const blockNumber = ethers.BigNumber.from(boughtOrder.blockNum).toNumber();
+    const clientAddress = boughtOrder.to;
 
     return {
       clientSide,
@@ -266,7 +278,7 @@ export class RainbowSwapsService {
       donatedAmount,
       baseCurrencyAddress,
       quoteCurrencyAddress,
-      donatedCurrencyAddress
+      donatedCurrencyAddress,
     };
   }
 }

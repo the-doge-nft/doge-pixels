@@ -3,7 +3,7 @@ import {
   Inject,
   Injectable,
   Logger,
-  OnModuleInit
+  OnModuleInit,
 } from '@nestjs/common';
 import { Resolution } from '@unstoppabledomains/resolution';
 import { Cache } from 'cache-manager';

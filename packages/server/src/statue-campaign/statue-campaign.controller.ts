@@ -6,7 +6,7 @@ import { StatueCampaignService } from './statue-campaign.service';
 export class DonationController {
   constructor(
     private readonly rainbowSwapRepo: RainbowSwapsRepository,
-    private readonly statueService: StatueCampaignService
+    private readonly statueService: StatueCampaignService,
   ) {}
 
   @Get('/swaps')
@@ -16,7 +16,7 @@ export class DonationController {
 
   @Get('/donations')
   getDonations() {
-    return []
+    return [];
   }
 
   @Get('/leaderboard')
@@ -25,6 +25,6 @@ export class DonationController {
     // 1: query total notional by ethereum address from donations + rainbow swaps
     // 2: query total notional by doge donations
     // 3: sort notional
-    return await this.statueService.getLeaderBoard()
+    return await this.statueService.getLeaderBoard();
   }
 }

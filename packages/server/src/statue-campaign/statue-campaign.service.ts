@@ -16,33 +16,33 @@ export class StatueCampaignService implements OnModuleInit {
   constructor(
     private readonly rainbowSwaps: RainbowSwapsService,
     private readonly rainbowSwapsRepo: RainbowSwapsRepository,
-    private readonly donationsService: DonationsService
-    ) {}
+    private readonly donationsService: DonationsService,
+  ) {}
 
   // @Cron(CronExpression.EVERY_10_MINUTES)
   // private syncRainbowSwaps() {
   //   this.rainbowSwaps.syncRecentDOGSwaps();
   // }
 
-  @Cron(CronExpression.EVERY_10_SECONDS)
+  @Cron(CronExpression.EVERY_30_SECONDS)
   private syncDogeTxs() {
-    this.donationsService.syncDogeDonations()
+    this.donationsService.syncRecentDogeDonations();
   }
 
-  @Cron(CronExpression.EVERY_10_SECONDS)
-  private syncEthereumDonations() {
-    this.donationsService.syncEthereumDonations()
-  }
+  // @Cron(CronExpression.EVERY_10_SECONDS)
+  // private syncEthereumDonations() {
+  //   this.donationsService.syncEthereumDonations();
+  // }
 
   async getLeaderBoard() {
-    const donations = []
-    const swaps = await this.rainbowSwapsRepo.getSwaps()
-    swaps.sort((a,b) => {
+    const donations = [];
+    const swaps = await this.rainbowSwapsRepo.getSwaps();
+    swaps.sort((a, b) => {
       if (a.donatedUSDNotional > b.donatedUSDNotional) {
-        return -1
+        return -1;
       }
-      return 1
-    })
-    return {swaps, donations}
+      return 1;
+    });
+    return { swaps, donations };
   }
 }

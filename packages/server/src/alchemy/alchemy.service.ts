@@ -3,7 +3,7 @@ import { ConfigService } from '@nestjs/config';
 import {
   Alchemy,
   AssetTransfersWithMetadataParams,
-  Network
+  Network,
 } from 'alchemy-sdk';
 import { Configuration } from '../config/configuration';
 
@@ -13,6 +13,7 @@ export class AlchemyService implements OnModuleInit {
   private alchemy: Alchemy;
 
   constructor(private readonly configService: ConfigService<Configuration>) {
+    // NOTE WE ARE NOT SUPPORTING TESTNETS HERE
     this.alchemy = new Alchemy({
       apiKey: this.configService.get('alchemyKey'),
       network: Network.ETH_MAINNET,
