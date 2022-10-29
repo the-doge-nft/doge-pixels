@@ -29,6 +29,7 @@ import { StatueCampaignService } from './statue-campaign/statue-campaign.service
 import { TwitterService } from './twitter/twitter.service';
 import { UnstoppableDomainsService } from './unstoppable-domains/unstoppable-domains.service';
 import { SochainService } from './sochain/sochain.service';
+import { CacheService } from './cache/cache.service';
 
 @Module({
   imports: [
@@ -86,6 +87,7 @@ import { SochainService } from './sochain/sochain.service';
     DonationsService,
     DonationsRepository,
     SochainService,
+    CacheService,
   ],
 })
 export class AppModule {}

@@ -19,17 +19,17 @@ export class RainbowSwapsRepository {
       clientEns: string;
       donatedUSDNotional: number;
     })[] = [];
-    for (let i = 0; i < swaps.length; i++) {
-      const swap = swaps[i];
+    for (const swap of swaps) {
       const clientEns = await this.ethers.getEnsName(swap.clientAddress);
       let donatedCurrencyPrice: number;
       try {
         if (swap.donatedCurrencyAddress === null) {
           donatedCurrencyPrice = await this.coingecko.getETHPrice();
         } else {
-          donatedCurrencyPrice = await this.coingecko.getPriceByContractAddress(
-            swap.donatedCurrencyAddress,
-          );
+          donatedCurrencyPrice =
+            await this.coingecko.getPriceByEthereumContractAddress(
+              swap.donatedCurrencyAddress,
+            );
         }
       } catch (e) {
         donatedCurrencyPrice = 0;

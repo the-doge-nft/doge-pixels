@@ -1,13 +1,10 @@
 import { ChainName, Donations } from '@prisma/client';
-import { SochainService } from './../sochain/sochain.service';
-import { DonationsRepository } from './donations.repository';
-import { HttpService } from '@nestjs/axios';
+import { SoChainNetorks, SochainService } from './../sochain/sochain.service';
+import { DOGE_CURRENCY, DonationsRepository } from './donations.repository';
 import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { AssetTransfersCategory, AssetTransfersOrder } from 'alchemy-sdk';
-import { catchError, firstValueFrom } from 'rxjs';
 import { AlchemyService } from '../alchemy/alchemy.service';
 import { InjectSentry, SentryService } from '@travelerdev/nestjs-sentry';
-import { IncomingMessage } from 'http';
 
 @Injectable()
 export class DonationsService implements OnModuleInit {
@@ -16,7 +13,6 @@ export class DonationsService implements OnModuleInit {
   private ethereumAddress = '0x633aC73fB70247257E0c3A1142278235aFa358ac';
 
   constructor(
-    private readonly http: HttpService,
     private readonly alchemy: AlchemyService,
     private readonly donationsRepo: DonationsRepository,
     private readonly sochain: SochainService,
@@ -38,6 +34,7 @@ export class DonationsService implements OnModuleInit {
       }
     } catch (e) {
       this.logger.error('Could not sync Doge donations');
+      this.sentryClient.instance().captureException(e);
     }
   }
 
@@ -45,7 +42,16 @@ export class DonationsService implements OnModuleInit {
     this.logger.log(
       `Syncing dogecoin donations from block number ${donation.blockNumber} : hash ${donation.txHash}`,
     );
-    // get all txs from this has & upsert
+    // check if there are any new txs past our most recent synced tx
+    const donations = await this.sochain.getTxsReceived(
+      this.dogeCoinAddress,
+      SoChainNetorks.DOGE,
+      donation.txHash,
+    );
+
+    if (donations.length > 0) {
+      await this.syncAllDogeDonations();
+    }
   }
 
   private async syncAllDogeDonations() {
@@ -58,7 +64,6 @@ export class DonationsService implements OnModuleInit {
 
   private async upsertDogeDonations(donations: any[]) {
     for (const donation of donations) {
-      this.logger.log(donation);
       await this.donationsRepo.upsert({
         txHash: donation.txid,
         fromAddress: donation?.incoming.inputs.filter(
@@ -66,8 +71,8 @@ export class DonationsService implements OnModuleInit {
         )?.[0]?.address,
         blockNumber: donation.block_no,
         toAddress: this.dogeCoinAddress,
-        blockchain: ChainName.DOGE,
-        currency: 'DOGE',
+        blockchain: ChainName.DOGECOIN,
+        currency: DOGE_CURRENCY,
         amount: Number(donation.incoming.value),
         blockCreatedAt: new Date(donation.time * 1000),
       });

@@ -14,6 +14,7 @@ export class SochainService {
   private logger = new Logger(SochainService.name);
 
   private readonly baseUrl = 'https://chain.so/api/v2';
+  private readonly baseExplorerTxUrl = 'https://chain.so/tx/DOGE';
   constructor(
     private readonly http: HttpService,
     @InjectSentry() private readonly sentryClient: SentryService,
@@ -53,24 +54,31 @@ export class SochainService {
   async getTxsReceived(
     address: string,
     network: SoChainNetorks = SoChainNetorks.DOGE,
+    afterTxHash?: string,
   ) {
+    let url = this.baseUrl + '/get_tx_received/' + network + '/' + address;
+    if (afterTxHash) {
+      url += '/' + afterTxHash;
+    }
     const { data } = await firstValueFrom(
-      this.http
-        .get(this.baseUrl + '/get_tx_received/' + network + '/' + address)
-        .pipe(
-          catchError((e) => {
-            this.handleError(e);
-            throw new Error(
-              `Could not get sochain txs received ${network} : ${address}`,
-            );
-          }),
-        ),
+      this.http.get(url).pipe(
+        catchError((e) => {
+          this.handleError(e);
+          throw new Error(
+            `Could not get sochain txs received ${network} : ${address}`,
+          );
+        }),
+      ),
     );
-    return data;
+    return data?.data?.txs;
   }
 
   private handleError(e: any) {
     this.logger.error(e.response.data);
     this.sentryClient.instance().captureException(e);
+  }
+
+  getTxExplorerUrl(txid: string) {
+    return this.baseExplorerTxUrl + '/' + txid;
   }
 }
