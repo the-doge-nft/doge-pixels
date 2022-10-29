@@ -1,10 +1,5 @@
 import { Event } from '@ethersproject/contracts/src.ts/index';
-import {
-  forwardRef,
-  Inject,
-  Injectable,
-  Logger
-} from '@nestjs/common';
+import { forwardRef, Inject, Injectable, Logger } from '@nestjs/common';
 import { OnEvent } from '@nestjs/event-emitter';
 import { ethers } from 'ethers';
 import { EthersService } from '../ethers/ethers.service';

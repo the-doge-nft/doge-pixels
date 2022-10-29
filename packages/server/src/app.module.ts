@@ -13,6 +13,8 @@ import { AwsService } from './aws/aws.service';
 import { CoinGeckoService } from './coin-gecko/coin-gecko.service';
 import configuration, { Configuration } from './config/configuration';
 import { DiscordService } from './discord/discord.service';
+import { DonationsRepository } from './donations/donations.repository';
+import { DonationsService } from './donations/donations.service';
 import { EthersService } from './ethers/ethers.service';
 import { ImageGeneratorService } from './image-generator/image-generator.service';
 import { IndexController } from './index/index.controller';
@@ -26,6 +28,8 @@ import { DonationController } from './statue-campaign/statue-campaign.controller
 import { StatueCampaignService } from './statue-campaign/statue-campaign.service';
 import { TwitterService } from './twitter/twitter.service';
 import { UnstoppableDomainsService } from './unstoppable-domains/unstoppable-domains.service';
+import { SochainService } from './sochain/sochain.service';
+import { CacheService } from './cache/cache.service';
 
 @Module({
   imports: [
@@ -80,6 +84,10 @@ import { UnstoppableDomainsService } from './unstoppable-domains/unstoppable-dom
     AlchemyService,
     RainbowSwapsRepository,
     RainbowSwapsService,
+    DonationsService,
+    DonationsRepository,
+    SochainService,
+    CacheService,
   ],
 })
 export class AppModule {}

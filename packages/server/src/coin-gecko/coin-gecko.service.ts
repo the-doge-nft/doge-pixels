@@ -1,67 +1,75 @@
+import { CacheService } from './../cache/cache.service';
 import { HttpService } from '@nestjs/axios';
-import { CACHE_MANAGER, Inject, Injectable } from '@nestjs/common';
-import { Cache } from 'cache-manager';
+import { Injectable } from '@nestjs/common';
 
 @Injectable()
 export class CoinGeckoService {
+  private secondsToCache = 5 * 60;
+  private DOGContractAddress = '0xBAac2B4491727D78D2b78815144570b9f2Fe8899';
+
   constructor(
     private readonly http: HttpService,
-    @Inject(CACHE_MANAGER) private cacheManager: Cache,
+    private readonly cache: CacheService,
   ) {}
 
   // TODO test this works
   async getDOGUSDPrice() {
-    return this.getPriceByContractAddress("0xBAac2B4491727D78D2b78815144570b9f2Fe8899")
+    return this.getPriceByEthereumContractAddress(this.DOGContractAddress);
   }
 
-  async getPriceByContractAddress(contractAddress: string) {
-      const address = contractAddress.toLowerCase()
-      const cacheKey = `COINGECKO:${address}`
-      const vsCurrency = "usd"
-      let usdPrice = await this.cacheManager.get<number>(cacheKey)
-      if (usdPrice) {
-        return usdPrice
-      } else {
-        const { data } = await this.http.get(
-          `https://api.coingecko.com/api/v3/simple/token_price/ethereum`, {
+  async getPriceByEthereumContractAddress(
+    contractAddress: string,
+  ): Promise<number> {
+    const address = contractAddress.toLowerCase();
+    const vsCurrency = 'usd';
+
+    return this.cache.getOrQueryAndCache<number>(
+      `COINGECKO:${address}`,
+      async () => {
+        const { data } = await this.http
+          .get(`https://api.coingecko.com/api/v3/simple/token_price/ethereum`, {
             params: {
               contract_addresses: address,
-              vs_currencies: vsCurrency
-            }
-          }
-        ).toPromise()
+              vs_currencies: vsCurrency,
+            },
+          })
+          .toPromise();
         if (!data) {
-          throw new Error(`Could not get price for: ${address}`)
+          throw new Error(`Could not get price for: ${address}`);
         }
-        usdPrice = data[address][vsCurrency]
-        await this.cacheManager.set(cacheKey, usdPrice, { ttl: 5 * 60 })
-        return usdPrice
-      }
+        return data[address][vsCurrency];
+      },
+      this.secondsToCache,
+    );
+  }
+
+  private async getPriceVsUsd(currencyId: string) {
+    const usdCurrencyId = 'usd';
+    return this.cache.getOrQueryAndCache<number>(
+      `COINGECKO:${currencyId}`,
+      async () => {
+        const { data } = await this.http
+          .get(`https://api.coingecko.com/api/v3/simple/price`, {
+            params: {
+              ids: currencyId,
+              vs_currencies: usdCurrencyId,
+            },
+          })
+          .toPromise();
+        if (!data) {
+          throw new Error(`Could not get price for ${currencyId}`);
+        }
+        return data[currencyId][usdCurrencyId];
+      },
+      this.secondsToCache,
+    );
   }
 
   async getETHPrice() {
-    const cacheKey = "COINGECKO:ETH"
-    const vsCurrency = "usd"
-    const ethCurrencyId = "ethereum"
+    return this.getPriceVsUsd('ethereum');
+  }
 
-    let usdPrice = await this.cacheManager.get<number>(cacheKey)
-    if (usdPrice) {
-      return usdPrice
-    } else {
-      const { data } = await this.http.get(
-        `https://api.coingecko.com/api/v3/simple/price`, {
-          params: {
-            ids: ethCurrencyId,
-            vs_currencies: vsCurrency
-          }
-        }
-      ).toPromise()
-      if (!data) {
-        throw new Error(`Could not get price for ETH`)
-      }
-      usdPrice = data[ethCurrencyId][vsCurrency]
-      await this.cacheManager.set(cacheKey, usdPrice, { ttl: 5 * 60 })
-      return usdPrice
-    }
+  async getDogePrice() {
+    return this.getPriceVsUsd('dogecoin');
   }
 }

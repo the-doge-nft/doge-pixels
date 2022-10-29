@@ -2,7 +2,7 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
-  provider = "prisma-client-js"
+  provider      = "prisma-client-js"
   binaryTargets = ["native", "linux-musl"]
 }
 
@@ -12,15 +12,15 @@ datasource db {
 }
 
 model PixelTransfers {
-  id                Int @id @default(autoincrement())
-  blockNumber       Int
-  blockCreatedAt    DateTime
-  insertedAt        DateTime @default(now())
-  updatedAt         DateTime @default(now())
-  from              String
-  to                String
-  tokenId           Int
-  uniqueTransferId  String @unique
+  id               Int      @id @default(autoincrement())
+  blockNumber      Int
+  blockCreatedAt   DateTime
+  insertedAt       DateTime @default(now())
+  updatedAt        DateTime @default(now())
+  from             String
+  to               String
+  tokenId          Int
+  uniqueTransferId String   @unique
 }
 
 enum ClientSide {
@@ -29,21 +29,39 @@ enum ClientSide {
 }
 
 model RainbowSwaps {
-  id                      Int @id @default(autoincrement())
+  id                     Int        @id @default(autoincrement())
+  blockNumber            Int
+  blockCreatedAt         DateTime
+  insertedAt             DateTime   @default(now())
+  updatedAt              DateTime   @default(now())
+  baseCurrency           String
+  quoteCurrency          String
+  baseAmount             Float
+  quoteAmount            Float
+  clientSide             ClientSide
+  txHash                 String     @unique
+  clientAddress          String
+  donatedCurrency        String
+  donatedAmount          Float
+  baseCurrencyAddress    String?
+  quoteCurrencyAddress   String?
+  donatedCurrencyAddress String?
+}
+
+enum ChainName {
+  DOGECOIN
+  ETHEREUM
+}
+
+model Donations {
+  id                      Int       @id @default(autoincrement())
   blockNumber             Int
   blockCreatedAt          DateTime
-  insertedAt              DateTime @default(now())
-  updatedAt               DateTime @default(now())
-  baseCurrency            String
-  quoteCurrency           String
-  baseAmount              Float
-  quoteAmount             Float
-  clientSide              ClientSide
-  txHash                  String @unique
-  clientAddress           String
-  donatedCurrency         String
-  donatedAmount           Float
-  baseCurrencyAddress     String?
-  quoteCurrencyAddress    String?
-  donatedCurrencyAddress  String?
+  fromAddress             String
+  toAddress               String
+  blockchain              ChainName
+  currency                String
+  currencyContractAddress String?
+  txHash                  String    @unique
+  amount                  Float
 }

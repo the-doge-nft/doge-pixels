@@ -3,7 +3,7 @@ import {
   Inject,
   Injectable,
   Logger,
-  OnModuleInit
+  OnModuleInit,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { EventEmitter2 } from '@nestjs/event-emitter';
