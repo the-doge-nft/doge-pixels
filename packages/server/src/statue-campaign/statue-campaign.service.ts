@@ -21,12 +21,12 @@ export class StatueCampaignService implements OnModuleInit {
     private readonly donationsRepo: DonationsRepository,
   ) {}
 
-  @Cron(CronExpression.EVERY_10_MINUTES)
+  @Cron(CronExpression.EVERY_5_MINUTES)
   private syncRainbowSwaps() {
     this.rainbowSwaps.syncRecentDOGSwaps();
   }
 
-  @Cron(CronExpression.EVERY_10_MINUTES)
+  @Cron(CronExpression.EVERY_5_MINUTES)
   private syncDogeTxs() {
     this.donationsService.syncRecentDogeDonations();
   }
