@@ -36,7 +36,7 @@ export class DonationsRepository {
           donatedCurrencyPrice = await this.coingecko.getDogePrice();
           explorerUrl = this.sochain.getTxExplorerUrl(donation.txHash);
         } else {
-          explorerUrl = '';
+          explorerUrl = `https://etherscan.io/tx/${donation.txHash}`;
           if (donation.currencyContractAddress) {
             donatedCurrencyPrice =
               await this.coingecko.getPriceByEthereumContractAddress(
