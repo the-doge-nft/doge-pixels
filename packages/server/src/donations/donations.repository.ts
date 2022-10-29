@@ -89,6 +89,17 @@ export class DonationsRepository {
     )?.[0];
   }
 
+  async getMostRecentEthereumDonation() {
+    return (
+      await this.prisma.donations.findMany({
+        where: {
+          blockchain: ChainName.ETHEREUM,
+        },
+        orderBy: { blockCreatedAt: 'desc' },
+      })
+    )?.[0];
+  }
+
   async getMostRecentDonations() {
     const donations = await this.prisma.donations.findMany({
       orderBy: {

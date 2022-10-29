@@ -1,5 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { ClientSide, RainbowSwaps } from '@prisma/client';
+import { InjectSentry, SentryService } from '@travelerdev/nestjs-sentry';
 import {
   AssetTransfersCategory,
   AssetTransfersOrder,
@@ -22,6 +23,7 @@ export class RainbowSwapsService {
     private readonly alchemy: AlchemyService,
     private readonly ethers: EthersService,
     private readonly rainbowSwapRepo: RainbowSwapsRepository,
+    @InjectSentry() private readonly sentryClient: SentryService,
   ) {}
 
   init() {
@@ -44,18 +46,22 @@ export class RainbowSwapsService {
     const block = await this.rainbowSwapRepo.getMostRecentSwapBlockNumber();
     try {
       if (block) {
+        this.logger.log(`Syncing DOG swaps from block: ${block}`);
+
         await this.syncDOGSwapsFromBlock(block);
       } else {
+        this.logger.log('Syncing all DOG swaps');
+
         await this.syncAllDOGSwaps();
       }
     } catch (e) {
       this.logger.error(`Error getting recent DOG swaps`);
       this.logger.error(e);
+      this.sentryClient.instance().captureException(e);
     }
   }
 
   private async syncDOGSwapsFromBlock(blockNumber: number) {
-    this.logger.log(`Syncing DOG swaps from block: ${blockNumber}`);
     const transfers = await this.getDOGTransfersToRouterFromBlock(
       ethers.BigNumber.from(blockNumber).toHexString(),
     );
@@ -63,13 +69,8 @@ export class RainbowSwapsService {
   }
 
   private async syncAllDOGSwaps() {
-    this.logger.log('Syncing all DOG swaps');
-    try {
-      const transfers = await this.getAllDOGTransfersToRouter();
-      this.upsertDOGSwaps(transfers);
-    } catch (e) {
-      this.logger.error('Could sync all dog swaps');
-    }
+    const transfers = await this.getAllDOGTransfersToRouter();
+    this.upsertDOGSwaps(transfers);
   }
 
   // @next -- investigate if we should be listening to transfers on all networks or not
@@ -90,6 +91,8 @@ export class RainbowSwapsService {
   }
 
   private async getAllDOGTransfersToRouter() {
+    // NOTE: this assumes there are not more than 1000 transfers
+    // @next -- handle pageKey correctly
     const data = await this.alchemy.getAssetTransfers({
       order: AssetTransfersOrder.ASCENDING,
       toAddress: this.routerContractAddress,
@@ -136,11 +139,8 @@ export class RainbowSwapsService {
     return toTxs.concat(fromTxs);
   }
 
-  private async upsertDOGSwaps(transfers) {
-    for (let i = 0; i < transfers.length; i++) {
-      const transfer = transfers[i];
-      this.logger.log(`processing DOG swap in tx: ${transfer.hash}`);
-
+  private async upsertDOGSwaps(transfers: AssetTransfersWithMetadataResult[]) {
+    for (const transfer of transfers) {
       const blockNumber = ethers.BigNumber.from(transfer.blockNum);
       const allTransfers = (
         await this.getRouterTransfersByBlock(blockNumber.toHexString())

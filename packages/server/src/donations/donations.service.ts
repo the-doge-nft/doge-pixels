@@ -1,10 +1,15 @@
+import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { ChainName, Donations } from '@prisma/client';
+import { InjectSentry, SentryService } from '@travelerdev/nestjs-sentry';
+import {
+  AssetTransfersCategory,
+  AssetTransfersOrder,
+  AssetTransfersWithMetadataResult,
+} from 'alchemy-sdk';
+import { ethers } from 'ethers';
+import { AlchemyService } from '../alchemy/alchemy.service';
 import { SoChainNetorks, SochainService } from './../sochain/sochain.service';
 import { DOGE_CURRENCY, DonationsRepository } from './donations.repository';
-import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
-import { AssetTransfersCategory, AssetTransfersOrder } from 'alchemy-sdk';
-import { AlchemyService } from '../alchemy/alchemy.service';
-import { InjectSentry, SentryService } from '@travelerdev/nestjs-sentry';
 
 @Injectable()
 export class DonationsService implements OnModuleInit {
@@ -21,6 +26,7 @@ export class DonationsService implements OnModuleInit {
 
   onModuleInit() {
     this.logger.log('💸 Donation service init');
+    this.syncRecentEthereumDonations();
   }
 
   async syncRecentDogeDonations() {
@@ -79,21 +85,71 @@ export class DonationsService implements OnModuleInit {
     }
   }
 
-  // ------------------------------------------------------------------------------------------------- //
+  async syncRecentEthereumDonations() {
+    const donation = await this.donationsRepo.getMostRecentEthereumDonation();
+    try {
+      if (donation) {
+        // sync from most recent
+        this.logger.log(
+          `Syncing ethereum transfers from block: ${donation.blockNumber}`,
+        );
 
-  async syncEthereumDonations() {
-    const transfers = await this.getEthereumDonations();
-    this.logger.log(transfers);
+        await this.syncEthereumTransfersFromBlock(donation.blockNumber);
+      } else {
+        // sync from all of history
+        this.logger.log('Syncing all ethereum transfers');
+
+        await this.syncAllEthereumTransfers();
+      }
+    } catch (e) {
+      this.logger.error('Could not sync ethereum transfers');
+      this.logger.error(e);
+      this.sentryClient.instance().captureException(e);
+    }
   }
 
-  private async getEthereumDonations() {
-    const transfers = await this.alchemy.getAssetTransfers({
+  private async syncEthereumTransfersFromBlock(blockNumber: number) {
+    const transfers = await this.getEthereumTransfers(
+      ethers.BigNumber.from(blockNumber).toHexString(),
+    );
+    await this.upsertEthereumDonations(transfers);
+  }
+
+  private async syncAllEthereumTransfers() {
+    const transfers = await this.getEthereumTransfers();
+    await this.upsertEthereumDonations(transfers);
+  }
+
+  private async getEthereumTransfers(fromBlock?: string) {
+    const data = await this.alchemy.getAssetTransfers({
       order: AssetTransfersOrder.ASCENDING,
       toAddress: this.ethereumAddress,
       category: [AssetTransfersCategory.ERC20, AssetTransfersCategory.EXTERNAL],
-      maxCount: 100,
+      maxCount: 1000,
       withMetadata: true,
+      fromBlock,
     });
-    return transfers;
+    if (data.pageKey) {
+      throw new Error("There is paging data and we don't support currentl");
+    }
+    return data?.transfers;
+  }
+
+  private async upsertEthereumDonations(
+    transfers: AssetTransfersWithMetadataResult[],
+  ) {
+    for (const transfer of transfers) {
+      await this.donationsRepo.upsert({
+        blockchain: ChainName.ETHEREUM,
+        blockCreatedAt: new Date(transfer.metadata.blockTimestamp),
+        currency: transfer.asset,
+        amount: transfer.value,
+        blockNumber: ethers.BigNumber.from(transfer.blockNum).toNumber(),
+        fromAddress: transfer.from,
+        toAddress: transfer.to,
+        currencyContractAddress: transfer.rawContract.address,
+        txHash: transfer.hash,
+      });
+    }
   }
 }
