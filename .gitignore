@@ -52,7 +52,7 @@ coverage
 build
 
 # Hardhat files
-cache
+/packages/hardhat/cache
 #artifacts
 
 # misc
