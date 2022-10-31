@@ -32,7 +32,7 @@ export class StatueCampaignService implements OnModuleInit {
     this.donationsService.syncRecentDogeDonations();
   }
 
-  @Cron(CronExpression.EVERY_10_MINUTES)
+  @Cron(CronExpression.EVERY_30_MINUTES)
   private syncEthereumDonations() {
     this.donationsService.syncRecentEthereumDonations();
   }
