@@ -7,6 +7,7 @@ import { PrismaService } from './../prisma.service';
 import { SochainService } from './../sochain/sochain.service';
 
 export const DOGE_CURRENCY = 'DOGE';
+export const ETH_CURRENCY = "ETH"
 
 @Injectable()
 export class DonationsRepository {
@@ -42,6 +43,8 @@ export class DonationsRepository {
               await this.coingecko.getPriceByEthereumContractAddress(
                 donation.currencyContractAddress,
               );
+          } else if (donation.currency === ETH_CURRENCY) {
+            donatedCurrencyPrice = await this.coingecko.getETHPrice()
           } else {
             donatedCurrencyPrice = 0;
             const errorMessage = `No currency address for: ${donation.currency} :: ${donation.txHash}`;
