@@ -28,6 +28,8 @@ export class DonationsService {
     this.logger.log('💸 Donation service init');
     this.syncRecentEthereumDonations();
     this.syncRecentDogeDonations()
+    // @next -- listen to transfers realtime
+    // this.listenForNewDonations()
   }
 
   async syncRecentDogeDonations() {

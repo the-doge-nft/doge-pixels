@@ -28,8 +28,9 @@ export class RainbowSwapsService {
 
   init() {
     this.logger.log('🌈 Rainbow swap serivce');
-    this.listenForTransfersThroughRouter();
     this.syncRecentDOGSwaps();
+    // @next -- listen to swaps realtime
+    this.listenForTransfersThroughRouter();
   }
 
   private listenForTransfersThroughRouter() {
