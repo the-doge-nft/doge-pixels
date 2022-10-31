@@ -107,8 +107,21 @@ export class PixelTransferService {
       if (map[item.to]?.tokenIds) {
         map[item.to].tokenIds.push(item.tokenId);
       } else {
-        const ens = await this.ethers.getEnsName(item.to);
-        const ud = await this.ud.getUDName(item.to);
+        let ens: string | null = null;
+        let ud: string | null = null;
+
+        try {
+          ens = await this.ethers.getEnsName(item.to);
+        } catch (e) {
+          this.logger.error(`Could not get ens for: ${item.to}`);
+        }
+
+        try {
+          ud = await this.ud.getUDName(item.to);
+        } catch (e) {
+          this.logger.error(`Could not get UD for: ${item.to}`);
+        }
+
         map[item.to] = {
           tokenIds: [item.tokenId],
           ens,

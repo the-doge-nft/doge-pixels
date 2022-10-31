@@ -1,9 +1,8 @@
 import { CACHE_MANAGER, Inject, Injectable, Logger } from '@nestjs/common';
-import { PrismaService } from '../prisma.service';
-import { ethers } from 'ethers';
-import { EthersService } from '../ethers/ethers.service';
+import { PixelTransfers } from '@prisma/client';
 import { Cache } from 'cache-manager';
-import { PixelTransfers, PrismaClient } from '@prisma/client';
+import { EthersService } from '../ethers/ethers.service';
+import { PrismaService } from '../prisma.service';
 import { UnstoppableDomainsService } from '../unstoppable-domains/unstoppable-domains.service';
 
 @Injectable()
@@ -20,20 +19,44 @@ export class PixelTransferRepository {
   // this should move to the pixel transfers service
   private async afterTransfersQuery(transfers: PixelTransfers[]) {
     const data = [];
-    for (let i = 0; i < transfers.length; i++) {
-      const toEns = await this.ethers.getEnsName(transfers[i].to);
-      const fromEns = await this.ethers.getEnsName(transfers[i].from);
-      const toUD = await this.ud.getUDName(transfers[i].to);
-      const fromUD = await this.ud.getUDName(transfers[i].from);
+    for (const transfer of transfers) {
+      let toEns = null;
+      let fromEns = null;
+      let fromUD = null;
+      let toUD = null;
+      try {
+        toEns = await this.ethers.getEnsName(transfer.to);
+      } catch {
+        this.logger.error(`Could not get ens: ${transfer.to}`);
+      }
+
+      try {
+        fromEns = await this.ethers.getEnsName(transfer.from);
+      } catch {
+        this.logger.error(`Could not get ens: ${transfer.from}`);
+      }
+
+      try {
+        toUD = await this.ud.getUDName(transfer.to);
+      } catch {
+        this.logger.error(`Could not get ud: ${transfer.to}`);
+      }
+
+      try {
+        fromUD = await this.ud.getUDName(transfer.to);
+      } catch {
+        this.logger.error(`Could not get ud: ${transfer.to}`);
+      }
+
       data.push({
-        ...transfers[i],
+        ...transfer,
         to: {
-          address: transfers[i].to,
+          address: transfer.to,
           ens: toEns,
           ud: toUD,
         },
         from: {
-          address: transfers[i].from,
+          address: transfer.from,
           ens: fromEns,
           ud: fromUD,
         },

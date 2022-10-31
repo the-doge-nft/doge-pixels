@@ -26,7 +26,7 @@ export class UnstoppableDomainsService implements OnModuleInit {
     return ud;
   }
 
-  async getUDName(address: string, withCache = true) {
+  async getUDName(address: string, withCache = true): Promise<string | null> {
     const cacheKey = `ud:${address}`;
     const cacheSeconds = getRandomIntInclusive(60 * 60 * 3, 60 * 60 * 10);
     const noUD = 'NOUD';
@@ -44,7 +44,7 @@ export class UnstoppableDomainsService implements OnModuleInit {
       } else if (ud === noUD) {
         return null;
       }
-      return ud;
+      return ud as string;
     } else {
       return this.reverseUrl(address);
     }
