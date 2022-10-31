@@ -4,7 +4,7 @@ import { InjectSentry, SentryService } from '@travelerdev/nestjs-sentry';
 import {
   AssetTransfersCategory,
   AssetTransfersOrder,
-  AssetTransfersWithMetadataResult,
+  AssetTransfersWithMetadataResult
 } from 'alchemy-sdk';
 import { ethers } from 'ethers';
 import { AlchemyService } from '../alchemy/alchemy.service';
@@ -28,8 +28,8 @@ export class RainbowSwapsService {
 
   init() {
     this.logger.log('🌈 Rainbow swap serivce');
-    // this.listenForTransfersThroughRouter();
-    // this.syncRecentDOGSwaps();
+    this.listenForTransfersThroughRouter();
+    this.syncRecentDOGSwaps();
   }
 
   private listenForTransfersThroughRouter() {
@@ -150,6 +150,7 @@ export class RainbowSwapsService {
         await this.rainbowSwapRepo.upsert(order);
       } catch (e) {
         this.logger.error(`Could not insert rainbow swap: ${transfer.hash}`);
+        this.logger.error(e)
       }
       // make sure we don't make alchemy angry!
       await sleep(1);
@@ -273,12 +274,12 @@ export class RainbowSwapsService {
       blockCreatedAt,
       txHash,
       blockNumber,
-      clientAddress,
       donatedCurrency,
       donatedAmount,
-      baseCurrencyAddress,
-      quoteCurrencyAddress,
-      donatedCurrencyAddress,
+      clientAddress: ethers.utils.getAddress(clientAddress),
+      baseCurrencyAddress: baseCurrencyAddress ? ethers.utils.getAddress(baseCurrencyAddress) : null,
+      quoteCurrencyAddress: quoteCurrencyAddress ? ethers.utils.getAddress(quoteCurrencyAddress) : null,
+      donatedCurrencyAddress: donatedCurrencyAddress ? ethers.utils.getAddress(donatedCurrencyAddress) : null,
     };
   }
 }

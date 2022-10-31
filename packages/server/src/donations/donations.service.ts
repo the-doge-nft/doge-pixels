@@ -1,10 +1,10 @@
-import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { ChainName, Donations } from '@prisma/client';
 import { InjectSentry, SentryService } from '@travelerdev/nestjs-sentry';
 import {
   AssetTransfersCategory,
   AssetTransfersOrder,
-  AssetTransfersWithMetadataResult,
+  AssetTransfersWithMetadataResult
 } from 'alchemy-sdk';
 import { ethers } from 'ethers';
 import { AlchemyService } from '../alchemy/alchemy.service';
@@ -12,7 +12,7 @@ import { SoChainNetorks, SochainService } from './../sochain/sochain.service';
 import { DOGE_CURRENCY, DonationsRepository } from './donations.repository';
 
 @Injectable()
-export class DonationsService implements OnModuleInit {
+export class DonationsService {
   private logger = new Logger(DonationsService.name);
   private dogeCoinAddress = 'D8HjKf37rF3Ho7tjwe17MPN8xQ2UbHSUhB';
   private ethereumAddress = '0x633aC73fB70247257E0c3A1142278235aFa358ac';
@@ -24,9 +24,10 @@ export class DonationsService implements OnModuleInit {
     @InjectSentry() private readonly sentryClient: SentryService,
   ) {}
 
-  onModuleInit() {
+  init() {
     this.logger.log('💸 Donation service init');
     this.syncRecentEthereumDonations();
+    this.syncRecentDogeDonations()
   }
 
   async syncRecentDogeDonations() {
@@ -89,14 +90,12 @@ export class DonationsService implements OnModuleInit {
     const donation = await this.donationsRepo.getMostRecentEthereumDonation();
     try {
       if (donation) {
-        // sync from most recent
         this.logger.log(
           `Syncing ethereum transfers from block: ${donation.blockNumber}`,
         );
 
         await this.syncEthereumTransfersFromBlock(donation.blockNumber);
       } else {
-        // sync from all of history
         this.logger.log('Syncing all ethereum transfers');
 
         await this.syncAllEthereumTransfers();
@@ -145,10 +144,10 @@ export class DonationsService implements OnModuleInit {
         currency: transfer.asset,
         amount: transfer.value,
         blockNumber: ethers.BigNumber.from(transfer.blockNum).toNumber(),
-        fromAddress: transfer.from,
-        toAddress: transfer.to,
-        currencyContractAddress: transfer.rawContract.address,
         txHash: transfer.hash,
+        fromAddress: ethers.utils.getAddress(transfer.from),
+        toAddress: ethers.utils.getAddress(transfer.to),
+        currencyContractAddress: transfer.rawContract.address ? ethers.utils.getAddress(transfer.rawContract.address) : null,
       });
     }
   }
