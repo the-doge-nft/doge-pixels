@@ -1,6 +1,6 @@
 import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { writeFile } from 'fs';
-import { PixelsService } from '../pixels/pixels.service';
+import { OwnTheDogeContractService } from '../ownthedoge-contracts/ownthedoge-contracts.service';
 import { createCanvas } from 'canvas';
 import { EthersService } from '../ethers/ethers.service';
 import { ConfigService } from '@nestjs/config';
@@ -33,7 +33,7 @@ export class ImageGeneratorService implements OnModuleInit {
   private pathToFont: string;
 
   constructor(
-    private pixels: PixelsService,
+    private pixels: OwnTheDogeContractService,
     private ethers: EthersService,
     private config: ConfigService<Configuration>,
     @InjectSentry() private readonly sentryClient: SentryService,

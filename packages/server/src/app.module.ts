@@ -1,26 +1,35 @@
-import { CacheModule, Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { ConfigModule, ConfigService } from '@nestjs/config';
-import configuration, { Configuration } from './config/configuration';
-import { ScheduleModule } from '@nestjs/schedule';
-import { PixelsService } from './pixels/pixels.service';
-import { PrismaService } from './prisma.service';
-import { EthersService } from './ethers/ethers.service';
-import { EventEmitterModule } from '@nestjs/event-emitter';
 import { HttpModule } from '@nestjs/axios';
-import { PixelTransferRepository } from './pixel-transfer/pixel-transfer.repository';
-import { TwitterService } from './twitter/twitter.service';
-import { DiscordService } from './discord/discord.service';
-import { ImageGeneratorService } from './image-generator/image-generator.service';
-import { SentryModule } from '@travelerdev/nestjs-sentry';
-import { AwsService } from './aws/aws.service';
+import { CacheModule, Module } from '@nestjs/common';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import { EventEmitterModule } from '@nestjs/event-emitter';
+import { ScheduleModule } from '@nestjs/schedule';
 import { ServeStaticModule } from '@nestjs/serve-static';
-import { join } from 'path';
-import { PixelTransferService } from './pixel-transfer/pixel-transfer.service';
-import { CoinGeckoService } from './coin-gecko/coin-gecko.service';
-import { UnstoppableDomainsService } from './unstoppable-domains/unstoppable-domains.service';
-import { IndexController } from './index/index.controller';
+import { SentryModule } from '@travelerdev/nestjs-sentry';
 import * as redisStore from 'cache-manager-redis-store';
+import { join } from 'path';
+import { AlchemyService } from './alchemy/alchemy.service';
+import { AppController } from './app.controller';
+import { AwsService } from './aws/aws.service';
+import { CoinGeckoService } from './coin-gecko/coin-gecko.service';
+import configuration, { Configuration } from './config/configuration';
+import { DiscordService } from './discord/discord.service';
+import { DonationsRepository } from './donations/donations.repository';
+import { DonationsService } from './donations/donations.service';
+import { EthersService } from './ethers/ethers.service';
+import { ImageGeneratorService } from './image-generator/image-generator.service';
+import { IndexController } from './index/index.controller';
+import { OwnTheDogeContractService } from './ownthedoge-contracts/ownthedoge-contracts.service';
+import { PixelTransferRepository } from './pixel-transfer/pixel-transfer.repository';
+import { PixelTransferService } from './pixel-transfer/pixel-transfer.service';
+import { PrismaService } from './prisma.service';
+import { RainbowSwapsRepository } from './rainbow-swaps/rainbow-swaps.repository';
+import { RainbowSwapsService } from './rainbow-swaps/rainbow-swaps.service';
+import { DonationController } from './statue-campaign/statue-campaign.controller';
+import { StatueCampaignService } from './statue-campaign/statue-campaign.service';
+import { TwitterService } from './twitter/twitter.service';
+import { UnstoppableDomainsService } from './unstoppable-domains/unstoppable-domains.service';
+import { SochainService } from './sochain/sochain.service';
+import { CacheService } from './cache/cache.service';
 
 @Module({
   imports: [
@@ -55,12 +64,13 @@ import * as redisStore from 'cache-manager-redis-store';
       }),
       inject: [ConfigService],
     }),
+    ScheduleModule.forRoot(),
   ],
-  controllers: [AppController, IndexController],
+  controllers: [AppController, IndexController, DonationController],
   providers: [
     PrismaService,
     EthersService,
-    PixelsService,
+    OwnTheDogeContractService,
     PixelTransferRepository,
     TwitterService,
     DiscordService,
@@ -70,6 +80,14 @@ import * as redisStore from 'cache-manager-redis-store';
     CoinGeckoService,
     PixelTransferService,
     UnstoppableDomainsService,
+    StatueCampaignService,
+    AlchemyService,
+    RainbowSwapsRepository,
+    RainbowSwapsService,
+    DonationsService,
+    DonationsRepository,
+    SochainService,
+    CacheService,
   ],
 })
 export class AppModule {}

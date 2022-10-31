@@ -17,24 +17,25 @@ export class PixelTransferRepository {
     @Inject(CACHE_MANAGER) private cacheManager: Cache,
   ) {}
 
+  // this should move to the pixel transfers service
   private async afterTransfersQuery(transfers: PixelTransfers[]) {
     const data = [];
     for (let i = 0; i < transfers.length; i++) {
       const toEns = await this.ethers.getEnsName(transfers[i].to);
       const fromEns = await this.ethers.getEnsName(transfers[i].from);
-      const toUD = await this.ud.getUDName(transfers[i].to)
-      const fromUD = await this.ud.getUDName(transfers[i].from)
+      const toUD = await this.ud.getUDName(transfers[i].to);
+      const fromUD = await this.ud.getUDName(transfers[i].from);
       data.push({
         ...transfers[i],
         to: {
           address: transfers[i].to,
           ens: toEns,
-          ud: toUD
+          ud: toUD,
         },
         from: {
           address: transfers[i].from,
           ens: fromEns,
-          ud: fromUD
+          ud: fromUD,
         },
       });
     }
