@@ -6,8 +6,8 @@ import { CacheService } from './../cache/cache.service';
 import { PrismaService } from './../prisma.service';
 import { SochainService } from './../sochain/sochain.service';
 
-export const DOGE_CURRENCY = 'DOGE';
-export const ETH_CURRENCY = 'ETH';
+export const DOGE_CURRENCY_SYMBOL = 'DOGE';
+export const ETH_CURRENCY_SYMBOL = 'ETH';
 
 @Injectable()
 export class DonationsRepository {
@@ -33,7 +33,7 @@ export class DonationsRepository {
       let donatedCurrencyPrice: number;
       let explorerUrl: string;
       try {
-        if (donation.currency === DOGE_CURRENCY) {
+        if (donation.currency === DOGE_CURRENCY_SYMBOL) {
           donatedCurrencyPrice = await this.coingecko.getDogePrice();
           explorerUrl = this.sochain.getTxExplorerUrl(donation.txHash);
         } else {
@@ -43,7 +43,7 @@ export class DonationsRepository {
               await this.coingecko.getPriceByEthereumContractAddress(
                 donation.currencyContractAddress,
               );
-          } else if (donation.currency === ETH_CURRENCY) {
+          } else if (donation.currency === ETH_CURRENCY_SYMBOL) {
             donatedCurrencyPrice = await this.coingecko.getETHPrice();
           } else {
             donatedCurrencyPrice = 0;
@@ -85,7 +85,7 @@ export class DonationsRepository {
       await this.prisma.donations.findMany({
         where: {
           blockchain: ChainName.DOGECOIN,
-          currency: DOGE_CURRENCY,
+          currency: DOGE_CURRENCY_SYMBOL,
         },
         orderBy: { blockCreatedAt: 'desc' },
       })

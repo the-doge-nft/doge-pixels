@@ -1,6 +1,5 @@
 import { HttpService } from '@nestjs/axios';
 import { Injectable, Logger } from '@nestjs/common';
-import { Exception } from '@sentry/node';
 import { InjectSentry, SentryService } from '@travelerdev/nestjs-sentry';
 import { catchError, firstValueFrom } from 'rxjs';
 
@@ -34,29 +33,20 @@ export class SochainService {
     });
   }
 
-  private async getAddress(
-    address: string,
-    network: SoChainNetorks = SoChainNetorks.DOGE,
-  ) {
+  private async getAddress(address: string) {
     const { data } = await firstValueFrom(
-      this.http.get(this.baseUrl + '/address/' + network + '/' + address).pipe(
+      this.http.get(this.baseUrl + '/address/doge/' + address).pipe(
         catchError((e) => {
           this.handleError(e);
-          throw new Error(
-            `Could not get sochain address data ${network} : ${address}`,
-          );
+          throw new Error(`Could not get sochain address data: ${address}`);
         }),
       ),
     );
     return data;
   }
 
-  async getTxsReceived(
-    address: string,
-    network: SoChainNetorks = SoChainNetorks.DOGE,
-    afterTxHash?: string,
-  ) {
-    let url = this.baseUrl + '/get_tx_received/' + network + '/' + address;
+  async getTxsReceived(address: string, afterTxHash?: string) {
+    let url = this.baseUrl + '/get_tx_received/doge/' + address;
     if (afterTxHash) {
       url += '/' + afterTxHash;
     }
@@ -64,9 +54,7 @@ export class SochainService {
       this.http.get(url).pipe(
         catchError((e) => {
           this.handleError(e);
-          throw new Error(
-            `Could not get sochain txs received ${network} : ${address}`,
-          );
+          throw new Error(`Could not get sochain txs received : ${address}`);
         }),
       ),
     );
@@ -80,5 +68,17 @@ export class SochainService {
 
   getTxExplorerUrl(txid: string) {
     return this.baseExplorerTxUrl + '/' + txid;
+  }
+
+  async getBalance(address: string) {
+    const { data } = await firstValueFrom(
+      this.http.get(this.baseUrl + '/get_address_balance/doge/' + address).pipe(
+        catchError((e) => {
+          this.handleError(e);
+          throw new Error(`Could not get address balance for: ${address}`);
+        }),
+      ),
+    );
+    return Number(data?.data?.confirmed_balance);
   }
 }
