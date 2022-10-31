@@ -7,6 +7,7 @@ import { PrismaService } from './../prisma.service';
 import { SochainService } from './../sochain/sochain.service';
 
 export const DOGE_CURRENCY = 'DOGE';
+export const ETH_CURRENCY = "ETH"
 
 @Injectable()
 export class DonationsRepository {
@@ -36,12 +37,14 @@ export class DonationsRepository {
           donatedCurrencyPrice = await this.coingecko.getDogePrice();
           explorerUrl = this.sochain.getTxExplorerUrl(donation.txHash);
         } else {
-          explorerUrl = '';
+          explorerUrl = `https://etherscan.io/tx/${donation.txHash}`;
           if (donation.currencyContractAddress) {
             donatedCurrencyPrice =
               await this.coingecko.getPriceByEthereumContractAddress(
                 donation.currencyContractAddress,
               );
+          } else if (donation.currency === ETH_CURRENCY) {
+            donatedCurrencyPrice = await this.coingecko.getETHPrice()
           } else {
             donatedCurrencyPrice = 0;
             const errorMessage = `No currency address for: ${donation.currency} :: ${donation.txHash}`;
@@ -83,6 +86,17 @@ export class DonationsRepository {
         where: {
           blockchain: ChainName.DOGECOIN,
           currency: DOGE_CURRENCY,
+        },
+        orderBy: { blockCreatedAt: 'desc' },
+      })
+    )?.[0];
+  }
+
+  async getMostRecentEthereumDonation() {
+    return (
+      await this.prisma.donations.findMany({
+        where: {
+          blockchain: ChainName.ETHEREUM,
         },
         orderBy: { blockCreatedAt: 'desc' },
       })

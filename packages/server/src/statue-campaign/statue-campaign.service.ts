@@ -12,6 +12,7 @@ export class StatueCampaignService implements OnModuleInit {
   async onModuleInit() {
     this.logger.log('🐕 Statue campaign service init');
     this.rainbowSwaps.init();
+    this.donationsService.init();
   }
 
   constructor(
@@ -31,10 +32,10 @@ export class StatueCampaignService implements OnModuleInit {
     this.donationsService.syncRecentDogeDonations();
   }
 
-  // @Cron(CronExpression.EVERY_10_SECONDS)
-  // private syncEthereumDonations() {
-  //   this.donationsService.syncEthereumDonations();
-  // }
+  @Cron(CronExpression.EVERY_10_MINUTES)
+  private syncEthereumDonations() {
+    this.donationsService.syncRecentEthereumDonations();
+  }
 
   async getLeaderBoard() {
     const donations = await this.donationsRepo.getMostRecentDonations();

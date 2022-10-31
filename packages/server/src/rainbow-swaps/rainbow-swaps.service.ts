@@ -1,9 +1,10 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { ClientSide, RainbowSwaps } from '@prisma/client';
+import { InjectSentry, SentryService } from '@travelerdev/nestjs-sentry';
 import {
   AssetTransfersCategory,
   AssetTransfersOrder,
-  AssetTransfersWithMetadataResult,
+  AssetTransfersWithMetadataResult
 } from 'alchemy-sdk';
 import { ethers } from 'ethers';
 import { AlchemyService } from '../alchemy/alchemy.service';
@@ -22,12 +23,14 @@ export class RainbowSwapsService {
     private readonly alchemy: AlchemyService,
     private readonly ethers: EthersService,
     private readonly rainbowSwapRepo: RainbowSwapsRepository,
+    @InjectSentry() private readonly sentryClient: SentryService,
   ) {}
 
   init() {
     this.logger.log('🌈 Rainbow swap serivce');
-    // this.listenForTransfersThroughRouter();
-    // this.syncRecentDOGSwaps();
+    this.syncRecentDOGSwaps();
+    // @next -- listen to swaps realtime
+    this.listenForTransfersThroughRouter();
   }
 
   private listenForTransfersThroughRouter() {
@@ -44,18 +47,22 @@ export class RainbowSwapsService {
     const block = await this.rainbowSwapRepo.getMostRecentSwapBlockNumber();
     try {
       if (block) {
+        this.logger.log(`Syncing DOG swaps from block: ${block}`);
+
         await this.syncDOGSwapsFromBlock(block);
       } else {
+        this.logger.log('Syncing all DOG swaps');
+
         await this.syncAllDOGSwaps();
       }
     } catch (e) {
       this.logger.error(`Error getting recent DOG swaps`);
       this.logger.error(e);
+      this.sentryClient.instance().captureException(e);
     }
   }
 
   private async syncDOGSwapsFromBlock(blockNumber: number) {
-    this.logger.log(`Syncing DOG swaps from block: ${blockNumber}`);
     const transfers = await this.getDOGTransfersToRouterFromBlock(
       ethers.BigNumber.from(blockNumber).toHexString(),
     );
@@ -63,13 +70,8 @@ export class RainbowSwapsService {
   }
 
   private async syncAllDOGSwaps() {
-    this.logger.log('Syncing all DOG swaps');
-    try {
-      const transfers = await this.getAllDOGTransfersToRouter();
-      this.upsertDOGSwaps(transfers);
-    } catch (e) {
-      this.logger.error('Could sync all dog swaps');
-    }
+    const transfers = await this.getAllDOGTransfersToRouter();
+    this.upsertDOGSwaps(transfers);
   }
 
   // @next -- investigate if we should be listening to transfers on all networks or not
@@ -90,6 +92,8 @@ export class RainbowSwapsService {
   }
 
   private async getAllDOGTransfersToRouter() {
+    // NOTE: this assumes there are not more than 1000 transfers
+    // @next -- handle pageKey correctly
     const data = await this.alchemy.getAssetTransfers({
       order: AssetTransfersOrder.ASCENDING,
       toAddress: this.routerContractAddress,
@@ -136,11 +140,8 @@ export class RainbowSwapsService {
     return toTxs.concat(fromTxs);
   }
 
-  private async upsertDOGSwaps(transfers) {
-    for (let i = 0; i < transfers.length; i++) {
-      const transfer = transfers[i];
-      this.logger.log(`processing DOG swap in tx: ${transfer.hash}`);
-
+  private async upsertDOGSwaps(transfers: AssetTransfersWithMetadataResult[]) {
+    for (const transfer of transfers) {
       const blockNumber = ethers.BigNumber.from(transfer.blockNum);
       const allTransfers = (
         await this.getRouterTransfersByBlock(blockNumber.toHexString())
@@ -150,6 +151,7 @@ export class RainbowSwapsService {
         await this.rainbowSwapRepo.upsert(order);
       } catch (e) {
         this.logger.error(`Could not insert rainbow swap: ${transfer.hash}`);
+        this.logger.error(e)
       }
       // make sure we don't make alchemy angry!
       await sleep(1);
@@ -273,12 +275,12 @@ export class RainbowSwapsService {
       blockCreatedAt,
       txHash,
       blockNumber,
-      clientAddress,
       donatedCurrency,
       donatedAmount,
-      baseCurrencyAddress,
-      quoteCurrencyAddress,
-      donatedCurrencyAddress,
+      clientAddress: ethers.utils.getAddress(clientAddress),
+      baseCurrencyAddress: baseCurrencyAddress ? ethers.utils.getAddress(baseCurrencyAddress) : null,
+      quoteCurrencyAddress: quoteCurrencyAddress ? ethers.utils.getAddress(quoteCurrencyAddress) : null,
+      donatedCurrencyAddress: donatedCurrencyAddress ? ethers.utils.getAddress(donatedCurrencyAddress) : null,
     };
   }
 }
