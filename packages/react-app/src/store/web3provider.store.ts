@@ -35,7 +35,6 @@ class Web3providerStore {
 
   async connect(signer: Signer, network: Chain, provder: Provider) {
     try {
-      console.log("debug:: network", network)
       this.address = await signer.getAddress()
       this.signer = signer;
       this.network = network;
