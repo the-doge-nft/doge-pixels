@@ -1,5 +1,5 @@
-import { ChakraProvider, ColorModeScript } from "@chakra-ui/react";
-import { lightTheme, RainbowKitProvider } from "@rainbow-me/rainbowkit";
+import { ChakraProvider, ColorModeScript, useColorMode } from "@chakra-ui/react";
+import { darkTheme, lightTheme, RainbowKitProvider } from "@rainbow-me/rainbowkit";
 import "@rainbow-me/rainbowkit/styles.css";
 import * as Sentry from "@sentry/react";
 import { Integrations } from "@sentry/tracing";
@@ -20,14 +20,34 @@ Sentry.init({
   tracesSampleRate: 1.0,
 });
 
-const rainbowTheme = lightTheme({
+const customLightTheme = lightTheme({
   borderRadius: 'none',
   fontStack: 'system',
   accentColor: Colors.yellow[100],
+  overlayBlur: 'small'
 })
-rainbowTheme.fonts.body = Type.ComicSans
-rainbowTheme.colors.modalBackground = Colors.yellow[50]
-rainbowTheme.colors.modalBorder = "black"
+customLightTheme.fonts.body = Type.ComicSans
+customLightTheme.colors.modalBackground = Colors.yellow[50]
+customLightTheme.colors.modalBorder = "black"
+
+const customDarkTheme = darkTheme({
+  borderRadius: 'none',
+  fontStack: 'system',
+  accentColor: Colors.gray[300],
+  overlayBlur: 'small'
+})
+customDarkTheme.fonts.body = Type.ComicSans
+customDarkTheme.colors.modalBackground = Colors.purple[700]
+customDarkTheme.colors.modalBorder = "white"
+
+const Test = () => {
+  const { colorMode } = useColorMode()
+  return <RainbowKitProvider chains={chains} theme={colorMode === "light" ? customLightTheme : customDarkTheme}>
+    <Fonts />
+    <App />
+    <ToastContainer/>
+  </RainbowKitProvider>
+}
 
 const container = document.getElementById("root")
 const root = createRoot(container)
@@ -35,13 +55,9 @@ root.render(
   <React.StrictMode>
     <ColorModeScript initialColorMode={theme.config.initialColorMode} />
     <WagmiConfig client={wagmiClient}>
-      <RainbowKitProvider chains={chains} theme={rainbowTheme}>
-        <ChakraProvider theme={theme} resetCSS>
-          <Fonts />
-          <App />
-          <ToastContainer/>
-        </ChakraProvider>
-      </RainbowKitProvider>
+      <ChakraProvider theme={theme} resetCSS>
+        <Test />
+      </ChakraProvider>
     </WagmiConfig>
   </React.StrictMode>
 )

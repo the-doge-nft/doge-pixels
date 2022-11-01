@@ -31,12 +31,12 @@ const MobileHomePage = observer(() => {
 
   return (
     <Flex flexGrow={1} px={4} mt={{ base: 14, md: 0 }}>
-      {!AppStore.web3.web3Provider && (
+      {!AppStore.web3.isConnected && (
         <Flex justifyContent={"center"} alignItems={"center"} w={"full"}>
           <ConnectWalletButton />
         </Flex>
       )}
-      {AppStore.web3.web3Provider && (
+      {AppStore.web3.isConnected && (
         <Flex flexDirection={"column"} w={"full"} mt={5}>
           <Flex justifyContent={"space-around"}>
             <Flex flexDirection={"column"} alignItems={"center"}>

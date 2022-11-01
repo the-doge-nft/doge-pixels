@@ -1,9 +1,8 @@
-import { computed, makeObservable, observable } from "mobx";
-// import { web3Modal } from "../services/web3Modal";
-import { Provider } from "@ethersproject/abstract-provider";
-import { Signer } from "@ethersproject/abstract-signer";
+import { Chain } from "@rainbow-me/rainbowkit";
 import * as Sentry from "@sentry/react";
+import { Provider, Signer } from "@wagmi/core";
 import { BigNumber, Contract, ethers } from "ethers";
+import { computed, makeObservable, observable } from "mobx";
 import { DOG20, PX } from "../../../hardhat/types";
 import deployedContracts from "../contracts/hardhat_contracts.json";
 import { showErrorToast } from "../DSL/Toast/Toast";
@@ -16,7 +15,7 @@ import { Http } from "../services";
 import LocalStorage from "../services/local-storage";
 import { Reactionable } from "../services/mixins/reactionable";
 import CowStore from "./cow.store";
-import Web3providerStore, { EthersContractError, Web3ProviderConnectionError } from "./web3provider.store";
+import Web3providerStore, { EthersContractError } from "./web3provider.store";
 
 const VIEWED_PIXELS_LS_KEY = "viewed_pixels_by_id";
 
@@ -78,17 +77,14 @@ class Web3Store extends Reactionable(Web3providerStore) {
   }
 
   init() {
-    // if (web3Modal.cachedProvider && !this.web3Provider?.connection) {
-    //   this.connect();
-    // }
     this.getPixelOwnershipMap();
     this.getShibaDimensions();
     this.getUSDPerPixel();
   }
 
-  async connect() {
+  async connect(signer: Signer, network: Chain, provider: Provider) {
     try {
-      await super.connect();
+      await super.connect(signer, network, provider);
       this.connectToContracts(this.signer!);
       await this.debugContractAddresses();
       await this.errorGuardContracts();
@@ -96,28 +92,24 @@ class Web3Store extends Reactionable(Web3providerStore) {
       this.refreshDogBalance();
       this.refreshPupperBalance();
     } catch (e) {
-      if (e instanceof Web3ProviderConnectionError) {
-        // pass
-      } else {
-        console.error(e);
-        Sentry.captureException(e);
-        showErrorToast("Error connecting");
-      }
+      console.error(e);
+      Sentry.captureException(e);
+      showErrorToast("Error connecting");
     }
   }
 
-  connectToContracts(signerOrProvider?: Signer | Provider) {
+  connectToContracts(signer: Signer) {
     const px = new Contract(
       this.pxContractAddress,
       deployedContracts[this.targetChainId.toString()][this.targetNetworkName]["contracts"]["PX"].abi,
-      signerOrProvider,
+      signer,
     ) as unknown;
     this.pxContract = px as PX;
 
     const dog = new Contract(
       this.dogContractAddress,
       deployedContracts[this.targetChainId.toString()][this.targetNetworkName]["contracts"]["DOG20"].abi,
-      signerOrProvider,
+      signer,
     ) as unknown;
     this.dogContract = dog as DOG20;
 
@@ -148,14 +140,14 @@ class Web3Store extends Reactionable(Web3providerStore) {
 
   async errorGuardContracts() {
     const nonContractCode = "0x";
-    const pxCode = await this.web3Provider.getCode(this.pxContractAddress);
+    const pxCode = await this.provider.getCode(this.pxContractAddress);
     if (pxCode === nonContractCode) {
       await this.disconnect();
       throw Error(
         `PX address is not a contract, please make sure it is deployed & you are on the correct network. Got ${pxCode} ${this.network?.name} ${this.pxContractAddress}`,
       );
     }
-    const dogCode = await this.web3Provider.getCode(this.dogContractAddress);
+    const dogCode = await this.provider.getCode(this.dogContractAddress);
     if (dogCode === nonContractCode) {
       await this.disconnect();
       throw Error("DOG20 address is not a contract, please make sure it is deployed & you are on the correct network.");

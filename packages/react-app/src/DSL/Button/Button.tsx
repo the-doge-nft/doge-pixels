@@ -1,6 +1,7 @@
 import { Box, Button as ChakraButton, useMultiStyleConfig } from "@chakra-ui/react";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 import { useState } from "react";
+import UserDropdown from "../../layouts/UserDropdown";
 import { AllowedStyleProps } from "../Form/interfaces";
 import Typography, { TVariant } from "../Typography/Typography";
 
@@ -97,9 +98,7 @@ export const ConnectWalletButton = () => {
           Wrong network
         </Button>
       }
-      return <Button onClick={openAccountModal}>
-        {account.address}
-      </Button>
+      return <UserDropdown />
     }}
   </ConnectButton.Custom>
 }

@@ -1,17 +1,17 @@
-import React, { useState } from "react";
 import { Box, Flex, Menu, MenuButton, MenuItem, MenuList, useColorMode, useMultiStyleConfig } from "@chakra-ui/react";
-import Typography, { TVariant } from "../DSL/Typography/Typography";
-import AppStore from "../store/App.store";
-import { observer } from "mobx-react-lite";
-import { formatWithThousandsSeparators } from "../helpers/numberFormatter";
 import { ethers } from "ethers";
-import Dev from "../common/Dev";
-import { showDebugToast, showErrorToast } from "../DSL/Toast/Toast";
-import { lightOrDarkMode } from "../DSL/Theme";
-import Link from "../DSL/Link/Link";
+import { observer } from "mobx-react-lite";
+import { useState } from "react";
 import { generatePath, useHistory, useLocation } from "react-router-dom";
+import { useAccount, useDisconnect } from "wagmi";
+import Dev from "../common/Dev";
+import Link from "../DSL/Link/Link";
+import { lightOrDarkMode } from "../DSL/Theme";
+import { showDebugToast, showErrorToast } from "../DSL/Toast/Toast";
+import Typography, { TVariant } from "../DSL/Typography/Typography";
+import { formatWithThousandsSeparators } from "../helpers/numberFormatter";
 import { SelectedOwnerTab } from "../pages/Leaderbork/Leaderbork.store";
-import { NamedRoutes, route } from "../App.routes";
+import AppStore from "../store/App.store";
 
 const UserDropdown = observer(() => {
   const styles = useMultiStyleConfig("Menu", {});
@@ -19,6 +19,8 @@ const UserDropdown = observer(() => {
   const location = useLocation();
   const { colorMode } = useColorMode();
   const [isOpen, setIsOpen] = useState(false);
+  const { address, isConnecting, isDisconnected } = useAccount()
+  const { disconnect } = useDisconnect()
   return (
     <Box>
       <Menu isOpen={isOpen} onOpen={() => setIsOpen(true)} onClose={() => setIsOpen(false)}>
@@ -32,7 +34,8 @@ const UserDropdown = observer(() => {
                 overflowWrap={"initial"}
                 textOverflow={"ellipsis"}
               >
-                {AppStore.web3.addressForDisplay}
+                {/* {AppStore.web3.addressForDisplay} */}
+                {address}
               </Typography>
             </Flex>
           </MenuButton>
@@ -44,7 +47,7 @@ const UserDropdown = observer(() => {
           <Box mt={8} px={3}>
             <Link
               isNav
-              to={generatePath(`/leaderbork/:address/${SelectedOwnerTab.Wallet}`, { address: AppStore.web3.address })}
+              to={generatePath(`/leaderbork/:address/${SelectedOwnerTab.Wallet}`, { address: address })}
             >
               Profile
             </Link>
@@ -65,7 +68,7 @@ const UserDropdown = observer(() => {
               My Pixels
             </Typography>
           </Box>
-          <MenuItem mt={4} onClick={() => AppStore.web3.disconnect()}>
+          <MenuItem mt={4} onClick={() => disconnect()}>
             <Typography variant={TVariant.PresStart12}>Disconnect {">"}</Typography>
           </MenuItem>
           <Flex mt={1} px={3} alignItems={"center"}>
@@ -82,7 +85,7 @@ const UserDropdown = observer(() => {
 const Balances = observer(function Balances() {
   return (
     <Box px={3}>
-      {AppStore.web3.web3Provider && (
+      {AppStore.web3.isConnected && (
         <>
           <Box>
             <Flex alignItems={"center"} justifyContent={"space-between"}>
