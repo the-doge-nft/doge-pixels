@@ -4,7 +4,6 @@ import { AxiosError } from "axios";
 import { showErrorToast } from "../../DSL/Toast/Toast";
 import ApiError from "../exceptions/api.error";
 // import Sentry from "../../sentry";
-import { t } from "@lingui/macro";
 
 const MFA_ERROR_MESSAGE = "MFA is on. mfa_code must be set";
 const RESTRICTED_ERROR_MESSAGE = "Access Restricted";
@@ -36,7 +35,7 @@ const ApiErrorInterceptor = (config: AxiosError) => {
         throw new ApiError(config.response.data.message);
       }
     } else if (config.response.status === 400) {
-      showErrorToast(t`400 Received`);
+      showErrorToast(`400 Received`);
       logRequestInfoForSentryTracking(config);
     } else if (config.response.status === 401) {
       if (

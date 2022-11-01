@@ -1,6 +1,6 @@
+import developmentEnv from "./development";
 import { isDevModeEnabled, isProduction, isStaging } from "./helpers";
 import productionEnv from "./production";
-import developmentEnv from "./development";
 
 interface Environment {
   api: {
@@ -16,6 +16,7 @@ interface Environment {
     };
     targetChainId: number;
     targetNetworkName: string;
+    infuraKey: string;
   };
 }
 

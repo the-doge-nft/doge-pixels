@@ -1,10 +1,10 @@
 import { Box, Button, createStandaloneToast, Flex } from "@chakra-ui/react";
-import theme from "../Theme";
 import { isDevModeEnabled } from "../../environment/helpers";
 import { ButtonVariant } from "../Button/Button";
+import theme from "../Theme";
 import Typography, { TVariant } from "../Typography/Typography";
 
-const toast = createStandaloneToast({ theme: theme });
+export const { ToastContainer, toast } = createStandaloneToast({ theme: theme });
 
 interface ToastBaseProps {
   title: string;

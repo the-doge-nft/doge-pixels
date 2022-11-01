@@ -14,6 +14,7 @@ const productionEnv = {
     },
     targetChainId: 1,
     targetNetworkName: "mainnet",
+    infuraKey: "",
   },
 };
 export default productionEnv;

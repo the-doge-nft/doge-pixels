@@ -1,13 +1,13 @@
-import { computed, makeObservable, observable } from "mobx";
-import { ExternalProvider, Web3Provider } from "@ethersproject/providers/src.ts/web3-provider";
 import { Network } from "@ethersproject/networks";
-import { web3Modal } from "../services/web3Modal";
+import { ExternalProvider, Web3Provider } from "@ethersproject/providers/src.ts/web3-provider";
+import { computed, makeObservable, observable } from "mobx";
+// import { web3Modal } from "../services/web3Modal";
 import { providers, Signer } from "ethers";
 import { showDebugToast, showErrorToast } from "../DSL/Toast/Toast";
-import { Http } from "../services";
 import { abbreviate } from "../helpers/strings";
+import { Http } from "../services";
 import AppStore from "./App.store";
-import { Core } from "web3modal/dist/core";
+// import { Core } from "web3modal/dist/core";
 import env from "../environment";
 
 export interface EthersContractError {
@@ -18,7 +18,7 @@ export class Web3ProviderConnectionError extends Error {}
 
 class Web3providerStore {
   @observable
-  provider: Core | null = null;
+  provider: any | null = null;
 
   @observable
   web3Provider: Web3Provider | null = null;
@@ -44,7 +44,7 @@ class Web3providerStore {
 
   async connect() {
     try {
-      this.provider = await web3Modal.connect();
+      // this.provider = await web3Modal.connect();
       this.web3Provider = new providers.Web3Provider(this.provider! as ExternalProvider);
       this.signer = this.web3Provider.getSigner();
       this.address = await this.signer.getAddress();
@@ -84,7 +84,7 @@ class Web3providerStore {
         //@ts-ignore
         await this.provider.close();
       }
-      await web3Modal.clearCachedProvider();
+      // await web3Modal.clearCachedProvider();
       showDebugToast(`disconnecting: ${this.address}`);
 
       this.provider = null;

@@ -1,20 +1,21 @@
-import React from "react";
 import { Icon as ChakraIcon, IconProps as ChakraIconProps, useStyleConfig } from "@chakra-ui/react";
-import { BsTwitter, FaDiscord, VscArrowRight, VscChevronDown, VscChevronUp } from "react-icons/all";
+import { BsTwitter } from "react-icons/bs";
+import { FaDiscord } from "react-icons/fa";
+import { VscArrowRight, VscChevronDown, VscChevronUp } from "react-icons/vsc";
 
-import User from "./custom/User";
-import Search from "./custom/Search";
-import PixelSun from "./custom/PixelSun";
-import PixelMoon from "./custom/PixelMoon";
-import Close from "./custom/Close";
 import Back from "./custom/Back";
+import Close from "./custom/Close";
 import Cowswap from "./custom/Cowswap";
-import ToolPen from "./custom/ToolPen";
-import ToolErase from "./custom/ToolErase";
-import ToolStickers from "./custom/ToolStickers";
-import TemplateToggle from "./custom/TemplateToggle";
-import OS from "./custom/OS";
 import LooksRare from "./custom/LooksRare";
+import OS from "./custom/OS";
+import PixelMoon from "./custom/PixelMoon";
+import PixelSun from "./custom/PixelSun";
+import Search from "./custom/Search";
+import TemplateToggle from "./custom/TemplateToggle";
+import ToolErase from "./custom/ToolErase";
+import ToolPen from "./custom/ToolPen";
+import ToolStickers from "./custom/ToolStickers";
+import User from "./custom/User";
 
 export type ReactIconName = "chevron-up" | "chevron-down" | "arrow-right" | "discord" | "twitter";
 

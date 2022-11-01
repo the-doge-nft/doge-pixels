@@ -1,25 +1,22 @@
 import { computed, makeObservable, observable } from "mobx";
-import { web3Modal } from "../services/web3Modal";
-import { BigNumber, Contract, ethers } from "ethers";
-import { showErrorToast } from "../DSL/Toast/Toast";
-import deployedContracts from "../contracts/hardhat_contracts.json";
-import { Signer } from "@ethersproject/abstract-signer";
+// import { web3Modal } from "../services/web3Modal";
 import { Provider } from "@ethersproject/abstract-provider";
-import { isDevModeEnabled, isProduction, isStaging } from "../environment/helpers";
-import { DOG20, PX } from "../../../hardhat/types";
-import KobosuJson from "../images/kobosu.json";
-import { Http } from "../services";
-import Web3providerStore, { EthersContractError, Web3ProviderConnectionError } from "./web3provider.store";
+import { Signer } from "@ethersproject/abstract-signer";
 import * as Sentry from "@sentry/react";
-import { ContractInterface } from "@ethersproject/contracts/src.ts/index";
-import CowStore from "./cow.store";
-import { ObjectKeys } from "../helpers/objects";
-import AppStore from "./App.store";
-import { PixelOwnerInfo } from "../pages/Leaderbork/Leaderbork.store";
-import { Reactionable } from "../services/mixins/reactionable";
+import { BigNumber, Contract, ethers } from "ethers";
+import { DOG20, PX } from "../../../hardhat/types";
+import deployedContracts from "../contracts/hardhat_contracts.json";
+import { showErrorToast } from "../DSL/Toast/Toast";
 import env from "../environment";
-import LocalStorage from "../services/local-storage";
+import { ObjectKeys } from "../helpers/objects";
 import { abbreviate } from "../helpers/strings";
+import KobosuJson from "../images/kobosu.json";
+import { PixelOwnerInfo } from "../pages/Leaderbork/Leaderbork.store";
+import { Http } from "../services";
+import LocalStorage from "../services/local-storage";
+import { Reactionable } from "../services/mixins/reactionable";
+import CowStore from "./cow.store";
+import Web3providerStore, { EthersContractError, Web3ProviderConnectionError } from "./web3provider.store";
 
 const VIEWED_PIXELS_LS_KEY = "viewed_pixels_by_id";
 
@@ -81,9 +78,9 @@ class Web3Store extends Reactionable(Web3providerStore) {
   }
 
   init() {
-    if (web3Modal.cachedProvider && !this.web3Provider?.connection) {
-      this.connect();
-    }
+    // if (web3Modal.cachedProvider && !this.web3Provider?.connection) {
+    //   this.connect();
+    // }
     this.getPixelOwnershipMap();
     this.getShibaDimensions();
     this.getUSDPerPixel();
@@ -293,7 +290,7 @@ class Web3Store extends Reactionable(Web3providerStore) {
   getUSDPerPixel() {
     return Http.get("/v1/px/price").then(({ data }) => {
       this.usdPerPixel = data.price;
-    })
+    });
   }
 
   @computed
@@ -346,7 +343,7 @@ class Web3Store extends Reactionable(Web3providerStore) {
       return shouldAbbreviate ? abbreviate(address, 4) : address;
     } else {
       // @next -- we need to query for ENS or UD here
-      return shouldAbbreviate ? abbreviate(address, 4) : address; 
+      return shouldAbbreviate ? abbreviate(address, 4) : address;
     }
   }
 }
