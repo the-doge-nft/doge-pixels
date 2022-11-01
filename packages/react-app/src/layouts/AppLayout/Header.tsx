@@ -85,7 +85,7 @@ const Header = observer(() => {
         <Flex>
           <Box display={{ base: "none", md: "flex" }} alignItems={"center"} justifyContent={"flex-end"} w={"full"}>
             <Flex mr={8} alignItems={"center"}>
-              {AppStore.web3.isConnected && chain.id === targetChain.id && (
+              {AppStore.web3.isConnected && chain?.id === targetChain.id && (
                 <Flex alignItems={"center"}>
                   <Button
                     size="sm"
