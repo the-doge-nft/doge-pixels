@@ -1,7 +1,8 @@
-import React, { useState } from "react";
 import { Box, Button as ChakraButton, useMultiStyleConfig } from "@chakra-ui/react";
-import Typography, { TVariant } from "../Typography/Typography";
+import { ConnectButton } from "@rainbow-me/rainbowkit";
+import { useState } from "react";
 import { AllowedStyleProps } from "../Form/interfaces";
+import Typography, { TVariant } from "../Typography/Typography";
 
 export enum ButtonVariant {
   Primary = "primary",
@@ -71,5 +72,9 @@ const Button = ({
     </Box>
   );
 };
+
+export const ConnectWalletButton = () => {
+  return <ConnectButton />
+}
 
 export default Button;

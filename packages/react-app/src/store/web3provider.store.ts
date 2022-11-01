@@ -6,7 +6,6 @@ import { providers, Signer } from "ethers";
 import { showDebugToast, showErrorToast } from "../DSL/Toast/Toast";
 import { abbreviate } from "../helpers/strings";
 import { Http } from "../services";
-import AppStore from "./App.store";
 // import { Core } from "web3modal/dist/core";
 import env from "../environment";
 
@@ -49,7 +48,7 @@ class Web3providerStore {
       this.signer = this.web3Provider.getSigner();
       this.address = await this.signer.getAddress();
       this.network = await this.web3Provider.getNetwork();
-      this.initListeners();
+      // this.initListeners();
       this.getENSname(this.address!).then(({ data }) => (this.ens = data.ens));
       showDebugToast(`connected: ${this.address} on : ${this.network.name} (chain ID: ${this.network.chainId})`);
     } catch (e) {
@@ -115,23 +114,23 @@ class Web3providerStore {
     }
   }
 
-  initListeners() {
-    const handleAccountsChanged = (accounts: string[]) => {
-      showDebugToast("accounts changed");
-      window.location.reload();
-    };
-    const handleChainChanged = (_hexChainId: string) => {
-      showDebugToast("chain changed, reloading");
-      window.location.reload();
-    };
-    const handleDisconnect = (error: { code: number; message: string }) => {
-      showDebugToast("disconnecting");
-      AppStore.web3.disconnect();
-    };
-    AppStore.web3.provider!.on("accountsChanged", handleAccountsChanged);
-    AppStore.web3.provider!.on("chainChanged", handleChainChanged);
-    AppStore.web3.provider!.on("disconnect", handleDisconnect);
-  }
+  // initListeners() {
+  //   const handleAccountsChanged = (accounts: string[]) => {
+  //     showDebugToast("accounts changed");
+  //     window.location.reload();
+  //   };
+  //   const handleChainChanged = (_hexChainId: string) => {
+  //     showDebugToast("chain changed, reloading");
+  //     window.location.reload();
+  //   };
+  //   const handleDisconnect = (error: { code: number; message: string }) => {
+  //     showDebugToast("disconnecting");
+  //     AppStore.web3.disconnect();
+  //   };
+  //   AppStore.web3.provider!.on("accountsChanged", handleAccountsChanged);
+  //   AppStore.web3.provider!.on("chainChanged", handleChainChanged);
+  //   AppStore.web3.provider!.on("disconnect", handleDisconnect);
+  // }
 
   @computed
   get isConnected() {

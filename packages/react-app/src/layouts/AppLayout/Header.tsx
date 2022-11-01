@@ -1,15 +1,13 @@
 import { Box, Flex, useBreakpointValue, useColorMode } from "@chakra-ui/react";
-import { ConnectButton } from "@rainbow-me/rainbowkit";
 import { observer } from "mobx-react-lite";
 import { GiHamburgerMenu } from "react-icons/gi";
 import { useHistory, useLocation } from "react-router-dom";
 import { NamedRoutes, route } from "../../App.routes";
-import Button from "../../DSL/Button/Button";
+import Button, { ConnectWalletButton } from "../../DSL/Button/Button";
 import ColorModeToggle from "../../DSL/ColorModeToggle/ColorModeToggle";
 import { darkModeGradient, lightOrDarkMode } from "../../DSL/Theme";
 import DPPLogo from "../../images/logo.png";
 import AppStore from "../../store/App.store";
-import UserDropdown from "../UserDropdown";
 import NavLinks from "./NavLinks";
 
 const Header = observer(() => {
@@ -118,8 +116,8 @@ const Header = observer(() => {
                 <ColorModeToggle />
               </Box>
             </Flex>
-            <ConnectButton />
-            {!AppStore.web3.web3Provider && (
+            <ConnectWalletButton />
+            {/* {!AppStore.web3.web3Provider && (
               <Button
                 whiteSpace={{ base: "normal", lg: "nowrap" }}
                 onClick={() => {
@@ -128,8 +126,8 @@ const Header = observer(() => {
               >
                 Connect
               </Button>
-            )}
-            {AppStore.web3.address && AppStore.web3.web3Provider && <UserDropdown />}
+            )} */}
+            {/* {AppStore.web3.address && AppStore.web3.web3Provider && <UserDropdown />} */}
           </Box>
         </Flex>
       </Flex>
