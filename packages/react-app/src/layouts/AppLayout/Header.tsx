@@ -2,11 +2,13 @@ import { Box, Flex, useBreakpointValue, useColorMode } from "@chakra-ui/react";
 import { observer } from "mobx-react-lite";
 import { GiHamburgerMenu } from "react-icons/gi";
 import { useHistory, useLocation } from "react-router-dom";
+import { useNetwork } from "wagmi";
 import { NamedRoutes, route } from "../../App.routes";
 import Button, { ConnectWalletButton } from "../../DSL/Button/Button";
 import ColorModeToggle from "../../DSL/ColorModeToggle/ColorModeToggle";
 import { darkModeGradient, lightOrDarkMode } from "../../DSL/Theme";
 import DPPLogo from "../../images/logo.png";
+import { targetChain } from "../../services/wagmi";
 import AppStore from "../../store/App.store";
 import NavLinks from "./NavLinks";
 
@@ -17,6 +19,7 @@ const Header = observer(() => {
     base: () => AppStore.rwd.toggleMobileNav(),
     xl: () => history.push(route(NamedRoutes.VIEWER)),
   });
+  const { chain } = useNetwork()
   const { colorMode } = useColorMode();
   const showHamburger = useBreakpointValue({ base: true, xl: false });
   return (
@@ -82,7 +85,7 @@ const Header = observer(() => {
         <Flex>
           <Box display={{ base: "none", md: "flex" }} alignItems={"center"} justifyContent={"flex-end"} w={"full"}>
             <Flex mr={8} alignItems={"center"}>
-              {AppStore.web3.isConnected && (
+              {AppStore.web3.isConnected && chain.id === targetChain.id && (
                 <Flex alignItems={"center"}>
                   <Button
                     size="sm"
