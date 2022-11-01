@@ -1,4 +1,6 @@
 import { ChakraProvider, ColorModeScript } from "@chakra-ui/react";
+import { RainbowKitProvider } from "@rainbow-me/rainbowkit";
+import "@rainbow-me/rainbowkit/styles.css";
 import * as Sentry from "@sentry/react";
 import { Integrations } from "@sentry/tracing";
 import React from "react";
@@ -8,7 +10,7 @@ import App from "./App";
 import Fonts from "./DSL/Fonts/Fonts";
 import theme from "./DSL/Theme";
 import { ToastContainer } from "./DSL/Toast/Toast";
-import wagmiClient from "./services/wagmi";
+import wagmiClient, { chains } from "./services/wagmi";
 
 
 Sentry.init({
@@ -23,11 +25,13 @@ root.render(
   <React.StrictMode>
     <ColorModeScript initialColorMode={theme.config.initialColorMode} />
     <WagmiConfig client={wagmiClient}>
-      <ChakraProvider theme={theme} resetCSS>
-        <Fonts />
-        <App />
-        <ToastContainer/>
-      </ChakraProvider>
+      <RainbowKitProvider chains={chains}>
+        <ChakraProvider theme={theme} resetCSS>
+          <Fonts />
+          <App />
+          <ToastContainer/>
+        </ChakraProvider>
+      </RainbowKitProvider>
     </WagmiConfig>
   </React.StrictMode>
 )

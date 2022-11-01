@@ -30,7 +30,7 @@
     "amator": "^1.1.0",
     "axios": "^0.21.4",
     "dotenv": "^8.2.0",
-    "ethers": "^5.7.1",
+    "ethers": "^5.7.2",
     "final-form": "^4.20.4",
     "framer-motion": "^7.6.2",
     "lodash.debounce": "^4.0.8",

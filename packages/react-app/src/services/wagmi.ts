@@ -5,7 +5,7 @@ import env from "../environment";
 import { isProduction } from "../environment/helpers";
 
 export const targetChain = isProduction() ? chain.mainnet : chain.goerli;
-const { chains, provider } = configureChains([targetChain], [infuraProvider({ apiKey: env.app.infuraKey })]);
+export const { chains, provider } = configureChains([targetChain], [infuraProvider({ apiKey: env.app.infuraKey })]);
 const { connectors } = getDefaultWallets({
   appName: "Doge Pixel Portal",
   chains,

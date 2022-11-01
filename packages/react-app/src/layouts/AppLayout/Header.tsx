@@ -1,16 +1,16 @@
-import ColorModeToggle from "../../DSL/ColorModeToggle/ColorModeToggle";
-import AppStore from "../../store/App.store";
-import Button from "../../DSL/Button/Button";
-import UserDropdown from "../UserDropdown";
+import { Box, Flex, useBreakpointValue, useColorMode } from "@chakra-ui/react";
+import { ConnectButton } from "@rainbow-me/rainbowkit";
 import { observer } from "mobx-react-lite";
-import { Box, Flex, HStack, useBreakpointValue, useColorMode } from "@chakra-ui/react";
-import { NamedRoutes, route } from "../../App.routes";
-import BigText from "../../DSL/BigText/BigText";
-import { useHistory, useLocation } from "react-router-dom";
-import NavLinks from "./NavLinks";
-import DPPLogo from "../../images/logo.png";
-import { darkModeGradient, darkModeSecondary, lightModePrimary, lightOrDarkMode } from "../../DSL/Theme";
 import { GiHamburgerMenu } from "react-icons/gi";
+import { useHistory, useLocation } from "react-router-dom";
+import { NamedRoutes, route } from "../../App.routes";
+import Button from "../../DSL/Button/Button";
+import ColorModeToggle from "../../DSL/ColorModeToggle/ColorModeToggle";
+import { darkModeGradient, lightOrDarkMode } from "../../DSL/Theme";
+import DPPLogo from "../../images/logo.png";
+import AppStore from "../../store/App.store";
+import UserDropdown from "../UserDropdown";
+import NavLinks from "./NavLinks";
 
 const Header = observer(() => {
   const history = useHistory();
@@ -118,6 +118,7 @@ const Header = observer(() => {
                 <ColorModeToggle />
               </Box>
             </Flex>
+            <ConnectButton />
             {!AppStore.web3.web3Provider && (
               <Button
                 whiteSpace={{ base: "normal", lg: "nowrap" }}
