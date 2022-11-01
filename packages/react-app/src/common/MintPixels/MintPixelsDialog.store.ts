@@ -237,7 +237,6 @@ class MintPixelsDialogStore extends Reactionable(Navigable<MintModalView, Constr
   }
 
   async handleMintSubmit() {
-    console.log("debug:: handle mint submit")
     if (this.srcCurrency !== "DOG") {
       if (await this.getHasDOGAllowance()) {
         if (await this.getHasVaultAllowance()) {

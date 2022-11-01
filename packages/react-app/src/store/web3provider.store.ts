@@ -13,7 +13,6 @@ export interface EthersContractError {
   message: string;
 }
 
-
 class Web3providerStore {
   @observable
   provider: Provider | null = null;
