@@ -3,6 +3,7 @@ import { ethers } from "ethers";
 import { observer } from "mobx-react-lite";
 import { useEffect, useMemo } from "react";
 import { useHistory } from "react-router-dom";
+import { useDisconnect } from "wagmi";
 import { NamedRoutes, route } from "../../App.routes";
 import SmallUserPixels from "../../common/SmallUserPixels";
 import Button, { ButtonVariant, ConnectWalletButton } from "../../DSL/Button/Button";
@@ -17,6 +18,7 @@ import MobileHomeStore from "./MobileHome.store";
 const MobileHomePage = observer(() => {
   const history = useHistory();
   const store = useMemo(() => new MobileHomeStore(), []);
+  const {disconnect} = useDisconnect()
   useEffect(() => {
     store.init();
     // eslint-disable-next-line
@@ -88,6 +90,7 @@ const MobileHomePage = observer(() => {
               <Button
                 variant={ButtonVariant.Text}
                 onClick={() => {
+                  disconnect()
                   AppStore.web3.disconnect();
                 }}
               >
