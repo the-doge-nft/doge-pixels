@@ -1,20 +1,18 @@
-import { Box, Flex, useBreakpoint, useColorMode } from "@chakra-ui/react";
-import { observer } from "mobx-react-lite";
-import React, { useEffect, useMemo } from "react";
-import Button, { ButtonVariant } from "../../DSL/Button/Button";
-import AppStore from "../../store/App.store";
-import PixelPane from "../../DSL/PixelPane/PixelPane";
-import { formatWithThousandsSeparators } from "../../helpers/numberFormatter";
+import { Box, Flex } from "@chakra-ui/react";
 import { ethers } from "ethers";
-import Typography, { TVariant } from "../../DSL/Typography/Typography";
+import { observer } from "mobx-react-lite";
+import { useEffect, useMemo } from "react";
 import { useHistory } from "react-router-dom";
-import MobileHomeStore from "./MobileHome.store";
-import MintPixelsDrawer from "./MintPixelsDrawer/MintPixelsDrawer";
-import BurnPixelsDrawer from "./BurnPixelsDrawer/BurnPixelsDrawer";
-import { NamedRoutes, route, SELECTED_PIXEL_PARAM } from "../../App.routes";
-import PixelPreview, { PixelPreviewSize } from "../../DSL/PixelPreview/PixelPreview";
-import { darkModeSecondary, lightModePrimary } from "../../DSL/Theme";
+import { NamedRoutes, route } from "../../App.routes";
 import SmallUserPixels from "../../common/SmallUserPixels";
+import Button, { ButtonVariant } from "../../DSL/Button/Button";
+import PixelPreview, { PixelPreviewSize } from "../../DSL/PixelPreview/PixelPreview";
+import Typography, { TVariant } from "../../DSL/Typography/Typography";
+import { formatWithThousandsSeparators } from "../../helpers/numberFormatter";
+import AppStore from "../../store/App.store";
+import BurnPixelsDrawer from "./BurnPixelsDrawer/BurnPixelsDrawer";
+import MintPixelsDrawer from "./MintPixelsDrawer/MintPixelsDrawer";
+import MobileHomeStore from "./MobileHome.store";
 
 const MobileHomePage = observer(() => {
   const history = useHistory();

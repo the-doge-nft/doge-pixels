@@ -1,12 +1,10 @@
-import { action, computed, makeObservable, observable, toJS } from "mobx";
-import { Navigable } from "../../services/mixins/navigable";
-import { Constructor, EmptyClass } from "../../helpers/mixins";
-import AppStore from "../../store/App.store";
-import { showDebugToast, showErrorToast } from "../../DSL/Toast/Toast";
-import { ethers } from "ethers";
 import * as Sentry from "@sentry/react";
-import { MintModalView } from "../MintPixels/MintPixelsDialog.store";
-import { Http } from "../../services";
+import { ethers } from "ethers";
+import { action, computed, makeObservable, observable, toJS } from "mobx";
+import { showDebugToast, showErrorToast } from "../../DSL/Toast/Toast";
+import { Constructor, EmptyClass } from "../../helpers/mixins";
+import { Navigable } from "../../services/mixins/navigable";
+import AppStore from "../../store/App.store";
 
 export enum BurnPixelsModalView {
   Select = "select",

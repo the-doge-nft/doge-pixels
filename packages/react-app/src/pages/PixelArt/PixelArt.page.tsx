@@ -1,28 +1,19 @@
-import { Box, Flex, Grid, GridItem, Img, Menu, MenuButton, MenuItem, MenuList, useColorMode } from "@chakra-ui/react";
+import { Box, Flex, GridItem, useColorMode } from "@chakra-ui/react";
 import { observer } from "mobx-react-lite";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo } from "react";
 import Pane from "../../DSL/Pane/Pane";
-import Typography, { TVariant } from "../../DSL/Typography/Typography";
-import PixelArtPageStore, { Sticker } from "./PixelArtPage.store";
-import Icon from "../../DSL/Icon/Icon";
-import { darkModeSecondary, lightModePrimary, lightOrDarkMode } from "../../DSL/Theme";
-import { ClearCanvasAction, IdenticonAction, PixelAction } from "./PixelArtActions";
-import { PixelArtTool, pixelArtTools } from "./PixelArtTools";
-import { TRANSPARENT_PIXEL } from "./PixelArtCanvas";
-import ImportTemplateModal from "./ImportTemplateModal";
-import CanvasPropertiesModal from "./CanvasPropertiesModal";
-import StickerComponent from "./StickerComponent";
-import ImportStickerModal from "./ImportStickerModal";
+import { lightOrDarkMode } from "../../DSL/Theme";
+import { isProduction } from "../../environment/helpers";
 import AppStore from "../../store/App.store";
-import Link from "../../DSL/Link/Link";
-import { isDevModeEnabled, isProduction, isStaging } from "../../environment/helpers";
-import { Http } from "../../services";
-import shareToTwitter, { TwitterShareType } from "../../helpers/shareToTwitter";
 import ArtCanvas from "./ArtCanvas";
-import ArtPalette from "./ArtPalette";
 import ArtMenu from "./ArtMenu";
+import ArtPalette from "./ArtPalette";
 import ArtTools from "./ArtTools";
+import CanvasPropertiesModal from "./CanvasPropertiesModal";
+import ImportStickerModal from "./ImportStickerModal";
+import ImportTemplateModal from "./ImportTemplateModal";
 import PaletteModal from "./PaletteModal";
+import PixelArtPageStore from "./PixelArtPage.store";
 
 const PixelArtPage = observer(function PixelArtPage() {
   const store = useMemo(() => new PixelArtPageStore(), []);

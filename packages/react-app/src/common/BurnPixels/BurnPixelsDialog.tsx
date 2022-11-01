@@ -1,22 +1,20 @@
-import { observer } from "mobx-react-lite";
-import React, { useEffect } from "react";
-import BurnPixelsModalStore from "../../pages/Viewer/BurnPixelsModal/BurnPixelsModal.store";
 import { Box, Flex, useColorMode } from "@chakra-ui/react";
-import Typography, { TVariant } from "../../DSL/Typography/Typography";
-import AppStore from "../../store/App.store";
-import { darkModeSecondary, lightModePrimary } from "../../DSL/Theme";
-import PixelPane from "../../DSL/PixelPane/PixelPane";
-import { formatWithThousandsSeparators } from "../../helpers/numberFormatter";
+import { observer } from "mobx-react-lite";
+import { useEffect } from "react";
 import Button, { ButtonVariant } from "../../DSL/Button/Button";
 import Form from "../../DSL/Form/Form";
 import Submit from "../../DSL/Form/Submit";
-import Loading from "../../DSL/Loading/Loading";
-import BurnPixelsDialogStore, { BurnPixelsModalView } from "./BurnPixelsDialog.store";
 import Link from "../../DSL/Link/Link";
-import { getEtherscanURL } from "../../helpers/links";
-import SharePixelsDialog from "../SharePixelsDialog/SharePixelsDialog";
+import Loading from "../../DSL/Loading/Loading";
 import PixelPreview, { PixelPreviewSize } from "../../DSL/PixelPreview/PixelPreview";
+import Typography, { TVariant } from "../../DSL/Typography/Typography";
+import { getEtherscanURL } from "../../helpers/links";
+import { formatWithThousandsSeparators } from "../../helpers/numberFormatter";
+import BurnPixelsModalStore from "../../pages/Viewer/BurnPixelsModal/BurnPixelsModal.store";
+import AppStore from "../../store/App.store";
+import SharePixelsDialog from "../SharePixelsDialog/SharePixelsDialog";
 import SmallUserPixels from "../SmallUserPixels";
+import BurnPixelsDialogStore, { BurnPixelsModalView } from "./BurnPixelsDialog.store";
 
 interface BurnPixelsDialogProps {
   store: BurnPixelsDialogStore;

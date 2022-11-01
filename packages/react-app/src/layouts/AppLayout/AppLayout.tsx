@@ -1,16 +1,13 @@
-import React, { useEffect } from "react";
-import { Box, Button, Flex, HStack, useColorMode, VStack } from "@chakra-ui/react";
-import { observer } from "mobx-react-lite";
-import AppStore from "../../store/App.store";
-import Typography, { TVariant } from "../../DSL/Typography/Typography";
-import NavLinks from "./NavLinks";
-import Header from "./Header";
-import { formatWithThousandsSeparators } from "../../helpers/numberFormatter";
-import Icon from "../../DSL/Icon/Icon";
-import Modal from "../../DSL/Modal/Modal";
-import Footer from "../../common/Footer/Footer";
-import { lightOrDarkMode } from "../../DSL/Theme";
+import { Box, Flex, useColorMode } from "@chakra-ui/react";
 import { AnimatePresence, motion } from "framer-motion";
+import { observer } from "mobx-react-lite";
+import { useEffect } from "react";
+import Footer from "../../common/Footer/Footer";
+import Icon from "../../DSL/Icon/Icon";
+import { lightOrDarkMode } from "../../DSL/Theme";
+import AppStore from "../../store/App.store";
+import Header from "./Header";
+import NavLinks from "./NavLinks";
 
 interface AppLayoutProps {
   children?: any;

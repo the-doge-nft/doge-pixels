@@ -1,11 +1,9 @@
-import routes, { AppRouteInterface, NamedRoutes, route, SELECTED_PIXEL_PARAM } from "../../App.routes";
-import Link from "../../DSL/Link/Link";
-import { matchPath, useLocation } from "react-router-dom";
-import { SelectedOwnerTab } from "../../pages/Leaderbork/Leaderbork.store";
-import Icon from "../../DSL/Icon/Icon";
-import { Type } from "../../DSL/Fonts/Fonts";
-import AppStore from "../../store/App.store";
 import { useBreakpointValue } from "@chakra-ui/react";
+import { matchPath, useLocation } from "react-router-dom";
+import routes, { AppRouteInterface, NamedRoutes, route, SELECTED_PIXEL_PARAM } from "../../App.routes";
+import { Type } from "../../DSL/Fonts/Fonts";
+import Link from "../../DSL/Link/Link";
+import { SelectedOwnerTab } from "../../pages/Leaderbork/Leaderbork.store";
 
 const NavLinks = ({
   isMobile,

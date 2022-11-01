@@ -1,7 +1,7 @@
-import React, { useState } from "react";
+import { VStack } from "@chakra-ui/react";
+import { useState } from "react";
 import Demo from "../Demo/Demo";
 import PixelPreview, { PixelPreviewSize } from "./PixelPreview";
-import { Flex, HStack, VStack } from "@chakra-ui/react";
 
 const DemoParkPixels = () => {
   const [selectedPixel, setSelectedPixel] = useState(null);

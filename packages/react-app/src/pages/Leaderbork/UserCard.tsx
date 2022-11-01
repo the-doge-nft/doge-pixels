@@ -1,13 +1,11 @@
-import React, { PropsWithChildren } from "react";
-import LeaderborkStore, { PixelOwnerInfo } from "./Leaderbork.store";
 import { Box, Flex, useColorMode } from "@chakra-ui/react";
-import Typography, { TVariant } from "../../DSL/Typography/Typography";
-import { abbreviate } from "../../helpers/strings";
-import PxPill from "./PxPill";
-import { darkModeSecondary, lightModePrimary, lightOrDarkMode } from "../../DSL/Theme";
-import { NamedRoutes, route } from "../../App.routes";
 import { observer } from "mobx-react-lite";
+import React, { PropsWithChildren } from "react";
+import { darkModeSecondary, lightModePrimary, lightOrDarkMode } from "../../DSL/Theme";
+import Typography, { TVariant } from "../../DSL/Typography/Typography";
 import AppStore from "../../store/App.store";
+import LeaderborkStore, { PixelOwnerInfo } from "./Leaderbork.store";
+import PxPill from "./PxPill";
 
 interface UserCardProps {
   store: LeaderborkStore;
