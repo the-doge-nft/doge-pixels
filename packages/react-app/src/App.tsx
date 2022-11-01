@@ -1,9 +1,11 @@
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import { BrowserRouter, Route, Switch } from "react-router-dom";
-import routes from "./App.routes";
-import AppStore from "./store/App.store";
+import { useNetwork, useProvider, useSigner } from "wagmi";
 import "./App.css";
+import routes from "./App.routes";
 import buildInfo from "./build_number";
+import { targetChain } from "./services/wagmi";
+import AppStore from "./store/App.store";
 
 const logAppVersionToConsole = () => {
   var styleArray = [
@@ -22,10 +24,27 @@ const logAppVersionToConsole = () => {
   console.log(`build hash ${buildInfo.lastHash} - no ${buildInfo.buildNumber} - date ${buildInfo.buildTime}`);
 };
 
+const useWeb3WagmiSync = () => {
+  const { chain, chains } = useNetwork()
+  const { data: signer } = useSigner()
+  const provider = useProvider()
+  useEffect(() => {
+    if (chain && targetChain?.id === chain?.id && signer && provider) {
+      AppStore.web3.connect(signer, chain, provider)
+      console.log("debug:: chain", chain)
+    }
+
+    if (AppStore.web3.signer && !chain && !signer) {
+      AppStore.web3.disconnect()
+    }
+  }, [chain, targetChain, signer, provider])
+}
+
 AppStore.init();
 
 function App() {
   useEffect(logAppVersionToConsole, []);
+  useWeb3WagmiSync()
   return (
     <BrowserRouter>
       <Switch>

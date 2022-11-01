@@ -1,22 +1,13 @@
-import React, { Suspense, useCallback, useEffect, useMemo } from "react";
-import { Box, Flex } from "@chakra-ui/react";
-import DogeExplorer from "./DogeExplorer";
-import ViewerStore from "./Viewer.store";
+import { Flex } from "@chakra-ui/react";
 import { observer } from "mobx-react-lite";
-import Pane from "../../DSL/Pane/Pane";
-import BurnPixelsModal from "./BurnPixelsModal/BurnPixelsModal";
-import ManagePane from "./Panes/ManagePane";
-import IndexPane from "./Panes/IndexPane";
-import MintPixelsModal from "./MintPixelsModal/MintPixelsModal";
-import SelectedPixelPane from "./Panes/SelectedPixelPane";
-import AppStore from "../../store/App.store";
+import { Suspense, useEffect, useMemo } from "react";
+import { useParams } from "react-router-dom";
+import { SELECTED_PIXEL_PARAM } from "../../App.routes";
 import Loading from "../../DSL/Loading/Loading";
-import ScrollHelperModal from "../../DSL/Modal/ScrollHelperModal";
-import MemeModal from "../../DSL/Modal/MemeModal";
-import { useLocation, useParams } from "react-router-dom";
-import { NamedRoutes, route, SELECTED_PIXEL_PARAM } from "../../App.routes";
-import Modal from "../../DSL/Modal/Modal";
+import Pane from "../../DSL/Pane/Pane";
+import DogeExplorer from "./DogeExplorer";
 import Modals from "./Modals";
+import ViewerStore from "./Viewer.store";
 
 const ViewerPage = observer(function ViewerPage() {
   const params = useParams<any>();

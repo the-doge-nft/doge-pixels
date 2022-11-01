@@ -1,8 +1,7 @@
-import { Box } from "@chakra-ui/react";
 import React, { PropsWithChildren } from "react";
-import { BottomSheet as SpringBottomSheet, BottomSheetRef } from "react-spring-bottom-sheet";
+import { BottomSheet as SpringBottomSheet } from "react-spring-bottom-sheet";
 import "react-spring-bottom-sheet/dist/style.css";
-import { defaultSnapProps, SnapPointProps, snapPoints } from "react-spring-bottom-sheet/dist/types";
+import { defaultSnapProps, snapPoints } from "react-spring-bottom-sheet/dist/types";
 
 interface BottomSheetProps {
   isOpen: boolean;

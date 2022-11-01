@@ -1,17 +1,17 @@
+import { SimpleGetQuoteResponse } from "@cowprotocol/cow-sdk/dist/api/cow/types";
+import * as Sentry from "@sentry/react";
+import { BigNumber, Contract, ethers } from "ethers";
+import { formatUnits } from "ethers/lib/utils";
 import { computed, makeObservable, observable, toJS } from "mobx";
+import erc20 from "../../contracts/erc20.json";
+import { showDebugToast, showErrorToast } from "../../DSL/Toast/Toast";
+import env from "../../environment";
+import { Constructor, EmptyClass } from "../../helpers/mixins";
+import { formatWithThousandsSeparators } from "../../helpers/numberFormatter";
+import { sleep } from "../../helpers/sleep";
 import { Navigable } from "../../services/mixins/navigable";
 import { Reactionable } from "../../services/mixins/reactionable";
-import { Constructor, EmptyClass } from "../../helpers/mixins";
-import { BigNumber, Contract, ethers } from "ethers";
 import AppStore from "../../store/App.store";
-import { showDebugToast, showErrorToast } from "../../DSL/Toast/Toast";
-import { formatWithThousandsSeparators } from "../../helpers/numberFormatter";
-import * as Sentry from "@sentry/react";
-import { SimpleGetQuoteResponse } from "@cowprotocol/cow-sdk/dist/api/cow/types";
-import env from "../../environment";
-import erc20 from "../../contracts/erc20.json";
-import { formatUnits } from "ethers/lib/utils";
-import { sleep } from "../../helpers/sleep";
 
 export const GPv2VaultRelayerAddress = "0xC92E8bdf79f0507f65a392b0ab4667716BFE0110";
 
@@ -237,6 +237,7 @@ class MintPixelsDialogStore extends Reactionable(Navigable<MintModalView, Constr
   }
 
   async handleMintSubmit() {
+    console.log("debug:: handle mint submit")
     if (this.srcCurrency !== "DOG") {
       if (await this.getHasDOGAllowance()) {
         if (await this.getHasVaultAllowance()) {

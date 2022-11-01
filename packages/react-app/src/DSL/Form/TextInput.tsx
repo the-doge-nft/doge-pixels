@@ -1,11 +1,11 @@
-import Control from "./Control";
-import { FormErrorMessage, InputGroup, InputLeftElement, InputRightElement, useColorMode } from "@chakra-ui/react";
+import { FormErrorMessage, InputGroup, InputLeftElement, useColorMode } from "@chakra-ui/react";
 import React from "react";
-import { AllowedStyleProps, BaseInputProps } from "./interfaces";
-import { Input } from "./Input/Input";
-import { useControlledFormField, useFormField } from "./useFormField";
 import Icon from "../Icon/Icon";
 import { lightOrDarkMode } from "../Theme";
+import Control from "./Control";
+import { Input } from "./Input/Input";
+import { AllowedStyleProps, BaseInputProps } from "./interfaces";
+import { useControlledFormField, useFormField } from "./useFormField";
 
 export interface TextInputProps extends BaseInputProps, AllowedStyleProps {
   icon?: any;

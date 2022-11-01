@@ -1,16 +1,16 @@
-import ColorModeToggle from "../../DSL/ColorModeToggle/ColorModeToggle";
-import AppStore from "../../store/App.store";
-import Button from "../../DSL/Button/Button";
-import UserDropdown from "../UserDropdown";
+import { Box, Flex, useBreakpointValue, useColorMode } from "@chakra-ui/react";
 import { observer } from "mobx-react-lite";
-import { Box, Flex, HStack, useBreakpointValue, useColorMode } from "@chakra-ui/react";
-import { NamedRoutes, route } from "../../App.routes";
-import BigText from "../../DSL/BigText/BigText";
-import { useHistory, useLocation } from "react-router-dom";
-import NavLinks from "./NavLinks";
-import DPPLogo from "../../images/logo.png";
-import { darkModeGradient, darkModeSecondary, lightModePrimary, lightOrDarkMode } from "../../DSL/Theme";
 import { GiHamburgerMenu } from "react-icons/gi";
+import { useHistory, useLocation } from "react-router-dom";
+import { useNetwork } from "wagmi";
+import { NamedRoutes, route } from "../../App.routes";
+import Button, { ConnectWalletButton } from "../../DSL/Button/Button";
+import ColorModeToggle from "../../DSL/ColorModeToggle/ColorModeToggle";
+import { darkModeGradient, lightOrDarkMode } from "../../DSL/Theme";
+import DPPLogo from "../../images/logo.png";
+import { targetChain } from "../../services/wagmi";
+import AppStore from "../../store/App.store";
+import NavLinks from "./NavLinks";
 
 const Header = observer(() => {
   const history = useHistory();
@@ -19,6 +19,7 @@ const Header = observer(() => {
     base: () => AppStore.rwd.toggleMobileNav(),
     xl: () => history.push(route(NamedRoutes.VIEWER)),
   });
+  const { chain } = useNetwork()
   const { colorMode } = useColorMode();
   const showHamburger = useBreakpointValue({ base: true, xl: false });
   return (
@@ -84,7 +85,7 @@ const Header = observer(() => {
         <Flex>
           <Box display={{ base: "none", md: "flex" }} alignItems={"center"} justifyContent={"flex-end"} w={"full"}>
             <Flex mr={8} alignItems={"center"}>
-              {AppStore.web3.isConnected && (
+              {AppStore.web3.isConnected && chain.id === targetChain.id && (
                 <Flex alignItems={"center"}>
                   <Button
                     size="sm"
@@ -118,17 +119,7 @@ const Header = observer(() => {
                 <ColorModeToggle />
               </Box>
             </Flex>
-            {!AppStore.web3.web3Provider && (
-              <Button
-                whiteSpace={{ base: "normal", lg: "nowrap" }}
-                onClick={() => {
-                  AppStore.web3.connect();
-                }}
-              >
-                Connect
-              </Button>
-            )}
-            {AppStore.web3.address && AppStore.web3.web3Provider && <UserDropdown />}
+            <ConnectWalletButton />
           </Box>
         </Flex>
       </Flex>

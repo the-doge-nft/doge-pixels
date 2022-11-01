@@ -13,6 +13,7 @@ const developmentEnv = {
     },
     targetChainId: 5,
     targetNetworkName: "goerli",
+    infuraKey: process.env.REACT_APP_INFURA_ID,
   },
 };
 export default developmentEnv;

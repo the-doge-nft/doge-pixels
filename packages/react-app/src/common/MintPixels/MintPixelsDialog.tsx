@@ -1,23 +1,23 @@
-import React, { useEffect, useState } from "react";
-import { observer } from "mobx-react-lite";
-import { Box, Flex, HStack, Image, useColorMode, VStack } from "@chakra-ui/react";
-import Typography, { TVariant } from "../../DSL/Typography/Typography";
-import Form from "../../DSL/Form/Form";
-import { formatWithThousandsSeparators } from "../../helpers/numberFormatter";
-import Submit from "../../DSL/Form/Submit";
+import { Box, Flex, HStack, useColorMode, VStack } from "@chakra-ui/react";
 import { ethers } from "ethers";
-import CheckboxInput from "../../DSL/Form/CheckboxInput/CheckboxInput";
-import model from "../../DSL/Form/model";
+import { observer } from "mobx-react-lite";
+import React, { useEffect, useState } from "react";
 import Button from "../../DSL/Button/Button";
-import Loading from "../../DSL/Loading/Loading";
-import Link from "../../DSL/Link/Link";
-import { getEtherscanURL } from "../../helpers/links";
-import MintPixelsDialogStore, { MintModalView } from "./MintPixelsDialog.store";
-import AppStore from "../../store/App.store";
-import NewMintPixelsInput from "./NewMintPixelsInput";
+import CheckboxInput from "../../DSL/Form/CheckboxInput/CheckboxInput";
+import Form from "../../DSL/Form/Form";
+import model from "../../DSL/Form/model";
+import Submit from "../../DSL/Form/Submit";
 import Icon from "../../DSL/Icon/Icon";
+import Link from "../../DSL/Link/Link";
+import Loading from "../../DSL/Loading/Loading";
+import Typography, { TVariant } from "../../DSL/Typography/Typography";
+import { getEtherscanURL } from "../../helpers/links";
+import { formatWithThousandsSeparators } from "../../helpers/numberFormatter";
+import AppStore from "../../store/App.store";
 import CowStore from "../../store/cow.store";
 import SharePixelsDialog from "../SharePixelsDialog/SharePixelsDialog";
+import MintPixelsDialogStore, { MintModalView } from "./MintPixelsDialog.store";
+import NewMintPixelsInput from "./NewMintPixelsInput";
 
 interface MintPixelsDialogProps {
   store: MintPixelsDialogStore;
@@ -170,6 +170,7 @@ const LoadingDOGApproval = observer(({ store }: { store: MintPixelsDialogStore }
 });
 
 const MintPixels = observer(({ store }: { store: MintPixelsDialogStore }) => {
+  // @next TODO this flow has to change due to React 18 rendering use effects twice
   useEffect(() => {
     store.mintPixels(Number(store.pixelCount!));
     // eslint-disable-next-line

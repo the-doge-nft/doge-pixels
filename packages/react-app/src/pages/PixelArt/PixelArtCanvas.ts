@@ -1,4 +1,3 @@
-import { sha512 } from "ethers/lib/utils";
 import { Sticker } from "./PixelArtPage.store";
 
 export const TRANSPARENT_PIXEL = "#0000";
