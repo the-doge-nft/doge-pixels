@@ -170,6 +170,7 @@ const LoadingDOGApproval = observer(({ store }: { store: MintPixelsDialogStore }
 });
 
 const MintPixels = observer(({ store }: { store: MintPixelsDialogStore }) => {
+  // @next TODO this flow has to change due to React 18 rendering use effects twice
   useEffect(() => {
     store.mintPixels(Number(store.pixelCount!));
     // eslint-disable-next-line
