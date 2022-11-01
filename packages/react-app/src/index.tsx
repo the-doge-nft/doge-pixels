@@ -23,10 +23,11 @@ Sentry.init({
 const rainbowTheme = lightTheme({
   borderRadius: 'none',
   fontStack: 'system',
-  accentColor: Colors.yellow[100]
+  accentColor: Colors.yellow[100],
 })
 rainbowTheme.fonts.body = Type.ComicSans
 rainbowTheme.colors.modalBackground = Colors.yellow[50]
+rainbowTheme.colors.modalBorder = "black"
 
 const container = document.getElementById("root")
 const root = createRoot(container)

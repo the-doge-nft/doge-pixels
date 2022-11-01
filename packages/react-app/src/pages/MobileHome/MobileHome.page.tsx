@@ -5,7 +5,7 @@ import { useEffect, useMemo } from "react";
 import { useHistory } from "react-router-dom";
 import { NamedRoutes, route } from "../../App.routes";
 import SmallUserPixels from "../../common/SmallUserPixels";
-import Button, { ButtonVariant } from "../../DSL/Button/Button";
+import Button, { ButtonVariant, ConnectWalletButton } from "../../DSL/Button/Button";
 import PixelPreview, { PixelPreviewSize } from "../../DSL/PixelPreview/PixelPreview";
 import Typography, { TVariant } from "../../DSL/Typography/Typography";
 import { formatWithThousandsSeparators } from "../../helpers/numberFormatter";
@@ -33,13 +33,7 @@ const MobileHomePage = observer(() => {
     <Flex flexGrow={1} px={4} mt={{ base: 14, md: 0 }}>
       {!AppStore.web3.web3Provider && (
         <Flex justifyContent={"center"} alignItems={"center"} w={"full"}>
-          <Button
-            onClick={() => {
-              AppStore.web3.connect();
-            }}
-          >
-            Connect
-          </Button>
+          <ConnectWalletButton />
         </Flex>
       )}
       {AppStore.web3.web3Provider && (

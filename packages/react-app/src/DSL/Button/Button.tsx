@@ -56,9 +56,10 @@ const Button = ({
         onMouseLeave={() => setIsHover(false)}
         onTouchStart={() => {
           setIsHover(true);
-          onClick && onClick();
         }}
-        onTouchEnd={() => setIsHover(false)}
+        onTouchEnd={() => {
+          setIsHover(false)
+        }}
       >
         <Typography variant={buttonTypographyMap[size]} color={"inherit"} overflow={"hidden"} textOverflow={"ellipsis"}>
           {children}
@@ -74,7 +75,33 @@ const Button = ({
 };
 
 export const ConnectWalletButton = () => {
-  return <ConnectButton />
+  return <ConnectButton.Custom>
+    {({
+      account,
+      chain,
+      openAccountModal,
+      openChainModal,
+      openConnectModal,
+      authenticationStatus,
+      mounted
+    }) => {
+      const connected = mounted && account && chain && (!authenticationStatus || authenticationStatus === 'authenticated')
+      if (!connected) {
+        return <Button onClick={openConnectModal}>
+          Connect
+        </Button>
+      }
+
+      if (chain.unsupported) {
+        return <Button onClick={openChainModal}>
+          Wrong network
+        </Button>
+      }
+      return <Button onClick={openAccountModal}>
+        {account.address}
+      </Button>
+    }}
+  </ConnectButton.Custom>
 }
 
 export default Button;
