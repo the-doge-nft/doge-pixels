@@ -1,10 +1,9 @@
+import { Box } from "@chakra-ui/react";
 import { observer } from "mobx-react-lite";
-import React, { useMemo } from "react";
+import { useMemo } from "react";
 import BurnPixelsDialog from "../../../common/BurnPixels/BurnPixelsDialog";
 import Modal from "../../../DSL/Modal/Modal";
 import BurnPixelsModalStore from "./BurnPixelsModal.store";
-import { Box } from "@chakra-ui/react";
-import { BurnPixelsModalView } from "../../../common/BurnPixels/BurnPixelsDialog.store";
 
 interface BurnPixelsModalProps {
   isOpen: boolean;

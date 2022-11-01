@@ -4,12 +4,24 @@ import { InjectSentry, SentryService } from '@travelerdev/nestjs-sentry';
 import {
   AssetTransfersCategory,
   AssetTransfersOrder,
-  AssetTransfersWithMetadataResult
+  AssetTransfersWithMetadataResult,
 } from 'alchemy-sdk';
 import { ethers } from 'ethers';
 import { AlchemyService } from '../alchemy/alchemy.service';
-import { SoChainNetorks, SochainService } from './../sochain/sochain.service';
-import { DOGE_CURRENCY, DonationsRepository } from './donations.repository';
+import { CoinGeckoService } from './../coin-gecko/coin-gecko.service';
+import { SochainService } from './../sochain/sochain.service';
+import {
+  DOGE_CURRENCY_SYMBOL,
+  DonationsRepository,
+  ETH_CURRENCY_SYMBOL,
+} from './donations.repository';
+
+export interface Balance {
+  symbol: string;
+  amount: number;
+  usdNotional: number;
+  usdPrice: number;
+}
 
 @Injectable()
 export class DonationsService {
@@ -21,13 +33,14 @@ export class DonationsService {
     private readonly alchemy: AlchemyService,
     private readonly donationsRepo: DonationsRepository,
     private readonly sochain: SochainService,
+    private readonly coingecko: CoinGeckoService,
     @InjectSentry() private readonly sentryClient: SentryService,
   ) {}
 
   init() {
     this.logger.log('💸 Donation service init');
     this.syncRecentEthereumDonations();
-    this.syncRecentDogeDonations()
+    this.syncRecentDogeDonations();
     // @next -- listen to transfers realtime
     // this.listenForNewDonations()
   }
@@ -54,7 +67,6 @@ export class DonationsService {
     // check if there are any new txs past our most recent synced tx
     const donations = await this.sochain.getTxsReceived(
       this.dogeCoinAddress,
-      SoChainNetorks.DOGE,
       donation.txHash,
     );
 
@@ -81,7 +93,7 @@ export class DonationsService {
         blockNumber: donation.block_no,
         toAddress: this.dogeCoinAddress,
         blockchain: ChainName.DOGECOIN,
-        currency: DOGE_CURRENCY,
+        currency: DOGE_CURRENCY_SYMBOL,
         amount: Number(donation.incoming.value),
         blockCreatedAt: new Date(donation.time * 1000),
       });
@@ -149,8 +161,61 @@ export class DonationsService {
         txHash: transfer.hash,
         fromAddress: ethers.utils.getAddress(transfer.from),
         toAddress: ethers.utils.getAddress(transfer.to),
-        currencyContractAddress: transfer.rawContract.address ? ethers.utils.getAddress(transfer.rawContract.address) : null,
+        currencyContractAddress: transfer.rawContract.address
+          ? ethers.utils.getAddress(transfer.rawContract.address)
+          : null,
       });
     }
+  }
+
+  async getEthereumBalances(): Promise<Balance[]> {
+    const balances: Balance[] = [];
+
+    const eth = await this.alchemy.getBalance(this.ethereumAddress);
+    const usdPrice = await this.coingecko.getETHPrice();
+    const amount = Number(ethers.utils.formatEther(ethers.BigNumber.from(eth)));
+    const usdNotional = usdPrice * amount;
+
+    balances.push({
+      symbol: ETH_CURRENCY_SYMBOL,
+      usdPrice,
+      usdNotional,
+      amount,
+    });
+
+    const erc20 = await this.alchemy.getTokenBalances(this.ethereumAddress);
+    for (const balance of erc20?.tokenBalances) {
+      const metadata = await this.alchemy.getTokenMetadata(
+        balance.contractAddress,
+      );
+      const symbol = metadata.symbol;
+      const decimals = metadata.decimals;
+      const amount = ethers.BigNumber.from(balance.tokenBalance)
+        .div(ethers.BigNumber.from(10).pow(decimals))
+        .toNumber();
+      const usdPrice = await this.coingecko.getPriceByEthereumContractAddress(
+        balance.contractAddress,
+      );
+      const usdNotional = usdPrice * amount;
+      balances.push({
+        symbol,
+        usdPrice,
+        usdNotional,
+        amount,
+      });
+    }
+    return balances;
+  }
+
+  async getDogeBalances(): Promise<Balance> {
+    const dogeBalance = await this.sochain.getBalance(this.dogeCoinAddress);
+    this.logger.log(JSON.stringify(dogeBalance, undefined, 2));
+    const dogePrice = await this.coingecko.getDogePrice();
+    return {
+      symbol: DOGE_CURRENCY_SYMBOL,
+      amount: dogeBalance,
+      usdNotional: dogeBalance * dogePrice,
+      usdPrice: dogePrice,
+    };
   }
 }

@@ -1,9 +1,8 @@
 import { observer } from "mobx-react-lite";
-import React, { useMemo } from "react";
-import BurnPixelsDrawerStore from "./BurnPixelsDrawer.store";
-import Drawer from "../../../DSL/Drawer/Drawer";
+import { useMemo } from "react";
 import BurnPixelsDialog from "../../../common/BurnPixels/BurnPixelsDialog";
-import { Box, Flex } from "@chakra-ui/react";
+import Drawer from "../../../DSL/Drawer/Drawer";
+import BurnPixelsDrawerStore from "./BurnPixelsDrawer.store";
 
 interface BurnPixelsModalProps {
   isOpen: boolean;

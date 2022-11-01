@@ -1,6 +1,6 @@
 import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { Cron, CronExpression } from '@nestjs/schedule';
-import { DonationsService } from '../donations/donations.service';
+import { Balance, DonationsService } from '../donations/donations.service';
 import { RainbowSwapsRepository } from '../rainbow-swaps/rainbow-swaps.repository';
 import { RainbowSwapsService } from '../rainbow-swaps/rainbow-swaps.service';
 import { DonationsRepository } from './../donations/donations.repository';
@@ -53,5 +53,11 @@ export class StatueCampaignService implements OnModuleInit {
       return 1;
     });
     return { swaps, donations };
+  }
+
+  async getNow(): Promise<Balance[]> {
+    const ethereumBalances = await this.donationsService.getEthereumBalances();
+    const dogecoinBalance = await this.donationsService.getDogeBalances();
+    return [...ethereumBalances, dogecoinBalance];
   }
 }

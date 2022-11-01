@@ -1,19 +1,18 @@
-import React from "react";
-import ReactDOM from "react-dom";
-import App from "./App";
-import { Box, ChakraProvider, ColorModeScript, Flex, HStack } from "@chakra-ui/react";
-import theme from "./DSL/Theme";
-import Fonts from "./DSL/Fonts/Fonts";
+import { ChakraProvider, ColorModeScript, useColorMode } from "@chakra-ui/react";
+import { darkTheme, lightTheme, RainbowKitProvider } from "@rainbow-me/rainbowkit";
+import "@rainbow-me/rainbowkit/styles.css";
 import * as Sentry from "@sentry/react";
 import { Integrations } from "@sentry/tracing";
-import { motion } from "framer-motion";
-import Typography, { TVariant } from "./DSL/Typography/Typography";
-import Marquee from "./DSL/Marquee/Marquee";
-import { observer } from "mobx-react-lite";
-import Icon from "./DSL/Icon/Icon";
-import AppStore from "./store/App.store";
-import { formatWithThousandsSeparators } from "./helpers/numberFormatter";
-import Footer from "./common/Footer/Footer";
+import React from "react";
+import { createRoot } from 'react-dom/client';
+import { WagmiConfig } from "wagmi";
+import App from "./App";
+import Colors from "./DSL/Colors/Colors";
+import Fonts, { Type } from "./DSL/Fonts/Fonts";
+import theme from "./DSL/Theme";
+import { ToastContainer } from "./DSL/Toast/Toast";
+import wagmiClient, { chains } from "./services/wagmi";
+
 
 Sentry.init({
   dsn: process.env.REACT_APP_SENTRY_DSN,
@@ -21,16 +20,47 @@ Sentry.init({
   tracesSampleRate: 1.0,
 });
 
-ReactDOM.render(
+const customLightTheme = lightTheme({
+  borderRadius: 'none',
+  fontStack: 'system',
+  accentColor: Colors.yellow[100],
+  overlayBlur: 'small'
+})
+customLightTheme.fonts.body = Type.ComicSans
+customLightTheme.colors.modalBackground = Colors.yellow[50]
+customLightTheme.colors.modalBorder = "black"
+
+const customDarkTheme = darkTheme({
+  borderRadius: 'none',
+  fontStack: 'system',
+  accentColor: Colors.gray[300],
+  overlayBlur: 'small'
+})
+customDarkTheme.fonts.body = Type.ComicSans
+customDarkTheme.colors.modalBackground = Colors.purple[700]
+customDarkTheme.colors.modalBorder = "white"
+
+const Test = () => {
+  const { colorMode } = useColorMode()
+  return <RainbowKitProvider chains={chains} theme={colorMode === "light" ? customLightTheme : customDarkTheme}>
+    <Fonts />
+    <App />
+    <ToastContainer/>
+  </RainbowKitProvider>
+}
+
+const container = document.getElementById("root")
+const root = createRoot(container)
+root.render(
   <React.StrictMode>
     <ColorModeScript initialColorMode={theme.config.initialColorMode} />
-    <ChakraProvider theme={theme} resetCSS>
-      <Fonts />
-      <App />
-    </ChakraProvider>
-  </React.StrictMode>,
-  document.getElementById("root"),
-);
+    <WagmiConfig client={wagmiClient}>
+      <ChakraProvider theme={theme} resetCSS>
+        <Test />
+      </ChakraProvider>
+    </WagmiConfig>
+  </React.StrictMode>
+)
 
 // If you want to start measuring performance in your app, pass a function
 // to log results (for example: reportWebVitals(console.log))

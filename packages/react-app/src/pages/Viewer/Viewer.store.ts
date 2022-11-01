@@ -1,12 +1,10 @@
 import { action, computed, makeObservable, observable } from "mobx";
+import { NamedRoutes, route, SELECTED_PIXEL_PARAM } from "../../App.routes";
 import { EmptyClass } from "../../helpers/mixins";
-import AppStore from "../../store/App.store";
+import { Http } from "../../services";
 import { Eventable, SELECT_PIXEL } from "../../services/mixins/eventable";
 import { Reactionable } from "../../services/mixins/reactionable";
-import LocalStorage from "../../services/local-storage";
-import { abbreviate } from "../../helpers/strings";
-import { NamedRoutes, route, SELECTED_PIXEL_PARAM } from "../../App.routes";
-import { Http } from "../../services";
+import AppStore from "../../store/App.store";
 
 export enum ViewerView {
   Index = "index",
@@ -137,6 +135,7 @@ class ViewerStore extends Eventable(Reactionable(EmptyClass)) {
     if (this.selectedPupper) {
       return AppStore.web3.pupperToHexLocal(this.selectedPupper);
     }
+    return null;
   }
 
   // @TODO selecting PixelPane in ManagePane.tsx & SelectedPixelPane.tsx should call

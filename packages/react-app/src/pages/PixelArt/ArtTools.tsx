@@ -1,10 +1,10 @@
+import { Box, useColorMode, VStack } from "@chakra-ui/react";
 import { observer } from "mobx-react-lite";
-import PixelArtPageStore from "./PixelArtPage.store";
-import { Box, GridItem, useColorMode, VStack } from "@chakra-ui/react";
-import { pixelArtTools } from "./PixelArtTools";
-import { darkModeSecondary, lightModePrimary, lightOrDarkMode } from "../../DSL/Theme";
 import Icon, { IconName } from "../../DSL/Icon/Icon";
+import { darkModeSecondary, lightModePrimary, lightOrDarkMode } from "../../DSL/Theme";
 import Tooltip from "../../DSL/Tooltip/Tooltip";
+import PixelArtPageStore from "./PixelArtPage.store";
+import { pixelArtTools } from "./PixelArtTools";
 
 const ArtTools = observer(({ store }: { store: PixelArtPageStore }) => {
   const { colorMode } = useColorMode();

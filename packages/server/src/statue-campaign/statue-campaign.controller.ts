@@ -32,10 +32,12 @@ export class DonationController {
 
   @Get('/now')
   async getNow() {
-    const donationsUsdNotional =
-      await this.donationsRepo.getUSDNotionalDonated();
+    const balances = await this.statueService.getNow();
+    let usdNotional = 0;
+    balances.forEach((bal) => (usdNotional += bal.usdNotional));
     return {
-      usdNotional: donationsUsdNotional,
+      usdNotional,
+      balances,
     };
   }
 }

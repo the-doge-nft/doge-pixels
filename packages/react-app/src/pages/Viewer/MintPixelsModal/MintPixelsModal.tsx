@@ -1,9 +1,9 @@
-import { observer } from "mobx-react-lite";
-import Modal, { ModalProps } from "../../../DSL/Modal/Modal";
-import MintPixelsDialog from "../../../common/MintPixels/MintPixelsDialog";
 import { Box } from "@chakra-ui/react";
-import MintPixelsDialogStore, { MintModalView } from "../../../common/MintPixels/MintPixelsDialog.store";
+import { observer } from "mobx-react-lite";
 import { useMemo } from "react";
+import MintPixelsDialog from "../../../common/MintPixels/MintPixelsDialog";
+import MintPixelsDialogStore from "../../../common/MintPixels/MintPixelsDialog.store";
+import Modal, { ModalProps } from "../../../DSL/Modal/Modal";
 
 export interface MintPixelsModalProps extends Pick<ModalProps, "isOpen" | "onClose"> {
   onSuccess: () => void;

@@ -14,6 +14,7 @@ const productionEnv = {
     },
     targetChainId: 1,
     targetNetworkName: "mainnet",
+    infuraKey: process.env.REACT_APP_INFURA_ID,
   },
 };
 export default productionEnv;
