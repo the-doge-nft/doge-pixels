@@ -84,7 +84,7 @@ class Web3providerStore {
       if (this.ens) {
         return this.ens;
       } else {
-        return abbreviate(this.address);
+        return abbreviate(this.address, 4);
       }
     } else {
       return "-";

@@ -51,7 +51,11 @@ const Button = ({
         variant={variant}
         size={size}
         __css={styles.button}
-        onClick={onClick}
+        onClick={() => {
+          if (onClick) {
+            onClick()
+          }
+        }}
         isLoading={isLoading}
         onMouseEnter={() => setIsHover(true)}
         onMouseLeave={() => setIsHover(false)}

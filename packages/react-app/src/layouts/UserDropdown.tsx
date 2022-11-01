@@ -34,8 +34,7 @@ const UserDropdown = observer(() => {
                 overflowWrap={"initial"}
                 textOverflow={"ellipsis"}
               >
-                {/* {AppStore.web3.addressForDisplay} */}
-                {address}
+                {AppStore.web3.addressForDisplay}
               </Typography>
             </Flex>
           </MenuButton>

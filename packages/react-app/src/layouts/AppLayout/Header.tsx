@@ -117,17 +117,6 @@ const Header = observer(() => {
               </Box>
             </Flex>
             <ConnectWalletButton />
-            {/* {!AppStore.web3.web3Provider && (
-              <Button
-                whiteSpace={{ base: "normal", lg: "nowrap" }}
-                onClick={() => {
-                  AppStore.web3.connect();
-                }}
-              >
-                Connect
-              </Button>
-            )} */}
-            {/* {AppStore.web3.address && AppStore.web3.web3Provider && <UserDropdown />} */}
           </Box>
         </Flex>
       </Flex>

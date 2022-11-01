@@ -1,6 +1,5 @@
-import { Box, Flex, Grid, GridItem, HStack, useColorMode } from "@chakra-ui/react";
+import { Box, Flex, Grid, HStack, useColorMode } from "@chakra-ui/react";
 import { observer } from "mobx-react-lite";
-import BigText from "../../DSL/BigText/BigText";
 import { Type } from "../../DSL/Fonts/Fonts";
 import Icon from "../../DSL/Icon/Icon";
 import Link from "../../DSL/Link/Link";
@@ -8,7 +7,7 @@ import { lightOrDarkMode } from "../../DSL/Theme";
 import Typography, { TVariant } from "../../DSL/Typography/Typography";
 import { formatWithThousandsSeparators } from "../../helpers/numberFormatter";
 import AppStore from "../../store/App.store";
-import { socialLinks, readLinks, actionLinks, tradeLinks } from "./Links";
+import { readLinks, socialLinks, tradeLinks } from "./Links";
 
 const Footer = observer(() => {
   return (
@@ -63,7 +62,7 @@ const FooterItem: React.FC<{ title: string; items: { title: string; link: string
       </Typography>
       <Grid templateRows={"1fr 1fr 1fr"}>
         {items.map(item => (
-          <Link opacity={0.5} size="sm" target={"_blank"} variant={Type.ComicSans} href={item.link}>
+          <Link key={`${item.title}`} opacity={0.5} size="sm" target={"_blank"} variant={Type.ComicSans} href={item.link}>
             {item.title}
           </Link>
         ))}
