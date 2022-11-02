@@ -4,7 +4,7 @@ import { InjectSentry, SentryService } from '@travelerdev/nestjs-sentry';
 import {
   AssetTransfersCategory,
   AssetTransfersOrder,
-  AssetTransfersWithMetadataResult
+  AssetTransfersWithMetadataResult,
 } from 'alchemy-sdk';
 import { ethers } from 'ethers';
 import { AlchemyService } from '../alchemy/alchemy.service';
@@ -30,10 +30,9 @@ export class RainbowSwapsService {
     @InjectSentry() private readonly sentryClient: SentryService,
   ) {}
 
-  
   init() {
     this.logger.log('🌈 Rainbow swap serivce');
-    this.syncRecentDOGSwaps();
+    this.syncAllDOGSwaps();
     // @next -- listen to swaps realtime
     // this.listenForTransfersThroughRouter();
   }
@@ -156,7 +155,7 @@ export class RainbowSwapsService {
         await this.rainbowSwapRepo.upsert(order);
       } catch (e) {
         this.logger.error(`Could not insert rainbow swap: ${transfer.hash}`);
-        this.logger.error(e)
+        this.logger.error(e);
       }
       // make sure we don't make alchemy angry!
       await sleep(1);
@@ -175,7 +174,7 @@ export class RainbowSwapsService {
     const erc20 = trace.filter(
       (tx) => tx.category === AssetTransfersCategory.ERC20,
     );
-    
+
     erc20.sort((a, b) => {
       // uniqueId is missing from the type for some reason
       // https://docs.alchemy.com/changelog/08262022-unique-ids-for-alchemy_getassettransfers
@@ -188,7 +187,7 @@ export class RainbowSwapsService {
       }
       return 1;
     });
-    
+
     let soldOrder: AssetTransfersWithMetadataResult;
     let boughtOrder: AssetTransfersWithMetadataResult;
 
@@ -259,28 +258,29 @@ export class RainbowSwapsService {
       baseCurrencyAddress = boughtOrder.rawContract.address as string | null;
     }
 
-    let donatedCurrency
-    let donatedAmount
-    let donatedCurrencyAddress
+    let donatedCurrency;
+    let donatedAmount;
+    let donatedCurrencyAddress;
 
     // rainbow router takes 85 bips
     // profits are taken in ether & if ether is not traded then the input token
     // NOTE WE ASSUME THE ROUTER IS ALWAYS TAKING A PROFIT OF 85 BIPS -- WE ARE NOT CONFIRMING ON CHAIN
     const rainbowSpreadBips = 85;
-    const rainbowSpreadPct = rainbowSpreadBips / 10000
+    const rainbowSpreadPct = rainbowSpreadBips / 10000;
     if (clientSide === ClientSide.BUY) {
-      donatedCurrency = quoteCurrency
-      donatedCurrencyAddress = quoteCurrencyAddress
-      donatedAmount = quoteAmount * rainbowSpreadPct
+      donatedCurrency = quoteCurrency;
+      donatedCurrencyAddress = quoteCurrencyAddress;
+      donatedAmount = quoteAmount * rainbowSpreadPct;
     } else {
       if (quoteCurrency === ETH_CURRENCY_SYMBOL) {
-        donatedCurrency = quoteCurrency
-        donatedCurrencyAddress = quoteCurrencyAddress
-        donatedAmount = (quoteAmount * rainbowSpreadPct) / (1 + rainbowSpreadPct)
+        donatedCurrency = quoteCurrency;
+        donatedCurrencyAddress = quoteCurrencyAddress;
+        donatedAmount =
+          (quoteAmount * rainbowSpreadPct) / (1 + rainbowSpreadPct);
       } else {
-        donatedCurrency = baseCurrency
-        donatedCurrencyAddress = baseCurrencyAddress
-        donatedAmount = baseAmount * rainbowSpreadPct
+        donatedCurrency = baseCurrency;
+        donatedCurrencyAddress = baseCurrencyAddress;
+        donatedAmount = baseAmount * rainbowSpreadPct;
       }
     }
 
@@ -301,50 +301,61 @@ export class RainbowSwapsService {
       donatedCurrency,
       donatedAmount,
       clientAddress: ethers.utils.getAddress(clientAddress),
-      baseCurrencyAddress: baseCurrencyAddress ? ethers.utils.getAddress(baseCurrencyAddress) : null,
-      quoteCurrencyAddress: quoteCurrencyAddress ? ethers.utils.getAddress(quoteCurrencyAddress) : null,
-      donatedCurrencyAddress: donatedCurrencyAddress ? ethers.utils.getAddress(donatedCurrencyAddress) : null,
+      baseCurrencyAddress: baseCurrencyAddress
+        ? ethers.utils.getAddress(baseCurrencyAddress)
+        : null,
+      quoteCurrencyAddress: quoteCurrencyAddress
+        ? ethers.utils.getAddress(quoteCurrencyAddress)
+        : null,
+      donatedCurrencyAddress: donatedCurrencyAddress
+        ? ethers.utils.getAddress(donatedCurrencyAddress)
+        : null,
     };
   }
 
   async getRainbowBalances(): Promise<Balance[]> {
-    const swaps = await this.getValidDonationSwaps()
-    const currencyToBalance = {}
+    const swaps = await this.getValidDonationSwaps();
+    const currencyToBalance = {};
     for (const swap of swaps) {
       if (Object.keys(currencyToBalance).includes(swap.donatedCurrency)) {
-        currencyToBalance[swap.donatedCurrency].amount += swap.donatedAmount
+        currencyToBalance[swap.donatedCurrency].amount += swap.donatedAmount;
       } else {
         currencyToBalance[swap.donatedCurrency] = {
           amount: swap.donatedAmount,
-          contractAddress: swap.donatedCurrencyAddress
-        }
+          contractAddress: swap.donatedCurrencyAddress,
+        };
       }
     }
 
-    const balances: Balance[] = []
+    const balances: Balance[] = [];
     for (const currency in currencyToBalance) {
-      const item = currencyToBalance[currency]
-      const price = item.contractAddress === null ? await this.coingecko.getETHPrice() : await this.coingecko.getPriceByEthereumContractAddress(item.contractAddress)
+      const item = currencyToBalance[currency];
+      const price =
+        item.contractAddress === null
+          ? await this.coingecko.getETHPrice()
+          : await this.coingecko.getPriceByEthereumContractAddress(
+              item.contractAddress,
+            );
       balances.push({
         symbol: currency,
         amount: item.amount,
         usdPrice: price,
-        usdNotional: item.amount * price
-      })
+        usdNotional: item.amount * price,
+      });
     }
-    return balances
+    return balances;
   }
 
   getValidDonationSwaps() {
     return this.rainbowSwapRepo.findMany({
       where: {
         blockCreatedAt: {
-          gte: new Date('2022-11-02')
-        }
+          gte: new Date('2022-11-02'),
+        },
       },
       orderBy: {
         blockCreatedAt: 'desc',
       },
-    })
+    });
   }
 }

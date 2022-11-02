@@ -9,7 +9,11 @@ import {
 import { ethers } from 'ethers';
 import { AlchemyService } from '../alchemy/alchemy.service';
 import { CoinGeckoService } from './../coin-gecko/coin-gecko.service';
-import { SochainService } from './../sochain/sochain.service';
+import {
+  SochainService,
+  Transaction,
+  TxReceived,
+} from './../sochain/sochain.service';
 import {
   DOGE_CURRENCY_SYMBOL,
   DonationsRepository,
@@ -39,8 +43,8 @@ export class DonationsService {
 
   init() {
     this.logger.log('💸 Donation service init');
-    this.syncRecentEthereumDonations();
-    this.syncRecentDogeDonations();
+    this.syncAllEthereumTransfers();
+    this.syncAllDogeDonations();
     // @next -- listen to transfers realtime
     // this.listenForNewDonations()
   }
@@ -65,47 +69,43 @@ export class DonationsService {
       `Syncing dogecoin donations from block number ${donation.blockNumber} : hash ${donation.txHash}`,
     );
     // check if there are any new txs past our most recent synced tx
-    const donations = await this.sochain.getTxsReceived(
+    const donations = await this.sochain.getAllTxsReceivedToAddress(
       this.dogeCoinAddress,
       donation.txHash,
     );
-
-    if (donations.length > 0) {
-      await this.syncAllDogeDonations();
-    }
+    await this.upsertDogeDonations(donations);
   }
 
   async syncAllDogeDonations() {
     this.logger.log('Syncing all dogecoin donations');
-    const txs = await this.sochain.getAllNonChangeReceives(
+    const receivedTxs = await this.sochain.getAllTxsReceivedToAddress(
       this.dogeCoinAddress,
     );
-    await this.upsertDogeDonations(txs);
+    await this.upsertDogeDonations(receivedTxs);
   }
 
-  private async upsertDogeDonations(donations: any[]) {
-    for (const donation of donations) {
-      const fromAddress = donation?.incoming.inputs.filter(
-        (input) => input.input_no === 0,
-      )?.[0]?.address;
-      const donationToUpsert = {
-        txHash: donation.txid,
-        blockNumber: donation.block_no,
-        toAddress: this.dogeCoinAddress,
-        blockchain: ChainName.DOGECOIN,
-        currency: DOGE_CURRENCY_SYMBOL,
-        amount: Number(donation.incoming.value),
-        blockCreatedAt: new Date(donation.time * 1000),
-        fromAddress,
-      };
+  private async upsertDogeDonations(receivedTxs: TxReceived[]) {
+    for (const receivedTx of receivedTxs) {
       try {
-        await this.donationsRepo.upsert(donationToUpsert);
+        const tx: Transaction = await this.sochain.sleepAndTryAgain(
+          () => this.sochain.getTransaction(receivedTx.txid),
+          2,
+        );
+
+        const fromAddress = tx.inputs[0].address;
+        await this.donationsRepo.upsert({
+          fromAddress,
+          blockNumber: tx.block_no,
+          blockCreatedAt: new Date(receivedTx.time * 1000),
+          toAddress: this.dogeCoinAddress,
+          blockchain: ChainName.DOGECOIN,
+          currency: DOGE_CURRENCY_SYMBOL,
+          txHash: tx.txid,
+          amount: Number(receivedTx.value),
+        });
       } catch (e) {
-        const errorMessage = `Could not upsert doge tx: ${
-          donation.txid
-        }\n\n${JSON.stringify(donationToUpsert)}`;
-        this.logger.error(errorMessage);
-        this.sentryClient.instance().captureMessage(errorMessage);
+        this.logger.error(e);
+        this.logger.error(`could not sync doge coin tx: ${receivedTx.txid}`);
       }
     }
   }

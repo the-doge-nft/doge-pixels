@@ -28,7 +28,7 @@ export class StatueCampaignService implements OnModuleInit {
     this.rainbowSwaps.syncRecentDOGSwaps();
   }
 
-  @Cron(CronExpression.EVERY_5_HOURS)
+  @Cron(CronExpression.EVERY_HOUR)
   private syncAllRainbowSwaps() {
     this.rainbowSwaps.syncAllDOGSwaps();
   }
@@ -39,7 +39,7 @@ export class StatueCampaignService implements OnModuleInit {
     this.donationsService.syncRecentDogeDonations();
   }
 
-  @Cron(CronExpression.EVERY_5_HOURS)
+  @Cron(CronExpression.EVERY_HOUR)
   private syncAllDogeDonation() {
     this.donationsService.syncAllDogeDonations();
   }
@@ -50,7 +50,7 @@ export class StatueCampaignService implements OnModuleInit {
     this.donationsService.syncRecentEthereumDonations();
   }
 
-  @Cron(CronExpression.EVERY_5_HOURS)
+  @Cron(CronExpression.EVERY_HOUR)
   private syncAllEthereumDonations() {
     this.donationsService.syncAllEthereumTransfers();
   }
