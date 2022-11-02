@@ -1,19 +1,23 @@
 import { Controller, Get } from '@nestjs/common';
 import { DonationsRepository } from '../donations/donations.repository';
+import { DonationsService } from '../donations/donations.service';
 import { RainbowSwapsRepository } from '../rainbow-swaps/rainbow-swaps.repository';
+import { RainbowSwapsService } from '../rainbow-swaps/rainbow-swaps.service';
 import { StatueCampaignService } from './statue-campaign.service';
 
 @Controller('statue-campaign')
 export class DonationController {
   constructor(
     private readonly rainbowSwapRepo: RainbowSwapsRepository,
+    private readonly rainbowSwapService: RainbowSwapsService,
     private readonly statueService: StatueCampaignService,
     private readonly donationsRepo: DonationsRepository,
+    private readonly donationsService: DonationsService
   ) {}
 
   @Get('/swaps')
   getSwaps() {
-    return this.rainbowSwapRepo.getSwaps();
+    return this.rainbowSwapService.getValidDonationSwaps();
   }
 
   @Get('/donations')
@@ -23,21 +27,30 @@ export class DonationController {
 
   @Get('/leaderboard')
   async getLeaderboard() {
-    // todo:
-    // 1: query total notional by ethereum address from donations + rainbow swaps
-    // 2: query total notional by doge donations
-    // 3: sort notional
+    // @next -- update this to be per address
     return await this.statueService.getLeaderBoard();
   }
 
   @Get('/now')
   async getNow() {
-    const balances = await this.statueService.getNow();
+    const now = await this.statueService.getNow();
     let usdNotional = 0;
-    balances.forEach((bal) => (usdNotional += bal.usdNotional));
+    now.ethereum.forEach((bal) => (usdNotional += bal.usdNotional));
+    now.dogecoin.forEach((bal) => (usdNotional += bal.usdNotional));
+    now.swaps.forEach((bal) => (usdNotional += bal.usdNotional));
     return {
       usdNotional,
-      balances,
+      ...now,
     };
+  }
+
+  @Get('/confirm')
+  async confirm() {
+    const dogecoinAddress = this.donationsService.dogeCoinAddress
+    const ethereumAddress = this.donationsService.ethereumAddress
+    return {
+      dogecoinAddress,
+      ethereumAddress
+    }
   }
 }
