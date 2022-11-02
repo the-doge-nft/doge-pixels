@@ -4,7 +4,7 @@ import { InjectSentry, SentryService } from '@travelerdev/nestjs-sentry';
 import {
   AssetTransfersCategory,
   AssetTransfersOrder,
-  AssetTransfersWithMetadataResult
+  AssetTransfersWithMetadataResult,
 } from 'alchemy-sdk';
 import { ethers } from 'ethers';
 import { AlchemyService } from '../alchemy/alchemy.service';
@@ -13,7 +13,7 @@ import { SochainService } from './../sochain/sochain.service';
 import {
   DOGE_CURRENCY_SYMBOL,
   DonationsRepository,
-  ETH_CURRENCY_SYMBOL
+  ETH_CURRENCY_SYMBOL,
 } from './donations.repository';
 
 export interface Balance {
@@ -85,18 +85,25 @@ export class DonationsService {
 
   private async upsertDogeDonations(donations: any[]) {
     for (const donation of donations) {
-      await this.donationsRepo.upsert({
-        txHash: donation.txid,
-        fromAddress: donation?.incoming.inputs.filter(
+      try {
+        const fromAddress = donation?.incoming.inputs.filter(
           (input) => input.input_no === 0,
-        )?.[0]?.address,
-        blockNumber: donation.block_no,
-        toAddress: this.dogeCoinAddress,
-        blockchain: ChainName.DOGECOIN,
-        currency: DOGE_CURRENCY_SYMBOL,
-        amount: Number(donation.incoming.value),
-        blockCreatedAt: new Date(donation.time * 1000),
-      });
+        )?.[0]?.address;
+        await this.donationsRepo.upsert({
+          txHash: donation.txid,
+          blockNumber: donation.block_no,
+          toAddress: this.dogeCoinAddress,
+          blockchain: ChainName.DOGECOIN,
+          currency: DOGE_CURRENCY_SYMBOL,
+          amount: Number(donation.incoming.value),
+          blockCreatedAt: new Date(donation.time * 1000),
+          fromAddress,
+        });
+      } catch (e) {
+        const errorMessage = `Could not upsert doge tx: ${donation.txid}`;
+        this.logger.error(errorMessage);
+        this.sentryClient.instance().captureMessage(errorMessage);
+      }
     }
   }
 
