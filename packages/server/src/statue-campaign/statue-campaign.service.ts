@@ -30,7 +30,7 @@ export class StatueCampaignService implements OnModuleInit {
 
   @Cron(CronExpression.EVERY_5_HOURS)
   private syncAllRainbowSwaps() {
-    this.rainbowSwaps.syncAllDOGSwaps()
+    this.rainbowSwaps.syncAllDOGSwaps();
   }
 
   // doge donations
@@ -41,7 +41,7 @@ export class StatueCampaignService implements OnModuleInit {
 
   @Cron(CronExpression.EVERY_5_HOURS)
   private syncAllDogeDonation() {
-    this.donationsService.syncAllDogeDonations()
+    this.donationsService.syncAllDogeDonations();
   }
 
   // ethereum donations
@@ -52,31 +52,73 @@ export class StatueCampaignService implements OnModuleInit {
 
   @Cron(CronExpression.EVERY_5_HOURS)
   private syncAllEthereumDonations() {
-    this.donationsService.syncAllEthereumTransfers()
+    this.donationsService.syncAllEthereumTransfers();
   }
 
   async getLeaderBoard() {
+    const donationLeaderBoard = {};
+    const swapLeaderBoard = {};
     const donations = await this.donationsRepo.getMostRecentDonations();
     const swaps = await this.rainbowSwaps.getValidDonationSwaps();
-    swaps.sort((a, b) => {
-      if (a.donatedUSDNotional > b.donatedUSDNotional) {
+
+    for (const donation of donations) {
+      const address = donation.fromAddress;
+      if (Object.keys(donationLeaderBoard).includes(address)) {
+        donationLeaderBoard[address].donations.push(donation);
+        donationLeaderBoard[address].usdNotional +=
+          donation.currencyUSDNotional;
+      } else {
+        donationLeaderBoard[address] = {
+          ens: donation.fromEns,
+          donations: [donation],
+          usdNotional: donation.currencyUSDNotional,
+        };
+      }
+    }
+
+    for (const swap of swaps) {
+      const address = swap.clientAddress;
+      if (Object.keys(swapLeaderBoard).includes(address)) {
+        swapLeaderBoard[address].swaps.push(swap);
+        swapLeaderBoard[address].usdNotional += swap.donatedUSDNotional;
+      } else {
+        swapLeaderBoard[address] = {
+          ens: swap.clientEns,
+          swaps: [swap],
+          usdNotional: swap.donatedUSDNotional,
+        };
+      }
+    }
+
+    const _donations = Object.keys(donationLeaderBoard).map((address) => ({
+      address,
+      ...donationLeaderBoard[address],
+    }));
+
+    const _swaps = Object.keys(swapLeaderBoard).map((address) => ({
+      address,
+      ...swapLeaderBoard[address],
+    }));
+
+    _swaps.sort((a, b) => {
+      if (a.usdNotional > b.usdNotional) {
         return -1;
       }
       return 1;
     });
-    donations.sort((a, b) => {
-      if (a.currencyUSDNotional > b.currencyUSDNotional) {
+    _donations.sort((a, b) => {
+      if (a.usdNotional > b.usdNotional) {
         return -1;
       }
       return 1;
     });
-    return { swaps, donations };
+    return { swaps: _swaps, donations: _donations };
   }
 
   async getNow(): Promise<{
-    ethereum: Balance[],
-    dogecoin: Balance[],
-    swaps: Balance[]
+    ethereum: Balance[];
+    dogecoin: Balance[];
+    swaps: Balance[];
   }> {
     const ethereumBalances = await this.donationsService.getEthereumBalances();
     const dogecoinBalance = await this.donationsService.getDogeBalances();
@@ -84,7 +126,7 @@ export class StatueCampaignService implements OnModuleInit {
     return {
       ethereum: ethereumBalances,
       dogecoin: [dogecoinBalance],
-      swaps: rainbowBalances
+      swaps: rainbowBalances,
     };
   }
 }
