@@ -76,7 +76,7 @@ export class DonationsService {
   }
 
   async syncAllDogeDonations() {
-    this.logger.log('Syning all dogecoin donations');
+    this.logger.log('Syncing all dogecoin donations');
     const txs = await this.sochain.getAllNonChangeReceives(
       this.dogeCoinAddress,
     );
