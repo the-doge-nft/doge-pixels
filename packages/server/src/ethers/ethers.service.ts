@@ -120,7 +120,7 @@ export class EthersService implements OnModuleInit {
 
   async getEnsName(address: string, withCache = true) {
     const cacheKey = `ens:${address}`;
-    const cacheSeconds = getRandomIntInclusive(60 * 60 * 3, 60 * 60 * 8);
+    const cacheSeconds = getRandomIntInclusive(60 * 60 * 10, 60 * 60 * 24);
     const noEns = 'NOENS';
     if (withCache) {
       const ens = await this.cacheManager.get<string>(cacheKey);
