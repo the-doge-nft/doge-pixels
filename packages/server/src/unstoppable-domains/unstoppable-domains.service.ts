@@ -3,7 +3,7 @@ import {
   Inject,
   Injectable,
   Logger,
-  OnModuleInit,
+  OnModuleInit
 } from '@nestjs/common';
 import { Resolution } from '@unstoppabledomains/resolution';
 import { Cache } from 'cache-manager';
@@ -28,7 +28,7 @@ export class UnstoppableDomainsService implements OnModuleInit {
 
   async getUDName(address: string, withCache = true): Promise<string | null> {
     const cacheKey = `ud:${address}`;
-    const cacheSeconds = getRandomIntInclusive(60 * 60 * 3, 60 * 60 * 10);
+    const cacheSeconds = getRandomIntInclusive(60 * 60 * 10, 60 * 60 * 24);
     const noUD = 'NOUD';
     if (withCache) {
       const ud = await this.cacheManager.get(cacheKey);

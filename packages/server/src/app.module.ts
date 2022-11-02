@@ -10,6 +10,7 @@ import { join } from 'path';
 import { AlchemyService } from './alchemy/alchemy.service';
 import { AppController } from './app.controller';
 import { AwsService } from './aws/aws.service';
+import { CacheService } from './cache/cache.service';
 import { CoinGeckoService } from './coin-gecko/coin-gecko.service';
 import configuration, { Configuration } from './config/configuration';
 import { DiscordService } from './discord/discord.service';
@@ -24,12 +25,11 @@ import { PixelTransferService } from './pixel-transfer/pixel-transfer.service';
 import { PrismaService } from './prisma.service';
 import { RainbowSwapsRepository } from './rainbow-swaps/rainbow-swaps.repository';
 import { RainbowSwapsService } from './rainbow-swaps/rainbow-swaps.service';
+import { SochainService } from './sochain/sochain.service';
 import { DonationController } from './statue-campaign/statue-campaign.controller';
 import { StatueCampaignService } from './statue-campaign/statue-campaign.service';
 import { TwitterService } from './twitter/twitter.service';
 import { UnstoppableDomainsService } from './unstoppable-domains/unstoppable-domains.service';
-import { SochainService } from './sochain/sochain.service';
-import { CacheService } from './cache/cache.service';
 
 @Module({
   imports: [
@@ -60,7 +60,7 @@ import { CacheService } from './cache/cache.service';
         port: config.get('redis').port,
         auth_pass: config.get('redis').password,
         ttl: 10,
-        max: 1000,
+        max: 10000,
       }),
       inject: [ConfigService],
     }),

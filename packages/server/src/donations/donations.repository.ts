@@ -2,6 +2,7 @@ import { Injectable, Logger } from '@nestjs/common';
 import { ChainName, Donations, Prisma } from '@prisma/client';
 import { InjectSentry, SentryService } from '@travelerdev/nestjs-sentry';
 import { CoinGeckoService } from '../coin-gecko/coin-gecko.service';
+import { EthersService } from '../ethers/ethers.service';
 import { CacheService } from './../cache/cache.service';
 import { PrismaService } from './../prisma.service';
 import { SochainService } from './../sochain/sochain.service';
@@ -20,6 +21,7 @@ export class DonationsRepository {
     private readonly coingecko: CoinGeckoService,
     private readonly sochain: SochainService,
     private readonly cache: CacheService,
+    private readonly ethers: EthersService,
     @InjectSentry() private readonly sentryClient: SentryService,
   ) {}
 
@@ -27,9 +29,10 @@ export class DonationsRepository {
     const data: (Donations & {
       currencyUSDNotional: number;
       explorerUrl: string;
+      fromEns: string | null;
     })[] = [];
-    let totalUSDDonations = 0;
     for (const donation of donations) {
+      let fromEns = null;
       let donatedCurrencyPrice: number;
       let explorerUrl: string;
       try {
@@ -58,11 +61,18 @@ export class DonationsRepository {
       }
 
       const currencyUSDNotional = donatedCurrencyPrice * donation.amount;
-      totalUSDDonations += currencyUSDNotional;
-      data.push({ ...donation, currencyUSDNotional, explorerUrl });
+
+
+      if (donation.blockchain === ChainName.ETHEREUM && currencyUSDNotional > 0.1) {
+        try {
+          fromEns = await this.ethers.getEnsName(donation.fromAddress)
+        } catch (e) {
+          this.logger.error(`Could not get donation ENS for: ${donation.fromAddress}`)
+        }
+      }
+
+      data.push({ ...donation, currencyUSDNotional, explorerUrl, fromEns });
     }
-    // set cache on demand
-    await this.cache.set(this.usdNotionalCacheKey, totalUSDDonations, 60 * 2);
     return data;
   }
 
@@ -110,9 +120,5 @@ export class DonationsRepository {
       },
     });
     return this.afterGetDonations(donations);
-  }
-
-  async getUSDNotionalDonated() {
-    return this.cache.get(this.usdNotionalCacheKey);
   }
 }
