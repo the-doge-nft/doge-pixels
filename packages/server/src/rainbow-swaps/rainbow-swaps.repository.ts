@@ -64,12 +64,9 @@ export class RainbowSwapsRepository {
     )[0]?.blockNumber;
   }
 
-  async getSwaps() {
-    const swaps = await this.prisma.rainbowSwaps.findMany({
-      orderBy: {
-        blockCreatedAt: 'desc',
-      },
-    });
+  async findMany(args: Prisma.RainbowSwapsFindManyArgs) {
+    // only swaps starting on Nov 2nd 2002 count
+    const swaps = await this.prisma.rainbowSwaps.findMany(args);
     return this.afterGetSwaps(swaps);
   }
 }

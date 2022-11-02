@@ -4,7 +4,7 @@ import { InjectSentry, SentryService } from '@travelerdev/nestjs-sentry';
 import {
   AssetTransfersCategory,
   AssetTransfersOrder,
-  AssetTransfersWithMetadataResult,
+  AssetTransfersWithMetadataResult
 } from 'alchemy-sdk';
 import { ethers } from 'ethers';
 import { AlchemyService } from '../alchemy/alchemy.service';
@@ -13,7 +13,7 @@ import { SochainService } from './../sochain/sochain.service';
 import {
   DOGE_CURRENCY_SYMBOL,
   DonationsRepository,
-  ETH_CURRENCY_SYMBOL,
+  ETH_CURRENCY_SYMBOL
 } from './donations.repository';
 
 export interface Balance {
@@ -26,8 +26,8 @@ export interface Balance {
 @Injectable()
 export class DonationsService {
   private logger = new Logger(DonationsService.name);
-  private dogeCoinAddress = 'D8HjKf37rF3Ho7tjwe17MPN8xQ2UbHSUhB';
-  private ethereumAddress = '0x633aC73fB70247257E0c3A1142278235aFa358ac';
+  dogeCoinAddress = 'D8HjKf37rF3Ho7tjwe17MPN8xQ2UbHSUhB';
+  ethereumAddress = '0x633aC73fB70247257E0c3A1142278235aFa358ac';
 
   constructor(
     private readonly alchemy: AlchemyService,
@@ -75,7 +75,7 @@ export class DonationsService {
     }
   }
 
-  private async syncAllDogeDonations() {
+  async syncAllDogeDonations() {
     this.logger.log('Syning all dogecoin donations');
     const txs = await this.sochain.getAllNonChangeReceives(
       this.dogeCoinAddress,
@@ -128,7 +128,7 @@ export class DonationsService {
     await this.upsertEthereumDonations(transfers);
   }
 
-  private async syncAllEthereumTransfers() {
+  async syncAllEthereumTransfers() {
     const transfers = await this.getEthereumTransfers();
     await this.upsertEthereumDonations(transfers);
   }
@@ -209,7 +209,6 @@ export class DonationsService {
 
   async getDogeBalances(): Promise<Balance> {
     const dogeBalance = await this.sochain.getBalance(this.dogeCoinAddress);
-    this.logger.log(JSON.stringify(dogeBalance, undefined, 2));
     const dogePrice = await this.coingecko.getDogePrice();
     return {
       symbol: DOGE_CURRENCY_SYMBOL,

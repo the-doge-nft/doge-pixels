@@ -8,7 +8,10 @@ import {
 } from 'alchemy-sdk';
 import { ethers } from 'ethers';
 import { AlchemyService } from '../alchemy/alchemy.service';
+import { CoinGeckoService } from '../coin-gecko/coin-gecko.service';
 import * as ABI from '../contracts/hardhat_contracts.json';
+import { ETH_CURRENCY_SYMBOL } from '../donations/donations.repository';
+import { Balance } from '../donations/donations.service';
 import { EthersService } from '../ethers/ethers.service';
 import sleep from '../helpers/sleep';
 import { RainbowSwapsRepository } from './rainbow-swaps.repository';
@@ -23,14 +26,16 @@ export class RainbowSwapsService {
     private readonly alchemy: AlchemyService,
     private readonly ethers: EthersService,
     private readonly rainbowSwapRepo: RainbowSwapsRepository,
+    private readonly coingecko: CoinGeckoService,
     @InjectSentry() private readonly sentryClient: SentryService,
   ) {}
 
+  
   init() {
     this.logger.log('🌈 Rainbow swap serivce');
     this.syncRecentDOGSwaps();
     // @next -- listen to swaps realtime
-    this.listenForTransfersThroughRouter();
+    // this.listenForTransfersThroughRouter();
   }
 
   private listenForTransfersThroughRouter() {
@@ -69,7 +74,7 @@ export class RainbowSwapsService {
     await this.upsertDOGSwaps(transfers);
   }
 
-  private async syncAllDOGSwaps() {
+  async syncAllDOGSwaps() {
     const transfers = await this.getAllDOGTransfersToRouter();
     this.upsertDOGSwaps(transfers);
   }
@@ -170,6 +175,7 @@ export class RainbowSwapsService {
     const erc20 = trace.filter(
       (tx) => tx.category === AssetTransfersCategory.ERC20,
     );
+    
     erc20.sort((a, b) => {
       // uniqueId is missing from the type for some reason
       // https://docs.alchemy.com/changelog/08262022-unique-ids-for-alchemy_getassettransfers
@@ -182,7 +188,7 @@ export class RainbowSwapsService {
       }
       return 1;
     });
-
+    
     let soldOrder: AssetTransfersWithMetadataResult;
     let boughtOrder: AssetTransfersWithMetadataResult;
 
@@ -253,14 +259,31 @@ export class RainbowSwapsService {
       baseCurrencyAddress = boughtOrder.rawContract.address as string | null;
     }
 
-    const rainbowProfitBips = 8;
+    let donatedCurrency
+    let donatedAmount
+    let donatedCurrencyAddress
 
-    // rainbow router always keeps the tokens that were sent *to* the contract from the user
-    const donatedCurrency = soldOrder.asset;
-    const donatedCurrencyAddress = soldOrder.rawContract.address as
-      | string
-      | null;
-    const donatedAmount = soldOrder.value * (rainbowProfitBips / 10000);
+    // rainbow router takes 85 bips
+    // profits are taken in ether & if ether is not traded then the input token
+    // NOTE WE ASSUME THE ROUTER IS ALWAYS TAKING A PROFIT OF 85 BIPS -- WE ARE NOT CONFIRMING ON CHAIN
+    const rainbowSpreadBips = 85;
+    const rainbowSpreadPct = rainbowSpreadBips / 10000
+    if (clientSide === ClientSide.BUY) {
+      donatedCurrency = quoteCurrency
+      donatedCurrencyAddress = quoteCurrencyAddress
+      donatedAmount = quoteAmount * rainbowSpreadPct
+    } else {
+      if (quoteCurrency === ETH_CURRENCY_SYMBOL) {
+        donatedCurrency = quoteCurrency
+        donatedCurrencyAddress = quoteCurrencyAddress
+        donatedAmount = (quoteAmount * rainbowSpreadPct) / (1 + rainbowSpreadPct)
+      } else {
+        donatedCurrency = baseCurrency
+        donatedCurrencyAddress = baseCurrencyAddress
+        donatedAmount = baseAmount * rainbowSpreadPct
+      }
+    }
+
     const blockCreatedAt = new Date(boughtOrder.metadata.blockTimestamp);
     const txHash = boughtOrder.hash;
     const blockNumber = ethers.BigNumber.from(boughtOrder.blockNum).toNumber();
@@ -282,5 +305,46 @@ export class RainbowSwapsService {
       quoteCurrencyAddress: quoteCurrencyAddress ? ethers.utils.getAddress(quoteCurrencyAddress) : null,
       donatedCurrencyAddress: donatedCurrencyAddress ? ethers.utils.getAddress(donatedCurrencyAddress) : null,
     };
+  }
+
+  async getRainbowBalances(): Promise<Balance[]> {
+    const swaps = await this.getValidDonationSwaps()
+    const currencyToBalance = {}
+    for (const swap of swaps) {
+      if (Object.keys(currencyToBalance).includes(swap.donatedCurrency)) {
+        currencyToBalance[swap.donatedCurrency].amount += swap.donatedAmount
+      } else {
+        currencyToBalance[swap.donatedCurrency] = {
+          amount: swap.donatedAmount,
+          contractAddress: swap.donatedCurrencyAddress
+        }
+      }
+    }
+
+    const balances: Balance[] = []
+    for (const currency in currencyToBalance) {
+      const item = currencyToBalance[currency]
+      const price = item.contractAddress === null ? await this.coingecko.getETHPrice() : await this.coingecko.getPriceByEthereumContractAddress(item.contractAddress)
+      balances.push({
+        symbol: currency,
+        amount: item.amount,
+        usdPrice: price,
+        usdNotional: item.amount * price
+      })
+    }
+    return balances
+  }
+
+  getValidDonationSwaps() {
+    return this.rainbowSwapRepo.findMany({
+      where: {
+        blockCreatedAt: {
+          gte: new Date('2022-11-02')
+        }
+      },
+      orderBy: {
+        blockCreatedAt: 'desc',
+      },
+    })
   }
 }

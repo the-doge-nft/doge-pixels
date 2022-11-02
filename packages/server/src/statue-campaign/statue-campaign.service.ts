@@ -22,24 +22,42 @@ export class StatueCampaignService implements OnModuleInit {
     private readonly donationsRepo: DonationsRepository,
   ) {}
 
-  @Cron(CronExpression.EVERY_30_MINUTES)
+  // rainbow swaps
+  @Cron(CronExpression.EVERY_10_MINUTES)
   private syncRainbowSwaps() {
     this.rainbowSwaps.syncRecentDOGSwaps();
   }
 
-  @Cron(CronExpression.EVERY_5_MINUTES)
+  @Cron(CronExpression.EVERY_5_HOURS)
+  private syncAllRainbowSwaps() {
+    this.rainbowSwaps.syncAllDOGSwaps()
+  }
+
+  // doge donations
+  @Cron(CronExpression.EVERY_MINUTE)
   private syncDogeTxs() {
     this.donationsService.syncRecentDogeDonations();
   }
 
-  @Cron(CronExpression.EVERY_30_MINUTES)
+  @Cron(CronExpression.EVERY_5_HOURS)
+  private syncAllDogeDonation() {
+    this.donationsService.syncAllDogeDonations()
+  }
+
+  // ethereum donations
+  @Cron(CronExpression.EVERY_10_MINUTES)
   private syncEthereumDonations() {
     this.donationsService.syncRecentEthereumDonations();
   }
 
+  @Cron(CronExpression.EVERY_5_HOURS)
+  private syncAllEthereumDonations() {
+    this.donationsService.syncAllEthereumTransfers()
+  }
+
   async getLeaderBoard() {
     const donations = await this.donationsRepo.getMostRecentDonations();
-    const swaps = await this.rainbowSwapsRepo.getSwaps();
+    const swaps = await this.rainbowSwaps.getValidDonationSwaps();
     swaps.sort((a, b) => {
       if (a.donatedUSDNotional > b.donatedUSDNotional) {
         return -1;
@@ -55,9 +73,18 @@ export class StatueCampaignService implements OnModuleInit {
     return { swaps, donations };
   }
 
-  async getNow(): Promise<Balance[]> {
+  async getNow(): Promise<{
+    ethereum: Balance[],
+    dogecoin: Balance[],
+    swaps: Balance[]
+  }> {
     const ethereumBalances = await this.donationsService.getEthereumBalances();
     const dogecoinBalance = await this.donationsService.getDogeBalances();
-    return [...ethereumBalances, dogecoinBalance];
+    const rainbowBalances = await this.rainbowSwaps.getRainbowBalances();
+    return {
+      ethereum: ethereumBalances,
+      dogecoin: [dogecoinBalance],
+      swaps: rainbowBalances
+    };
   }
 }
