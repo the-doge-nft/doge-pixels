@@ -85,22 +85,25 @@ export class DonationsService {
 
   private async upsertDogeDonations(donations: any[]) {
     for (const donation of donations) {
+      const fromAddress = donation?.incoming.inputs.filter(
+        (input) => input.input_no === 0,
+      )?.[0]?.address;
+      const donationToUpsert = {
+        txHash: donation.txid,
+        blockNumber: donation.block_no,
+        toAddress: this.dogeCoinAddress,
+        blockchain: ChainName.DOGECOIN,
+        currency: DOGE_CURRENCY_SYMBOL,
+        amount: Number(donation.incoming.value),
+        blockCreatedAt: new Date(donation.time * 1000),
+        fromAddress,
+      };
       try {
-        const fromAddress = donation?.incoming.inputs.filter(
-          (input) => input.input_no === 0,
-        )?.[0]?.address;
-        await this.donationsRepo.upsert({
-          txHash: donation.txid,
-          blockNumber: donation.block_no,
-          toAddress: this.dogeCoinAddress,
-          blockchain: ChainName.DOGECOIN,
-          currency: DOGE_CURRENCY_SYMBOL,
-          amount: Number(donation.incoming.value),
-          blockCreatedAt: new Date(donation.time * 1000),
-          fromAddress,
-        });
+        await this.donationsRepo.upsert(donationToUpsert);
       } catch (e) {
-        const errorMessage = `Could not upsert doge tx: ${donation.txid}`;
+        const errorMessage = `Could not upsert doge tx: ${
+          donation.txid
+        }\n\n${JSON.stringify(donationToUpsert)}`;
         this.logger.error(errorMessage);
         this.sentryClient.instance().captureMessage(errorMessage);
       }
