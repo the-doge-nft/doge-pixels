@@ -1,4 +1,11 @@
-import { CacheInterceptor, CacheKey, CacheTTL, Controller, Get, UseInterceptors } from '@nestjs/common';
+import {
+  CacheInterceptor,
+  CacheKey,
+  CacheTTL,
+  Controller,
+  Get,
+  UseInterceptors,
+} from '@nestjs/common';
 import { DonationsRepository } from '../donations/donations.repository';
 import { DonationsService } from '../donations/donations.service';
 import { RainbowSwapsRepository } from '../rainbow-swaps/rainbow-swaps.repository';
@@ -13,7 +20,7 @@ export class DonationController {
     private readonly rainbowSwapService: RainbowSwapsService,
     private readonly statueService: StatueCampaignService,
     private readonly donationsRepo: DonationsRepository,
-    private readonly donationsService: DonationsService
+    private readonly donationsService: DonationsService,
   ) {}
 
   @CacheKey('STATUECAMPAIGN:SWAPS')
@@ -57,11 +64,25 @@ export class DonationController {
   @CacheTTL(30)
   @Get('/confirm')
   async confirm() {
-    const dogecoinAddress = this.donationsService.dogeCoinAddress
-    const ethereumAddress = this.donationsService.ethereumAddress
+    const dogecoinAddress = this.donationsService.dogeCoinAddress;
+    const ethereumAddress = this.donationsService.ethereumAddress;
     return {
       dogecoinAddress,
-      ethereumAddress
-    }
+      ethereumAddress,
+    };
+  }
+
+  @CacheKey('STATUECAMPAIGN:SYCNALLDOGEDONATIONS')
+  @CacheTTL(30)
+  @Get('/sync/doge')
+  async syncAllDoge() {
+    return this.donationsService.syncAllDogeDonations();
+  }
+
+  @CacheKey('STATUECAMPAIGN:SYCNALLETHDONATIONS')
+  @CacheTTL(30)
+  @Get('/sync/eth')
+  async syncAllEth() {
+    return this.donationsService.syncAllEthereumTransfers();
   }
 }
