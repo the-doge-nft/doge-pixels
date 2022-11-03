@@ -64,32 +64,6 @@ export class SochainService {
     @InjectSentry() private readonly sentryClient: SentryService,
   ) {}
 
-  async getAllNonChangeReceives(address: string) {
-    const data = await this.getAddress(address);
-    // @next -- make sure this logic is correct
-    return data?.data?.txs.filter((tx) => {
-      const changeTxs = tx?.outgoing?.filter(
-        (_tx) => _tx.address.toLowerCase() === address.toLowerCase(),
-      );
-      if (changeTxs) {
-        return false;
-      }
-      return true;
-    });
-  }
-
-  private async getAddress(address: string) {
-    const { data } = await firstValueFrom(
-      this.http.get(this.baseUrl + '/address/doge/' + address).pipe(
-        catchError((e) => {
-          this.handleError(e);
-          throw new Error(`Could not get sochain address data: ${address}`);
-        }),
-      ),
-    );
-    return data;
-  }
-
   private async getTxsReceived(
     address: string,
     afterTxHash?: string,
@@ -153,22 +127,6 @@ export class SochainService {
           catchError((e) => {
             this.handleError(e);
             throw new Error(`Could not get sochain tx: ${txId}`);
-          }),
-        ),
-    );
-    return data?.data;
-  }
-
-  async getBlock(blockHash: string): Promise<any> {
-    const { data } = await firstValueFrom(
-      this.http
-        .get<{ data: Transaction }>(
-          this.baseUrl + '/get_block/doge/' + blockHash,
-        )
-        .pipe(
-          catchError((e) => {
-            this.handleError(e);
-            throw new Error(`Could not get sochain tx: ${blockHash}`);
           }),
         ),
     );
