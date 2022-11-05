@@ -46,7 +46,7 @@ export class StatueCampaignService implements OnModuleInit {
   }
 
   // ethereum donations
-  @Cron(CronExpression.EVERY_5_MINUTES)
+  @Cron(CronExpression.EVERY_10_MINUTES)
   private syncEthereumDonations() {
     this.donationsService.syncRecentEthereumDonations();
   }

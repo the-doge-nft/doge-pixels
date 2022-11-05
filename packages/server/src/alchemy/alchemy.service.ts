@@ -1,7 +1,9 @@
+import { Listener } from '@ethersproject/providers';
 import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import {
   Alchemy,
+  AlchemySubscription,
   AssetTransfersWithMetadataParams,
   Network,
 } from 'alchemy-sdk';
@@ -49,13 +51,14 @@ export class AlchemyService implements OnModuleInit {
     );
   }
 
-  initWs(address: string, callback: (payload: any) => any) {
-    this.logger.log(`init alchemy ws: ${address}`);
+  listenForTransfersToAddress(address: string, callback: Listener) {
+    this.logger.log(`init listening to transfers to address: ${address}`);
     this.alchemy.ws.on(
       {
-        address,
+        method: AlchemySubscription.MINED_TRANSACTIONS,
+        addresses: [{ to: address }],
       },
-      (payload) => callback(payload),
+      callback,
     );
   }
 }

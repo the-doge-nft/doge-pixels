@@ -33,12 +33,16 @@ export class RainbowSwapsService {
   init() {
     this.logger.log('🌈 Rainbow swap serivce');
     this.syncAllDOGSwaps();
-    // @next -- listen to swaps realtime
+    // @next -- DEBUG THIS IS NOT WORKING FOR SOME REASON
+    // listen to transfers realtime
     // this.listenForTransfersThroughRouter();
   }
 
   private listenForTransfersThroughRouter() {
-    this.alchemy.initWs(this.routerContractAddress, this.onNewTransfer);
+    this.alchemy.listenForTransfersToAddress(
+      this.routerContractAddress,
+      (args) => this.onNewTransfer(args),
+    );
   }
 
   private onNewTransfer(payload: any) {

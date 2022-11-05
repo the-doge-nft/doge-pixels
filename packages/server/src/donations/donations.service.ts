@@ -46,8 +46,9 @@ export class DonationsService {
     this.logger.log('💸 Donation service init');
     this.syncAllEthereumTransfers();
     this.syncAllDogeDonations;
-    // @next -- listen to transfers realtime
-    // this.listenForNewDonations()
+    // @next -- DEBUG THIS IS NOT WORKING FOR SOME REASON
+    // listen to transfers realtime
+    // this.listenForNewEthereumDonations();
   }
 
   async syncAllDogeDonations() {
@@ -122,6 +123,16 @@ export class DonationsService {
         this.logger.error(`could not sync doge coin tx: ${receivedTx.txid}`);
       }
     }
+  }
+
+  listenForNewEthereumDonations() {
+    this.alchemy.listenForTransfersToAddress(this.ethereumAddress, (args) =>
+      this.onNewTransfer(args),
+    );
+  }
+
+  private onNewTransfer(args: any) {
+    this.logger.log(`NEW TX HIT: ${JSON.stringify(args)}}`);
   }
 
   async syncRecentEthereumDonations() {
