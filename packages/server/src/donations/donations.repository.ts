@@ -94,23 +94,27 @@ export class DonationsRepository {
   upsert(donation: Prisma.DonationsCreateInput) {
     return this.prisma.donations.upsert({
       where: { txHash: donation.txHash },
-      update: {},
+      update: {
+        ...donation,
+      },
       create: {
         ...donation,
       },
     });
   }
 
-  findMany(args: Prisma.DonationsFindManyArgs) {
-    return this.prisma.donations.findMany(args);
+  async findMany(args: Prisma.DonationsFindManyArgs) {
+    const donations = await this.prisma.donations.findMany(args);
+    return this.afterGetDonations(donations);
   }
 
-  async getMostRecentDogeDonation() {
+  async getMostRecentDogeDonationForAddress(toAddress: string) {
     return (
       await this.prisma.donations.findMany({
         where: {
           blockchain: ChainName.DOGECOIN,
           currency: DOGE_CURRENCY_SYMBOL,
+          toAddress,
         },
         orderBy: { blockCreatedAt: 'desc' },
       })

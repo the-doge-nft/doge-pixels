@@ -49,7 +49,7 @@ export class RainbowSwapsRepository {
     return this.prisma.rainbowSwaps.upsert({
       where: { txHash: swap.txHash },
       create: { ...swap },
-      update: {},
+      update: { ...swap },
     });
   }
 

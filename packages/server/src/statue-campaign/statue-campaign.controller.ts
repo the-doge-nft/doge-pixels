@@ -34,7 +34,7 @@ export class DonationController {
   @CacheTTL(30)
   @Get('/donations')
   getDonations() {
-    return this.donationsRepo.getMostRecentDonations();
+    return this.donationsService.getDonations();
   }
 
   @CacheKey('STATUECAMPAIGN:LEADERBOARD')
@@ -64,7 +64,7 @@ export class DonationController {
   @CacheTTL(30)
   @Get('/confirm')
   async confirm() {
-    const dogecoinAddress = this.donationsService.dogeCoinAddress;
+    const dogecoinAddress = this.donationsService.myDogeAddress;
     const ethereumAddress = this.donationsService.ethereumAddress;
     return {
       dogecoinAddress,
@@ -76,13 +76,15 @@ export class DonationController {
   @CacheTTL(30)
   @Get('/sync/doge')
   async syncAllDoge() {
-    return this.donationsService.syncAllDogeDonations();
+    await this.donationsService.syncAllDogeDonations();
+    return { success: true };
   }
 
   @CacheKey('STATUECAMPAIGN:SYCNALLETHDONATIONS')
   @CacheTTL(30)
   @Get('/sync/eth')
   async syncAllEth() {
-    return this.donationsService.syncAllEthereumTransfers();
+    await this.donationsService.syncAllEthereumTransfers();
+    return { success: true };
   }
 }
