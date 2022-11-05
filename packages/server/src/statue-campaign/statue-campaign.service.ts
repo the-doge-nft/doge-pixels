@@ -1,9 +1,10 @@
 import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { Cron, CronExpression } from '@nestjs/schedule';
-import { Balance, DonationsService } from '../donations/donations.service';
+import { Balance } from '../donations/donations.service';
 import { RainbowSwapsRepository } from '../rainbow-swaps/rainbow-swaps.repository';
 import { RainbowSwapsService } from '../rainbow-swaps/rainbow-swaps.service';
 import { DonationsRepository } from './../donations/donations.repository';
+import { DonationsService } from './../donations/donations.service';
 
 @Injectable()
 export class StatueCampaignService implements OnModuleInit {
@@ -45,7 +46,7 @@ export class StatueCampaignService implements OnModuleInit {
   }
 
   // ethereum donations
-  @Cron(CronExpression.EVERY_5_MINUTES)
+  @Cron(CronExpression.EVERY_10_MINUTES)
   private syncEthereumDonations() {
     this.donationsService.syncRecentEthereumDonations();
   }
@@ -58,7 +59,7 @@ export class StatueCampaignService implements OnModuleInit {
   async getLeaderBoard() {
     const donationLeaderBoard = {};
     const swapLeaderBoard = {};
-    const donations = await this.donationsRepo.getMostRecentDonations();
+    const donations = await this.donationsService.getDonations();
     const swaps = await this.rainbowSwaps.getValidDonationSwaps();
 
     for (const donation of donations) {

@@ -30,7 +30,8 @@ export interface Balance {
 @Injectable()
 export class DonationsService {
   private logger = new Logger(DonationsService.name);
-  dogeCoinAddress = 'D8HjKf37rF3Ho7tjwe17MPN8xQ2UbHSUhB';
+  myDogeAddress = 'D8HjKf37rF3Ho7tjwe17MPN8xQ2UbHSUhB';
+  soDogeTipAddress = 'D7XihpaUjiCqvPrky2xEyfvgoJeUjMKQ6E';
   ethereumAddress = '0x633aC73fB70247257E0c3A1142278235aFa358ac';
 
   constructor(
@@ -44,22 +45,35 @@ export class DonationsService {
   init() {
     this.logger.log('💸 Donation service init');
     this.syncAllEthereumTransfers();
-    this.syncAllDogeDonations();
-    // @next -- listen to transfers realtime
-    // this.listenForNewDonations()
+    this.syncAllDogeDonations;
+    // @next -- DEBUG THIS IS NOT WORKING FOR SOME REASON
+    // listen to transfers realtime
+    // this.listenForNewEthereumDonations();
+  }
+
+  async syncAllDogeDonations() {
+    await this.syncAllDogeDonationsForAddress(this.myDogeAddress);
+    await this.syncAllDogeDonationsForAddress(this.soDogeTipAddress);
   }
 
   async syncRecentDogeDonations() {
+    this.syncMostRecentDogeDonationsForAddress(this.myDogeAddress);
+    this.syncMostRecentDogeDonationsForAddress(this.soDogeTipAddress);
+  }
+
+  private async syncMostRecentDogeDonationsForAddress(address: string) {
     const mostRecentDonation =
-      await this.donationsRepo.getMostRecentDogeDonation();
+      await this.donationsRepo.getMostRecentDogeDonationForAddress(address);
     try {
       if (mostRecentDonation) {
         await this.syncDogeDonationsFromMostRecent(mostRecentDonation);
       } else {
-        await this.syncAllDogeDonations();
+        await this.syncAllDogeDonationsForAddress(address);
       }
     } catch (e) {
-      this.logger.error('Could not sync Doge donations');
+      this.logger.error(
+        `Could not sync Doge donations for address: ${address}`,
+      );
       this.sentryClient.instance().captureException(e);
     }
   }
@@ -70,21 +84,22 @@ export class DonationsService {
     );
     // check if there are any new txs past our most recent synced tx
     const donations = await this.sochain.getAllTxsReceivedToAddress(
-      this.dogeCoinAddress,
+      donation.toAddress,
       donation.txHash,
     );
-    await this.upsertDogeDonations(donations);
+    await this.upsertDogeDonations(donations, donation.toAddress);
   }
 
-  async syncAllDogeDonations() {
-    this.logger.log('Syncing all dogecoin donations');
-    const receivedTxs = await this.sochain.getAllTxsReceivedToAddress(
-      this.dogeCoinAddress,
-    );
-    await this.upsertDogeDonations(receivedTxs);
+  async syncAllDogeDonationsForAddress(address: string) {
+    this.logger.log(`Syncing all dogecoin donations for address: ${address}`);
+    const receivedTxs = await this.sochain.getAllTxsReceivedToAddress(address);
+    await this.upsertDogeDonations(receivedTxs, address);
   }
 
-  private async upsertDogeDonations(receivedTxs: TxReceived[]) {
+  private async upsertDogeDonations(
+    receivedTxs: TxReceived[],
+    toAddress: string,
+  ) {
     for (const receivedTx of receivedTxs) {
       try {
         const tx: Transaction = await this.sochain.sleepAndTryAgain(
@@ -95,9 +110,9 @@ export class DonationsService {
         const fromAddress = tx.inputs[0].address;
         await this.donationsRepo.upsert({
           fromAddress,
+          toAddress,
           blockNumber: tx.block_no,
           blockCreatedAt: new Date(receivedTx.time * 1000),
-          toAddress: this.dogeCoinAddress,
           blockchain: ChainName.DOGECOIN,
           currency: DOGE_CURRENCY_SYMBOL,
           txHash: tx.txid,
@@ -108,6 +123,16 @@ export class DonationsService {
         this.logger.error(`could not sync doge coin tx: ${receivedTx.txid}`);
       }
     }
+  }
+
+  listenForNewEthereumDonations() {
+    this.alchemy.listenForTransfersToAddress(this.ethereumAddress, (args) =>
+      this.onNewTransfer(args),
+    );
+  }
+
+  private onNewTransfer(args: any) {
+    this.logger.log(`NEW TX HIT: ${JSON.stringify(args)}}`);
   }
 
   async syncRecentEthereumDonations() {
@@ -218,13 +243,28 @@ export class DonationsService {
   }
 
   async getDogeBalances(): Promise<Balance> {
-    const dogeBalance = await this.sochain.getBalance(this.dogeCoinAddress);
+    const myDogeBalance = await this.sochain.getBalance(this.myDogeAddress);
+    const soDogeBalance = await this.sochain.getBalance(this.soDogeTipAddress);
+    const totalBalance = myDogeBalance + soDogeBalance;
     const dogePrice = await this.coingecko.getDogePrice();
     return {
       symbol: DOGE_CURRENCY_SYMBOL,
-      amount: dogeBalance,
-      usdNotional: dogeBalance * dogePrice,
+      amount: totalBalance,
+      usdNotional: totalBalance * dogePrice,
       usdPrice: dogePrice,
     };
+  }
+
+  async getDonations() {
+    return this.donationsRepo.findMany({
+      orderBy: {
+        blockCreatedAt: 'desc',
+      },
+      where: {
+        fromAddress: {
+          notIn: [this.myDogeAddress, this.soDogeTipAddress],
+        },
+      },
+    });
   }
 }
