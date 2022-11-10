@@ -13,7 +13,7 @@ class PerksStore {
       description: "Claim a 1 out of 115 random NFTs from our Lords of Dogetown Sandbox game",
       link: "https://ownthedoge.com/lords-of-dogetown",
       date: "2022-11-09",
-      isLive: false,
+      isLive: true,
     },
     {
       title: "Doge Major",
