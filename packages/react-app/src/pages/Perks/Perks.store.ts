@@ -1,5 +1,3 @@
-import { makeObservable } from "mobx";
-
 export interface PerkItem {
   title: string;
   description: string;
@@ -11,11 +9,18 @@ export interface PerkItem {
 class PerksStore {
   items: PerkItem[] = [
     {
+      title: "Lord of Dogetown",
+      description: "Claim a 1 out of 115 random NFTs from our Lords of Dogetown Sandbox game",
+      link: "https://ownthedoge.com/lords-of-dogetown",
+      date: "2022-11-09",
+      isLive: false,
+    },
+    {
       title: "Doge Major",
       description: "Claim a fraction of 'Doge Major' created by Anas Abdin",
       link: "https://ownthedoge.com/doge-major",
       date: "2022-10-01",
-      isLive: true,
+      isLive: false,
     },
     {
       title: "DOGs First Birthday",
