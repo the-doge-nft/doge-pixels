@@ -9,7 +9,7 @@ export interface PerkItem {
 class PerksStore {
   items: PerkItem[] = [
     {
-      title: "Lord of Dogetown",
+      title: "Lords of Dogetown",
       description: "Claim a 1 out of 115 random NFTs from our Lords of Dogetown Sandbox game",
       link: "https://ownthedoge.com/lords-of-dogetown",
       date: "2022-11-09",
