@@ -73,7 +73,7 @@ class PerksStore {
       title: "Doge Academy's PFP NFT",
       description:
         "All pixel holders get a free mint from The Doge Academy's PFP project. With this NFT, one also gets a chance to choose one course this semester from the plethora of courses offered.",
-      link: "https://dogegenerals.com/",
+      link: "https://thedogeacademy.com/",
       date: "2022-06-01",
       isLive: true,
     },
