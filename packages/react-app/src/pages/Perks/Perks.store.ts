@@ -35,7 +35,7 @@ class PerksStore {
         "Claim an NFT for the music video 'In Doge We Trust' by Bassjackers, in celebration of DOG's first birthday.",
       link: "https://ownthedoge.com/radio",
       date: "2022-08-30",
-      isLive: true,
+      isLive: false,
     },
     {
       title: "Puppet NFTs",
@@ -67,7 +67,7 @@ class PerksStore {
         "One-of-a-kind, limited edition high-quality 100% discounted $DOG bandada is our first merch drop in collaboration with Shopify",
       link: "https://shop.ownthedoge.com",
       date: "2022-06-09",
-      isLive: false,
+      isLive: true,
     },
     {
       title: "Doge Academy's PFP NFT",
@@ -75,7 +75,7 @@ class PerksStore {
         "All pixel holders get a free mint from The Doge Academy's PFP project. With this NFT, one also gets a chance to choose one course this semester from the plethora of courses offered.",
       link: "https://dogegenerals.com/",
       date: "2022-06-01",
-      isLive: false,
+      isLive: true,
     },
   ];
 }
