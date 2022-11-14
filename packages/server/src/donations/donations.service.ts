@@ -45,7 +45,7 @@ export class DonationsService {
   init() {
     this.logger.log('💸 Donation service init');
     this.syncAllEthereumTransfers();
-    this.syncAllDogeDonations;
+    this.syncAllDogeDonations();
     // @next -- DEBUG THIS IS NOT WORKING FOR SOME REASON
     // listen to transfers realtime
     // this.listenForNewEthereumDonations();
@@ -178,7 +178,7 @@ export class DonationsService {
       fromBlock,
     });
     if (data.pageKey) {
-      throw new Error("There is paging data and we don't support currentl");
+      throw new Error("There is paging data and we don't support currently");
     }
     return data?.transfers;
   }
