@@ -6,6 +6,7 @@ import { EthersService } from '../ethers/ethers.service';
 import { MydogeService } from './../mydoge/mydoge.service';
 import { PrismaService } from './../prisma.service';
 import { SochainService } from './../sochain/sochain.service';
+import { UnstoppableDomainsService } from './../unstoppable-domains/unstoppable-domains.service';
 
 export const DOGE_CURRENCY_SYMBOL = 'DOGE';
 export const ETH_CURRENCY_SYMBOL = 'ETH';
@@ -20,6 +21,7 @@ export class DonationsRepository {
     private readonly sochain: SochainService,
     private readonly ethers: EthersService,
     private readonly mydoge: MydogeService,
+    private readonly ud: UnstoppableDomainsService,
     @InjectSentry() private readonly sentryClient: SentryService,
   ) {}
 
@@ -29,11 +31,13 @@ export class DonationsRepository {
       explorerUrl: string;
       fromEns: string | null;
       fromMyDogeName: string | null;
+      fromUD: string | null;
     })[] = [];
     for (const donation of donations) {
       let fromMyDogeName = null;
       let fromEns = null;
       let donatedCurrencyPrice: number;
+      let fromUD = null;
       let explorerUrl: string;
       try {
         if (donation.currency === DOGE_CURRENCY_SYMBOL) {
@@ -65,12 +69,7 @@ export class DonationsRepository {
         this.logger.error('Could not get currency price');
       }
 
-      const currencyUSDNotional = donatedCurrencyPrice * donation.amount;
-
-      if (
-        donation.blockchain === ChainName.ETHEREUM &&
-        currencyUSDNotional > 0.1
-      ) {
+      if (donation.blockchain === ChainName.ETHEREUM) {
         try {
           fromEns = await this.ethers.getEnsName(donation.fromAddress);
         } catch (e) {
@@ -78,7 +77,17 @@ export class DonationsRepository {
             `Could not get donation ENS for: ${donation.fromAddress}`,
           );
         }
+
+        try {
+          fromUD = await this.ud.getUDName(donation.fromAddress);
+        } catch (e) {
+          this.logger.error(
+            `Could not get donation UD for: ${donation.fromAddress}`,
+          );
+        }
       }
+
+      const currencyUSDNotional = donatedCurrencyPrice * donation.amount;
 
       data.push({
         ...donation,
@@ -86,6 +95,7 @@ export class DonationsRepository {
         explorerUrl,
         fromEns,
         fromMyDogeName,
+        fromUD,
       });
     }
     return data;
