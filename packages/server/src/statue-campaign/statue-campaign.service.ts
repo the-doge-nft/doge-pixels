@@ -72,6 +72,7 @@ export class StatueCampaignService implements OnModuleInit {
         donationLeaderBoard[address] = {
           myDogeName: donation.fromMyDogeName,
           ens: donation.fromEns,
+          ud: donation.fromUD,
           donations: [donation],
           usdNotional: donation.currencyUSDNotional,
         };
