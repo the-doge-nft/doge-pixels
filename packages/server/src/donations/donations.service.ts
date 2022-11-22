@@ -228,9 +228,17 @@ export class DonationsService {
       const amount = ethers.BigNumber.from(balance.tokenBalance)
         .div(ethers.BigNumber.from(10).pow(decimals))
         .toNumber();
-      const usdPrice = await this.coingecko.getPriceByEthereumContractAddress(
-        balance.contractAddress,
-      );
+      let usdPrice = 0;
+      try {
+        usdPrice = await this.coingecko.getPriceByEthereumContractAddress(
+          balance.contractAddress,
+        );
+      } catch (e) {
+        this.logger.error(
+          `Could not get usd price for: ${balance.contractAddress}`,
+        );
+        this.sentryClient.instance().captureException(e);
+      }
       const usdNotional = usdPrice * amount;
       balances.push({
         symbol,
