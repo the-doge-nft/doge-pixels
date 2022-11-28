@@ -14,6 +14,10 @@ export const ETH_CURRENCY_SYMBOL = 'ETH';
 @Injectable()
 export class DonationsRepository {
   private logger = new Logger(DonationsRepository.name);
+  private blackListedContractAddresses = [
+    '0xb187916e2e927f3bb27035689bc93ebb910af279',
+    '0xdf781bba6f9eefb1a74bb39f6df5e282c5976636',
+  ];
 
   constructor(
     private readonly prisma: PrismaService,
@@ -135,19 +139,15 @@ export class DonationsRepository {
     return (
       await this.prisma.donations.findMany({
         where: {
-          blockchain: ChainName.ETHEREUM,
+          AND: {
+            blockchain: ChainName.ETHEREUM,
+            currencyContractAddress: {
+              notIn: this.blackListedContractAddresses,
+            },
+          },
         },
         orderBy: { blockCreatedAt: 'desc' },
       })
     )?.[0];
-  }
-
-  async getMostRecentDonations() {
-    const donations = await this.prisma.donations.findMany({
-      orderBy: {
-        blockCreatedAt: 'desc',
-      },
-    });
-    return this.afterGetDonations(donations);
   }
 }

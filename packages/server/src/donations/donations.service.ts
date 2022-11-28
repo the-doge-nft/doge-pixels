@@ -187,19 +187,33 @@ export class DonationsService {
     transfers: AssetTransfersWithMetadataResult[],
   ) {
     for (const transfer of transfers) {
-      await this.donationsRepo.upsert({
-        blockchain: ChainName.ETHEREUM,
-        blockCreatedAt: new Date(transfer.metadata.blockTimestamp),
-        currency: transfer.asset,
-        amount: transfer.value,
-        blockNumber: ethers.BigNumber.from(transfer.blockNum).toNumber(),
-        txHash: transfer.hash,
-        fromAddress: ethers.utils.getAddress(transfer.from),
-        toAddress: ethers.utils.getAddress(transfer.to),
-        currencyContractAddress: transfer.rawContract.address
-          ? ethers.utils.getAddress(transfer.rawContract.address)
-          : null,
-      });
+      try {
+        const currency = transfer.asset;
+        const amount = transfer.value;
+
+        // filter out some spam here
+        if (currency === null || amount === null) {
+          continue;
+        }
+
+        await this.donationsRepo.upsert({
+          blockchain: ChainName.ETHEREUM,
+          blockCreatedAt: new Date(transfer.metadata.blockTimestamp),
+          currency: transfer.asset,
+          amount: transfer.value,
+          blockNumber: ethers.BigNumber.from(transfer.blockNum).toNumber(),
+          txHash: transfer.hash,
+          fromAddress: ethers.utils.getAddress(transfer.from),
+          toAddress: ethers.utils.getAddress(transfer.to),
+          currencyContractAddress: transfer.rawContract.address
+            ? ethers.utils.getAddress(transfer.rawContract.address)
+            : null,
+        });
+      } catch (e) {
+        const message = `could not upsert tx: ${transfer.hash}`;
+        this.logger.error(message, e);
+        this.sentryClient.instance().captureException(e);
+      }
     }
   }
 
