@@ -14,7 +14,7 @@ export const ETH_CURRENCY_SYMBOL = 'ETH';
 @Injectable()
 export class DonationsRepository {
   private logger = new Logger(DonationsRepository.name);
-  private blackListedContractAddresses = [
+  blackListedContractAddresses = [
     '0xb187916e2e927f3bb27035689bc93ebb910af279',
     '0xdf781bba6f9eefb1a74bb39f6df5e282c5976636',
   ];
@@ -38,6 +38,15 @@ export class DonationsRepository {
       fromUD: string | null;
     })[] = [];
     for (const donation of donations) {
+      // skip past any blacklisted addresses
+      if (
+        this.blackListedContractAddresses.includes(
+          donation.currencyContractAddress,
+        )
+      ) {
+        continue;
+      }
+
       let fromMyDogeName = null;
       let fromEns = null;
       let donatedCurrencyPrice: number;
