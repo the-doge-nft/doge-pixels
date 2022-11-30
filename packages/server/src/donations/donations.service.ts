@@ -8,6 +8,7 @@ import {
 } from 'alchemy-sdk';
 import { ethers } from 'ethers';
 import { AlchemyService } from '../alchemy/alchemy.service';
+import { sleepAndTryAgain } from '../helpers/sleep';
 import { CoinGeckoService } from './../coin-gecko/coin-gecko.service';
 import {
   SochainService,
@@ -102,11 +103,10 @@ export class DonationsService {
   ) {
     for (const receivedTx of receivedTxs) {
       try {
-        const tx: Transaction = await this.sochain.sleepAndTryAgain(
+        const tx: Transaction = await sleepAndTryAgain(
           () => this.sochain.getTransaction(receivedTx.txid),
           2,
         );
-
         const fromAddress = tx.inputs[0].address;
         await this.donationsRepo.upsert({
           fromAddress,

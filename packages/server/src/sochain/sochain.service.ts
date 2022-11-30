@@ -2,7 +2,7 @@ import { HttpService } from '@nestjs/axios';
 import { Injectable, Logger } from '@nestjs/common';
 import { InjectSentry, SentryService } from '@travelerdev/nestjs-sentry';
 import { catchError, firstValueFrom } from 'rxjs';
-import sleep from '../helpers/sleep';
+import { sleepAndTryAgain } from '../helpers/sleep';
 
 export enum SoChainNetorks {
   DOGE = 'doge',
@@ -96,7 +96,7 @@ export class SochainService {
 
     // iterate getting full tx list
     while (count >= this.MAX_TXS_PER_REQUEST) {
-      const txs = await this.sleepAndTryAgain(
+      const txs = await sleepAndTryAgain(
         () => this.getTxsReceived(address, lastHash ? lastHash : undefined),
         2,
       );
@@ -130,23 +130,16 @@ export class SochainService {
           }),
         ),
     );
+
+    if (!data) {
+      this.logger.log(data);
+      throw new Error(`Could not get transaction: ${txId}`);
+    }
     return data?.data;
   }
 
-  // @next -- this should be occomplished app wipe as a interceptor?
-  async sleepAndTryAgain(callback: () => any, secondsToSleep) {
-    try {
-      return callback();
-    } catch (e) {
-      this.logger.error(e);
-      this.logger.error(`error caught, sleeping and trying again`);
-      await sleep(secondsToSleep);
-      return callback();
-    }
-  }
-
   private handleError(e: any) {
-    this.logger.error(e.response.data);
+    this.logger.error(`sochain error: ${e}`);
     this.sentryClient.instance().captureException(e);
   }
 

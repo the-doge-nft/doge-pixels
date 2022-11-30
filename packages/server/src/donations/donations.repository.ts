@@ -70,7 +70,8 @@ export class DonationsRepository {
         }
       } catch (e) {
         donatedCurrencyPrice = 0;
-        this.logger.error('Could not get currency price');
+        this.logger.error(e);
+        this.logger.error(`Could not get currency price: ${donation.currency}`);
       }
 
       if (donation.blockchain === ChainName.ETHEREUM) {
