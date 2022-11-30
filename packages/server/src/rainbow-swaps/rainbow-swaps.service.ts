@@ -13,7 +13,7 @@ import * as ABI from '../contracts/hardhat_contracts.json';
 import { ETH_CURRENCY_SYMBOL } from '../donations/donations.repository';
 import { Balance } from '../donations/donations.service';
 import { EthersService } from '../ethers/ethers.service';
-import sleep from '../helpers/sleep';
+import { sleep } from '../helpers/sleep';
 import { RainbowSwapsRepository } from './rainbow-swaps.repository';
 
 @Injectable()

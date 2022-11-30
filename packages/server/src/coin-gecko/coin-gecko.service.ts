@@ -1,9 +1,10 @@
-import { CacheService } from './../cache/cache.service';
 import { HttpService } from '@nestjs/axios';
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
+import { CacheService } from './../cache/cache.service';
 
 @Injectable()
 export class CoinGeckoService {
+  private logger = new Logger(CoinGeckoService.name);
   private secondsToCache = 5 * 60;
   private DOGContractAddress = '0xBAac2B4491727D78D2b78815144570b9f2Fe8899';
 
@@ -34,7 +35,11 @@ export class CoinGeckoService {
             },
           })
           .toPromise();
-        if (!data) {
+
+        if (!data || !data?.[address]?.[vsCurrency]) {
+          this.logger.error(
+            `could not get coingecko price: ${address}:${vsCurrency}`,
+          );
           throw new Error(`Could not get price for: ${address}`);
         }
         return data[address][vsCurrency];
@@ -56,7 +61,10 @@ export class CoinGeckoService {
             },
           })
           .toPromise();
-        if (!data) {
+        if (!data || !data?.[currencyId]?.[usdCurrencyId]) {
+          this.logger.error(
+            `could not get coingecko price: ${currencyId}:${usdCurrencyId}`,
+          );
           throw new Error(`Could not get price for ${currencyId}`);
         }
         return data[currencyId][usdCurrencyId];
