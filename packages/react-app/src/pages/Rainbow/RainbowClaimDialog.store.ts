@@ -44,10 +44,6 @@ class RainbowClaimDialogStore extends Navigable<RainbowClaimDialogView, Construc
     switch (this.currentView) {
       case RainbowClaimDialogView.Claim:
         return "Claim";
-      case RainbowClaimDialogView.Loading:
-        return "";
-      case RainbowClaimDialogView.Complete:
-        return "Complete";
       default:
         return "";
     }
@@ -69,11 +65,17 @@ class RainbowClaimDialogStore extends Navigable<RainbowClaimDialogView, Construc
       this.oldPixels = toJS(AppStore.web3.puppersOwned);
       showDebugToast("Claiming pixel from rainbow contract");
       this.pushNavigation(RainbowClaimDialogView.Loading);
-      const tx = await this.rainbowContract.claim(
-        getProof(AppStore.web3.address, isProduction() ? goerliWhitelist : goerliWhitelist),
-      );
+      const proof = getProof(AppStore.web3.address, isProduction() ? goerliWhitelist : goerliWhitelist);
+      const estimatedGas = await this.rainbowContract.estimateGas.claim(proof);
+      const gasLimitSafetyOffset = 80000;
+      if (!estimatedGas) {
+        console.error("Could not estimate gas");
+      }
+      const tx = await this.rainbowContract.claim(proof, { gasLimit: estimatedGas.add(gasLimitSafetyOffset) });
+      this.hasUserSignedTx = true;
+
       const receipt = await tx.wait();
-      this.txHash = receipt;
+      this.txHash = receipt.transactionHash;
 
       await AppStore.web3.refreshPixelOwnershipMap();
       const newPixels = toJS(AppStore.web3.puppersOwned);
@@ -88,6 +90,7 @@ class RainbowClaimDialogStore extends Navigable<RainbowClaimDialogView, Construc
     } catch (e) {
       console.error(e);
       this.popNavigation();
+      this.hasUserSignedTx = false;
     }
   }
 }

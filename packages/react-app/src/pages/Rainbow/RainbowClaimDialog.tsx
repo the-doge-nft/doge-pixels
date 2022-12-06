@@ -69,7 +69,7 @@ const Complete = observer(({ store, txHash }: { store: RainbowClaimDialogStore; 
         Pixel Claimed
       </Typography>
       <Typography variant={TVariant.PresStart28} textAlign={"center"} mt={4} block>
-        🔥🔥🔥
+        🌈🐶🌈
       </Typography>
       <Box mt={4}>
         <SharePixelsDialog action={"claimed"} previewPixels={store.diffPixels} />
