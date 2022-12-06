@@ -113,9 +113,9 @@ const RainbowPage = observer(function RainbowPage() {
           )}
         </Box>
         <Flex alignItems={"center"} gap={4}>
-          <Typography variant={TVariant.ComicSans22}>The Doge NFT</Typography>
-          <Typography variant={TVariant.ComicSans28}>🤝</Typography>
-          <Image src={RainbowLogo} alt={"Rainbow logo"} maxW={"150px"} />
+          <Typography variant={TVariant.ComicSans18}>The Doge NFT</Typography>
+          <Typography variant={TVariant.ComicSans22}>🤝</Typography>
+          <Image src={RainbowLogo} alt={"Rainbow logo"} maxW={"120px"} />
         </Flex>
       </Flex>
       {store.showModal && (

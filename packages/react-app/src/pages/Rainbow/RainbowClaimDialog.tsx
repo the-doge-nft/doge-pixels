@@ -1,4 +1,4 @@
-import { Box, Flex } from "@chakra-ui/react";
+import { Box, Flex, Image } from "@chakra-ui/react";
 import { observer } from "mobx-react-lite";
 import { useEffect } from "react";
 import SharePixelsDialog from "../../common/SharePixelsDialog/SharePixelsDialog";
@@ -7,6 +7,7 @@ import Link from "../../DSL/Link/Link";
 import Loading from "../../DSL/Loading/Loading";
 import Typography, { TVariant } from "../../DSL/Typography/Typography";
 import { getEtherscanURL } from "../../helpers/links";
+import RainbowMeme from "../../images/rainbow-meme.jpg";
 import AppStore from "../../store/App.store";
 import RainbowClaimDialogStore, { RainbowClaimDialogView } from "./RainbowClaimDialog.store";
 
@@ -34,7 +35,15 @@ const RainbowClaimDialog = observer(({ store }: BurnPixelsDialogProps) => {
 const ClaimPixels = observer(({ store }: { store: RainbowClaimDialogStore }) => {
   return (
     <Flex flexDirection={"column"}>
-      <Flex justifyContent={"center"} mt={8}>
+      <Image
+        src={RainbowMeme}
+        alt={"rainbowmeme"}
+        borderWidth={"1px"}
+        borderColor={"black"}
+        borderStyle={"solid"}
+        my={6}
+      />
+      <Flex justifyContent={"center"}>
         <Button onClick={() => store.claimPixel()}>Claim</Button>
       </Flex>
     </Flex>
