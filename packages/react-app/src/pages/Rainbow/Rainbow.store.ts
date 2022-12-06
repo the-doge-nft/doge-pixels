@@ -9,7 +9,7 @@ const whitelist = require("../../services/whitelists/goerliRainbowClaim.json");
 const abi = require("../../contracts/rainbowClaim.json");
 
 class RainbowStore extends Reactionable(EmptyClass) {
-  private goerliAddress = "0xf00f388450c816636266A6DA98EDFF5c244Bd5cd";
+  private goerliAddress = "0x028e2d212aD55C09E47B22f9324d91A0C465Bb2c";
   private mainnetAddress = "";
 
   @observable
@@ -38,6 +38,9 @@ class RainbowStore extends Reactionable(EmptyClass) {
 
   @observable
   showDrawer = false;
+
+  @observable
+  isWithdrawLoading = false;
 
   constructor() {
     super();
@@ -79,20 +82,23 @@ class RainbowStore extends Reactionable(EmptyClass) {
     }
     const pixelIds = AppStore.web3.puppersOwned;
     this.isDepositing = true;
-    await this.rainbowContract
+    this.rainbowContract
       .deposit(pixelIds)
       .then(res => {
-        console.log(res);
         res
           .wait()
-          .then()
-          .catch()
+          .then(() => {
+            showSuccessToast(`${pixelIds.length} pixels deposited`);
+            this.isDepositing = false;
+            this.getPixelsInContract();
+            AppStore.web3.refreshPixelOwnershipMap();
+          })
+          .catch(e => console.error(e))
           .finally(() => (this.isDepositing = false));
-        showSuccessToast(`${pixelIds.length} pixels deposited`);
       })
       .catch(e => {
         console.error(e);
-        showErrorToast(e);
+        showErrorToast("could not deposit pixels");
         this.isDepositing = false;
       });
   }
@@ -117,11 +123,12 @@ class RainbowStore extends Reactionable(EmptyClass) {
       .then(res => {
         res
           .wait()
-          .then()
-          .catch()
+          .then(res => {
+            console.log(res);
+            this.getCanRainbowMovePixels();
+          })
+          .catch(e => console.error(e))
           .finally(() => (this.isApproving = false));
-        console.log(res);
-        this.getCanRainbowMovePixels();
       })
       .catch(e => {
         console.error(e);
@@ -139,6 +146,21 @@ class RainbowStore extends Reactionable(EmptyClass) {
 
   getHasUserClaimed() {
     this.rainbowContract.addressHasClaimed(AppStore.web3.address).then(res => (this.hasUserClaimed = res));
+  }
+
+  async withdraw() {
+    try {
+      this.isWithdrawLoading = true;
+      const tx = await this.rainbowContract.withdrawPixels();
+      await tx.wait();
+      this.getPixelsInContract();
+      await AppStore.web3.refreshPixelOwnershipMap();
+    } catch (e) {
+      console.error(e);
+      showErrorToast("Could not withdraw");
+    } finally {
+      this.isWithdrawLoading = false;
+    }
   }
 
   destroy() {

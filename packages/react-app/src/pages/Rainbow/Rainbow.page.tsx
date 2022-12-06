@@ -7,7 +7,6 @@ import Link from "../../DSL/Link/Link";
 import Typography, { TVariant } from "../../DSL/Typography/Typography";
 import jsonify from "../../helpers/jsonify";
 import RainbowLogo from "../../images/rainbow-logo.png";
-import RainbowSponge from "../../images/rainbow-sponge.jpg";
 import AppStore from "../../store/App.store";
 import RainbowStore from "./Rainbow.store";
 import RainbowClaimDrawer from "./RainbowClaimDrawer";
@@ -57,7 +56,8 @@ const RainbowPage = observer(function RainbowPage() {
                 Not in whitelist 🙁
               </Typography>
             )}
-            {store.showClaimButton && !store.hasUserClaimed && (
+            {store.showClaimButton && (
+              // && !store.hasUserClaimed
               <Button
                 mt={10}
                 onClick={() => {
@@ -71,8 +71,8 @@ const RainbowPage = observer(function RainbowPage() {
                 Claim
               </Button>
             )}
-            {store.hasUserClaimed && (
-              <Box my={10}>
+            {/* {store.hasUserClaimed && (
+              <Box mt={10} mb={16}>
                 <Image
                   src={RainbowSponge}
                   alt={"ty4claiming"}
@@ -92,7 +92,7 @@ const RainbowPage = observer(function RainbowPage() {
                   Thanks for claiming!
                 </Typography>
               </Box>
-            )}
+            )} */}
           </Flex>
           {store.showAdminTools && (
             <Flex
@@ -119,11 +119,14 @@ const RainbowPage = observer(function RainbowPage() {
                     </Typography>
                   )}
                   {store.pixelIdsInContract.length > 0 && (
-                    <Box w={"full"} mt={6}>
-                      <Typography textAlign={"center"} variant={TVariant.ComicSans16}>
+                    <Flex justifyContent={"center"} w={"full"} mt={6} flexWrap={"wrap"}>
+                      <Typography maxW={"full"} textAlign={"center"} variant={TVariant.ComicSans16}>
                         {jsonify(store.pixelIdsInContract)}
                       </Typography>
-                    </Box>
+                      <Button my={4} isLoading={store.isWithdrawLoading} onClick={() => store.withdraw()}>
+                        Withdraw
+                      </Button>
+                    </Flex>
                   )}
                 </>
               )}

@@ -1,6 +1,7 @@
 import { Box, Flex, Image } from "@chakra-ui/react";
 import { observer } from "mobx-react-lite";
 import { useEffect } from "react";
+import { NamedRoutes, route, SELECTED_PIXEL_PARAM } from "../../App.routes";
 import SharePixelsDialog from "../../common/SharePixelsDialog/SharePixelsDialog";
 import Button from "../../DSL/Button/Button";
 import Link from "../../DSL/Link/Link";
@@ -51,10 +52,6 @@ const ClaimPixels = observer(({ store }: { store: RainbowClaimDialogStore }) => 
 });
 
 const LoadingBurning = observer(({ store }: { store: RainbowClaimDialogStore }) => {
-  useEffect(() => {
-    // store.burnSelectedPixels();
-    // eslint-disable-next-line
-  }, []);
   return (
     <Box>
       <Loading title={"Claiming..."} showSigningHint={!store.hasUserSignedTx} />
@@ -73,6 +70,15 @@ const Complete = observer(({ store, txHash }: { store: RainbowClaimDialogStore; 
       </Typography>
       <Box mt={4}>
         <SharePixelsDialog action={"claimed"} previewPixels={store.diffPixels} />
+        <Flex justifyContent={"center"} mt={4} mb={8}>
+          <Link
+            display={"inline-block"}
+            isNav
+            to={route(NamedRoutes.PIXELS, { [SELECTED_PIXEL_PARAM]: store.diffPixels[0] })}
+          >
+            <Button onClick={() => {}}>Portal</Button>
+          </Link>
+        </Flex>
         <Flex justifyContent={"center"}>
           {txHash && (
             <Link href={getEtherscanURL(txHash, "tx")} isExternal>

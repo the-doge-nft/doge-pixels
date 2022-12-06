@@ -257,24 +257,8 @@
       "type": "function"
     },
     {
-      "inputs": [
-        {
-          "internalType": "address",
-          "name": "_tokenAddress",
-          "type": "address"
-        },
-        {
-          "internalType": "address",
-          "name": "_to",
-          "type": "address"
-        },
-        {
-          "internalType": "uint256[]",
-          "name": "_tokenIds",
-          "type": "uint256[]"
-        }
-      ],
-      "name": "withdraw",
+      "inputs": [],
+      "name": "withdrawPixels",
       "outputs": [],
       "stateMutability": "nonpayable",
       "type": "function"
