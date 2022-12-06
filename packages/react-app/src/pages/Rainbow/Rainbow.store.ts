@@ -50,6 +50,7 @@ class RainbowStore extends Reactionable(EmptyClass) {
       () => {
         if (AppStore.web3.signer) {
           this.rainbowContract = new Contract(this.contractAddress, abi, AppStore.web3.signer);
+          this.getHasUserClaimed();
           if (AppStore.web3.address === this.depositorAddress) {
             this.showAdminTools = true;
             this.getPixelsInContract();
@@ -134,6 +135,10 @@ class RainbowStore extends Reactionable(EmptyClass) {
       .getPixelIds()
       .then(res => (this.pixelIdsInContract = res.map(item => item.toNumber())))
       .catch(e => console.error(e));
+  }
+
+  getHasUserClaimed() {
+    this.rainbowContract.addressHasClaimed(AppStore.web3.address).then(res => (this.hasUserClaimed = res));
   }
 
   destroy() {

@@ -7,6 +7,7 @@ import Link from "../../DSL/Link/Link";
 import Typography, { TVariant } from "../../DSL/Typography/Typography";
 import jsonify from "../../helpers/jsonify";
 import RainbowLogo from "../../images/rainbow-logo.png";
+import RainbowSponge from "../../images/rainbow-sponge.jpg";
 import AppStore from "../../store/App.store";
 import RainbowStore from "./Rainbow.store";
 import RainbowClaimDrawer from "./RainbowClaimDrawer";
@@ -56,7 +57,7 @@ const RainbowPage = observer(function RainbowPage() {
                 Not in whitelist 🙁
               </Typography>
             )}
-            {store.showClaimButton && (
+            {store.showClaimButton && !store.hasUserClaimed && (
               <Button
                 mt={10}
                 onClick={() => {
@@ -69,6 +70,28 @@ const RainbowPage = observer(function RainbowPage() {
               >
                 Claim
               </Button>
+            )}
+            {store.hasUserClaimed && (
+              <Box my={10}>
+                <Image
+                  src={RainbowSponge}
+                  alt={"ty4claiming"}
+                  borderWidth={"1px"}
+                  borderColor={"black"}
+                  borderStyle={"solid"}
+                  maxW={"sm"}
+                />
+                <Typography
+                  fontWeight={"bold"}
+                  mt={4}
+                  block
+                  textAlign={"center"}
+                  variant={TVariant.ComicSans20}
+                  w={"full"}
+                >
+                  Thanks for claiming!
+                </Typography>
+              </Box>
             )}
           </Flex>
           {store.showAdminTools && (
