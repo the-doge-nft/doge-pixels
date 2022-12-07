@@ -1,9 +1,11 @@
 import { Box, Flex, Image } from "@chakra-ui/react";
 import { observer } from "mobx-react-lite";
 import { useEffect, useMemo } from "react";
+import { NamedRoutes, route, SELECTED_PIXEL_PARAM } from "../../App.routes";
 import Button, { ConnectWalletButton } from "../../DSL/Button/Button";
 import { Type } from "../../DSL/Fonts/Fonts";
 import Link from "../../DSL/Link/Link";
+import PixelPreview from "../../DSL/PixelPreview/PixelPreview";
 import Typography, { TVariant } from "../../DSL/Typography/Typography";
 import jsonify from "../../helpers/jsonify";
 import RainbowLogo from "../../images/rainbow-logo.png";
@@ -56,7 +58,7 @@ const RainbowPage = observer(function RainbowPage() {
             {AppStore.web3?.network?.id === targetChain.id && (
               <>
                 {store.isConnected && !store.isInWhitelist && store.pixelIdsInContract.length > 0 && (
-                  <Typography variant={TVariant.ComicSans22} fontWeight={"bold"}>
+                  <Typography mt={6} variant={TVariant.ComicSans22} fontWeight={"bold"}>
                     Not in whitelist 🙁
                   </Typography>
                 )}
@@ -76,17 +78,36 @@ const RainbowPage = observer(function RainbowPage() {
                 )}
                 {store.hasUserClaimed && (
                   <Box mt={10} mb={16}>
-                    <Image
-                      src={RainbowSponge}
-                      alt={"ty4claiming"}
-                      borderWidth={"1px"}
-                      borderColor={"black"}
-                      borderStyle={"solid"}
-                      maxW={"sm"}
-                    />
+                    {!store.pixelIdClaimed && (
+                      <Image
+                        src={RainbowSponge}
+                        alt={"ty4claiming"}
+                        borderWidth={"1px"}
+                        borderColor={"black"}
+                        borderStyle={"solid"}
+                        maxW={"sm"}
+                      />
+                    )}
+                    {store.pixelIdClaimed && (
+                      <Flex flexDir={"column"} gap={4} alignItems={"center"}>
+                        <PixelPreview
+                          id={"rainbow-claim-preview"}
+                          onPupperClick={() => console.log()}
+                          selectedTokenId={store.pixelIdClaimed}
+                          previewPixels={[store.pixelIdClaimed]}
+                        />
+                        <Link
+                          display={"inline-block"}
+                          isNav
+                          to={route(NamedRoutes.PIXELS, { [SELECTED_PIXEL_PARAM]: store.pixelIdClaimed })}
+                        >
+                          <Button onClick={() => {}}>View in Portal</Button>
+                        </Link>
+                      </Flex>
+                    )}
                     <Typography
                       fontWeight={"bold"}
-                      mt={4}
+                      mt={10}
                       block
                       textAlign={"center"}
                       variant={TVariant.ComicSans20}
