@@ -200,7 +200,6 @@ class RainbowStore extends Reactionable(EmptyClass) {
       },
     });
     this.pixelIdClaimed = data?.[0]?.tokenId;
-    console.log("debug:: data", data);
   }
 
   @computed
