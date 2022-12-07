@@ -1,5 +1,6 @@
 import { Box } from "@chakra-ui/react";
 import { observer } from "mobx-react-lite";
+import { useEffect } from "react";
 import MemeModal from "../../DSL/Modal/MemeModal";
 import Modal from "../../DSL/Modal/Modal";
 import ScrollHelperModal from "../../DSL/Modal/ScrollHelperModal";
@@ -12,10 +13,19 @@ import SelectedPixelPane from "./Panes/SelectedPixelPane";
 import ViewerStore from "./Viewer.store";
 
 const Modals: React.FC<{ store: ViewerStore }> = observer(({ store }) => {
+  useEffect(() => {
+    AppStore.modals.init();
+  }, []);
+
   return (
     <>
       {AppStore.modals.isInfoModalOpen && (
-        <Modal defaultPosition={AppStore.rwd.isMobile ? {} : {x: window.innerWidth / 5, y: window.innerHeight / 6}} title={"Own The Doge"} onClose={() => (AppStore.modals.isInfoModalOpen = false)} isOpen={true}>
+        <Modal
+          defaultPosition={AppStore.rwd.isMobile ? {} : { x: window.innerWidth / 5, y: window.innerHeight / 6 }}
+          title={"Own The Doge"}
+          onClose={() => AppStore.modals.toggleInfoModal()}
+          isOpen={AppStore.modals.isInfoModalOpen}
+        >
           <Box display={"flex"} flexDirection={"column"} justifyContent={"space-between"}>
             <IndexPane store={store} />
           </Box>

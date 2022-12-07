@@ -1,17 +1,18 @@
-import { generatePath } from "react-router-dom";
-import { RouteMiddleware } from "./services/middleware";
 import { FC } from "react";
-import AppLayout from "./layouts/AppLayout/AppLayout";
-import ViewerPage from "./pages/Viewer/Viewer.page";
-import DSLPage from "./pages/DSL.page";
-import LeaderborkPage from "./pages/Leaderbork/Leaderbork.page";
-import { isDevModeEnabled } from "./environment/helpers";
-import MobileHomePage from "./pages/MobileHome/MobileHome.page";
-import PixelArtPage from "./pages/PixelArt/PixelArt.page";
-import PerksPage from "./pages/Perks/Perks.page";
-import FourOhFour from "./pages/FourOhFour";
-import { SelectedOwnerTab } from "./pages/Leaderbork/Leaderbork.store";
+import { generatePath } from "react-router-dom";
 import { IconName } from "./DSL/Icon/Icon";
+import { isDevModeEnabled } from "./environment/helpers";
+import AppLayout from "./layouts/AppLayout/AppLayout";
+import DSLPage from "./pages/DSL.page";
+import FourOhFour from "./pages/FourOhFour";
+import LeaderborkPage from "./pages/Leaderbork/Leaderbork.page";
+import { SelectedOwnerTab } from "./pages/Leaderbork/Leaderbork.store";
+import MobileHomePage from "./pages/MobileHome/MobileHome.page";
+import PerksPage from "./pages/Perks/Perks.page";
+import PixelArtPage from "./pages/PixelArt/PixelArt.page";
+import RainbowPage from "./pages/Rainbow/Rainbow.page";
+import ViewerPage from "./pages/Viewer/Viewer.page";
+import { RouteMiddleware } from "./services/middleware";
 
 export enum NamedRoutes {
   VIEWER = "viewer",
@@ -23,6 +24,7 @@ export enum NamedRoutes {
   PIXELS = "pixels",
   PERKS = "perks",
   FOUR_O_FOUR = "fourofour",
+  RAINBOW = "rainbow",
 }
 
 export interface AppRouteInterface {
@@ -64,6 +66,18 @@ export const SELECTED_PIXEL_PARAM = "id_with_offset";
   it must be rendered as the last child of the <Switch> component
 */
 const routes: AppRouteInterface[] = [
+  {
+    path: "/rainbow",
+    name: NamedRoutes.RAINBOW,
+    exact: true,
+    layout: AppLayout,
+    component: RainbowPage,
+    desktopName: "Rainbow Claim",
+    mobileName: "Rainbow Claim",
+    showOnDesktop: false,
+    showOnMobile: false,
+    displayOrder: 0,
+  },
   {
     path: [
       `/leaderbork/:address/${SelectedOwnerTab.Activity}/:activityId?`,

@@ -1,26 +1,26 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { ClientSide, RainbowSwaps } from '@prisma/client';
+import { ClientSide, EthereumNetwork, RainbowSwaps } from '@prisma/client';
 import { InjectSentry, SentryService } from '@travelerdev/nestjs-sentry';
 import {
   AssetTransfersCategory,
   AssetTransfersOrder,
   AssetTransfersWithMetadataResult,
+  Network,
 } from 'alchemy-sdk';
 import { ethers } from 'ethers';
 import { AlchemyService } from '../alchemy/alchemy.service';
 import { CoinGeckoService } from '../coin-gecko/coin-gecko.service';
-import * as ABI from '../contracts/hardhat_contracts.json';
 import { ETH_CURRENCY_SYMBOL } from '../donations/donations.repository';
 import { Balance } from '../donations/donations.service';
 import { EthersService } from '../ethers/ethers.service';
 import { sleep } from '../helpers/sleep';
+import { SupportedNetwork } from './../alchemy/alchemy.service';
 import { RainbowSwapsRepository } from './rainbow-swaps.repository';
 
 @Injectable()
 export class RainbowSwapsService {
   private logger = new Logger(RainbowSwapsService.name);
   private routerContractAddress = '0x00000000009726632680FB29d3F7A9734E3010E2';
-  private dogAddress = ABI[1]['mainnet'].contracts['DOG20'].address;
 
   constructor(
     private readonly alchemy: AlchemyService,
@@ -32,36 +32,63 @@ export class RainbowSwapsService {
 
   init() {
     this.logger.log('🌈 Rainbow swap serivce');
-    this.syncAllDOGSwaps();
-    // @next -- DEBUG THIS IS NOT WORKING FOR SOME REASON
-    // listen to transfers realtime
-    // this.listenForTransfersThroughRouter();
+    this.syncAllNetworks();
   }
 
-  private listenForTransfersThroughRouter() {
-    this.alchemy.listenForTransfersToAddress(
-      this.routerContractAddress,
-      (args) => this.onNewTransfer(args),
-    );
+  private getDbNetwork(network: SupportedNetwork) {
+    let dbNetwork: EthereumNetwork = EthereumNetwork.MAINNET;
+    if (network === Network.MATIC_MAINNET) {
+      dbNetwork = EthereumNetwork.POLYGON;
+    } else if (network === Network.ARB_MAINNET) {
+      dbNetwork = EthereumNetwork.ARBITRUM;
+    }
+    return dbNetwork;
   }
 
-  private onNewTransfer(payload: any) {
-    console.log('NEW DOG TRANSFER TO THE ROUTER');
-    console.log(payload);
+  private getDOGAddress(network: SupportedNetwork) {
+    if (network === Network.MATIC_MAINNET) {
+      return '0xeEe3371B89FC43Ea970E908536Fcddd975135D8a';
+    } else if (network === Network.ARB_MAINNET) {
+      return '0x4425742F1EC8D98779690b5A3A6276Db85Ddc01A';
+    }
+    return '0xBAac2B4491727D78D2b78815144570b9f2Fe8899';
   }
 
-  async syncRecentDOGSwaps() {
+  async syncAllNetworks() {
+    this.logger.log('syncing all mainnet swaps');
+    await this.syncAllDOGSwaps(Network.ETH_MAINNET);
+
+    // SKIP OTHER NETWORKS FOR NOW AS ALCHEMY DOES NOT SUPPORT INTERNAL TRANSFERS WHICH MAKES ACCURATE TRACKING DIFFICULT
+
+    // this.logger.log('syncing all arbitrum swaps');
+    // await this.syncAllDOGSwaps(Network.ARB_MAINNET);
+    // this.logger.log('syncing all matic swaps');
+    // await this.syncAllDOGSwaps(Network.MATIC_MAINNET);
+  }
+
+  async syncRecentDOGSwapsForAllNetworks() {
+    this.logger.log('syncing recent mainnet swaps');
+    await this.syncRecentDOGSwaps(Network.ETH_MAINNET);
+    // this.logger.log('syncing recent arbitrum swaps');
+    // await this.syncRecentDOGSwaps(Network.ARB_MAINNET);
+    // this.logger.log('syncing recent matic swaps');
+    // await this.syncRecentDOGSwaps(Network.MATIC_MAINNET);
+  }
+
+  private async syncRecentDOGSwaps(network: SupportedNetwork) {
     this.logger.log('Syncing rainbow DOG swaps');
-    const block = await this.rainbowSwapRepo.getMostRecentSwapBlockNumber();
+    const block = await this.rainbowSwapRepo.getMostRecentSwapBlockNumber(
+      this.getDbNetwork(network),
+    );
     try {
       if (block) {
         this.logger.log(`Syncing DOG swaps from block: ${block}`);
 
-        await this.syncDOGSwapsFromBlock(block);
+        await this.syncDOGSwapsFromBlock(block, network);
       } else {
         this.logger.log('Syncing all DOG swaps');
 
-        await this.syncAllDOGSwaps();
+        await this.syncAllDOGSwaps(network);
       }
     } catch (e) {
       this.logger.error(`Error getting recent DOG swaps`);
@@ -70,93 +97,121 @@ export class RainbowSwapsService {
     }
   }
 
-  private async syncDOGSwapsFromBlock(blockNumber: number) {
+  private async syncDOGSwapsFromBlock(
+    blockNumber: number,
+    network: SupportedNetwork,
+  ) {
     const transfers = await this.getDOGTransfersToRouterFromBlock(
       ethers.BigNumber.from(blockNumber).toHexString(),
+      network,
     );
-    await this.upsertDOGSwaps(transfers);
+    await this.upsertDOGSwaps(transfers, network);
   }
 
-  async syncAllDOGSwaps() {
-    const transfers = await this.getAllDOGTransfersToRouter();
-    this.upsertDOGSwaps(transfers);
+  async syncAllDOGSwaps(network: SupportedNetwork) {
+    const transfers = await this.getAllDOGTransfersToRouter(network);
+    this.upsertDOGSwaps(transfers, network);
   }
 
   // @next -- investigate if we should be listening to transfers on all networks or not
-  private async getDOGTransfersToRouterFromBlock(fromBlock: string) {
-    const data = await this.alchemy.getAssetTransfers({
-      order: AssetTransfersOrder.ASCENDING,
-      toAddress: this.routerContractAddress,
-      contractAddresses: [this.dogAddress],
-      withMetadata: true,
-      category: [AssetTransfersCategory.ERC20],
-      maxCount: 1000,
-      fromBlock,
-    });
-    if (data.pageKey) {
-      throw new Error("There is paging data we don't handle currently");
-    }
-    return data?.transfers;
-  }
-
-  private async getAllDOGTransfersToRouter() {
-    // NOTE: this assumes there are not more than 1000 transfers
-    // @next -- handle pageKey correctly
-    const data = await this.alchemy.getAssetTransfers({
-      order: AssetTransfersOrder.ASCENDING,
-      toAddress: this.routerContractAddress,
-      contractAddresses: [this.dogAddress],
-      withMetadata: true,
-      category: [AssetTransfersCategory.ERC20],
-      maxCount: 1000,
-    });
-    if (data.pageKey) {
-      throw new Error("There is paging data we don't handle currently");
-    }
-    return data?.transfers;
-  }
-
-  private async getRouterTransfersByBlock(block: string) {
-    const toTxs = (
-      await this.alchemy.getAssetTransfers({
+  private async getDOGTransfersToRouterFromBlock(
+    fromBlock: string,
+    network: SupportedNetwork = Network.ETH_MAINNET,
+  ) {
+    const data = await this.alchemy.getAssetTransfers(
+      {
         order: AssetTransfersOrder.ASCENDING,
         toAddress: this.routerContractAddress,
-        category: [
-          AssetTransfersCategory.ERC20,
-          AssetTransfersCategory.INTERNAL,
-          AssetTransfersCategory.EXTERNAL,
-        ],
-        fromBlock: block,
-        toBlock: block,
+        contractAddresses: [this.getDOGAddress(network)],
         withMetadata: true,
-      })
+        category: [AssetTransfersCategory.ERC20],
+        maxCount: 1000,
+        fromBlock,
+      },
+      network,
+    );
+    if (data.pageKey) {
+      throw new Error("There is paging data we don't handle currently");
+    }
+    return data?.transfers;
+  }
+
+  private async getAllDOGTransfersToRouter(network: SupportedNetwork) {
+    // NOTE: this assumes there are not more than 1000 transfers
+    // @next -- handle pageKey correctly
+    const data = await this.alchemy.getAssetTransfers(
+      {
+        order: AssetTransfersOrder.ASCENDING,
+        toAddress: this.routerContractAddress,
+        contractAddresses: [this.getDOGAddress(network)],
+        withMetadata: true,
+        category: [AssetTransfersCategory.ERC20],
+        maxCount: 1000,
+      },
+      network,
+    );
+    if (data.pageKey) {
+      throw new Error("There is paging data we don't handle currently");
+    }
+    return data?.transfers;
+  }
+
+  private async getRouterTransfersByBlock(
+    block: string,
+    network: SupportedNetwork,
+  ) {
+    const category = [
+      AssetTransfersCategory.ERC20,
+      AssetTransfersCategory.EXTERNAL,
+    ];
+    if (network === Network.ETH_MAINNET) {
+      category.push(AssetTransfersCategory.INTERNAL);
+    }
+    const toTxs = (
+      await this.alchemy.getAssetTransfers(
+        {
+          order: AssetTransfersOrder.ASCENDING,
+          toAddress: this.routerContractAddress,
+          fromBlock: block,
+          toBlock: block,
+          withMetadata: true,
+          category,
+        },
+        network,
+      )
     ).transfers;
     const fromTxs = (
-      await this.alchemy.getAssetTransfers({
-        order: AssetTransfersOrder.ASCENDING,
-        fromAddress: this.routerContractAddress,
-        category: [
-          AssetTransfersCategory.ERC20,
-          AssetTransfersCategory.INTERNAL,
-          AssetTransfersCategory.EXTERNAL,
-        ],
-        fromBlock: block,
-        toBlock: block,
-        withMetadata: true,
-      })
+      await this.alchemy.getAssetTransfers(
+        {
+          order: AssetTransfersOrder.ASCENDING,
+          fromAddress: this.routerContractAddress,
+          fromBlock: block,
+          toBlock: block,
+          withMetadata: true,
+          category,
+        },
+        network,
+      )
     ).transfers;
     return toTxs.concat(fromTxs);
   }
 
-  private async upsertDOGSwaps(transfers: AssetTransfersWithMetadataResult[]) {
+  private async upsertDOGSwaps(
+    transfers: AssetTransfersWithMetadataResult[],
+    network: SupportedNetwork,
+  ) {
     for (const transfer of transfers) {
       const blockNumber = ethers.BigNumber.from(transfer.blockNum);
       const allTransfers = (
-        await this.getRouterTransfersByBlock(blockNumber.toHexString())
+        await this.getRouterTransfersByBlock(blockNumber.toHexString(), network)
       ).filter((tx) => tx.hash === transfer.hash);
+
       try {
         const order = this.getOrderFromAssetTransfers(allTransfers);
-        await this.rainbowSwapRepo.upsert(order);
+        await this.rainbowSwapRepo.upsert({
+          ...order,
+          network: this.getDbNetwork(network),
+        });
       } catch (e) {
         this.logger.error(`Could not insert rainbow swap: ${transfer.hash}`);
         this.logger.error(e);
@@ -168,7 +223,7 @@ export class RainbowSwapsService {
 
   private getOrderFromAssetTransfers(
     trace: AssetTransfersWithMetadataResult[],
-  ): Omit<RainbowSwaps, 'id' | 'insertedAt' | 'updatedAt'> {
+  ): Omit<RainbowSwaps, 'id' | 'insertedAt' | 'updatedAt' | 'network'> {
     const external = trace.filter(
       (tx) => tx.category === AssetTransfersCategory.EXTERNAL,
     );
@@ -350,11 +405,25 @@ export class RainbowSwapsService {
     return balances;
   }
 
+  getAllDonationSwaps() {
+    return this.rainbowSwapRepo.findMany({
+      where: {
+        blockCreatedAt: {
+          gte: new Date('2022-11-02'),
+        },
+      },
+      orderBy: {
+        blockCreatedAt: 'desc',
+      },
+    });
+  }
+
   getValidDonationSwaps() {
     return this.rainbowSwapRepo.findMany({
       where: {
         blockCreatedAt: {
           gte: new Date('2022-11-02'),
+          lte: new Date('2022-12-07T04:59:59Z'),
         },
       },
       orderBy: {
