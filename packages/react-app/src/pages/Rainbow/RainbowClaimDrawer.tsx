@@ -8,13 +8,13 @@ import { RainbowClaimModalProps } from "./RainbowClaimModal";
 
 interface RainbowClaimDrawerProps extends RainbowClaimModalProps {}
 
-const RainbowClaimDrawer = observer(({ isOpen, onClose, rainbowContract }: RainbowClaimDrawerProps) => {
+const RainbowClaimDrawer = observer(({ isOpen, onClose, rainbowContract, onSuccess }: RainbowClaimDrawerProps) => {
   const store = useMemo(() => new RainbowClaimDialogStore(rainbowContract), [rainbowContract]);
   return (
     <Drawer title={store.title} isOpen={isOpen} onClose={onClose} description={store.description}>
       <Flex alignItems={"center"} h={"full"}>
         <Box width={"100%"}>
-          <RainbowClaimDialog store={store} />
+          <RainbowClaimDialog store={store} onSuccess={onSuccess} />
         </Box>
       </Flex>
     </Drawer>

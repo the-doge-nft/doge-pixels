@@ -218,6 +218,13 @@ class RainbowStore extends Reactionable(EmptyClass) {
       this.pixelIdsInContract.length > 0
     );
   }
+
+  onSuccess() {
+    this.getHasUserClaimed();
+    this.getPixelClaimed();
+    this.getPixelsInContract();
+    AppStore.web3.refreshPupperBalance();
+  }
 }
 
 export default RainbowStore;

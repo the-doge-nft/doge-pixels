@@ -9,17 +9,19 @@ import Loading from "../../DSL/Loading/Loading";
 import Typography, { TVariant } from "../../DSL/Typography/Typography";
 import { getEtherscanURL } from "../../helpers/links";
 import RainbowMeme from "../../images/rainbow-meme.jpg";
-import AppStore from "../../store/App.store";
 import RainbowClaimDialogStore, { RainbowClaimDialogView } from "./RainbowClaimDialog.store";
 
 interface BurnPixelsDialogProps {
   store: RainbowClaimDialogStore;
+  onSuccess?: () => void;
 }
 
-const RainbowClaimDialog = observer(({ store }: BurnPixelsDialogProps) => {
+const RainbowClaimDialog = observer(({ store, onSuccess }: BurnPixelsDialogProps) => {
   useEffect(() => {
     if (store.currentView === RainbowClaimDialogView.Complete) {
-      AppStore.web3.refreshPupperBalance();
+      if (onSuccess) {
+        onSuccess();
+      }
     }
     // eslint-disable-next-line
   }, [store.currentView]);

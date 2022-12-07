@@ -180,6 +180,7 @@ const RainbowPage = observer(function RainbowPage() {
           onClose={() => (store.showModal = false)}
           isOpen={store.showModal}
           rainbowContract={store.rainbowContract}
+          onSuccess={() => store.onSuccess()}
         />
       )}
       {store.showDrawer && (
@@ -187,6 +188,7 @@ const RainbowPage = observer(function RainbowPage() {
           rainbowContract={store.rainbowContract}
           onClose={() => (store.showDrawer = false)}
           isOpen={store.showDrawer}
+          onSuccess={() => store.onSuccess()}
         />
       )}
     </>
