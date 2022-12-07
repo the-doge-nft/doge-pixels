@@ -35,6 +35,16 @@ export class DonationsService {
   soDogeTipAddress = 'D7XihpaUjiCqvPrky2xEyfvgoJeUjMKQ6E';
   ethereumAddress = '0x633aC73fB70247257E0c3A1142278235aFa358ac';
 
+  private txIdsToFilter = [
+    '0x1bd3cbae22469b3801eea1d336818034443a4849f37b8c3de4cb178d9ba8ad96',
+    '0xe396d17f229b01eea8cc1e3c6c799019660f8706fde500235d8119c4df8e0529',
+    '0x79e50251330c2bfe16c176f5286408a95cb4b0f696c502ec54318d3cc4b6ba0b',
+    '0x6f412bb523f4521025801a42dbeea5a3e3109ad6a3d9821e9e85300847bd51c4',
+    '0x481e730947648be7005e0c336b69b32741fdbc07c4555a2ab7db923fd788b2b0',
+    '0x7aeab291e207abee000c9074bf9c5e2222673dbb0c485efc77db33593999234b',
+    '0x0714a47f7e33807a183f67dc5a8c7024ce9347e819231454727ec0960aee88ed',
+  ];
+
   constructor(
     private readonly alchemy: AlchemyService,
     private readonly donationsRepo: DonationsRepository,
@@ -299,6 +309,9 @@ export class DonationsService {
         fromAddress: {
           notIn: [this.myDogeAddress, this.soDogeTipAddress],
         },
+        txHash: {
+          notIn: this.txIdsToFilter,
+        },
       },
     });
   }
@@ -315,6 +328,9 @@ export class DonationsService {
         },
         blockCreatedAt: {
           lte: new Date('2022-12-07T05:10:59Z'),
+        },
+        txHash: {
+          notIn: this.txIdsToFilter,
         },
       },
     });
