@@ -27,14 +27,14 @@ export class DonationController {
   @CacheTTL(30)
   @Get('/swaps')
   getSwaps() {
-    return this.rainbowSwapService.getValidDonationSwaps();
+    return this.rainbowSwapService.getAllDonationSwaps();
   }
 
   @CacheKey('STATUECAMPAIGN:DONATIONS')
   @CacheTTL(30)
   @Get('/donations')
   getDonations() {
-    return this.donationsService.getDonations();
+    return this.donationsService.getAllDonations();
   }
 
   @CacheKey('STATUECAMPAIGN:LEADERBOARD')
@@ -85,6 +85,14 @@ export class DonationController {
   @Get('/sync/eth')
   async syncAllEth() {
     await this.donationsService.syncAllEthereumTransfers();
+    return { success: true };
+  }
+
+  @CacheKey('STATUECAMPAIGN:SYCNALLETHDONATIONS')
+  @CacheTTL(30)
+  @Get('/sync/swaps')
+  async syncAllSwaps() {
+    await this.rainbowSwapService.syncAllNetworks();
     return { success: true };
   }
 }

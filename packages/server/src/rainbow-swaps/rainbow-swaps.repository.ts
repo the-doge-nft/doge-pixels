@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { Prisma, RainbowSwaps } from '@prisma/client';
+import { EthereumNetwork, Prisma, RainbowSwaps } from '@prisma/client';
 import { AlchemyService } from '../alchemy/alchemy.service';
 import { CoinGeckoService } from '../coin-gecko/coin-gecko.service';
 import { EthersService } from '../ethers/ethers.service';
@@ -53,11 +53,14 @@ export class RainbowSwapsRepository {
     });
   }
 
-  async getMostRecentSwapBlockNumber() {
+  async getMostRecentSwapBlockNumber(network: EthereumNetwork) {
     return (
       await this.prisma.rainbowSwaps.findMany({
         orderBy: {
           blockNumber: 'desc',
+        },
+        where: {
+          network,
         },
         take: 1,
       })

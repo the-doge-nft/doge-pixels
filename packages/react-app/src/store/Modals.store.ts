@@ -10,6 +10,7 @@ export enum ModalName {
 }
 
 const SHOW_HELPER_MODAL = "show_helper_modal";
+const SHOW_INFO_MODAL = "show_info_modal";
 
 class ModalsStore {
   @observable
@@ -28,7 +29,7 @@ class ModalsStore {
   isBurnMemeModalOpen = false;
 
   @observable
-  isInfoModalOpen = true;
+  isInfoModalOpen = false;
 
   @observable
   isMyPixelsModalOpen = false;
@@ -43,6 +44,13 @@ class ModalsStore {
   init() {
     this.isScrollModalOpen = LocalStorage.getItem(SHOW_HELPER_MODAL, LocalStorage.PARSE_JSON, true);
     LocalStorage.setItem(SHOW_HELPER_MODAL, false);
+
+    this.isInfoModalOpen = LocalStorage.getItem(SHOW_INFO_MODAL, LocalStorage.PARSE_JSON, true);
+  }
+
+  toggleInfoModal() {
+    this.isInfoModalOpen = !this.isInfoModalOpen;
+    LocalStorage.setItem(SHOW_INFO_MODAL, this.isInfoModalOpen);
   }
 }
 

@@ -28,24 +28,31 @@ enum ClientSide {
   SELL
 }
 
+enum EthereumNetwork {
+  MAINNET
+  POLYGON
+  ARBITRUM
+}
+
 model RainbowSwaps {
-  id                     Int        @id @default(autoincrement())
+  id                     Int              @id @default(autoincrement())
   blockNumber            Int
   blockCreatedAt         DateTime
-  insertedAt             DateTime   @default(now())
-  updatedAt              DateTime   @default(now())
+  insertedAt             DateTime         @default(now())
+  updatedAt              DateTime         @default(now())
   baseCurrency           String
   quoteCurrency          String
   baseAmount             Float
   quoteAmount            Float
   clientSide             ClientSide
-  txHash                 String     @unique
+  txHash                 String           @unique
   clientAddress          String
   donatedCurrency        String
   donatedAmount          Float
   baseCurrencyAddress    String?
   quoteCurrencyAddress   String?
   donatedCurrencyAddress String?
+  network                EthereumNetwork?
 }
 
 enum ChainName {

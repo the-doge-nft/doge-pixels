@@ -107,6 +107,12 @@ export class DonationsService {
           () => this.sochain.getTransaction(receivedTx.txid),
           2,
         );
+        if (tx.block_no === null) {
+          this.logger.log(
+            `block not confirmed yet, skipping DOGE tx sync: ${tx.txid}`,
+          );
+          continue;
+        }
         const fromAddress = tx.inputs[0].address;
         await this.donationsRepo.upsert({
           fromAddress,
@@ -284,7 +290,7 @@ export class DonationsService {
     };
   }
 
-  async getDonations() {
+  async getAllDonations() {
     return this.donationsRepo.findMany({
       orderBy: {
         blockCreatedAt: 'desc',
@@ -292,6 +298,23 @@ export class DonationsService {
       where: {
         fromAddress: {
           notIn: [this.myDogeAddress, this.soDogeTipAddress],
+        },
+      },
+    });
+  }
+
+  async getLeaderboardDonations() {
+    // donations end at 12/6 ETC
+    return this.donationsRepo.findMany({
+      orderBy: {
+        blockCreatedAt: 'desc',
+      },
+      where: {
+        fromAddress: {
+          notIn: [this.myDogeAddress, this.soDogeTipAddress],
+        },
+        blockCreatedAt: {
+          lte: new Date('2022-12-07T04:59:59Z'),
         },
       },
     });

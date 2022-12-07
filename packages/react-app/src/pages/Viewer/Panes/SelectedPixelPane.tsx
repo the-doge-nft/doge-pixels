@@ -1,17 +1,16 @@
-import React from "react";
-import { observer } from "mobx-react-lite";
 import { Box, Flex, Image } from "@chakra-ui/react";
-import Typography, { TVariant } from "../../../DSL/Typography/Typography";
-import ViewerStore from "../Viewer.store";
+import { observer } from "mobx-react-lite";
+import { generatePath } from "react-router-dom";
+import Dev from "../../../common/Dev";
 import Button from "../../../DSL/Button/Button";
+import Icon from "../../../DSL/Icon/Icon";
+import Link from "../../../DSL/Link/Link";
 import PixelPane from "../../../DSL/PixelPane/PixelPane";
+import Typography, { TVariant } from "../../../DSL/Typography/Typography";
+import { isDevModeEnabled, isStaging } from "../../../environment/helpers";
 import { SELECT_PIXEL } from "../../../services/mixins/eventable";
 import AppStore from "../../../store/App.store";
-import Dev from "../../../common/Dev";
-import Link from "../../../DSL/Link/Link";
-import { generatePath } from "react-router-dom";
-import { isDevModeEnabled, isStaging } from "../../../environment/helpers";
-import Icon from "../../../DSL/Icon/Icon";
+import ViewerStore from "../Viewer.store";
 
 const SelectedPixelPane = observer(function SelectedPixelPane({ store }: { store: ViewerStore }) {
   return (
