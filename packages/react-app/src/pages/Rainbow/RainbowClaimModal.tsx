@@ -10,16 +10,17 @@ export interface RainbowClaimModalProps {
   isOpen: boolean;
   onClose: () => void;
   rainbowContract: Contract;
+  onSuccess?: () => void;
 }
 
-const RainbowClaimModal = observer(({ isOpen, onClose, rainbowContract }: RainbowClaimModalProps) => {
+const RainbowClaimModal = observer(({ isOpen, onClose, rainbowContract, onSuccess }: RainbowClaimModalProps) => {
   // eslint-disable-next-line
   const store = useMemo(() => new RainbowClaimDialogStore(rainbowContract), [rainbowContract]);
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} title={store.title} description={store.description} size={"md"}>
       <Box>
-        <RainbowClaimDialog store={store} />
+        <RainbowClaimDialog store={store} onSuccess={onSuccess} />
       </Box>
     </Modal>
   );
