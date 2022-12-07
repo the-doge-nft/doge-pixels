@@ -26,12 +26,12 @@ export class StatueCampaignService implements OnModuleInit {
   // rainbow swaps
   @Cron(CronExpression.EVERY_5_MINUTES)
   private syncRainbowSwaps() {
-    this.rainbowSwaps.syncRecentDOGSwaps();
+    this.rainbowSwaps.syncRecentDOGSwapsForAllNetworks();
   }
 
   @Cron(CronExpression.EVERY_HOUR)
   private syncAllRainbowSwaps() {
-    this.rainbowSwaps.syncAllDOGSwaps();
+    this.rainbowSwaps.syncAllNetworks();
   }
 
   // doge donations
@@ -59,7 +59,7 @@ export class StatueCampaignService implements OnModuleInit {
   async getLeaderBoard() {
     const donationLeaderBoard = {};
     const swapLeaderBoard = {};
-    const donations = await this.donationsService.getDonations();
+    const donations = await this.donationsService.getLeaderboardDonations();
     const swaps = await this.rainbowSwaps.getValidDonationSwaps();
 
     for (const donation of donations) {
