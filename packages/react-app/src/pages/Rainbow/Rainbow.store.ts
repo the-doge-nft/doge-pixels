@@ -5,12 +5,12 @@ import { Reactionable } from "../../services/mixins/reactionable";
 import AppStore from "../../store/App.store";
 import { showErrorToast, showSuccessToast } from "./../../DSL/Toast/Toast";
 import { EmptyClass } from "./../../helpers/mixins";
-const whitelist = require("../../services/whitelists/goerliRainbowClaim.json");
+const whitelist = require("../../services/whitelists/rainbowClaim.json");
 const abi = require("../../contracts/rainbowClaim.json");
 
 class RainbowStore extends Reactionable(EmptyClass) {
-  private goerliAddress = "0x028e2d212aD55C09E47B22f9324d91A0C465Bb2c";
-  private mainnetAddress = "";
+  private goerliAddress = "0x5b256146cd40820ffCEAc9329f4eD35b61a70fe6";
+  private mainnetAddress = "0xb4a12A947293cE9FBb63a0e4B63989eCB9c9a8Fc";
 
   @observable
   showAdminTools = false;

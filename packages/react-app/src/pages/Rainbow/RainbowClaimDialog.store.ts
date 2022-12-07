@@ -1,6 +1,5 @@
 import { Contract } from "ethers";
 import { computed, makeObservable, observable, toJS } from "mobx";
-import { isProduction } from "../../environment/helpers";
 import { Navigable } from "../../services/mixins/navigable";
 import AppStore from "../../store/App.store";
 import { showDebugToast } from "./../../DSL/Toast/Toast";
@@ -8,7 +7,7 @@ import { Constructor, EmptyClass } from "./../../helpers/mixins";
 import { getProof } from "./../../services/merkletree";
 import { StepperItems } from "./../../services/mixins/navigable";
 
-const goerliWhitelist = require("../../services/whitelists/goerliRainbowClaim.json");
+const whitelist = require("../../services/whitelists/rainbowClaim.json");
 
 export enum RainbowClaimDialogView {
   Claim = "claim",
@@ -65,7 +64,7 @@ class RainbowClaimDialogStore extends Navigable<RainbowClaimDialogView, Construc
       this.oldPixels = toJS(AppStore.web3.puppersOwned);
       showDebugToast("Claiming pixel from rainbow contract");
       this.pushNavigation(RainbowClaimDialogView.Loading);
-      const proof = getProof(AppStore.web3.address, isProduction() ? goerliWhitelist : goerliWhitelist);
+      const proof = getProof(AppStore.web3.address, whitelist);
       const estimatedGas = await this.rainbowContract.estimateGas.claim(proof);
       const gasLimitSafetyOffset = 80000;
       if (!estimatedGas) {
