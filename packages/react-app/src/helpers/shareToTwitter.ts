@@ -1,10 +1,11 @@
-import { Http } from "../services";
 import env from "../environment";
+import { Http } from "../services";
 
 export enum TwitterShareType {
   Mint = "mint",
   Burn = "burn",
   Art = "art",
+  Claim = "claim",
 }
 
 const shareToTwitter = (data: any, message: string, type: TwitterShareType) => {

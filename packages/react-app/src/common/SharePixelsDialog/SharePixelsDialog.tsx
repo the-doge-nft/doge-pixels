@@ -22,9 +22,16 @@ const SharePixelsDialog = observer(
         }
       }
 
+      let type = TwitterShareType.Mint;
+      if (action === "burn") {
+        type = TwitterShareType.Burn;
+      } else if (action === "claimed") {
+        type = TwitterShareType.Claim;
+      }
+
       const canvas: HTMLCanvasElement = document.getElementById(id) as HTMLCanvasElement;
       const data = canvas.toDataURL().replace("data:image/png;base64,", "");
-      shareToTwitter(data, description, action === "mint" ? TwitterShareType.Mint : TwitterShareType.Burn);
+      shareToTwitter(data, description, type);
     };
 
     const [selectedPixel, setSelectedPixel] = useState(null);

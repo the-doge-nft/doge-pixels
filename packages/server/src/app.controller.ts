@@ -6,24 +6,21 @@ import {
   Get,
   Inject,
   Logger,
-  OnModuleInit,
   Param,
   Post,
   Render,
 } from '@nestjs/common';
-import { OwnTheDogeContractService } from './ownthedoge-contracts/ownthedoge-contracts.service';
-import { ethers } from 'ethers';
-import { EthersService } from './ethers/ethers.service';
-import { HttpService } from '@nestjs/axios';
-import { PixelTransferRepository } from './pixel-transfer/pixel-transfer.repository';
-import { TwitterService } from './twitter/twitter.service';
-import { ConfigService } from '@nestjs/config';
-import { DiscordService } from './discord/discord.service';
-import { Cache } from 'cache-manager';
-import { PixelTransferService } from './pixel-transfer/pixel-transfer.service';
-import { PostTransfersDto } from './dto/PostTransfers.dto';
-import { CoinGeckoService } from './coin-gecko/coin-gecko.service';
 import { InjectSentry, SentryService } from '@travelerdev/nestjs-sentry';
+import { Cache } from 'cache-manager';
+import { ethers } from 'ethers';
+import { CoinGeckoService } from './coin-gecko/coin-gecko.service';
+import { DiscordService } from './discord/discord.service';
+import { PostTransfersDto } from './dto/PostTransfers.dto';
+import { EthersService } from './ethers/ethers.service';
+import { OwnTheDogeContractService } from './ownthedoge-contracts/ownthedoge-contracts.service';
+import { PixelTransferRepository } from './pixel-transfer/pixel-transfer.repository';
+import { PixelTransferService } from './pixel-transfer/pixel-transfer.service';
+import { TwitterService } from './twitter/twitter.service';
 
 @Controller('/v1')
 export class AppController {
@@ -201,7 +198,7 @@ export class AppController {
   async getTwitterShare(@Param() params) {
     const { id, type } = params;
 
-    if (!['mint', 'burn', 'art'].includes(type)) {
+    if (!['mint', 'burn', 'art', 'claim'].includes(type)) {
       throw new BadRequestException('Unknown type of twitter share');
     }
 
@@ -217,6 +214,10 @@ export class AppController {
       art: {
         title: 'Doge Pixel Art',
         description: 'Pixel Art created from Doge Pixels',
+      },
+      claim: {
+        title: 'Doge Pixel Claim',
+        description: 'Doge Pixels claimed',
       },
     };
 
