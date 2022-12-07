@@ -54,9 +54,9 @@ class RainbowStore extends Reactionable(EmptyClass) {
         if (AppStore.web3.signer) {
           this.rainbowContract = new Contract(this.contractAddress, abi, AppStore.web3.signer);
           this.getHasUserClaimed();
+          this.getPixelsInContract();
           if (AppStore.web3.address === this.depositorAddress) {
             this.showAdminTools = true;
-            this.getPixelsInContract();
             if (AppStore.web3.pxContract) {
               this.getCanRainbowMovePixels();
             }
@@ -188,7 +188,14 @@ class RainbowStore extends Reactionable(EmptyClass) {
 
   @computed
   get showClaimButton() {
-    return this.isConnected && this.isInWhitelist && !this.showDrawer && !this.showModal;
+    return (
+      this.isConnected &&
+      this.isInWhitelist &&
+      !this.showDrawer &&
+      !this.showModal &&
+      !this.hasUserClaimed &&
+      this.pixelIdsInContract.length > 0
+    );
   }
 }
 

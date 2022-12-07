@@ -52,12 +52,12 @@ const RainbowPage = observer(function RainbowPage() {
           </Typography>
           <Flex justifyContent={"center"} mt={6}>
             {!store.isConnected && <ConnectWalletButton />}
-            {store.isConnected && !store.isInWhitelist && (
+            {store.isConnected && !store.isInWhitelist && store.pixelIdsInContract.length > 0 && (
               <Typography variant={TVariant.ComicSans22} fontWeight={"bold"}>
                 Not in whitelist 🙁
               </Typography>
             )}
-            {store.showClaimButton && !store.hasUserClaimed && (
+            {store.showClaimButton && (
               <Button
                 mt={10}
                 onClick={() => {
@@ -92,6 +92,11 @@ const RainbowPage = observer(function RainbowPage() {
                   Thanks for claiming!
                 </Typography>
               </Box>
+            )}
+            {!store.hasUserClaimed && store.pixelIdsInContract.length === 0 && (
+              <Typography mt={4} color={"yellow.100"} fontWeight={"bold"} variant={TVariant.ComicSans22}>
+                No pixels left!
+              </Typography>
             )}
           </Flex>
           {store.showAdminTools && (
