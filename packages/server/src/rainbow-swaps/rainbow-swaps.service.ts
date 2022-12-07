@@ -57,6 +57,9 @@ export class RainbowSwapsService {
   async syncAllNetworks() {
     this.logger.log('syncing all mainnet swaps');
     await this.syncAllDOGSwaps(Network.ETH_MAINNET);
+
+    // SKIP OTHER NETWORKS FOR NOW AS ALCHEMY DOES NOT SUPPORT INTERNAL TRANSFERS WHICH MAKES ACCURATE TRACKING DIFFICULT
+
     // this.logger.log('syncing all arbitrum swaps');
     // await this.syncAllDOGSwaps(Network.ARB_MAINNET);
     // this.logger.log('syncing all matic swaps');
@@ -202,14 +205,6 @@ export class RainbowSwapsService {
       const allTransfers = (
         await this.getRouterTransfersByBlock(blockNumber.toHexString(), network)
       ).filter((tx) => tx.hash === transfer.hash);
-
-      // if (
-      //   transfer.hash ===
-      //   '0x2f34b66e20c98e211bd808b2f377f1166d9079d8aec1f53da07b492d4ee80fc8'
-      // ) {
-      //   this.logger.log('test case hit');
-      //   this.logger.log(JSON.stringify(allTransfers, undefined, 2));
-      // }
 
       try {
         const order = this.getOrderFromAssetTransfers(allTransfers);
