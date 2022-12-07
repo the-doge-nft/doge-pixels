@@ -11,7 +11,7 @@ const abi = require("../../contracts/rainbowClaim.json");
 
 class RainbowStore extends Reactionable(EmptyClass) {
   private goerliAddress = "0x271D91580Bbb6E07E222B7721B348e0AF0367A6F";
-  private mainnetAddress = "0xb4a12A947293cE9FBb63a0e4B63989eCB9c9a8Fc";
+  private mainnetAddress = "0x9Cd8e64c163068E9e017d32c8E9Cd6Ec8a9e7c31";
 
   @observable
   showAdminTools = false;
