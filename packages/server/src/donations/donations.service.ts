@@ -314,7 +314,7 @@ export class DonationsService {
           notIn: [this.myDogeAddress, this.soDogeTipAddress],
         },
         blockCreatedAt: {
-          lte: new Date('2022-12-07T04:59:59Z'),
+          lte: new Date('2022-12-07T05:10:59Z'),
         },
       },
     });

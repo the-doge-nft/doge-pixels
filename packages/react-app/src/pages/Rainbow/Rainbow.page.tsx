@@ -8,6 +8,7 @@ import Typography, { TVariant } from "../../DSL/Typography/Typography";
 import jsonify from "../../helpers/jsonify";
 import RainbowLogo from "../../images/rainbow-logo.png";
 import RainbowSponge from "../../images/rainbow-sponge.jpg";
+import { targetChain } from "../../services/wagmi";
 import AppStore from "../../store/App.store";
 import RainbowStore from "./Rainbow.store";
 import RainbowClaimDrawer from "./RainbowClaimDrawer";
@@ -52,51 +53,55 @@ const RainbowPage = observer(function RainbowPage() {
           </Typography>
           <Flex justifyContent={"center"} mt={6}>
             {!store.isConnected && <ConnectWalletButton />}
-            {store.isConnected && !store.isInWhitelist && store.pixelIdsInContract.length > 0 && (
-              <Typography variant={TVariant.ComicSans22} fontWeight={"bold"}>
-                Not in whitelist 🙁
-              </Typography>
-            )}
-            {store.showClaimButton && (
-              <Button
-                mt={10}
-                onClick={() => {
-                  if (AppStore.rwd.isMobile) {
-                    store.showDrawer = true;
-                  } else {
-                    store.showModal = true;
-                  }
-                }}
-              >
-                Claim
-              </Button>
-            )}
-            {store.hasUserClaimed && (
-              <Box mt={10} mb={16}>
-                <Image
-                  src={RainbowSponge}
-                  alt={"ty4claiming"}
-                  borderWidth={"1px"}
-                  borderColor={"black"}
-                  borderStyle={"solid"}
-                  maxW={"sm"}
-                />
-                <Typography
-                  fontWeight={"bold"}
-                  mt={4}
-                  block
-                  textAlign={"center"}
-                  variant={TVariant.ComicSans20}
-                  w={"full"}
-                >
-                  Thanks for claiming!
-                </Typography>
-              </Box>
-            )}
-            {!store.hasUserClaimed && store.pixelIdsInContract.length === 0 && (
-              <Typography mt={4} color={"yellow.100"} fontWeight={"bold"} variant={TVariant.ComicSans22}>
-                No pixels left!
-              </Typography>
+            {AppStore.web3?.network?.id === targetChain.id && (
+              <>
+                {store.isConnected && !store.isInWhitelist && store.pixelIdsInContract.length > 0 && (
+                  <Typography variant={TVariant.ComicSans22} fontWeight={"bold"}>
+                    Not in whitelist 🙁
+                  </Typography>
+                )}
+                {store.showClaimButton && (
+                  <Button
+                    mt={10}
+                    onClick={() => {
+                      if (AppStore.rwd.isMobile) {
+                        store.showDrawer = true;
+                      } else {
+                        store.showModal = true;
+                      }
+                    }}
+                  >
+                    Claim
+                  </Button>
+                )}
+                {store.hasUserClaimed && (
+                  <Box mt={10} mb={16}>
+                    <Image
+                      src={RainbowSponge}
+                      alt={"ty4claiming"}
+                      borderWidth={"1px"}
+                      borderColor={"black"}
+                      borderStyle={"solid"}
+                      maxW={"sm"}
+                    />
+                    <Typography
+                      fontWeight={"bold"}
+                      mt={4}
+                      block
+                      textAlign={"center"}
+                      variant={TVariant.ComicSans20}
+                      w={"full"}
+                    >
+                      Thanks for claiming!
+                    </Typography>
+                  </Box>
+                )}
+                {!store.hasUserClaimed && store.pixelIdsInContract.length === 0 && (
+                  <Typography mt={4} color={"yellow.100"} fontWeight={"bold"} variant={TVariant.ComicSans22}>
+                    No pixels left!
+                  </Typography>
+                )}
+              </>
             )}
           </Flex>
           {store.showAdminTools && (
