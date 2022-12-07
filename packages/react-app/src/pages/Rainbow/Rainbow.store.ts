@@ -1,6 +1,7 @@
 import { Contract } from "ethers";
 import { computed, makeObservable, observable } from "mobx";
 import { isProduction } from "../../environment/helpers";
+import { Http } from "../../services";
 import { Reactionable } from "../../services/mixins/reactionable";
 import AppStore from "../../store/App.store";
 import { showErrorToast, showSuccessToast } from "./../../DSL/Toast/Toast";
@@ -41,6 +42,9 @@ class RainbowStore extends Reactionable(EmptyClass) {
 
   @observable
   isWithdrawLoading = false;
+
+  @observable
+  pixelIdClaimed?: number;
 
   constructor() {
     super();
@@ -145,7 +149,12 @@ class RainbowStore extends Reactionable(EmptyClass) {
   }
 
   getHasUserClaimed() {
-    this.rainbowContract.addressHasClaimed(AppStore.web3.address).then(res => (this.hasUserClaimed = res));
+    this.rainbowContract.addressHasClaimed(AppStore.web3.address).then(hasClaimed => {
+      this.hasUserClaimed = hasClaimed;
+      if (this.hasUserClaimed) {
+        this.getPixelClaimed();
+      }
+    });
   }
 
   async withdraw() {
@@ -179,6 +188,19 @@ class RainbowStore extends Reactionable(EmptyClass) {
       return "0x12E9d84aF808C26F21e383af5762F48b990aDC09";
     }
     return "0xaF46dc96bd783E683fD0EFeF825e6110165b8f9E";
+  }
+
+  async getPixelClaimed() {
+    const { data } = await Http.post(`/v1/transfers/${AppStore.web3.address}`, {
+      sort: {
+        blockNumber: "desc",
+      },
+      filter: {
+        from: this.contractAddress,
+      },
+    });
+    this.pixelIdClaimed = data?.[0]?.tokenId;
+    console.log("debug:: data", data);
   }
 
   @computed
