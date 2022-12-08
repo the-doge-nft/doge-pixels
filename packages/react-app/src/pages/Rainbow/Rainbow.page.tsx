@@ -170,7 +170,7 @@ const RainbowPage = observer(function RainbowPage() {
           )}
         </Box>
         <Flex flexDir={"column"} gap={4}>
-          <Flex justifyContent={"center"}>
+          <Flex justifyContent={"center"} mt={6}>
             <Typography color={"yellow.100"} variant={TVariant.ComicSans16}>
               {store.pixelsRemaining}/220 pixels left
             </Typography>
