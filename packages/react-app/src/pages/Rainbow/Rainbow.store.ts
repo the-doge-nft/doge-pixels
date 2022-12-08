@@ -219,6 +219,11 @@ class RainbowStore extends Reactionable(EmptyClass) {
     );
   }
 
+  @computed
+  get pixelsRemaining() {
+    return AppStore.web3.addressToPuppers?.[this.contractAddress]?.tokenIds?.length;
+  }
+
   onSuccess() {
     this.getHasUserClaimed();
     this.getPixelClaimed();
