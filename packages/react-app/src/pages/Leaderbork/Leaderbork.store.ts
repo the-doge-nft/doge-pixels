@@ -212,12 +212,6 @@ class LeaderborkStore extends Reactionable(EmptyClass) {
     this.searchValue = this.selectedAddress;
     this.selectedOwnerTab = SelectedOwnerTab.Wallet;
     this.selectedPixelId = this.selectedOwner.pixels[0];
-    // this.pushWindowState(
-    //   generatePath(`/leaderbork/:address/${SelectedOwnerTab.Wallet}/:tokenId`, {
-    //     address: this.selectedAddress,
-    //     tokenId: this.selectedPixelId,
-    //   }),
-    // );
     this.getSelectedUserTransfers();
   }
 
@@ -233,18 +227,6 @@ class LeaderborkStore extends Reactionable(EmptyClass) {
 
   setActivityId(activityId: string) {
     this.selectedTransferId = activityId;
-    if (this.selectedOwner) {
-      this.pushWindowState(
-        generatePath(`/leaderbork/:address/${SelectedOwnerTab.Activity}/:activityId`, {
-          address: this.selectedAddress,
-          activityId: this.selectedTransferId,
-        }),
-      );
-    } else {
-      this.pushWindowState(
-        generatePath(`/leaderbork/${SelectedOwnerTab.Activity}/:activityId`, { activityId: this.selectedTransferId }),
-      );
-    }
   }
 
   pushWindowState(route: string) {
@@ -280,7 +262,7 @@ class LeaderborkStore extends Reactionable(EmptyClass) {
         blockNumber: "desc",
       },
     }).then(({ data }) => {
-      return (this.globalTransfers = data);
+      return (this.globalTransfers = data.slice(0, 20));
     });
   }
 
@@ -377,7 +359,6 @@ class LeaderborkStore extends Reactionable(EmptyClass) {
 
   @computed
   get hasMorePagableOwners() {
-    console.log("debug:: LENGTHS", this.pagableOwners.length, AppStore.web3.sortedPixelOwners.length);
     return this.pagableOwners.length < AppStore.web3.sortedPixelOwners.length;
   }
 }

@@ -36,8 +36,6 @@ const TopDogs = observer(({ store }: { store: LeaderborkStore }) => {
     >
       <Box overflowY={"auto"} flexGrow={1}>
         <Flex flexWrap={"wrap"} gap={1} maxH={"350px"}>
-          {/* <Box>{jsonify(store.hasMorePagableOwners)}</Box> */}
-          {/* <Box>{jsonify(store.pagableOwners.length)}</Box> */}
           <InfiniteScroll
             next={() => store.page()}
             hasMore={store.hasMorePagableOwners}
