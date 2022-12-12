@@ -32,7 +32,7 @@ const LeaderborkPage = observer(function LeaderborkPage() {
   const { address, tokenId, activityId } = useParams<{ address?: string; tokenId?: string; activityId?: string }>();
   const store = useMemo(
     () => new LeaderborkStore(address, tokenId ? Number(tokenId) : undefined, activityId, selectedOwnerTabType),
-    [address, tokenId, selectedOwnerTabType],
+    [],
   );
   const { colorMode } = useColorMode();
   useEffect(() => {

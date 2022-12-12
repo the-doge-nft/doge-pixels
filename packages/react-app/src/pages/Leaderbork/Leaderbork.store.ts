@@ -6,6 +6,7 @@ import { abbreviate } from "../../helpers/strings";
 import { Http } from "../../services";
 import { Reactionable } from "../../services/mixins/reactionable";
 import AppStore from "../../store/App.store";
+import { sleep } from "./../../helpers/sleep";
 
 export interface PixelOwnerInfo {
   address: string;
@@ -65,7 +66,7 @@ class LeaderborkStore extends Reactionable(EmptyClass) {
   selectedOwnerTab: SelectedOwnerTab = SelectedOwnerTab.Activity;
 
   @observable
-  paginableCount = 10;
+  paginableCount = 25;
 
   constructor(
     selectedAddress?: string,
@@ -75,6 +76,7 @@ class LeaderborkStore extends Reactionable(EmptyClass) {
   ) {
     super();
     makeObservable(this);
+    console.log("debug:: constructor");
 
     if (selectedAddress) {
       this.searchValue = selectedAddress;
@@ -210,12 +212,12 @@ class LeaderborkStore extends Reactionable(EmptyClass) {
     this.searchValue = this.selectedAddress;
     this.selectedOwnerTab = SelectedOwnerTab.Wallet;
     this.selectedPixelId = this.selectedOwner.pixels[0];
-    this.pushWindowState(
-      generatePath(`/leaderbork/:address/${SelectedOwnerTab.Wallet}/:tokenId`, {
-        address: this.selectedAddress,
-        tokenId: this.selectedPixelId,
-      }),
-    );
+    // this.pushWindowState(
+    //   generatePath(`/leaderbork/:address/${SelectedOwnerTab.Wallet}/:tokenId`, {
+    //     address: this.selectedAddress,
+    //     tokenId: this.selectedPixelId,
+    //   }),
+    // );
     this.getSelectedUserTransfers();
   }
 
@@ -358,19 +360,25 @@ class LeaderborkStore extends Reactionable(EmptyClass) {
   }
 
   @action
-  page() {
-    console.log("debug:: page");
-    this.paginableCount += 15;
+  async page() {
+    const amountToPage = 20;
+    // ~make it feel natural~ //
+    await sleep(500);
+    this.paginableCount += amountToPage;
   }
 
   @computed
   get pagableOwners() {
-    return [...AppStore.web3.sortedPixelOwners].splice(0, this.paginableCount);
+    if (AppStore.web3.sortedPixelOwners) {
+      return [...AppStore.web3.sortedPixelOwners].splice(0, this.paginableCount);
+    }
+    return [];
   }
 
   @computed
   get hasMorePagableOwners() {
-    return this.paginableCount <= AppStore.web3.sortedPixelOwners.length;
+    console.log("debug:: LENGTHS", this.pagableOwners.length, AppStore.web3.sortedPixelOwners.length);
+    return this.pagableOwners.length < AppStore.web3.sortedPixelOwners.length;
   }
 }
 

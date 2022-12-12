@@ -8,13 +8,14 @@ import { PixelOwnerInfo } from "./Leaderbork.store";
 import PxPill from "./PxPill";
 
 interface UserCardProps {
+  rank: number;
   onClick: (address: string) => void;
   pixelOwner: PixelOwnerInfo;
   isSelected?: boolean;
 }
 
 const UserCard: React.FC<PropsWithChildren<UserCardProps>> = observer(
-  ({ onClick, pixelOwner, isSelected = false, children }) => {
+  ({ rank, onClick, pixelOwner, isSelected = false, children }) => {
     const { colorMode } = useColorMode();
     return (
       <Flex
@@ -34,6 +35,9 @@ const UserCard: React.FC<PropsWithChildren<UserCardProps>> = observer(
         }}
       >
         <Flex alignItems={"center"} overflow={"hidden"}>
+          <Typography variant={TVariant.ComicSans14} mr={3} color={"yellow.100"}>
+            {rank}
+          </Typography>
           <Box>
             <Typography
               variant={TVariant.PresStart12}

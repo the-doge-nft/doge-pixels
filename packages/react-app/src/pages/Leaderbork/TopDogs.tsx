@@ -1,11 +1,12 @@
 import { Box, Flex, useColorMode } from "@chakra-ui/react";
 import { observer } from "mobx-react-lite";
+import { generatePath, Link } from "react-router-dom";
 import InfiniteScroll from "../../DSL/InfiniteScroll/InfiniteScroll";
 import Pane from "../../DSL/Pane/Pane";
 import { lightOrDarkMode } from "../../DSL/Theme";
 import Typography, { TVariant } from "../../DSL/Typography/Typography";
 import AppStore from "../../store/App.store";
-import LeaderborkStore from "./Leaderbork.store";
+import LeaderborkStore, { SelectedOwnerTab } from "./Leaderbork.store";
 import UserCard from "./UserCard";
 
 const TopDogs = observer(({ store }: { store: LeaderborkStore }) => {
@@ -35,28 +36,38 @@ const TopDogs = observer(({ store }: { store: LeaderborkStore }) => {
     >
       <Box overflowY={"auto"} flexGrow={1}>
         <Flex flexWrap={"wrap"} gap={1} maxH={"350px"}>
+          {/* <Box>{jsonify(store.hasMorePagableOwners)}</Box> */}
+          {/* <Box>{jsonify(store.pagableOwners.length)}</Box> */}
           <InfiniteScroll
             next={() => store.page()}
             hasMore={store.hasMorePagableOwners}
-            dataLength={store.paginableCount}
+            dataLength={store.pagableOwners.length}
           >
-            {store.pagableOwners.map(owner => (
-              <UserCard
+            {store.pagableOwners.map((owner, index) => (
+              <Link
                 key={`top-dog-${owner.address}`}
-                isSelected={store.selectedOwner?.address === owner.address}
-                onClick={address => store.setSelectedAddress(address)}
-                pixelOwner={owner}
+                onClick={() => store.setSelectedAddress(owner.address)}
+                to={generatePath(`/leaderbork/:address/${SelectedOwnerTab.Wallet}`, {
+                  address: owner.address,
+                })}
               >
-                {AppStore.web3?.address === owner.address && (
-                  <Typography
-                    color={lightOrDarkMode(colorMode, "yellow.100", "gray.300")}
-                    variant={TVariant.PresStart12}
-                    ml={4}
-                  >
-                    (you)
-                  </Typography>
-                )}
-              </UserCard>
+                <UserCard
+                  rank={index + 1}
+                  isSelected={store.selectedOwner?.address === owner.address}
+                  onClick={address => store.setSelectedAddress(address)}
+                  pixelOwner={owner}
+                >
+                  {AppStore.web3?.address === owner.address && (
+                    <Typography
+                      color={lightOrDarkMode(colorMode, "yellow.100", "gray.300")}
+                      variant={TVariant.PresStart12}
+                      ml={4}
+                    >
+                      (you)
+                    </Typography>
+                  )}
+                </UserCard>
+              </Link>
             ))}
           </InfiniteScroll>
         </Flex>

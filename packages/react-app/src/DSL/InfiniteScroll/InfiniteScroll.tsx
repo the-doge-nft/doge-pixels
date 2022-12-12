@@ -75,10 +75,12 @@ const InfiniteScroll: React.FC<PropsWithChildren<InfinteScrollProps>> = ({
 
   return (
     <Box
+      w={"full"}
       h={!height ? "full" : "inherit"}
-      overflowY={!!height ? "scroll" : "auto"}
+      overflowY={!!height ? "scroll" : "hidden"}
       ref={infiniteScrollRef}
       style={{ height }}
+      pb={2}
     >
       {children}
       {showLoader && hasMore && (
@@ -91,7 +93,7 @@ const InfiniteScroll: React.FC<PropsWithChildren<InfinteScrollProps>> = ({
           )}
         </>
       )}
-      <Box ref={loadMoreRef}>
+      <Box ref={loadMoreRef} mt={-1}>
         {!hasMore && dataLength > 0 && (
           <Box textAlign={"center"} mt={14}>
             <Typography variant={TVariant.ComicSans16}>
