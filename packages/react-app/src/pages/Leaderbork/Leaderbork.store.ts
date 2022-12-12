@@ -66,7 +66,7 @@ class LeaderborkStore extends Reactionable(EmptyClass) {
   selectedOwnerTab: SelectedOwnerTab = SelectedOwnerTab.Activity;
 
   @observable
-  paginableCount = 25;
+  paginableCount = 20;
 
   constructor(
     selectedAddress?: string,

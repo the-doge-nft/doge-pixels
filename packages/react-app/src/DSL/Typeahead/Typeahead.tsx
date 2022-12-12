@@ -1,10 +1,11 @@
-import TextInput, { TextInputProps } from "../Form/TextInput";
-import Form from "../Form/Form";
-import React, { useEffect, useRef, useState } from "react";
 import { Box, useMultiStyleConfig } from "@chakra-ui/react";
-import Typography, { TVariant } from "../Typography/Typography";
-import { arrayFuzzyFilterByKey } from "../../helpers/arrays";
 import { observer } from "mobx-react-lite";
+import React, { useEffect, useRef, useState } from "react";
+import { arrayFuzzyFilterByKey } from "../../helpers/arrays";
+import jsonify from "../../helpers/jsonify";
+import Form from "../Form/Form";
+import TextInput, { TextInputProps } from "../Form/TextInput";
+import Typography, { TVariant } from "../Typography/Typography";
 
 interface ComboboxItem {
   value: any;
@@ -25,8 +26,8 @@ const Typeahead: React.FC<ComboboxProps> = observer(({ onItemSelect, items, valu
   const boxRef = useRef<HTMLDivElement>();
 
   useEffect(() => {
-    setFilteredItems(arrayFuzzyFilterByKey(items, value, "name"));
-  }, [value]);
+    setFilteredItems(arrayFuzzyFilterByKey(items, value, "name").slice(0, 5));
+  }, [value, jsonify(items)]);
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -82,7 +83,6 @@ const Typeahead: React.FC<ComboboxProps> = observer(({ onItemSelect, items, valu
           ))}
         </Box>
       )}
-      <div onClick={e => console.log(e)} />
     </Box>
   );
 });
