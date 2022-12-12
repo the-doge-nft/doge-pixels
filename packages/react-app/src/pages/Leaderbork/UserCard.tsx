@@ -4,17 +4,17 @@ import React, { PropsWithChildren } from "react";
 import { darkModeSecondary, lightModePrimary, lightOrDarkMode } from "../../DSL/Theme";
 import Typography, { TVariant } from "../../DSL/Typography/Typography";
 import AppStore from "../../store/App.store";
-import LeaderborkStore, { PixelOwnerInfo } from "./Leaderbork.store";
+import { PixelOwnerInfo } from "./Leaderbork.store";
 import PxPill from "./PxPill";
 
 interface UserCardProps {
-  store: LeaderborkStore;
+  onClick: (address: string) => void;
   pixelOwner: PixelOwnerInfo;
   isSelected?: boolean;
 }
 
 const UserCard: React.FC<PropsWithChildren<UserCardProps>> = observer(
-  ({ store, pixelOwner, isSelected = false, children }) => {
+  ({ onClick, pixelOwner, isSelected = false, children }) => {
     const { colorMode } = useColorMode();
     return (
       <Flex
@@ -28,7 +28,10 @@ const UserCard: React.FC<PropsWithChildren<UserCardProps>> = observer(
           cursor: "pointer",
           bg: colorMode === "light" ? lightModePrimary : darkModeSecondary,
         }}
-        onClick={() => store.setSelectedAddress(pixelOwner.address)}
+        onClick={() => {
+          console.log("debug:: onclick", pixelOwner.address);
+          onClick(pixelOwner.address);
+        }}
       >
         <Flex alignItems={"center"} overflow={"hidden"}>
           <Box>

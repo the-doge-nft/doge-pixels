@@ -19,9 +19,9 @@ const Header = observer(() => {
     base: () => AppStore.rwd.toggleMobileNav(),
     xl: () => history.push(route(NamedRoutes.VIEWER)),
   });
-  const { chain } = useNetwork()
+  const { chain } = useNetwork();
   const { colorMode } = useColorMode();
-  const showHamburger = useBreakpointValue({ base: true, xl: false });
+  const showHamburger = useBreakpointValue({ base: true, xl: false }, { fallback: "xl" });
   return (
     <Box>
       <Flex mb={{ base: 0, md: 6 }}>
@@ -44,7 +44,7 @@ const Header = observer(() => {
             borderColor={lightOrDarkMode(colorMode, "black", "white")}
             rounded={"full"}
           >
-            <img src={DPPLogo} width={50} />
+            <img src={DPPLogo} width={50} alt={"nav-dog"} />
 
             {showHamburger && (
               <>

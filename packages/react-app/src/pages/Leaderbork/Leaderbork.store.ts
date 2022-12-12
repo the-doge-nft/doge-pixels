@@ -1,11 +1,11 @@
-import { computed, makeObservable, observable } from "mobx";
-import AppStore from "../../store/App.store";
-import { Reactionable } from "../../services/mixins/reactionable";
-import { EmptyClass } from "../../helpers/mixins";
 import { ethers } from "ethers";
+import { action, computed, makeObservable, observable } from "mobx";
+import { generatePath } from "react-router-dom";
+import { EmptyClass } from "../../helpers/mixins";
 import { abbreviate } from "../../helpers/strings";
 import { Http } from "../../services";
-import { generatePath } from "react-router-dom";
+import { Reactionable } from "../../services/mixins/reactionable";
+import AppStore from "../../store/App.store";
 
 export interface PixelOwnerInfo {
   address: string;
@@ -63,6 +63,9 @@ class LeaderborkStore extends Reactionable(EmptyClass) {
 
   @observable
   selectedOwnerTab: SelectedOwnerTab = SelectedOwnerTab.Activity;
+
+  @observable
+  paginableCount = 10;
 
   constructor(
     selectedAddress?: string,
@@ -143,7 +146,7 @@ class LeaderborkStore extends Reactionable(EmptyClass) {
 
   @computed
   get selectedOwner(): PixelOwnerInfo | undefined {
-    return AppStore.web3.sortedPixelOwners.filter(dog => dog.address === this.selectedAddress)[0];
+    return AppStore.web3.sortedPixelOwners.filter(owner => owner.address === this.selectedAddress)?.[0];
   }
 
   @computed
@@ -201,6 +204,7 @@ class LeaderborkStore extends Reactionable(EmptyClass) {
     return { title, description };
   }
 
+  @action
   async setSelectedAddress(address: string) {
     this.selectedAddress = address;
     this.searchValue = this.selectedAddress;
@@ -351,6 +355,22 @@ class LeaderborkStore extends Reactionable(EmptyClass) {
       (this.selectedPixelId && this.selectedOwnerTab === SelectedOwnerTab.Wallet) ||
       (this.selectedActivityTransfer && this.selectedOwnerTab === SelectedOwnerTab.Activity)
     );
+  }
+
+  @action
+  page() {
+    console.log("debug:: page");
+    this.paginableCount += 15;
+  }
+
+  @computed
+  get pagableOwners() {
+    return [...AppStore.web3.sortedPixelOwners].splice(0, this.paginableCount);
+  }
+
+  @computed
+  get hasMorePagableOwners() {
+    return this.paginableCount <= AppStore.web3.sortedPixelOwners.length;
   }
 }
 
