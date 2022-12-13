@@ -7,6 +7,7 @@ import { useControlledFormField, useFormField } from "./useFormField";
 
 export interface TextInputProps extends BaseInputProps, AllowedStyleProps {
   icon?: any;
+  onClear?: () => void;
 }
 
 const TextInput = React.forwardRef(

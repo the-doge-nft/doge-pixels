@@ -356,6 +356,7 @@ const LeaderborkTypeahead = observer(function LeaderborkTypeahead({ store }: { s
       placeholder={"Search pixel owners"}
       onItemSelect={value => (store.selectedAddress = value as unknown as string)}
       items={store.ownersTypeaheadItems}
+      onClear={() => (store.searchValue = "")}
       {...model(store, "searchValue")}
     />
   );
