@@ -22,7 +22,6 @@ const Typeahead: React.FC<ComboboxProps> = ({ onItemSelect, items, value, onChan
   const boxRef = useRef<HTMLDivElement>();
 
   useEffect(() => {
-    console.log("debug:: use effect");
     function handleClickOutside(event: MouseEvent) {
       if (
         inputRef.current &&
@@ -54,8 +53,6 @@ const Typeahead: React.FC<ComboboxProps> = ({ onItemSelect, items, value, onChan
     };
   }, []);
 
-  console.log("debug:: value change", value);
-
   return (
     <Box position={"relative"}>
       <TextField
@@ -65,7 +62,7 @@ const Typeahead: React.FC<ComboboxProps> = ({ onItemSelect, items, value, onChan
         onChange={value => onChange(value)}
         {...rest}
       />
-      {showBox && items.length > 0 && (
+      {showBox && items.length > 0 && value !== "" && (
         <Box ref={boxRef} __css={styles.box}>
           {items.map((item, index) => (
             <Box

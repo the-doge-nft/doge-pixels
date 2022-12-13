@@ -141,9 +141,11 @@ class LeaderborkStore extends Reactionable(EmptyClass) {
 
   @computed
   get ownersTypeaheadItems() {
-    const addresses = Object.keys(AppStore.web3.addressToPuppers);
-    const selectItems = addresses.map(address => ({ value: address, name: address }));
-    return arrayFuzzyFilterByKey(selectItems, this.searchValue, "name").slice(0, 10);
+    const addresses = Object.keys(AppStore.web3.addressToPuppers).map(address => ({
+      value: address,
+      name: AppStore.web3.addressToPuppers[address]?.ens ? AppStore.web3.addressToPuppers[address]?.ens : address,
+    }));
+    return arrayFuzzyFilterByKey(addresses, this.searchValue, "name").slice(0, 10);
   }
 
   @computed

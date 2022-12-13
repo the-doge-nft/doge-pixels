@@ -39,7 +39,7 @@ const TextField = React.forwardRef(
         {onClear && value !== "" && (
           <InputRightElement
             onClick={onClear}
-            zIndex={0}
+            zIndex={10}
             top={"50%"}
             transform={"translateY(-50%)"}
             width={iconWidth}
