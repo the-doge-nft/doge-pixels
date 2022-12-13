@@ -1,7 +1,7 @@
-import {makeObservable, observable} from "mobx";
-import Web3Store from "./web3.store";
-import RWDStore from "./RWD.store";
+import { makeObservable, observable } from "mobx";
 import ModalsStore from "./Modals.store";
+import RWDStore from "./RWD.store";
+import Web3Store from "./web3.store";
 
 class _AppStore {
   @observable
@@ -21,11 +21,12 @@ class _AppStore {
   }
 
   init() {
+    console.log("DEBUG:: APP STORE INIT");
     this.rwd.init();
     this.web3.init();
     this.modals.init();
   }
 }
 
-const AppStore = new _AppStore();;
+const AppStore = new _AppStore();
 export default AppStore;
