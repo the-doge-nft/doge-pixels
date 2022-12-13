@@ -12,20 +12,6 @@ const PaneStyle = {
       background: lightOrDarkMode(colorMode, "yellow.50", darkModePrimary),
       position: "relative",
       h: "full",
-      _after: {
-        base: {
-          zIndex: "-1",
-          content: "''",
-          position: "absolute",
-          width: "100%",
-          height: "100%",
-          left: `${paneDropOffset}px`,
-          bottom: `-${paneDropOffset}px`,
-          borderStyle: "solid",
-          borderWidth: "1px",
-          borderColor: lightOrDarkMode(colorMode, "black", "white"),
-        },
-      },
     },
   }),
   sizes: {

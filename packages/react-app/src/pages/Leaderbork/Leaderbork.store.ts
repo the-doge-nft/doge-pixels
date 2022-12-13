@@ -1,11 +1,13 @@
-import { computed, makeObservable, observable } from "mobx";
-import AppStore from "../../store/App.store";
-import { Reactionable } from "../../services/mixins/reactionable";
-import { EmptyClass } from "../../helpers/mixins";
 import { ethers } from "ethers";
+import { action, computed, makeObservable, observable } from "mobx";
+import { generatePath } from "react-router-dom";
+import { arrayFuzzyFilterByKey } from "../../helpers/arrays";
+import { EmptyClass } from "../../helpers/mixins";
 import { abbreviate } from "../../helpers/strings";
 import { Http } from "../../services";
-import { generatePath } from "react-router-dom";
+import { Reactionable } from "../../services/mixins/reactionable";
+import AppStore from "../../store/App.store";
+import { sleep } from "./../../helpers/sleep";
 
 export interface PixelOwnerInfo {
   address: string;
@@ -64,6 +66,9 @@ class LeaderborkStore extends Reactionable(EmptyClass) {
   @observable
   selectedOwnerTab: SelectedOwnerTab = SelectedOwnerTab.Activity;
 
+  @observable
+  paginableCount = 20;
+
   constructor(
     selectedAddress?: string,
     selectedPixelId?: number,
@@ -72,6 +77,7 @@ class LeaderborkStore extends Reactionable(EmptyClass) {
   ) {
     super();
     makeObservable(this);
+    console.log("debug:: constructor");
 
     if (selectedAddress) {
       this.searchValue = selectedAddress;
@@ -91,20 +97,20 @@ class LeaderborkStore extends Reactionable(EmptyClass) {
       this.selectedOwnerTab = selectedOwnerTab;
     }
 
-    this.react(
-      () => this.searchValue,
-      (value, prevValue) => {
-        //@ts-ignore
-        if ((this.selectedAddress && value.length === prevValue.length - 1) || value === "") {
-          this.selectedAddress = undefined;
-          this.searchValue = "";
-        }
+    // this.react(
+    //   () => this.searchValue,
+    //   (value, prevValue) => {
+    //     //@ts-ignore
+    //     if ((this.selectedAddress && value.length === prevValue.length - 1) || value === "") {
+    //       this.selectedAddress = undefined;
+    //       this.searchValue = "";
+    //     }
 
-        if (this.searchValue === "") {
-          this.getGlobalTransfers();
-        }
-      },
-    );
+    //     if (this.searchValue === "") {
+    //       this.getGlobalTransfers();
+    //     }
+    //   },
+    // );
 
     this.react(
       () => [this.selectedOwner],
@@ -135,15 +141,16 @@ class LeaderborkStore extends Reactionable(EmptyClass) {
 
   @computed
   get ownersTypeaheadItems() {
-    return AppStore.web3.sortedPixelOwners.map(item => ({
-      value: item.address,
-      name: AppStore.web3.getAddressDisplayName(item.address, false),
+    const addresses = Object.keys(AppStore.web3.addressToPuppers).map(address => ({
+      value: address,
+      name: AppStore.web3.addressToPuppers[address]?.ens ? AppStore.web3.addressToPuppers[address]?.ens : address,
     }));
+    return arrayFuzzyFilterByKey(addresses, this.searchValue, "name").slice(0, 10);
   }
 
   @computed
   get selectedOwner(): PixelOwnerInfo | undefined {
-    return AppStore.web3.sortedPixelOwners.filter(dog => dog.address === this.selectedAddress)[0];
+    return AppStore.web3.sortedPixelOwners.filter(owner => owner.address === this.selectedAddress)?.[0];
   }
 
   @computed
@@ -201,17 +208,12 @@ class LeaderborkStore extends Reactionable(EmptyClass) {
     return { title, description };
   }
 
+  @action
   async setSelectedAddress(address: string) {
     this.selectedAddress = address;
     this.searchValue = this.selectedAddress;
     this.selectedOwnerTab = SelectedOwnerTab.Wallet;
     this.selectedPixelId = this.selectedOwner.pixels[0];
-    this.pushWindowState(
-      generatePath(`/leaderbork/:address/${SelectedOwnerTab.Wallet}/:tokenId`, {
-        address: this.selectedAddress,
-        tokenId: this.selectedPixelId,
-      }),
-    );
     this.getSelectedUserTransfers();
   }
 
@@ -227,18 +229,6 @@ class LeaderborkStore extends Reactionable(EmptyClass) {
 
   setActivityId(activityId: string) {
     this.selectedTransferId = activityId;
-    if (this.selectedOwner) {
-      this.pushWindowState(
-        generatePath(`/leaderbork/:address/${SelectedOwnerTab.Activity}/:activityId`, {
-          address: this.selectedAddress,
-          activityId: this.selectedTransferId,
-        }),
-      );
-    } else {
-      this.pushWindowState(
-        generatePath(`/leaderbork/${SelectedOwnerTab.Activity}/:activityId`, { activityId: this.selectedTransferId }),
-      );
-    }
   }
 
   pushWindowState(route: string) {
@@ -274,7 +264,7 @@ class LeaderborkStore extends Reactionable(EmptyClass) {
         blockNumber: "desc",
       },
     }).then(({ data }) => {
-      return (this.globalTransfers = data);
+      return (this.globalTransfers = data.slice(0, 20));
     });
   }
 
@@ -351,6 +341,27 @@ class LeaderborkStore extends Reactionable(EmptyClass) {
       (this.selectedPixelId && this.selectedOwnerTab === SelectedOwnerTab.Wallet) ||
       (this.selectedActivityTransfer && this.selectedOwnerTab === SelectedOwnerTab.Activity)
     );
+  }
+
+  @action
+  async page() {
+    const amountToPage = 20;
+    // ~make it feel natural~ //
+    await sleep(200);
+    this.paginableCount += amountToPage;
+  }
+
+  @computed
+  get pagableOwners() {
+    if (AppStore.web3.sortedPixelOwners) {
+      return [...AppStore.web3.sortedPixelOwners].splice(0, this.paginableCount);
+    }
+    return [];
+  }
+
+  @computed
+  get hasMorePagableOwners() {
+    return this.pagableOwners.length < AppStore.web3.sortedPixelOwners.length;
   }
 }
 

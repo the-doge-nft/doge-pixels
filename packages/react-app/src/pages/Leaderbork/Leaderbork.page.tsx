@@ -1,28 +1,27 @@
 import { Box, Flex, Grid, GridItem, useColorMode } from "@chakra-ui/react";
+import { ethers } from "ethers";
 import { observer } from "mobx-react-lite";
-import React, { useEffect, useMemo } from "react";
-import Pane from "../../DSL/Pane/Pane";
-import Typography, { TVariant } from "../../DSL/Typography/Typography";
-import LeaderborkStore, { SelectedOwnerTab } from "./Leaderbork.store";
-import model from "../../DSL/Form/model";
-import { useLocation, useParams } from "react-router-dom";
-import PixelPane from "../../DSL/PixelPane/PixelPane";
-import Button from "../../DSL/Button/Button";
-import { darkModeSecondary, lightModePrimary, lightOrDarkMode } from "../../DSL/Theme";
+import { useEffect, useMemo } from "react";
+import { generatePath, Link as RouterLink, useLocation, useParams } from "react-router-dom";
 import { NamedRoutes, route, SELECTED_PIXEL_PARAM } from "../../App.routes";
-import * as ethers from "ethers";
-import PixelPreview, { PixelPreviewSize } from "../../DSL/PixelPreview/PixelPreview";
-import Link from "../../DSL/Link/Link";
-import Typeahead from "../../DSL/Typeahead/Typeahead";
-import DogLocked from "./DogLocked";
-import TopDogs from "./TopDogs";
-import { getEtherscanURL } from "../../helpers/links";
-import Icon from "../../DSL/Icon/Icon";
+import Button from "../../DSL/Button/Button";
 import { Type } from "../../DSL/Fonts/Fonts";
+import model from "../../DSL/Form/model";
+import Icon from "../../DSL/Icon/Icon";
+import Link from "../../DSL/Link/Link";
+import Pane from "../../DSL/Pane/Pane";
+import PixelPane from "../../DSL/PixelPane/PixelPane";
+import PixelPreview, { PixelPreviewSize } from "../../DSL/PixelPreview/PixelPreview";
+import { darkModeSecondary, lightModePrimary, lightOrDarkMode } from "../../DSL/Theme";
+import Typeahead from "../../DSL/Typeahead/Typeahead";
+import Typography, { TVariant } from "../../DSL/Typography/Typography";
+import { getEtherscanURL } from "../../helpers/links";
 import AppStore from "../../store/App.store";
-import jsonify from "../../helpers/jsonify";
+import DogLocked from "./DogLocked";
+import LeaderborkStore, { SelectedOwnerTab } from "./Leaderbork.store";
+import TopDogs from "./TopDogs";
 
-const LeaderborkPage = observer(function DogParkPage() {
+const LeaderborkPage = observer(function LeaderborkPage() {
   const location = useLocation();
   let selectedOwnerTabType;
   if (location.pathname.indexOf(SelectedOwnerTab.Wallet) !== -1) {
@@ -33,7 +32,7 @@ const LeaderborkPage = observer(function DogParkPage() {
   const { address, tokenId, activityId } = useParams<{ address?: string; tokenId?: string; activityId?: string }>();
   const store = useMemo(
     () => new LeaderborkStore(address, tokenId ? Number(tokenId) : undefined, activityId, selectedOwnerTabType),
-    [address, tokenId, selectedOwnerTabType],
+    [],
   );
   const { colorMode } = useColorMode();
   useEffect(() => {
@@ -62,18 +61,7 @@ const LeaderborkPage = observer(function DogParkPage() {
       </Flex>
       <Flex flexGrow={1} order={{ base: 1, xl: 3 }} ml={{ base: 0, xl: 10 }} display={"flex"} flexDirection={"column"}>
         <Box mb={8}>
-          <Typeahead
-            onItemSelect={value => (store.selectedAddress = value as unknown as string)}
-            items={store.ownersTypeaheadItems}
-            fontSize={"14px"}
-            icon={"search"}
-            placeholder={"Search pixel owners"}
-            value={store.searchValue}
-            onChange={value => {
-              store.searchValue = value;
-            }}
-            {...model(store, "searchValue")}
-          />
+          <LeaderborkTypeahead store={store} />
         </Box>
         <Flex flexDir={"column"} flexGrow={1}>
           <Flex
@@ -98,6 +86,7 @@ const LeaderborkPage = observer(function DogParkPage() {
                 />
               </Pane>
             </Flex>
+
             <Pane flexGrow={1}>
               {store.showDetails && (
                 <Flex flexDir={"column"} h={"full"}>
@@ -255,7 +244,7 @@ const LeaderborkPage = observer(function DogParkPage() {
             {store.selectedAddress && (
               <Flex gap={7} mb={4}>
                 {Object.keys(SelectedOwnerTab).map(item => (
-                  <Box>
+                  <Box key={`tab-${item}`}>
                     <Typography
                       textUnderlineOffset={3}
                       _hover={{
@@ -276,7 +265,19 @@ const LeaderborkPage = observer(function DogParkPage() {
               <Flex flexWrap={"wrap"} gap={0} maxHeight={"250px"}>
                 {(store.selectedOwnerTab === SelectedOwnerTab.Activity || !store.selectedAddress) &&
                   store.transfers.map(transfer => (
-                    <>
+                    <RouterLink
+                      to={
+                        store.selectedOwner
+                          ? generatePath(`/leaderbork/:address/${SelectedOwnerTab.Activity}/:activityId`, {
+                              address: store.selectedAddress,
+                              activityId: transfer.uniqueTransferId,
+                            })
+                          : generatePath(`/leaderbork/${SelectedOwnerTab.Activity}/:activityId`, {
+                              activityId: transfer.uniqueTransferId,
+                            })
+                      }
+                      onClick={() => store.setActivityId(transfer.uniqueTransferId)}
+                    >
                       <Box
                         key={`user-dog-${transfer.uniqueTransferId}`}
                         bg={
@@ -289,8 +290,6 @@ const LeaderborkPage = observer(function DogParkPage() {
                         p={2}
                         mt={0}
                         _hover={{ bg: colorMode === "light" ? lightModePrimary : darkModeSecondary }}
-                        onClick={() => store.setActivityId(transfer.uniqueTransferId)}
-                        cursor={"pointer"}
                       >
                         <Box position={"relative"}>
                           <Box
@@ -311,7 +310,7 @@ const LeaderborkPage = observer(function DogParkPage() {
                           <PixelPane size={"sm"} pupper={transfer.tokenId} />
                         </Box>
                       </Box>
-                    </>
+                    </RouterLink>
                   ))}
                 {store.selectedOwnerTab === SelectedOwnerTab.Wallet &&
                   store.selectedOwner?.pixels.map(tokenId => (
@@ -339,6 +338,21 @@ const LeaderborkPage = observer(function DogParkPage() {
         </Flex>
       </Flex>
     </Flex>
+  );
+});
+
+const LeaderborkTypeahead = observer(function LeaderborkTypeahead({ store }: { store: LeaderborkStore }) {
+  return (
+    <Typeahead
+      name={"textinput"}
+      icon={"search"}
+      fontSize={"14px"}
+      placeholder={"Search pixel owners"}
+      onItemSelect={value => (store.selectedAddress = value as unknown as string)}
+      items={store.ownersTypeaheadItems}
+      onClear={() => (store.searchValue = "")}
+      {...model(store, "searchValue")}
+    />
   );
 });
 

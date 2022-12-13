@@ -1,5 +1,4 @@
 import { colorModeType, lightOrDarkMode } from "../Theme";
-import { paneDropOffset } from "../Pane/Pane.styles";
 
 const ModalStyle = {
   parts: ["container", "body", "title", "drop", "description"],
@@ -17,16 +16,6 @@ const ModalStyle = {
       pointerEvents: "all",
       overflow: "hidden",
       position: "relative",
-    },
-    drop: {
-      position: "absolute",
-      width: "100%",
-      height: "100%",
-      left: `${paneDropOffset}px`,
-      bottom: `-${paneDropOffset}px`,
-      zIndex: -1,
-      border: lightOrDarkMode(colorMode, "1px solid black", "1px solid white"),
-      bg: lightOrDarkMode(colorMode, "black", "purple.700"),
     },
     description: {
       mt: 2,

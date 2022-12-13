@@ -1,11 +1,11 @@
-import React, { useRef } from "react";
 import { Box, Flex, useColorMode, useMultiStyleConfig } from "@chakra-ui/react";
-import Icon from "../Icon/Icon";
+import { useRef } from "react";
 import Draggable from "react-draggable";
-import Typography, { TVariant } from "../Typography/Typography";
 import ReactModal from "react-modal";
-import "./Modal.css";
+import Icon from "../Icon/Icon";
 import { lightOrDarkMode } from "../Theme";
+import Typography, { TVariant } from "../Typography/Typography";
+import "./Modal.css";
 
 export interface ModalProps extends ReactModal.Props {
   onClose: () => void;
@@ -116,7 +116,6 @@ const Modal = ({
               {children}
             </Box>
           </Box>
-          <Box sx={chakraStyles.drop} />
         </Box>
       </NotTypeSafeDraggable>
     </ReactModal>

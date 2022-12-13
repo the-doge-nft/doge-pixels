@@ -304,7 +304,7 @@ class Web3Store extends Reactionable(Web3providerStore) {
         } else {
           return 0;
         }
-      });
+      })
   }
 
   getIsPupperNew(pupper: number) {

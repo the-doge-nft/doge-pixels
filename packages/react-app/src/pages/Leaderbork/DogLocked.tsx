@@ -1,15 +1,13 @@
-import { observer } from "mobx-react-lite";
-import LeaderborkStore from "./Leaderbork.store";
-import { convertToAbbreviation } from "../../helpers/numberFormatter";
-import Pane from "../../DSL/Pane/Pane";
 import { Box, Flex } from "@chakra-ui/react";
-import Typography, { TVariant } from "../../DSL/Typography/Typography";
+import { observer } from "mobx-react-lite";
 import BigText from "../../DSL/BigText/BigText";
-import React from "react";
+import Pane from "../../DSL/Pane/Pane";
+import Typography, { TVariant } from "../../DSL/Typography/Typography";
+import { convertToAbbreviation } from "../../helpers/numberFormatter";
 import AppStore from "../../store/App.store";
 
 const DogLocked = observer(({ dogLocked }: { dogLocked?: number }) => {
-  const [num, abbr] = dogLocked ? convertToAbbreviation(Math.trunc(dogLocked)) : ["N/A", ""];
+  const [num, abbr] = dogLocked ? convertToAbbreviation(Math.trunc(dogLocked)) : ["", ""];
   return (
     <Pane h={"inherit"}>
       <Flex flexDirection={"column"}>
