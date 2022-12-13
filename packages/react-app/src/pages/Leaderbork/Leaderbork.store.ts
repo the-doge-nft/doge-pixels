@@ -1,6 +1,7 @@
 import { ethers } from "ethers";
 import { action, computed, makeObservable, observable } from "mobx";
 import { generatePath } from "react-router-dom";
+import { arrayFuzzyFilterByKey } from "../../helpers/arrays";
 import { EmptyClass } from "../../helpers/mixins";
 import { abbreviate } from "../../helpers/strings";
 import { Http } from "../../services";
@@ -96,20 +97,20 @@ class LeaderborkStore extends Reactionable(EmptyClass) {
       this.selectedOwnerTab = selectedOwnerTab;
     }
 
-    this.react(
-      () => this.searchValue,
-      (value, prevValue) => {
-        //@ts-ignore
-        if ((this.selectedAddress && value.length === prevValue.length - 1) || value === "") {
-          this.selectedAddress = undefined;
-          this.searchValue = "";
-        }
+    // this.react(
+    //   () => this.searchValue,
+    //   (value, prevValue) => {
+    //     //@ts-ignore
+    //     if ((this.selectedAddress && value.length === prevValue.length - 1) || value === "") {
+    //       this.selectedAddress = undefined;
+    //       this.searchValue = "";
+    //     }
 
-        if (this.searchValue === "") {
-          this.getGlobalTransfers();
-        }
-      },
-    );
+    //     if (this.searchValue === "") {
+    //       this.getGlobalTransfers();
+    //     }
+    //   },
+    // );
 
     this.react(
       () => [this.selectedOwner],
@@ -140,10 +141,9 @@ class LeaderborkStore extends Reactionable(EmptyClass) {
 
   @computed
   get ownersTypeaheadItems() {
-    return AppStore.web3.sortedPixelOwners.map(item => ({
-      value: item.address,
-      name: AppStore.web3.getAddressDisplayName(item.address, false),
-    }));
+    const addresses = Object.keys(AppStore.web3.addressToPuppers);
+    const selectItems = addresses.map(address => ({ value: address, name: address }));
+    return arrayFuzzyFilterByKey(selectItems, this.searchValue, "name").slice(0, 10);
   }
 
   @computed
@@ -345,7 +345,7 @@ class LeaderborkStore extends Reactionable(EmptyClass) {
   async page() {
     const amountToPage = 20;
     // ~make it feel natural~ //
-    await sleep(500);
+    await sleep(200);
     this.paginableCount += amountToPage;
   }
 

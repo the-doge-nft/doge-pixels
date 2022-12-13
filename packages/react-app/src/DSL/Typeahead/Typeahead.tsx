@@ -1,10 +1,7 @@
 import { Box, useMultiStyleConfig } from "@chakra-ui/react";
-import { observer } from "mobx-react-lite";
 import React, { useEffect, useRef, useState } from "react";
-import { arrayFuzzyFilterByKey } from "../../helpers/arrays";
-import jsonify from "../../helpers/jsonify";
-import Form from "../Form/Form";
-import TextInput, { TextInputProps } from "../Form/TextInput";
+import { TextInputProps } from "../Form/TextInput";
+import TextField from "../TextField/TextField";
 import Typography, { TVariant } from "../Typography/Typography";
 
 interface ComboboxItem {
@@ -17,19 +14,15 @@ interface ComboboxProps extends TextInputProps {
   onItemSelect?: (value: Pick<ComboboxItem, "value">) => void;
 }
 
-const Typeahead: React.FC<ComboboxProps> = observer(({ onItemSelect, items, value, onChange, ...rest }) => {
+const Typeahead: React.FC<ComboboxProps> = ({ onItemSelect, items, value, onChange, ...rest }) => {
   const styles = useMultiStyleConfig("Typeahead", {});
   const [showBox, setShowBox] = useState(false);
-  const [filteredItems, setFilteredItems] = useState(items);
 
   const inputRef = useRef<HTMLElement>();
   const boxRef = useRef<HTMLDivElement>();
 
   useEffect(() => {
-    setFilteredItems(arrayFuzzyFilterByKey(items, value, "name").slice(0, 5));
-  }, [value, jsonify(items)]);
-
-  useEffect(() => {
+    console.log("debug:: use effect");
     function handleClickOutside(event: MouseEvent) {
       if (
         inputRef.current &&
@@ -59,16 +52,22 @@ const Typeahead: React.FC<ComboboxProps> = observer(({ onItemSelect, items, valu
       document.removeEventListener("mousedown", handleClickOutside);
       document.removeEventListener("keydown", handleKeyPress);
     };
-  }, [inputRef]);
+  }, []);
+
+  console.log("debug:: value change", value);
 
   return (
     <Box position={"relative"}>
-      <Form onSubmit={async () => {}}>
-        <TextInput value={value} ref={inputRef} onFocus={() => setShowBox(true)} onChange={onChange} {...rest} />
-      </Form>
-      {showBox && filteredItems.length > 0 && (
+      <TextField
+        value={value}
+        ref={inputRef}
+        onFocus={() => setShowBox(true)}
+        onChange={value => onChange(value)}
+        {...rest}
+      />
+      {showBox && items.length > 0 && (
         <Box ref={boxRef} __css={styles.box}>
-          {filteredItems.map((item, index) => (
+          {items.map((item, index) => (
             <Box
               key={`${item.name}-${item.value}-${index}`}
               onClick={() => {
@@ -85,6 +84,6 @@ const Typeahead: React.FC<ComboboxProps> = observer(({ onItemSelect, items, valu
       )}
     </Box>
   );
-});
+};
 
 export default Typeahead;

@@ -61,18 +61,7 @@ const LeaderborkPage = observer(function LeaderborkPage() {
       </Flex>
       <Flex flexGrow={1} order={{ base: 1, xl: 3 }} ml={{ base: 0, xl: 10 }} display={"flex"} flexDirection={"column"}>
         <Box mb={8}>
-          <Typeahead
-            onItemSelect={value => (store.selectedAddress = value as unknown as string)}
-            items={[]}
-            fontSize={"14px"}
-            icon={"search"}
-            placeholder={"Search pixel owners"}
-            value={store.searchValue}
-            onChange={value => {
-              store.searchValue = value;
-            }}
-            {...model(store, "searchValue")}
-          />
+          <LeaderborkTypeahead store={store} />
         </Box>
         <Flex flexDir={"column"} flexGrow={1}>
           <Flex
@@ -355,6 +344,20 @@ const LeaderborkPage = observer(function LeaderborkPage() {
         </Flex>
       </Flex>
     </Flex>
+  );
+});
+
+const LeaderborkTypeahead = observer(function LeaderborkTypeahead({ store }: { store: LeaderborkStore }) {
+  return (
+    <Typeahead
+      name={"textinput"}
+      icon={"search"}
+      fontSize={"14px"}
+      placeholder={"Search pixel owners"}
+      onItemSelect={value => (store.selectedAddress = value as unknown as string)}
+      items={store.ownersTypeaheadItems}
+      {...model(store, "searchValue")}
+    />
   );
 });
 

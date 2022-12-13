@@ -87,7 +87,7 @@ const InfiniteScroll: React.FC<PropsWithChildren<InfinteScrollProps>> = ({
         <>
           {renderLoader && renderLoader()}
           {!renderLoader && (
-            <Flex justifyContent={"center"} mt={14}>
+            <Flex justifyContent={"center"} mt={4}>
               <Spinner />
             </Flex>
           )}
