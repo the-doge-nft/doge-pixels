@@ -1,6 +1,5 @@
 import { Box } from "@chakra-ui/react";
 import { observer } from "mobx-react-lite";
-import { useEffect } from "react";
 import MemeModal from "../../DSL/Modal/MemeModal";
 import Modal from "../../DSL/Modal/Modal";
 import ScrollHelperModal from "../../DSL/Modal/ScrollHelperModal";
@@ -13,10 +12,6 @@ import SelectedPixelPane from "./Panes/SelectedPixelPane";
 import ViewerStore from "./Viewer.store";
 
 const Modals: React.FC<{ store: ViewerStore }> = observer(({ store }) => {
-  useEffect(() => {
-    AppStore.modals.init();
-  }, []);
-
   return (
     <>
       {AppStore.modals.isInfoModalOpen && (
