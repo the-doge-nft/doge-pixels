@@ -1,31 +1,53 @@
-import { Box, Button, createStandaloneToast, Flex } from "@chakra-ui/react";
+import { Box, Button, createStandaloneToast, Flex, useColorMode } from "@chakra-ui/react";
+import { ReactNode } from "react";
+import { NamedRoutes, route } from "../../App.routes";
+import DSLButton from "../../DSL/Button/Button";
 import { isDevModeEnabled } from "../../environment/helpers";
 import { ButtonVariant } from "../Button/Button";
-import theme from "../Theme";
+import { Type } from "../Fonts/Fonts";
+import Link from "../Link/Link";
+import theme, { darkModePrimary, lightOrDarkMode } from "../Theme";
 import Typography, { TVariant } from "../Typography/Typography";
 
 export const { ToastContainer, toast } = createStandaloneToast({ theme: theme });
 
 interface ToastBaseProps {
-  title: string;
-  description: string;
+  title?: string;
+  description: ReactNode;
   onClose: () => void;
   id: number | string;
-  variant: "success" | "error" | "debug";
+  variant: "success" | "error" | "debug" | "info";
 }
 
 const ToastBase = ({ title, description, onClose, id, variant }: ToastBaseProps) => {
+  const { colorMode } = useColorMode();
   const colorToVariant = {
     success: "green.500",
     error: "red.500",
     debug: "orange.400",
+    info: lightOrDarkMode(colorMode, "yellow.50", darkModePrimary),
   };
   return (
-    <Box p={3} border={"1px solid black"} borderRadius={"0px"} bg={colorToVariant[variant]} color={"white"}>
+    <Box
+      p={3}
+      borderWidth={"1px"}
+      borderStyle={"solid"}
+      borderColor={lightOrDarkMode(colorMode, "black", "white")}
+      borderRadius={"0px"}
+      bg={colorToVariant[variant]}
+      color={"white"}
+    >
       <Flex justifyContent={"space-between"} alignItems={"start"}>
-        <Typography variant={TVariant.PresStart15} mb={2} block color={"white"}>
-          {title}
-        </Typography>
+        {title && (
+          <Typography
+            variant={TVariant.PresStart12}
+            mb={2}
+            block
+            color={variant !== "info" ? "white" : lightOrDarkMode(colorMode, "black", "white")}
+          >
+            {title}
+          </Typography>
+        )}
         <Button
           size={"sm"}
           onClick={onClose}
@@ -33,7 +55,7 @@ const ToastBase = ({ title, description, onClose, id, variant }: ToastBaseProps)
           p={0}
           minWidth={0}
           height={"fit-content"}
-          color={"white"}
+          color={variant !== "info" ? "white" : lightOrDarkMode(colorMode, "black", "white")}
           _active={{
             boxShadow: "none",
           }}
@@ -81,6 +103,63 @@ export const showDebugToast = (description: string) => {
       },
     });
   }
+};
+
+export const showInfoToast = (description: ReactNode) => {
+  toast({
+    isClosable: false,
+    render: props => {
+      const { id, onClose } = props;
+      return <ToastBase title={"Info"} description={description} onClose={onClose} id={id} variant={"info"} />;
+    },
+  });
+};
+
+export const showTOSToast = (onClose: () => void) => {
+  toast({
+    duration: null,
+    position: "bottom-right",
+    isClosable: false,
+    render: props => {
+      const { id, onClose: toastOnClose } = props;
+      return (
+        <ToastBase
+          title={"Legal Notice"}
+          description={
+            <Box>
+              <Typography variant={TVariant.ComicSans14}>
+                We have recently updated our{" "}
+                <Link target={"_blank"} to={route(NamedRoutes.TERMS)} fontSize={"14px"} variant={Type.ComicSans}>
+                  Terms of Service
+                </Link>{" "}
+                and{" "}
+                <Link target={"_blank"} to={route(NamedRoutes.PRIVACY)} fontSize={"14px"} variant={Type.ComicSans}>
+                  Privacy Policy
+                </Link>
+              </Typography>
+              <Flex justifyContent={"center"} mt={4} mb={2}>
+                <DSLButton
+                  size={"sm"}
+                  onClick={() => {
+                    toastOnClose();
+                    onClose();
+                  }}
+                >
+                  Accept
+                </DSLButton>
+              </Flex>
+            </Box>
+          }
+          onClose={() => {
+            toastOnClose();
+            onClose();
+          }}
+          id={id}
+          variant={"info"}
+        />
+      );
+    },
+  });
 };
 
 export default toast;
