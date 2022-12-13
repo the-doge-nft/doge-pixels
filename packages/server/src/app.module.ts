@@ -31,6 +31,7 @@ import { StatueCampaignService } from './statue-campaign/statue-campaign.service
 import { TwitterService } from './twitter/twitter.service';
 import { UnstoppableDomainsService } from './unstoppable-domains/unstoppable-domains.service';
 import { MydogeService } from './mydoge/mydoge.service';
+import { ChainanalysisService } from './chainanalysis/chainanalysis.service';
 
 @Module({
   imports: [
@@ -90,6 +91,7 @@ import { MydogeService } from './mydoge/mydoge.service';
     SochainService,
     CacheService,
     MydogeService,
+    ChainanalysisService,
   ],
 })
 export class AppModule {}

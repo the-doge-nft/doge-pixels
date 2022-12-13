@@ -1,4 +1,5 @@
 import { makeObservable, observable } from "mobx";
+import { showTOSToast } from "../DSL/Toast/Toast";
 import LocalStorage from "../services/local-storage";
 
 export enum ModalName {
@@ -11,6 +12,7 @@ export enum ModalName {
 
 const SHOW_HELPER_MODAL = "show_helper_modal";
 const SHOW_INFO_MODAL = "show_info_modal";
+const SHOW_TOS_TOAST = "show_tos_toast";
 
 class ModalsStore {
   @observable
@@ -37,11 +39,18 @@ class ModalsStore {
   @observable
   isSelectedPixelModalOpen = false;
 
+  @observable
+  isTermsToastOpen = false;
+
   constructor() {
     makeObservable(this);
   }
 
   init() {
+    this.isTermsToastOpen = LocalStorage.getItem(SHOW_TOS_TOAST, LocalStorage.PARSE_JSON, true);
+    if (this.isTermsToastOpen) {
+      showTOSToast(() => LocalStorage.setItem(SHOW_TOS_TOAST, false));
+    }
     this.isScrollModalOpen = LocalStorage.getItem(SHOW_HELPER_MODAL, LocalStorage.PARSE_JSON, true);
     LocalStorage.setItem(SHOW_HELPER_MODAL, false);
 

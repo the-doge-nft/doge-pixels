@@ -10,7 +10,9 @@ import { SelectedOwnerTab } from "./pages/Leaderbork/Leaderbork.store";
 import MobileHomePage from "./pages/MobileHome/MobileHome.page";
 import PerksPage from "./pages/Perks/Perks.page";
 import PixelArtPage from "./pages/PixelArt/PixelArt.page";
+import PrivacyPolicyPage from "./pages/PrivacyPolicy.page";
 import RainbowPage from "./pages/Rainbow/Rainbow.page";
+import TermsPage from "./pages/Terms.page";
 import ViewerPage from "./pages/Viewer/Viewer.page";
 import { RouteMiddleware } from "./services/middleware";
 
@@ -25,6 +27,8 @@ export enum NamedRoutes {
   PERKS = "perks",
   FOUR_O_FOUR = "fourofour",
   RAINBOW = "rainbow",
+  PRIVACY = "privacy",
+  TERMS = "terms",
 }
 
 export interface AppRouteInterface {
@@ -66,6 +70,30 @@ export const SELECTED_PIXEL_PARAM = "id_with_offset";
   it must be rendered as the last child of the <Switch> component
 */
 const routes: AppRouteInterface[] = [
+  {
+    path: "/terms",
+    name: NamedRoutes.PRIVACY,
+    exact: true,
+    layout: AppLayout,
+    desktopName: "Privacy",
+    mobileName: "Privacy",
+    showOnDesktop: false,
+    showOnMobile: false,
+    displayOrder: 0,
+    component: TermsPage,
+  },
+  {
+    path: "/privacy",
+    name: NamedRoutes.TERMS,
+    exact: true,
+    layout: AppLayout,
+    desktopName: "Terms",
+    mobileName: "Terms",
+    showOnDesktop: false,
+    showOnMobile: false,
+    displayOrder: 0,
+    component: PrivacyPolicyPage,
+  },
   {
     path: "/rainbow",
     name: NamedRoutes.RAINBOW,
