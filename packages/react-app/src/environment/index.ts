@@ -1,5 +1,5 @@
 import developmentEnv from "./development";
-import { isDevModeEnabled, isStaging } from "./helpers";
+import { isDevModeEnabled, isProduction, isStaging } from "./helpers";
 import productionEnv from "./production";
 
 interface Environment {
@@ -21,7 +21,7 @@ interface Environment {
 }
 
 let env: Environment;
-if (true) {
+if (isProduction()) {
   env = productionEnv;
 } else if (isDevModeEnabled() || isStaging()) {
   env = developmentEnv;
