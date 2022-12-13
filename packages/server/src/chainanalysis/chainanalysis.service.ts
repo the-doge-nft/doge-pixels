@@ -32,7 +32,7 @@ export class ChainanalysisService implements OnModuleInit {
 
   async onModuleInit() {
     if (this.config.get('isProd')) {
-      await this.getRiskForAllPixelHolders();
+      this.getRiskForAllPixelHolders();
     } else {
       this.logger.log('Not querying chainanalysis -- not production env');
     }
