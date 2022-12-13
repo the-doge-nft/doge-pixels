@@ -77,7 +77,6 @@ class LeaderborkStore extends Reactionable(EmptyClass) {
   ) {
     super();
     makeObservable(this);
-    console.log("debug:: constructor");
 
     if (selectedAddress) {
       this.searchValue = selectedAddress;
@@ -97,20 +96,20 @@ class LeaderborkStore extends Reactionable(EmptyClass) {
       this.selectedOwnerTab = selectedOwnerTab;
     }
 
-    // this.react(
-    //   () => this.searchValue,
-    //   (value, prevValue) => {
-    //     //@ts-ignore
-    //     if ((this.selectedAddress && value.length === prevValue.length - 1) || value === "") {
-    //       this.selectedAddress = undefined;
-    //       this.searchValue = "";
-    //     }
+    this.react(
+      () => this.searchValue,
+      (value, prevValue) => {
+        //@ts-ignore
+        if ((this.selectedAddress && value.length === prevValue.length - 1) || value === "") {
+          this.selectedAddress = undefined;
+          this.searchValue = "";
+        }
 
-    //     if (this.searchValue === "") {
-    //       this.getGlobalTransfers();
-    //     }
-    //   },
-    // );
+        if (this.searchValue === "") {
+          this.getGlobalTransfers();
+        }
+      },
+    );
 
     this.react(
       () => [this.selectedOwner],
