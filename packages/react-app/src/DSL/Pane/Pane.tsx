@@ -1,5 +1,5 @@
 import { Box, useMultiStyleConfig } from "@chakra-ui/react";
-import React, { forwardRef, LegacyRef } from "react";
+import { forwardRef, LegacyRef } from "react";
 import { AllowedStyleProps } from "../Form/interfaces";
 
 interface PaneProps extends AllowedStyleProps {

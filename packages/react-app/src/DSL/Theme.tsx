@@ -1,27 +1,27 @@
 import { extendTheme } from "@chakra-ui/react";
-import ButtonStyle from "./Button/Button.styles";
-import SelectStyle from "./Select/Select.style";
-import MenuStyle from "./Menu/Menu.style";
-import TypographyStyle from "./Typography/Typography.style";
-import InputStyle from "./Form/Input/Input.style";
-import TagStyle from "./Tag/Tag.styles";
-import NumberInputStyle from "./Form/NumberInput/NumberInput.style";
-import DemoStyle from "./Demo/Demo.style";
-import Colors from "./Colors/Colors";
-import PaneStyle from "./Pane/Pane.styles";
-import ToastStyle from "./Toast/Toast.style";
-import ColorModeToggleStyle from "./ColorModeToggle/ColorModeToggle.style";
-import IconStyle from "./Icon/Icon.style";
-import ModalStyle from "./Modal/Modal.style";
-import LoadingStyle from "./Loading/Loading.style";
-import PixelPaneStyle from "./PixelPane/PixelPane.style";
-import PillStyle from "./Pill/Pill.style";
-import LinkStyle from "./Link/Link.style";
-import CheckboxStyle from "./Form/CheckboxInput/Checkbox.style";
 import BigTextStyle from "./BigText/BigText.style";
+import ButtonStyle from "./Button/Button.styles";
+import ColorModeToggleStyle from "./ColorModeToggle/ColorModeToggle.style";
+import Colors from "./Colors/Colors";
+import DemoStyle from "./Demo/Demo.style";
 import DrawerStyle from "./Drawer/Drawer.style";
+import CheckboxStyle from "./Form/CheckboxInput/Checkbox.style";
+import InputStyle from "./Form/Input/Input.style";
+import NumberInputStyle from "./Form/NumberInput/NumberInput.style";
+import IconStyle from "./Icon/Icon.style";
+import LinkStyle from "./Link/Link.style";
+import LoadingStyle from "./Loading/Loading.style";
+import MenuStyle from "./Menu/Menu.style";
+import ModalStyle from "./Modal/Modal.style";
+import PaneStyle from "./Pane/Pane.styles";
+import PillStyle from "./Pill/Pill.style";
+import PixelPaneStyle from "./PixelPane/PixelPane.style";
+import SelectStyle from "./Select/Select.style";
+import TagStyle from "./Tag/Tag.styles";
+import ToastStyle from "./Toast/Toast.style";
 import TooltipStyle from "./Tooltip/Tooltip.style";
 import TypeaheadStyle from "./Typeahead/Typeahead.style";
+import TypographyStyle from "./Typography/Typography.style";
 
 export const lightModePrimary = "yellow.700";
 export const darkModePrimary = "purple.700";
@@ -44,8 +44,11 @@ const theme = extendTheme({
   useSystemColorMode: false,
   styles: {
     global: ({ colorMode }: { colorMode: colorModeType }) => ({
-      "html, body": {
-        // detect what text is not intentionally themed
+      html: {
+        bg: lightOrDarkMode(colorMode, "yellow.50", darkModePrimary),
+        color: "fuchsia",
+      },
+      body: {
         color: "fuchsia",
         bg: lightOrDarkMode(colorMode, "yellow.50", darkModePrimary),
       },
