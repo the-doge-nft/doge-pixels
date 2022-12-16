@@ -67,7 +67,7 @@ class PerksStore {
         "One-of-a-kind, limited edition high-quality 100% discounted $DOG bandada is our first merch drop in collaboration with Shopify",
       link: "https://shop.ownthedoge.com",
       date: "2022-06-09",
-      isLive: true,
+      isLive: false,
     },
     {
       title: "Doge Academy's PFP NFT",
