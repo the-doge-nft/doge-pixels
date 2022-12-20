@@ -38,3 +38,6 @@ lerna-debug.log*
 .env.staging
 .env.production
 .env.staging
+
+# chain analysis local run tools
+src/chainanalysis/dogHolders/

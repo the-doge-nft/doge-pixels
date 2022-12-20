@@ -90,8 +90,8 @@ export class AppController {
   }
 
   @Post('transfers')
-  async postTransfers(@Body() { filter, sort }: PostTransfersDto) {
-    return this.pixelTransferRepo.searchPixelTransfers(filter, sort);
+  async postTransfers(@Body() { filter, sort, take }: PostTransfersDto) {
+    return this.pixelTransferRepo.searchPixelTransfers(filter, sort, take);
   }
 
   @Get('px/dimensions')

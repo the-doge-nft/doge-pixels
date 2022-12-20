@@ -7,6 +7,7 @@ import { catchError, firstValueFrom } from 'rxjs';
 import { Configuration } from '../config/configuration';
 import { PixelTransferService } from '../pixel-transfer/pixel-transfer.service';
 import { sleep } from './../helpers/sleep';
+// import * as addresses from './dogHolders/addresses.json';
 
 class EntityNotFoundError extends Error {}
 
@@ -36,6 +37,7 @@ export class ChainanalysisService implements OnModuleInit {
     } else {
       this.logger.log('Not querying chainanalysis -- not production env');
     }
+    // this.runItBaby();
   }
 
   private get authHeader() {
@@ -83,14 +85,14 @@ export class ChainanalysisService implements OnModuleInit {
     return data;
   }
 
-  async getRiskOrRegister(address: string) {
+  async getRiskRegisterMaybe(address: string) {
     try {
       const risk = await this.getRiskAssesment(address);
       return risk;
     } catch (e) {
       if (e instanceof EntityNotFoundError) {
         await this.registerAddress(address);
-        await sleep(2);
+        await sleep(1);
         const risk = await this.getRiskAssesment(address);
         this.logger.log(risk);
         return risk;
@@ -118,10 +120,17 @@ export class ChainanalysisService implements OnModuleInit {
     if (this.config.get('isProd')) {
       const balances = await this.pixels.getBalances();
       for (const address of Object.keys(balances)) {
-        await this.getRiskOrRegister(address);
+        await this.getRiskRegisterMaybe(address);
       }
     } else {
       this.logger.log('Not querying chainanalysis -- not production env');
     }
   }
+
+  // async runItBaby() {
+  //   for (const address of addresses) {
+  //     await this.getRiskRegisterMaybe(address);
+  //   }
+  //   console.log(addresses);
+  // }
 }

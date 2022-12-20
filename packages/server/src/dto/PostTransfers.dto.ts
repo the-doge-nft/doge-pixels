@@ -1,17 +1,15 @@
+import { Type } from 'class-transformer';
 import {
-  IsDate,
-  IsDefined,
   IsIn,
+  IsInt,
   IsNumber,
   IsOptional,
   IsString,
-  Validate,
   ValidateNested,
   ValidationArguments,
   ValidatorConstraint,
   ValidatorConstraintInterface,
 } from 'class-validator';
-import { Type } from 'class-transformer';
 
 @ValidatorConstraint({ name: 'string-or-number', async: false })
 class IsNumberOrString implements ValidatorConstraintInterface {
@@ -76,4 +74,8 @@ export class PostTransfersDto {
   @ValidateNested()
   @Type(() => Sort)
   sort: Sort;
+
+  @IsOptional()
+  @IsInt()
+  take: number;
 }

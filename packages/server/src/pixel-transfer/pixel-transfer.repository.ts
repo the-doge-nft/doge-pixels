@@ -156,11 +156,11 @@ export class PixelTransferRepository {
   }
 
   // @next TODO: acccept array of filters & add paging
-  async searchPixelTransfers(filter, sort) {
+  async searchPixelTransfers(filter, sort, take = 100) {
     const data = await this.prisma.pixelTransfers.findMany({
       where: filter ? this.generateFilterQuery(filter) : undefined,
       orderBy: sort ? this.generateSortQuery(sort) : { blockCreatedAt: 'desc' },
-      take: 100,
+      take,
     });
     return this.afterTransfersQuery(data);
   }
