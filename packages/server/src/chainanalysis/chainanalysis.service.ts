@@ -3,13 +3,11 @@ import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { InjectSentry, SentryService } from '@travelerdev/nestjs-sentry';
-import * as fs from 'fs';
-import * as path from 'path';
 import { catchError, firstValueFrom } from 'rxjs';
 import { Configuration } from '../config/configuration';
 import { PixelTransferService } from '../pixel-transfer/pixel-transfer.service';
 import { sleep } from './../helpers/sleep';
-import * as addresses from './dogHolders/peeps-addresses.json';
+// import * as addresses from './dogHolders/peeps-addresses.json';
 
 class EntityNotFoundError extends Error {}
 
@@ -129,19 +127,19 @@ export class ChainanalysisService implements OnModuleInit {
     }
   }
 
-  async runItBaby() {
-    for (const address of addresses) {
-      try {
-        const fileName = path.join(__dirname, './dog-risk.json');
-        const risk = await this.getRiskRegisterMaybe(address);
-        const data = fs.readFileSync(fileName);
-        const json = JSON.parse(data as any);
-        json.push(risk);
-        fs.writeFileSync(fileName, JSON.stringify(json));
-      } catch (e) {
-        this.logger.error(e);
-      }
-    }
-    console.log(addresses);
-  }
+  // async runItBaby() {
+  //   for (const address of addresses) {
+  //     try {
+  //       const fileName = path.join(__dirname, './dog-risk.json');
+  //       const risk = await this.getRiskRegisterMaybe(address);
+  //       const data = fs.readFileSync(fileName);
+  //       const json = JSON.parse(data as any);
+  //       json.push(risk);
+  //       fs.writeFileSync(fileName, JSON.stringify(json));
+  //     } catch (e) {
+  //       this.logger.error(e);
+  //     }
+  //   }
+  //   console.log(addresses);
+  // }
 }
