@@ -41,3 +41,4 @@ lerna-debug.log*
 
 # chain analysis local run tools
 src/chainanalysis/dogHolders/
+src/chainanalysis/*.json
