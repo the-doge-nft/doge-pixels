@@ -24,34 +24,34 @@ export class StatueCampaignService implements OnModuleInit {
   ) {}
 
   // rainbow swaps
-  @Cron(CronExpression.EVERY_5_MINUTES)
-  private syncRainbowSwaps() {
-    this.rainbowSwaps.syncRecentDOGSwapsForAllNetworks();
-  }
+  // @Cron(CronExpression.EVERY_2_HOURS)
+  // private syncRainbowSwaps() {
+  //   this.rainbowSwaps.syncRecentDOGSwapsForAllNetworks();
+  // }
 
-  @Cron(CronExpression.EVERY_HOUR)
-  private syncAllRainbowSwaps() {
-    this.rainbowSwaps.syncAllNetworks();
-  }
+  // @Cron(CronExpression.EVERY_HOUR)
+  // private syncAllRainbowSwaps() {
+  //   this.rainbowSwaps.syncAllNetworks();
+  // }
 
   // doge donations
-  @Cron(CronExpression.EVERY_MINUTE)
+  @Cron(CronExpression.EVERY_5_MINUTES)
   private syncDogeTxs() {
     this.donationsService.syncRecentDogeDonations();
   }
 
-  @Cron(CronExpression.EVERY_10_MINUTES)
+  @Cron(CronExpression.EVERY_5_HOURS)
   private syncAllDogeDonation() {
     this.donationsService.syncAllDogeDonations();
   }
 
   // ethereum donations
-  @Cron(CronExpression.EVERY_10_MINUTES)
+  @Cron(CronExpression.EVERY_30_MINUTES)
   private syncEthereumDonations() {
     this.donationsService.syncRecentEthereumDonations();
   }
 
-  @Cron(CronExpression.EVERY_HOUR)
+  @Cron(CronExpression.EVERY_5_HOURS)
   private syncAllEthereumDonations() {
     this.donationsService.syncAllEthereumTransfers();
   }

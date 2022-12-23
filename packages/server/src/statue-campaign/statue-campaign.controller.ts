@@ -46,7 +46,7 @@ export class DonationController {
   }
 
   @CacheKey('STATUECAMPAIGN:NOW')
-  @CacheTTL(30)
+  @CacheTTL(60 * 2)
   @Get('/now')
   async getNow() {
     const now = await this.statueService.getNow();
