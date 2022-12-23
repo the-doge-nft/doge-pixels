@@ -388,19 +388,25 @@ export class RainbowSwapsService {
 
     const balances: Balance[] = [];
     for (const currency in currencyToBalance) {
-      const item = currencyToBalance[currency];
-      const price =
-        item.contractAddress === null
-          ? await this.coingecko.getETHPrice()
-          : await this.coingecko.getPriceByEthereumContractAddress(
-              item.contractAddress,
-            );
-      balances.push({
-        symbol: currency,
-        amount: item.amount,
-        usdPrice: price,
-        usdNotional: item.amount * price,
-      });
+      try {
+        const item = currencyToBalance[currency];
+        const price =
+          item.contractAddress === null
+            ? await this.coingecko.getETHPrice()
+            : await this.coingecko.getPriceByEthereumContractAddress(
+                item.contractAddress,
+              );
+        balances.push({
+          symbol: currency,
+          amount: item.amount,
+          usdPrice: price,
+          usdNotional: item.amount * price,
+        });
+      } catch (e) {
+        this.logger.error('Could not get rainbow swap balance');
+        this.logger.error(e);
+        this.sentryClient.instance().captureException(e);
+      }
     }
     return balances;
   }
