@@ -16,6 +16,7 @@ export const readLinks = [
     link: "https://medium.com/the-doge-times/the-doge-nft-become-a-part-of-the-memeverse-with-dog-3d43169e3647",
   },
   { title: "Blog", link: "https://medium.com/the-doge-times" },
+  { title: "Etherscan", link: "https://etherscan.io/address/0x07887Ee0Bd24E774903963d50cF4Ec6a0a16977D" },
 ];
 
 export const actionLinks = [
