@@ -27,10 +27,10 @@ const DogLocked = observer(({ store }: { store: LeaderborkStore }) => {
           </Box>
           {store.percentageLocked && (
             <Typography
-              ml={2}
-              mb={4}
+              ml={4}
+              mb={{ base: 1, md: 4 }}
               color={lightOrDarkMode(colorMode, "yellow.100", "gray.300")}
-              variant={TVariant.PresStart10}
+              variant={TVariant.PresStart12}
             >
               {formatPercentageTwoDecimals(store.percentageLocked)} supply
             </Typography>
