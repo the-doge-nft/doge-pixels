@@ -56,7 +56,7 @@ const LeaderborkPage = observer(function LeaderborkPage() {
       >
         <TopDogs store={store} />
         <Box>
-          <DogLocked dogLocked={store.lockedDog} />
+          <DogLocked store={store} />
         </Box>
       </Flex>
       <Flex flexGrow={1} order={{ base: 1, xl: 3 }} ml={{ base: 0, xl: 10 }} display={"flex"} flexDirection={"column"}>

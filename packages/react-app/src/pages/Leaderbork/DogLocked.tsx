@@ -1,13 +1,16 @@
-import { Box, Flex } from "@chakra-ui/react";
+import { Box, Flex, useColorMode } from "@chakra-ui/react";
 import { observer } from "mobx-react-lite";
 import BigText from "../../DSL/BigText/BigText";
 import Pane from "../../DSL/Pane/Pane";
+import { lightOrDarkMode } from "../../DSL/Theme";
 import Typography, { TVariant } from "../../DSL/Typography/Typography";
-import { convertToAbbreviation } from "../../helpers/numberFormatter";
+import { convertToAbbreviation, formatPercentageTwoDecimals } from "../../helpers/numberFormatter";
 import AppStore from "../../store/App.store";
+import LeaderborkStore from "./Leaderbork.store";
 
-const DogLocked = observer(({ dogLocked }: { dogLocked?: number }) => {
-  const [num, abbr] = dogLocked ? convertToAbbreviation(Math.trunc(dogLocked)) : ["", ""];
+const DogLocked = observer(({ store }: { store: LeaderborkStore }) => {
+  const [num, abbr] = store.lockedDog ? convertToAbbreviation(Math.trunc(store.lockedDog)) : ["", ""];
+  const { colorMode } = useColorMode();
   return (
     <Pane h={"inherit"}>
       <Flex flexDirection={"column"}>
@@ -16,12 +19,22 @@ const DogLocked = observer(({ dogLocked }: { dogLocked?: number }) => {
             DOG Locked
           </Typography>
         </Flex>
-        <Flex flexGrow={1} alignItems={"center"}>
+        <Flex flexGrow={1} alignItems={"flex-end"}>
           <Box>
             <BigText size={AppStore.rwd.isMobile ? "sm" : "md"} label={abbr}>
               {num}
             </BigText>
           </Box>
+          {store.percentageLocked && (
+            <Typography
+              ml={2}
+              mb={4}
+              color={lightOrDarkMode(colorMode, "yellow.100", "gray.300")}
+              variant={TVariant.PresStart10}
+            >
+              {formatPercentageTwoDecimals(store.percentageLocked)} supply
+            </Typography>
+          )}
         </Flex>
       </Flex>
     </Pane>

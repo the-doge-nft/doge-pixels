@@ -129,6 +129,7 @@ class LeaderborkStore extends Reactionable(EmptyClass) {
   init() {
     AppStore.web3.getDogLocked().then(balance => {
       this.lockedDog = Number(balance);
+      console.log("debug:: locked dog", this.lockedDog);
     });
     AppStore.web3.getPixelOwnershipMap();
     if (!this.selectedAddress) {
@@ -361,6 +362,12 @@ class LeaderborkStore extends Reactionable(EmptyClass) {
   @computed
   get hasMorePagableOwners() {
     return this.pagableOwners.length < AppStore.web3.sortedPixelOwners.length;
+  }
+
+  @computed
+  get percentageLocked() {
+    const circulatingSupply = 8_665_263_477;
+    return (this.lockedDog / circulatingSupply) * 100;
   }
 }
 
