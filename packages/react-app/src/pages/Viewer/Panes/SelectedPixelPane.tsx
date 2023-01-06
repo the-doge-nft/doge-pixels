@@ -47,7 +47,7 @@ const SelectedPixelPane = observer(function SelectedPixelPane({ store }: { store
             <Typography variant={TVariant.ComicSans14} mr={2}>
               HEX:
             </Typography>
-            <Typography variant={TVariant.ComicSans14}>{store.selectedPupperHEX}</Typography>
+            <Typography variant={TVariant.ComicSans14}>{store.selectedPupperHEX?.toUpperCase()}</Typography>
           </Box>
 
           {store.metaData && (

@@ -163,7 +163,7 @@ const LeaderborkPage = observer(function LeaderborkPage() {
                               <Typography variant={TVariant.ComicSans16}>{store.previewSelectedPixelId}</Typography>
                               <Typography variant={TVariant.ComicSans16}>hex:</Typography>
                               <Typography variant={TVariant.ComicSans16}>
-                                {AppStore.web3.pupperToHexLocal(store.previewSelectedPixelId)}
+                                {AppStore.web3.pupperToHexLocal(store.previewSelectedPixelId)?.toUpperCase()}
                               </Typography>
                               <Typography variant={TVariant.ComicSans16}>coords:</Typography>
                               <Typography variant={TVariant.ComicSans16}>
