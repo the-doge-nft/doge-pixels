@@ -232,6 +232,10 @@ class Web3Store extends Reactionable(Web3providerStore) {
     return res.data.balance;
   }
 
+  getPercentDogInPixels() {
+    return Http.get<number>("/v1/dog/percentLocked");
+  }
+
   mintPuppers(pixel_amount: number, forcedGasLimit?: BigNumber) {
     let overrides: any = {};
     if (forcedGasLimit) {
@@ -304,7 +308,7 @@ class Web3Store extends Reactionable(Web3providerStore) {
         } else {
           return 0;
         }
-      })
+      });
   }
 
   getIsPupperNew(pupper: number) {

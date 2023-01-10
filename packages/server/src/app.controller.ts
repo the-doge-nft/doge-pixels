@@ -127,6 +127,11 @@ export class AppController {
     };
   }
 
+  @Get('dog/percentLocked')
+  getDogPercentLocked() {
+    return this.pixels.getPercentDogInPixels();
+  }
+
   @Get('contract/addresses')
   getContractAddresses() {
     return this.pixels.getContractAddresses();
