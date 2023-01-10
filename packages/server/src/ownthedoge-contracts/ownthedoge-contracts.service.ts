@@ -143,6 +143,12 @@ export class OwnTheDogeContractService implements OnModuleInit {
     );
   }
 
+  private getPleasrBalance() {
+    return this.dogContract.balanceOf(
+      '0xf894FeA045ECCB2927e2E0CB15C12debEE9f2BE8',
+    );
+  }
+
   private async getCirculatingSupply() {
     return this.dogContract.totalSupply();
   }
@@ -151,7 +157,8 @@ export class OwnTheDogeContractService implements OnModuleInit {
     const dogLocked = await this.getDogLocked();
     const totalSupply = await this.getCirculatingSupply();
     const treasuryBalance = await this.getTreasuryBalance();
-    const supply = totalSupply.sub(treasuryBalance);
+    const pleasrBalance = await this.getPleasrBalance();
+    const supply = totalSupply.sub(treasuryBalance).sub(pleasrBalance);
     return Number(dogLocked.toString() / supply.toString()) * 100;
   }
 
