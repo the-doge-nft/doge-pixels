@@ -69,6 +69,9 @@ class LeaderborkStore extends Reactionable(EmptyClass) {
   @observable
   paginableCount = 20;
 
+  @observable
+  dogLockedInPixels: number | null = null;
+
   constructor(
     selectedAddress?: string,
     selectedPixelId?: number,
@@ -132,6 +135,7 @@ class LeaderborkStore extends Reactionable(EmptyClass) {
       console.log("debug:: locked dog", this.lockedDog);
     });
     AppStore.web3.getPixelOwnershipMap();
+    AppStore.web3.getPercentDogInPixels().then(({ data: percent }) => (this.dogLockedInPixels = percent));
     if (!this.selectedAddress) {
       this.getGlobalTransfers().then(_ => {
         this.selectedTransferId = this.globalTransfers[0]?.uniqueTransferId;
@@ -362,12 +366,6 @@ class LeaderborkStore extends Reactionable(EmptyClass) {
   @computed
   get hasMorePagableOwners() {
     return this.pagableOwners.length < AppStore.web3.sortedPixelOwners.length;
-  }
-
-  @computed
-  get percentageLocked() {
-    const circulatingSupply = 8_665_263_477;
-    return (this.lockedDog / circulatingSupply) * 100;
   }
 }
 

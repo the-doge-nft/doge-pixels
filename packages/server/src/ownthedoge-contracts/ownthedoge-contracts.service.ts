@@ -1,3 +1,4 @@
+import { HttpService } from '@nestjs/axios';
 import {
   forwardRef,
   Inject,
@@ -5,17 +6,16 @@ import {
   Logger,
   OnModuleInit,
 } from '@nestjs/common';
-import { EventEmitter2, OnEvent } from '@nestjs/event-emitter';
-import { Events, PixelTransferEventPayload } from '../events';
-import { ethers } from 'ethers';
-import { EthersService } from '../ethers/ethers.service';
-import * as ABI from '../contracts/hardhat_contracts.json';
 import { ConfigService } from '@nestjs/config';
+import { EventEmitter2, OnEvent } from '@nestjs/event-emitter';
+import { InjectSentry, SentryService } from '@travelerdev/nestjs-sentry';
+import { ethers } from 'ethers';
 import { Configuration } from '../config/configuration';
 import * as KobosuJson from '../constants/kobosu.json';
-import { InjectSentry, SentryService } from '@travelerdev/nestjs-sentry';
+import * as ABI from '../contracts/hardhat_contracts.json';
+import { EthersService } from '../ethers/ethers.service';
+import { Events, PixelTransferEventPayload } from '../events';
 import { PixelTransferService } from '../pixel-transfer/pixel-transfer.service';
-import { HttpService } from '@nestjs/axios';
 
 @Injectable()
 export class OwnTheDogeContractService implements OnModuleInit {
@@ -135,6 +135,31 @@ export class OwnTheDogeContractService implements OnModuleInit {
 
   getDogLocked() {
     return this.dogContract.balanceOf(this.pxContract.address);
+  }
+
+  private getTreasuryBalance() {
+    return this.dogContract.balanceOf(
+      '0xBAac2B4491727D78D2b78815144570b9f2Fe8899',
+    );
+  }
+
+  private getPleasrBalance() {
+    return this.dogContract.balanceOf(
+      '0xf894FeA045ECCB2927e2E0CB15C12debEE9f2BE8',
+    );
+  }
+
+  private async getCirculatingSupply() {
+    return this.dogContract.totalSupply();
+  }
+
+  async getPercentDogInPixels() {
+    const dogLocked = await this.getDogLocked();
+    const totalSupply = await this.getCirculatingSupply();
+    const treasuryBalance = await this.getTreasuryBalance();
+    const pleasrBalance = await this.getPleasrBalance();
+    const supply = totalSupply.sub(treasuryBalance).sub(pleasrBalance);
+    return Number(dogLocked.toString() / supply.toString()) * 100;
   }
 
   getContractAddresses() {

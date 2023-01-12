@@ -31,7 +31,7 @@ class ModalsStore {
   isBurnMemeModalOpen = false;
 
   @observable
-  isInfoModalOpen = false;
+  isInfoModalOpen = true;
 
   @observable
   isMyPixelsModalOpen = false;
@@ -54,7 +54,7 @@ class ModalsStore {
     this.isScrollModalOpen = LocalStorage.getItem(SHOW_HELPER_MODAL, LocalStorage.PARSE_JSON, true);
     LocalStorage.setItem(SHOW_HELPER_MODAL, false);
 
-    this.isInfoModalOpen = LocalStorage.getItem(SHOW_INFO_MODAL, LocalStorage.PARSE_JSON, true);
+    // this.isInfoModalOpen = LocalStorage.getItem(SHOW_INFO_MODAL, LocalStorage.PARSE_JSON, true);
   }
 
   toggleInfoModal() {

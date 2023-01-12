@@ -16,7 +16,6 @@ RUN yarn prisma:generate
 
 USER node
 
-
 ##############################
 # BUILD FOR PRODUCTION
 ##############################
