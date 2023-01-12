@@ -10,6 +10,7 @@ export const socialLinks = [
 ];
 
 export const readLinks = [
+  { title: "Own The Doge", link: "https://ownthedoge.com" },
   { title: "Whitepaper", link: "https://pleasr.mirror.xyz/7hpdJOWRzQx2pmCA16MDxN2FiA3eY6dwcrnEtXKnCJw" },
   {
     title: "What?",
