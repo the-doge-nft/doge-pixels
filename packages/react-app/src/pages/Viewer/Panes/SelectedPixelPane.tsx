@@ -2,12 +2,12 @@ import { Box, Flex, Image } from "@chakra-ui/react";
 import { observer } from "mobx-react-lite";
 import { generatePath } from "react-router-dom";
 import Dev from "../../../common/Dev";
+import LooksRareLink from "../../../common/MarketplaceLinks/LooksRareLink";
+import OpenSeaLink from "../../../common/MarketplaceLinks/OpenSeaLink";
 import Button from "../../../DSL/Button/Button";
-import Icon from "../../../DSL/Icon/Icon";
 import Link from "../../../DSL/Link/Link";
 import PixelPane from "../../../DSL/PixelPane/PixelPane";
 import Typography, { TVariant } from "../../../DSL/Typography/Typography";
-import { isDevModeEnabled, isStaging } from "../../../environment/helpers";
 import { SELECT_PIXEL } from "../../../services/mixins/eventable";
 import AppStore from "../../../store/App.store";
 import ViewerStore from "../Viewer.store";
@@ -103,30 +103,8 @@ const SelectedPixelPane = observer(function SelectedPixelPane({ store }: { store
       </Flex>
       {store.tokenOwner && (
         <Flex justifyContent={"center"} gap={2}>
-          <Link
-            opacity={0.5}
-            target={"_blank"}
-            size={"sm"}
-            href={
-              isDevModeEnabled() || isStaging()
-                ? `https://testnets.opensea.io/assets/${AppStore.web3.pxContractAddress}/${store.selectedPupper}`
-                : `https://opensea.io/assets/${AppStore.web3.pxContractAddress}/${store.selectedPupper}`
-            }
-          >
-            <Icon fill={"white"} icon={"openSea"} boxSize={5} />
-          </Link>
-          <Link
-            opacity={0.5}
-            target={"_blank"}
-            size={"sm"}
-            href={
-              isDevModeEnabled() || isStaging()
-                ? `https://goerli.looksrare.org/collections/${AppStore.web3.pxContractAddress}/${store.selectedPupper}`
-                : `https://looksrare.org/collections/${AppStore.web3.pxContractAddress}/${store.selectedPupper}`
-            }
-          >
-            <Icon icon={"looksRare"} boxSize={5} />
-          </Link>
+          <OpenSeaLink pixelId={store.selectedPupper} />
+          <LooksRareLink pixelId={store.selectedPupper} />
         </Flex>
       )}
     </Flex>
