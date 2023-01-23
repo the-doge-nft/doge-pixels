@@ -139,7 +139,7 @@ export class OwnTheDogeContractService implements OnModuleInit {
 
   private getTreasuryBalance() {
     return this.dogContract.balanceOf(
-      '0xBAac2B4491727D78D2b78815144570b9f2Fe8899',
+      '0x563B1AE9717e9133b0C70D073C931368E1bd86E5',
     );
   }
 
