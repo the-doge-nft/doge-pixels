@@ -1,11 +1,11 @@
+import { Box } from "@chakra-ui/react";
 import { observer } from "mobx-react-lite";
-import PixelArtPageStore, { Sticker } from "./PixelArtPage.store";
 import { useEffect, useState } from "react";
 import AppStore from "../../store/App.store";
 import { PixelAction } from "./PixelArtActions";
-import { PixelArtTool, pixelArtTools } from "./PixelArtTools";
 import { TRANSPARENT_PIXEL } from "./PixelArtCanvas";
-import { Box } from "@chakra-ui/react";
+import PixelArtPageStore, { Sticker } from "./PixelArtPage.store";
+import { PixelArtTool, pixelArtTools } from "./PixelArtTools";
 import StickerComponent from "./StickerComponent";
 
 const CANVAS_ELEMENT_SIZE = 512;
@@ -148,7 +148,7 @@ const ArtCanvas = observer(({ store }: { store: PixelArtPageStore }) => {
           height={CANVAS_ELEMENT_SIZE * scale}
           onMouseDown={onMouseDown}
           onTouchStart={onMouseDown}
-        ></canvas>
+        />
         <Box
           position={"relative"}
           top={-store.templateHeight * scale * CANVAS_ELEMENT_SIZE - CANVAS_ELEMENT_SIZE * scale}

@@ -1,15 +1,13 @@
-import { ethers } from "ethers";
 import { action, computed, makeObservable, observable } from "mobx";
 import { EmptyClass } from "../../helpers/mixins";
-import { ObjectKeys } from "../../helpers/objects";
+import { getRandomIntInclusive } from "../../helpers/numbers";
+import KobosuJson from "../../images/kobosu.json";
 import { Reactionable } from "../../services/mixins/reactionable";
 import AppStore from "../../store/App.store";
 import { ActionInterface } from "./PixelArtActions";
 import { CanvasSize, PixelArtCanvas } from "./PixelArtCanvas";
-import KobosuJson from "../../images/kobosu.json";
-import { getRandomIntInclusive } from "../../helpers/numbers";
 
-export type PalletType = "user" | "random";
+export type PalletType = "user" | "random" | "custom";
 export interface Palette {
   tokenId: number;
   hex: string;
@@ -45,6 +43,8 @@ export class Sticker {
 }
 
 class PixelArtPageStore extends Reactionable(EmptyClass) {
+  private PIXEL_COUNT_TO_UNLOCK_CUSTOM_PALETTE = 50;
+
   @observable
   selectedAddress: string;
 
@@ -93,6 +93,9 @@ class PixelArtPageStore extends Reactionable(EmptyClass) {
 
   @observable
   randomPalette: Palette[];
+
+  @observable
+  customPixelsPalette: Palette[] = [];
 
   constructor() {
     super();
@@ -279,12 +282,15 @@ class PixelArtPageStore extends Reactionable(EmptyClass) {
 
   @computed
   get palette(): { tokenId: number; hex: string }[] {
+    let basePalette: Palette[] = [];
     if (this.paletteType === "user") {
-      return this.userPalette;
+      basePalette = this.userPalette;
     } else if (this.paletteType === "random") {
-      return this.randomPalette;
+      basePalette = this.randomPalette;
+    } else if (this.paletteType === "custom") {
+      return this.customPixelsPalette;
     }
-    return [];
+    return basePalette.concat(this.customPixelsPalette);
   }
 
   @computed
@@ -334,6 +340,25 @@ class PixelArtPageStore extends Reactionable(EmptyClass) {
   set paletteType(type) {
     this._paletteType = type;
     this.selectedBrushPixelIndex = 0;
+  }
+
+  @computed
+  get showCustomInput() {
+    return AppStore.web3.puppersOwned.length > this.PIXEL_COUNT_TO_UNLOCK_CUSTOM_PALETTE;
+  }
+
+  @computed
+  get selectedTypeDescription() {
+    switch (this.paletteType) {
+      case "user":
+        return `${AppStore.web3.addressForDisplay}'s pixels`;
+      case "random":
+        return "Random Pixels from The Doge NFT";
+      case "custom":
+        return "Custom Palette";
+      default:
+        return "";
+    }
   }
 }
 

@@ -1,10 +1,10 @@
-import { observer } from "mobx-react-lite";
-import Modal from "../../DSL/Modal/Modal";
 import { Box, Flex } from "@chakra-ui/react";
-import PixelArtPageStore from "./PixelArtPage.store";
+import { observer } from "mobx-react-lite";
 import Button from "../../DSL/Button/Button";
+import Modal from "../../DSL/Modal/Modal";
 import Typography, { TVariant } from "../../DSL/Typography/Typography";
 import AppStore from "../../store/App.store";
+import PixelArtPageStore from "./PixelArtPage.store";
 
 interface PaletteModalProps {
   isOpen: boolean;
