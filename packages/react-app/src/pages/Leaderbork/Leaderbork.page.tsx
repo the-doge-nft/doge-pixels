@@ -4,6 +4,8 @@ import { observer } from "mobx-react-lite";
 import { useEffect, useMemo } from "react";
 import { generatePath, Link as RouterLink, useLocation, useParams } from "react-router-dom";
 import { NamedRoutes, route, SELECTED_PIXEL_PARAM } from "../../App.routes";
+import LooksRareLink from "../../common/MarketplaceLinks/LooksRareLink";
+import OpenSeaLink from "../../common/MarketplaceLinks/OpenSeaLink";
 import Button from "../../DSL/Button/Button";
 import { Type } from "../../DSL/Fonts/Fonts";
 import model from "../../DSL/Form/model";
@@ -148,6 +150,12 @@ const LeaderborkPage = observer(function LeaderborkPage() {
                                       variant={Type.ComicSans}
                                       size={"md"}
                                       overflowWrap={"anywhere"}
+                                      onClick={() => {
+                                        store.selectedOwnerTab = SelectedOwnerTab.Wallet;
+                                        store.selectedAddress = store.selectedActivityTransferDetails.description.from
+                                          ? store.selectedActivityTransferDetails.description.from.address
+                                          : store.selectedActivityTransferDetails.description.to.address;
+                                      }}
                                     >
                                       {store.selectedActivityTransferDetails.description.from
                                         ? store.selectedActivityTransferDetails.description.from.displayName
@@ -186,14 +194,20 @@ const LeaderborkPage = observer(function LeaderborkPage() {
                     </Flex>
                   </Flex>
                   {store.selectedPixelId && store.selectedAddress && (
-                    <Flex justifyContent={"center"} alignItems={"center"} flexGrow={1} mt={{ base: 4, md: 0 }}>
-                      <Link
-                        display={"inline-block"}
-                        isNav
-                        to={route(NamedRoutes.PIXELS, { [SELECTED_PIXEL_PARAM]: store.previewSelectedPixelId })}
-                      >
-                        <Button onClick={() => {}}>Portal</Button>
-                      </Link>
+                    <Flex flexGrow={1} flexDir={"column"}>
+                      <Flex justifyContent={"center"} alignItems={"center"} flexGrow={1} mt={{ base: 4, md: 0 }}>
+                        <Link
+                          display={"inline-block"}
+                          isNav
+                          to={route(NamedRoutes.PIXELS, { [SELECTED_PIXEL_PARAM]: store.previewSelectedPixelId })}
+                        >
+                          <Button>Portal</Button>
+                        </Link>
+                      </Flex>
+                      <Flex justifyContent={"end"} gap={2}>
+                        <OpenSeaLink pixelId={store.previewSelectedPixelId} />
+                        <LooksRareLink pixelId={store.previewSelectedPixelId} />
+                      </Flex>
                     </Flex>
                   )}
                 </Flex>
