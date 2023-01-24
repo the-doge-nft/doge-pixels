@@ -120,7 +120,7 @@ const CustomPixelInput: React.FC<{ store: PixelArtPageStore }> = observer(({ sto
   const [pixelId, setPixelId] = useState<number | undefined>();
   const { colorMode } = useColorMode();
   useEffect(() => {
-    if (x && y) {
+    if (x !== undefined && y !== undefined) {
       const pixelId = AppStore.web3.coordinateToPupperLocal(x, y);
       try {
         const hex = AppStore.web3.pupperToHexLocal(pixelId);
