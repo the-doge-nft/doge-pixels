@@ -1,5 +1,4 @@
 import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
-import { Cron, CronExpression } from '@nestjs/schedule';
 import { Balance } from '../donations/donations.service';
 import { RainbowSwapsRepository } from '../rainbow-swaps/rainbow-swaps.repository';
 import { RainbowSwapsService } from '../rainbow-swaps/rainbow-swaps.service';
@@ -35,26 +34,26 @@ export class StatueCampaignService implements OnModuleInit {
   // }
 
   // doge donations
-  @Cron(CronExpression.EVERY_5_MINUTES)
-  private syncDogeTxs() {
-    this.donationsService.syncRecentDogeDonations();
-  }
+  // @Cron(CronExpression.EVERY_5_MINUTES)
+  // private syncDogeTxs() {
+  //   this.donationsService.syncRecentDogeDonations();
+  // }
 
-  @Cron(CronExpression.EVERY_5_HOURS)
-  private syncAllDogeDonation() {
-    this.donationsService.syncAllDogeDonations();
-  }
+  // @Cron(CronExpression.EVERY_5_HOURS)
+  // private syncAllDogeDonation() {
+  //   this.donationsService.syncAllDogeDonations();
+  // }
 
   // ethereum donations
-  @Cron(CronExpression.EVERY_30_MINUTES)
-  private syncEthereumDonations() {
-    this.donationsService.syncRecentEthereumDonations();
-  }
+  // @Cron(CronExpression.EVERY_30_MINUTES)
+  // private syncEthereumDonations() {
+  //   this.donationsService.syncRecentEthereumDonations();
+  // }
 
-  @Cron(CronExpression.EVERY_5_HOURS)
-  private syncAllEthereumDonations() {
-    this.donationsService.syncAllEthereumTransfers();
-  }
+  // @Cron(CronExpression.EVERY_5_HOURS)
+  // private syncAllEthereumDonations() {
+  //   this.donationsService.syncAllEthereumTransfers();
+  // }
 
   async getLeaderBoard() {
     const donationLeaderBoard = {};
@@ -124,11 +123,12 @@ export class StatueCampaignService implements OnModuleInit {
     swaps: Balance[];
   }> {
     const ethereumBalances = await this.donationsService.getEthereumBalances();
-    const dogecoinBalance = await this.donationsService.getDogeBalances();
+    // const dogecoinBalance = await this.donationsService.getDogeBalances();
     const rainbowBalances = await this.rainbowSwaps.getRainbowBalances();
     return {
       ethereum: ethereumBalances,
-      dogecoin: [dogecoinBalance],
+      // dogecoin: [dogecoinBalance],
+      dogecoin: [],
       swaps: rainbowBalances,
     };
   }

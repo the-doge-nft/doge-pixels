@@ -17,6 +17,7 @@ export class DonationsRepository {
   blackListedContractAddresses = [
     '0xb187916e2e927f3bb27035689bc93ebb910af279',
     '0xdf781bba6f9eefb1a74bb39f6df5e282c5976636',
+    '0x643695D282f6BA237afe27FFE0Acd89a86b50d3e',
   ];
 
   constructor(
