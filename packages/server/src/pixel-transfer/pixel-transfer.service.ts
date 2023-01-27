@@ -98,7 +98,7 @@ export class PixelTransferService {
   }
 
   async getBalances() {
-    const data = await this.pixelTransfers.findMany({
+    const transfers = await this.pixelTransfers.findMany({
       distinct: ['tokenId'],
       orderBy: {
         insertedAt: 'desc',
@@ -106,7 +106,7 @@ export class PixelTransferService {
     });
     const balances = {};
 
-    for (const item of data) {
+    for (const item of transfers) {
       const isPixelBurn = item.to === ethers.constants.AddressZero;
       if (!isPixelBurn) {
         if (balances[item.to]?.tokenIds) {

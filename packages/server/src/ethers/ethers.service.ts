@@ -3,6 +3,7 @@ import { ConfigService } from '@nestjs/config';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { InjectSentry, SentryService } from '@travelerdev/nestjs-sentry';
 import { ethers } from 'ethers';
+import { TEN_HOURS_SECONDS } from '../app.service';
 import { AppEnv } from '../config/configuration';
 import { Events } from '../events';
 import { CacheService } from './../cache/cache.service';
@@ -15,7 +16,7 @@ export class EthersService implements OnModuleInit {
   public provider: ethers.providers.WebSocketProvider;
   public zeroAddress = ethers.constants.AddressZero;
 
-  static getEnsCacheKey(address: string) {
+  private getEnsCacheKey(address: string) {
     return `ens-2:${address}`;
   }
 
@@ -122,11 +123,11 @@ export class EthersService implements OnModuleInit {
 
   async refreshEnsCache(address: string) {
     const ens = await this.getEnsName(address);
-    await this.cache.set(EthersService.getEnsCacheKey(ens));
+    await this.cache.set(this.getEnsCacheKey(address), ens, TEN_HOURS_SECONDS);
   }
 
   getCachedEnsName(address: string) {
-    return this.cache.get<string>(EthersService.getEnsCacheKey(address));
+    return this.cache.get<string>(this.getEnsCacheKey(address));
   }
 
   getIsValidEthereumAddress(address: string) {

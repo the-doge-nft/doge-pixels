@@ -14,10 +14,11 @@ import { PixelTransferRepository } from './pixel-transfer/pixel-transfer.reposit
 import { RainbowSwapsRepository } from './rainbow-swaps/rainbow-swaps.repository';
 import { UnstoppableDomainsService } from './unstoppable-domains/unstoppable-domains.service';
 
+export const TEN_HOURS_SECONDS = 60 * 60 * 10;
+
 @Injectable()
 export class AppService implements OnModuleInit {
   private logger = new Logger(AppService.name);
-  private NAME_CACHE_TIME_SECONDS = 60 * 60 * 10;
 
   constructor(
     private readonly alchemy: AlchemyService,
@@ -53,43 +54,22 @@ export class AppService implements OnModuleInit {
       },
     });
     for (const donation of donations) {
-      const fromName = await this.myDoge.getName(donation.fromAddress);
-      await this.cache.set(
-        MydogeService.getProfileCacheKey(donation.fromAddress),
-        fromName,
-        this.NAME_CACHE_TIME_SECONDS,
-      );
-
-      const toName = await this.myDoge.getName(donation.toAddress);
-      await this.cache.set(
-        MydogeService.getProfileCacheKey(donation.toAddress),
-        toName,
-        this.NAME_CACHE_TIME_SECONDS,
-      );
+      await this.myDoge.refreshCachedName(donation.fromAddress);
+      await this.myDoge.refreshCachedName(donation.toAddress);
     }
   }
 
   async cacheUdNames() {
     const addresses = await this.getEthereumAddresses();
     for (const address of addresses) {
-      const name = await this.ud.getName(address);
-      await this.cache.set(
-        UnstoppableDomainsService.getNameCacheKey(address),
-        name,
-        this.NAME_CACHE_TIME_SECONDS,
-      );
+      await this.ud.refreshNameCache(address);
     }
   }
 
   async cacheEnsNames() {
     const addresses = await this.getEthereumAddresses();
     for (const address of addresses) {
-      const ens = await this.ethers.getEnsName(address);
-      await this.cache.set(
-        EthersService.getEnsCacheKey(address),
-        ens,
-        this.NAME_CACHE_TIME_SECONDS,
-      );
+      await this.ethers.refreshEnsCache(address);
     }
   }
 

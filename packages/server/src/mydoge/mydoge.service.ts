@@ -1,6 +1,7 @@
 import { HttpService } from '@nestjs/axios';
 import { Injectable, Logger } from '@nestjs/common';
 import { catchError, firstValueFrom } from 'rxjs';
+import { TEN_HOURS_SECONDS } from '../app.service';
 import { CacheService } from '../cache/cache.service';
 
 interface Profile {
@@ -15,7 +16,7 @@ export class MydogeService {
   private readonly baseUrl = 'https://api.mydoge.com';
   private readonly secondsToCache = 60 * 60;
 
-  static getProfileCacheKey(address: string) {
+  private getNameCacheKey(address: string) {
     return `MYDOGE:PROFILE:${address}`;
   }
 
@@ -49,8 +50,15 @@ export class MydogeService {
   }
 
   getCachedName(address: string) {
-    return this.cache.get<typeof address>(
-      MydogeService.getProfileCacheKey(address),
+    return this.cache.get<typeof address>(this.getNameCacheKey(address));
+  }
+
+  async refreshCachedName(address: string) {
+    const name = await this.getName(address);
+    await this.cache.set(
+      this.getNameCacheKey(address),
+      name,
+      TEN_HOURS_SECONDS,
     );
   }
 }

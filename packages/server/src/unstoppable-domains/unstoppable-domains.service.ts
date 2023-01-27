@@ -1,5 +1,6 @@
 import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { Resolution } from '@unstoppabledomains/resolution';
+import { TEN_HOURS_SECONDS } from '../app.service';
 import { CacheService } from './../cache/cache.service';
 
 @Injectable()
@@ -9,7 +10,7 @@ export class UnstoppableDomainsService implements OnModuleInit {
 
   constructor(private readonly cache: CacheService) {}
 
-  static getNameCacheKey(address: string) {
+  private getNameCacheKey(address: string) {
     return `ud:${address}`;
   }
 
@@ -19,8 +20,7 @@ export class UnstoppableDomainsService implements OnModuleInit {
 
   private async reverseUrl(address: string) {
     this.logger.log(`querying ud: ${address}`);
-    const ud = await this.resolution.reverse(address);
-    return ud;
+    return this.resolution.reverse(address);
   }
 
   async getName(address: string): Promise<string | null> {
@@ -28,6 +28,14 @@ export class UnstoppableDomainsService implements OnModuleInit {
   }
 
   async getCachedName(address: string): Promise<string | null> {
-    return this.cache.get(UnstoppableDomainsService.getNameCacheKey(address));
+    return this.cache.get(this.getNameCacheKey(address));
+  }
+
+  async refreshNameCache(address: string) {
+    return this.cache.set(
+      this.getNameCacheKey(address),
+      await this.getName(address),
+      TEN_HOURS_SECONDS,
+    );
   }
 }
