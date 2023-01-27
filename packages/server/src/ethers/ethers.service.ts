@@ -1,18 +1,11 @@
-import {
-  CACHE_MANAGER,
-  Inject,
-  Injectable,
-  Logger,
-  OnModuleInit
-} from '@nestjs/common';
+import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { InjectSentry, SentryService } from '@travelerdev/nestjs-sentry';
-import { Cache } from 'cache-manager';
 import { ethers } from 'ethers';
 import { AppEnv } from '../config/configuration';
 import { Events } from '../events';
-import { getRandomIntInclusive } from '../helpers/numbers';
+import { CacheService } from './../cache/cache.service';
 
 @Injectable()
 export class EthersService implements OnModuleInit {
@@ -22,6 +15,10 @@ export class EthersService implements OnModuleInit {
   public provider: ethers.providers.WebSocketProvider;
   public zeroAddress = ethers.constants.AddressZero;
 
+  static getEnsCacheKey(address: string) {
+    return `ens-2:${address}`;
+  }
+
   constructor(
     private configService: ConfigService<{
       appEnv: string;
@@ -29,7 +26,7 @@ export class EthersService implements OnModuleInit {
     }>,
     private eventEmitter: EventEmitter2,
     @InjectSentry() private readonly sentryClient: SentryService,
-    @Inject(CACHE_MANAGER) private cacheManager: Cache,
+    private readonly cache: CacheService,
   ) {
     const appEnv = this.configService.get('appEnv');
     if (appEnv === AppEnv.production) {
@@ -118,37 +115,13 @@ export class EthersService implements OnModuleInit {
     });
   }
 
-  async getEnsName(address: string, withCache = true) {
-    const cacheKey = `ens:${address}`;
-    const cacheSeconds = getRandomIntInclusive(60 * 60 * 10, 60 * 60 * 24);
-    const noEns = 'NOENS';
-    if (withCache) {
-      const ens = await this.cacheManager.get<string>(cacheKey);
-      if (!ens) {
-        // does not exist in cache
-        const freshEns = await this.queryEnsName(address);
-        if (freshEns) {
-          await this.cacheManager.set(cacheKey, freshEns, {
-            ttl: cacheSeconds,
-          });
-          return freshEns;
-        } else {
-          await this.cacheManager.set(cacheKey, noEns, { ttl: cacheSeconds });
-          return null;
-        }
-      } else if (ens === noEns) {
-        // user does not have an ens name
-        return null;
-      }
-      return ens;
-    } else {
-      return this.queryEnsName(address);
-    }
+  async getEnsName(address: string) {
+    this.logger.log(`querying ens: ${address}`);
+    return this.provider.lookupAddress(address);
   }
 
-  private queryEnsName(address: string) {
-    this.logger.log(`querying fresh ens: ${address}`);
-    return this.provider.lookupAddress(address);
+  getCachedEnsName(address: string) {
+    return this.cache.get<string>(EthersService.getEnsCacheKey(address));
   }
 
   getIsValidEthereumAddress(address: string) {

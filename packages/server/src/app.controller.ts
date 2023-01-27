@@ -13,6 +13,7 @@ import {
 import { InjectSentry, SentryService } from '@travelerdev/nestjs-sentry';
 import { Cache } from 'cache-manager';
 import { ethers } from 'ethers';
+import { AppService } from './app.service';
 import { CoinGeckoService } from './coin-gecko/coin-gecko.service';
 import { DiscordService } from './discord/discord.service';
 import { PostTransfersDto } from './dto/PostTransfers.dto';
@@ -35,35 +36,14 @@ export class AppController {
     private readonly twitter: TwitterService,
     private readonly discord: DiscordService,
     private readonly gecko: CoinGeckoService,
+    private readonly app: AppService,
     @Inject(CACHE_MANAGER) private cacheManager: Cache,
     @InjectSentry() private readonly sentryClient: SentryService,
   ) {}
 
   @Get('status')
   getStatus() {
-    return (
-      'WOW\n' +
-      '' +
-      '░░░░░░░░░▄░░░░░░░░░░░░░░▄░░░░\n' +
-      '░░░░░░░░▌▒█░░░░░░░░░░░▄▀▒▌░░░\n' +
-      '░░░░░░░░▌▒▒█░░░░░░░░▄▀▒▒▒▐░░░\n' +
-      '░░░░░░░▐▄▀▒▒▀▀▀▀▄▄▄▀▒▒▒▒▒▐░░░\n' +
-      '░░░░░▄▄▀▒░▒▒▒▒▒▒▒▒▒█▒▒▄█▒▐░░░\n' +
-      '░░░▄▀▒▒▒░░░▒▒▒░░░▒▒▒▀██▀▒▌░░░ \n' +
-      '░░▐▒▒▒▄▄▒▒▒▒░░░▒▒▒▒▒▒▒▀▄▒▒▌░░\n' +
-      '░░▌░░▌█▀▒▒▒▒▒▄▀█▄▒▒▒▒▒▒▒█▒▐░░\n' +
-      '░▐░░░▒▒▒▒▒▒▒▒▌██▀▒▒░░░▒▒▒▀▄▌░\n' +
-      '░▌░▒▄██▄▒▒▒▒▒▒▒▒▒░░░░░░▒▒▒▒▌░\n' +
-      '▐▒▀▐▄█▄█▌▄░▀▒▒░░░░░░░░░░▒▒▒▐░\n' +
-      '▐▒▒▐▀▐▀▒░▄▄▒▄▒▒▒▒▒▒░▒░▒░▒▒▒▒▌\n' +
-      '▐▒▒▒▀▀▄▄▒▒▒▄▒▒▒▒▒▒▒▒░▒░▒░▒▒▐░\n' +
-      '░▌▒▒▒▒▒▒▀▀▀▒▒▒▒▒▒░▒░▒░▒░▒▒▒▌░\n' +
-      '░▐▒▒▒▒▒▒▒▒▒▒▒▒▒▒░▒░▒░▒▒▄▒▒▐░░\n' +
-      '░░▀▄▒▒▒▒▒▒▒▒▒▒▒░▒░▒░▒▄▒▒▒▒▌░░\n' +
-      '░░░░▀▄▒▒▒▒▒▒▒▒▒▒▄▄▄▀▒▒▒▒▄▀░░░\n' +
-      '░░░░░░▀▄▄▄▄▄▄▀▀▀▒▒▒▒▒▄▄▀░░░░░\n' +
-      '░░░░░░░░░▒▒▒▒▒▒▒▒▒▒▀▀░░░░░░░░'
-    );
+    return this.app.wow;
   }
 
   @Get('config')
@@ -251,5 +231,10 @@ export class AppController {
   async getDiscordBotTest(@Param() params: { tokenId: number }) {
     await this.discord.DEBUG_TEST(params.tokenId);
     return { success: true };
+  }
+
+  @Get('sync/names')
+  syncNames() {
+    return this.app.syncNames();
   }
 }

@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { EthereumNetwork, Prisma, RainbowSwaps } from '@prisma/client';
-import { AlchemyService } from '../alchemy/alchemy.service';
 import { CoinGeckoService } from '../coin-gecko/coin-gecko.service';
 import { EthersService } from '../ethers/ethers.service';
+import { CacheService } from './../cache/cache.service';
 import { PrismaService } from './../prisma.service';
 
 @Injectable()
@@ -10,8 +10,8 @@ export class RainbowSwapsRepository {
   constructor(
     private readonly prisma: PrismaService,
     private readonly ethers: EthersService,
-    private readonly alchemy: AlchemyService,
     private readonly coingecko: CoinGeckoService,
+    private readonly cache: CacheService,
   ) {}
 
   private async afterGetSwaps(swaps: RainbowSwaps[]) {
@@ -67,7 +67,7 @@ export class RainbowSwapsRepository {
     )[0]?.blockNumber;
   }
 
-  async findMany(args: Prisma.RainbowSwapsFindManyArgs) {
+  async findMany(args?: Prisma.RainbowSwapsFindManyArgs) {
     // only swaps starting on Nov 2nd 2002 count
     const swaps = await this.prisma.rainbowSwaps.findMany(args);
     return this.afterGetSwaps(swaps);

@@ -98,37 +98,25 @@ export class PixelTransferService {
         insertedAt: 'desc',
       },
     });
-    const map = {};
+    const balances = {};
 
     for (const item of data) {
-      if (item.to === ethers.constants.AddressZero) {
-        continue;
-      }
-      if (map[item.to]?.tokenIds) {
-        map[item.to].tokenIds.push(item.tokenId);
-      } else {
-        let ens: string | null = null;
-        let ud: string | null = null;
+      const isPixelBurn = item.to === ethers.constants.AddressZero;
+      if (!isPixelBurn) {
+        if (balances[item.to]?.tokenIds) {
+          balances[item.to].tokenIds.push(item.tokenId);
+        } else {
+          const ens = await this.ethers.getCachedEnsName(item.to);
+          const ud = await this.ud.getCachedName(item.to);
 
-        try {
-          ens = await this.ethers.getEnsName(item.to);
-        } catch (e) {
-          this.logger.error(`Could not get ens for: ${item.to}`);
+          balances[item.to] = {
+            tokenIds: [item.tokenId],
+            ens,
+            ud,
+          };
         }
-
-        try {
-          ud = await this.ud.getUDName(item.to);
-        } catch (e) {
-          this.logger.error(`Could not get UD for: ${item.to}`);
-        }
-
-        map[item.to] = {
-          tokenIds: [item.tokenId],
-          ens,
-          ud,
-        };
       }
     }
-    return map;
+    return balances;
   }
 }

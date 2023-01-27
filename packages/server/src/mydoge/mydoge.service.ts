@@ -15,12 +15,16 @@ export class MydogeService {
   private readonly baseUrl = 'https://api.mydoge.com';
   private readonly secondsToCache = 60 * 60;
 
+  static getProfileCacheKey(address: string) {
+    return `MYDOGE:PROFILE:${address}`;
+  }
+
   constructor(
     private readonly http: HttpService,
     private readonly cache: CacheService,
   ) {}
 
-  async getWalletProfile(address: string) {
+  async getName(address: string) {
     const profile = await this.cache.getOrQueryAndCache(
       `MYDOGE:PROFILE:${address}`,
       async () => {
@@ -42,5 +46,11 @@ export class MydogeService {
       this.secondsToCache,
     );
     return profile?.username;
+  }
+
+  getCachedName(address: string) {
+    return this.cache.get<typeof address>(
+      MydogeService.getProfileCacheKey(address),
+    );
   }
 }

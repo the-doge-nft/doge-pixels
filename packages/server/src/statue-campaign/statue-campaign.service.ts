@@ -11,8 +11,8 @@ export class StatueCampaignService implements OnModuleInit {
 
   async onModuleInit() {
     this.logger.log('🐕 Statue campaign service init');
-    this.rainbowSwaps.init();
-    this.donationsService.init();
+    // this.rainbowSwaps.init();
+    // this.donationsService.init();
   }
 
   constructor(

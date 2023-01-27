@@ -1,28 +1,30 @@
-import { Inject, Injectable, CACHE_MANAGER } from '@nestjs/common';
+import { CACHE_MANAGER, Inject, Injectable } from '@nestjs/common';
 import { Cache } from 'cache-manager';
 
 @Injectable()
 export class CacheService {
+  private NULL = 'NULL';
   constructor(@Inject(CACHE_MANAGER) private readonly cache: Cache) {}
 
   async get<T>(key: string) {
-    return this.cache.get<T>(key);
+    const data = await this.cache.get<T>(key);
+    return data === this.NULL ? null : data;
   }
 
-  async set<T>(key: string, value: any, ttl?: number) {
-    return this.cache.set<T>(key, value, { ttl });
+  set<T>(key: string, value?: any, ttl?: number) {
+    return this.cache.set<T>(key, value === null ? this.NULL : value, { ttl });
   }
 
   async getOrQueryAndCache<T>(
     key: string,
-    noDataCallback: () => Promise<T>,
+    getData: () => Promise<T>,
     ttl?: number,
   ): Promise<T> {
     const data = await this.get<T>(key);
     if (data) {
       return data;
     }
-    const newData = await noDataCallback();
+    const newData = await getData();
     await this.set<T>(key, newData, ttl);
     return newData;
   }

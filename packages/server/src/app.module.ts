@@ -9,8 +9,10 @@ import * as redisStore from 'cache-manager-redis-store';
 import { join } from 'path';
 import { AlchemyService } from './alchemy/alchemy.service';
 import { AppController } from './app.controller';
+import { AppService } from './app.service';
 import { AwsService } from './aws/aws.service';
 import { CacheService } from './cache/cache.service';
+import { ChainanalysisService } from './chainanalysis/chainanalysis.service';
 import { CoinGeckoService } from './coin-gecko/coin-gecko.service';
 import configuration, { Configuration } from './config/configuration';
 import { DiscordService } from './discord/discord.service';
@@ -19,6 +21,7 @@ import { DonationsService } from './donations/donations.service';
 import { EthersService } from './ethers/ethers.service';
 import { ImageGeneratorService } from './image-generator/image-generator.service';
 import { IndexController } from './index/index.controller';
+import { MydogeService } from './mydoge/mydoge.service';
 import { OwnTheDogeContractService } from './ownthedoge-contracts/ownthedoge-contracts.service';
 import { PixelTransferRepository } from './pixel-transfer/pixel-transfer.repository';
 import { PixelTransferService } from './pixel-transfer/pixel-transfer.service';
@@ -30,8 +33,6 @@ import { DonationController } from './statue-campaign/statue-campaign.controller
 import { StatueCampaignService } from './statue-campaign/statue-campaign.service';
 import { TwitterService } from './twitter/twitter.service';
 import { UnstoppableDomainsService } from './unstoppable-domains/unstoppable-domains.service';
-import { MydogeService } from './mydoge/mydoge.service';
-import { ChainanalysisService } from './chainanalysis/chainanalysis.service';
 
 @Module({
   imports: [
@@ -92,6 +93,7 @@ import { ChainanalysisService } from './chainanalysis/chainanalysis.service';
     CacheService,
     MydogeService,
     ChainanalysisService,
+    AppService,
   ],
 })
 export class AppModule {}

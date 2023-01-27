@@ -1,6 +1,5 @@
-import { CACHE_MANAGER, Inject, Injectable, Logger } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { PixelTransfers } from '@prisma/client';
-import { Cache } from 'cache-manager';
 import { EthersService } from '../ethers/ethers.service';
 import { PrismaService } from '../prisma.service';
 import { UnstoppableDomainsService } from '../unstoppable-domains/unstoppable-domains.service';
@@ -13,40 +12,16 @@ export class PixelTransferRepository {
     private prisma: PrismaService,
     private ethers: EthersService,
     private ud: UnstoppableDomainsService,
-    @Inject(CACHE_MANAGER) private cacheManager: Cache,
   ) {}
 
   // this should move to the pixel transfers service
   private async afterTransfersQuery(transfers: PixelTransfers[]) {
     const data = [];
     for (const transfer of transfers) {
-      let toEns = null;
-      let fromEns = null;
-      let fromUD = null;
-      let toUD = null;
-      try {
-        toEns = await this.ethers.getEnsName(transfer.to);
-      } catch {
-        this.logger.error(`Could not get ens: ${transfer.to}`);
-      }
-
-      try {
-        fromEns = await this.ethers.getEnsName(transfer.from);
-      } catch {
-        this.logger.error(`Could not get ens: ${transfer.from}`);
-      }
-
-      try {
-        toUD = await this.ud.getUDName(transfer.to);
-      } catch {
-        this.logger.error(`Could not get ud: ${transfer.to}`);
-      }
-
-      try {
-        fromUD = await this.ud.getUDName(transfer.to);
-      } catch {
-        this.logger.error(`Could not get ud: ${transfer.to}`);
-      }
+      const toEns = await this.ethers.getCachedEnsName(transfer.to);
+      const fromEns = await this.ethers.getCachedEnsName(transfer.from);
+      const toUD = await this.ud.getCachedName(transfer.to);
+      const fromUD = await this.ud.getCachedName(transfer.to);
 
       data.push({
         ...transfer,
@@ -155,7 +130,7 @@ export class PixelTransferRepository {
     return this.afterTransfersQuery(data);
   }
 
-  // @next TODO: acccept array of filters & add paging
+  // @next TODO: add paging
   async searchPixelTransfers(filter, sort, take = 100) {
     const data = await this.prisma.pixelTransfers.findMany({
       where: filter ? this.generateFilterQuery(filter) : undefined,
@@ -207,7 +182,7 @@ export class PixelTransferRepository {
     return this.prisma.pixelTransfers.deleteMany();
   }
 
-  findMany(args: any) {
+  findMany(args?: any) {
     return this.prisma.pixelTransfers.findMany(args);
   }
 }

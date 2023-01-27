@@ -392,10 +392,8 @@ export class RainbowSwapsService {
         const item = currencyToBalance[currency];
         const price =
           item.contractAddress === null
-            ? await this.coingecko.getETHPrice()
-            : await this.coingecko.getPriceByEthereumContractAddress(
-                item.contractAddress,
-              );
+            ? await this.coingecko.getCachedEthPrice()
+            : await this.coingecko.getCachedPrice(item.contractAddress);
         balances.push({
           symbol: currency,
           amount: item.amount,

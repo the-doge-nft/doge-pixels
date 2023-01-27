@@ -11,6 +11,14 @@ import { UnstoppableDomainsService } from './../unstoppable-domains/unstoppable-
 export const DOGE_CURRENCY_SYMBOL = 'DOGE';
 export const ETH_CURRENCY_SYMBOL = 'ETH';
 
+export interface DonationsAfterGet extends Donations {
+  currencyUSDNotional: number;
+  explorerUrl: string;
+  fromEns: string | null;
+  fromMyDogeName: string | null;
+  fromUD: string | null;
+}
+
 @Injectable()
 export class DonationsRepository {
   private logger = new Logger(DonationsRepository.name);
@@ -30,14 +38,10 @@ export class DonationsRepository {
     @InjectSentry() private readonly sentryClient: SentryService,
   ) {}
 
-  private async afterGetDonations(donations: Donations[]) {
-    const data: (Donations & {
-      currencyUSDNotional: number;
-      explorerUrl: string;
-      fromEns: string | null;
-      fromMyDogeName: string | null;
-      fromUD: string | null;
-    })[] = [];
+  private async afterGetDonations(
+    donations: Donations[],
+  ): Promise<DonationsAfterGet[]> {
+    const data: DonationsAfterGet[] = [];
     for (const donation of donations) {
       // skip past any blacklisted addresses
       if (
@@ -50,56 +54,33 @@ export class DonationsRepository {
 
       let fromMyDogeName = null;
       let fromEns = null;
-      let donatedCurrencyPrice: number;
+      let donatedCurrencyPrice = 0;
       let fromUD = null;
       let explorerUrl: string;
-      try {
-        if (donation.currency === DOGE_CURRENCY_SYMBOL) {
-          donatedCurrencyPrice = await this.coingecko.getDogePrice();
-          explorerUrl = this.sochain.getTxExplorerUrl(donation.txHash);
-          try {
-            fromMyDogeName = await this.mydoge.getWalletProfile(
-              donation.fromAddress,
-            );
-          } catch (e) {}
-        } else {
-          explorerUrl = `https://etherscan.io/tx/${donation.txHash}`;
-          if (donation.currencyContractAddress) {
-            donatedCurrencyPrice =
-              await this.coingecko.getPriceByEthereumContractAddress(
-                donation.currencyContractAddress,
-              );
-          } else if (donation.currency === ETH_CURRENCY_SYMBOL) {
-            donatedCurrencyPrice = await this.coingecko.getETHPrice();
-          } else {
-            donatedCurrencyPrice = 0;
-            const errorMessage = `No currency address for: ${donation.currency} :: ${donation.txHash}`;
-            this.logger.error(errorMessage);
-            this.sentryClient.instance().captureMessage(errorMessage);
-          }
+
+      const isDoge = donation.currency === DOGE_CURRENCY_SYMBOL;
+      if (isDoge) {
+        explorerUrl = this.sochain.getTxExplorerUrl(donation.txHash);
+
+        donatedCurrencyPrice = await this.coingecko.getCachedPrice('dogecoin');
+        fromMyDogeName = await this.mydoge.getCachedName(donation.fromAddress);
+      } else {
+        explorerUrl = `https://etherscan.io/tx/${donation.txHash}`;
+
+        if (donation.currency === ETH_CURRENCY_SYMBOL) {
+          donatedCurrencyPrice = await this.coingecko.getCachedPrice(
+            'ethereum',
+          );
+        } else if (donation.currencyContractAddress) {
+          donatedCurrencyPrice = await this.coingecko.getCachedPrice(
+            donation.currencyContractAddress,
+          );
         }
-      } catch (e) {
-        donatedCurrencyPrice = 0;
-        this.logger.error(e);
-        this.logger.error(`Could not get currency price: ${donation.currency}`);
       }
 
       if (donation.blockchain === ChainName.ETHEREUM) {
-        try {
-          fromEns = await this.ethers.getEnsName(donation.fromAddress);
-        } catch (e) {
-          this.logger.error(
-            `Could not get donation ENS for: ${donation.fromAddress}`,
-          );
-        }
-
-        try {
-          fromUD = await this.ud.getUDName(donation.fromAddress);
-        } catch (e) {
-          this.logger.error(
-            `Could not get donation UD for: ${donation.fromAddress}`,
-          );
-        }
+        fromEns = await this.ethers.getCachedEnsName(donation.fromAddress);
+        fromUD = await this.ud.getCachedName(donation.fromAddress);
       }
 
       const currencyUSDNotional = donatedCurrencyPrice * donation.amount;
@@ -128,7 +109,13 @@ export class DonationsRepository {
     });
   }
 
-  async findMany(args: Prisma.DonationsFindManyArgs) {
+  async findManyNoAfters(args: Prisma.DonationsFindManyArgs) {
+    return this.prisma.donations.findMany(args);
+  }
+
+  async findMany(
+    args: Prisma.DonationsFindManyArgs,
+  ): Promise<DonationsAfterGet[]> {
     const donations = await this.prisma.donations.findMany(args);
     return this.afterGetDonations(donations);
   }

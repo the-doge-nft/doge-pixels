@@ -49,7 +49,7 @@ export class OwnTheDogeContractService implements OnModuleInit {
   }
 
   private get isConnectedToContracts() {
-    return this.pxContract!! && this.dogContract!!;
+    return !!this.pxContract && !!this.dogContract;
   }
 
   private async onProviderConnected(
