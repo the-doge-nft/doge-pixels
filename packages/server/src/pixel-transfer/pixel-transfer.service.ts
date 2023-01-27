@@ -81,6 +81,12 @@ export class PixelTransferService {
     blockCreatedAt,
     event,
   }: PixelTransferEventPayload) {
+    try {
+      await Promise.all([
+        this.ethers.refreshEnsCache(from),
+        this.ethers.refreshEnsCache(to),
+      ]);
+    } catch (e) {}
     return this.pixelTransfers.upsert({
       from,
       to,

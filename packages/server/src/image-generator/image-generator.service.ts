@@ -1,14 +1,14 @@
 import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
-import { writeFile } from 'fs';
-import { OwnTheDogeContractService } from '../ownthedoge-contracts/ownthedoge-contracts.service';
-import { createCanvas } from 'canvas';
-import { EthersService } from '../ethers/ethers.service';
 import { ConfigService } from '@nestjs/config';
-import { Configuration } from '../config/configuration';
 import { InjectSentry, SentryService } from '@travelerdev/nestjs-sentry';
+import { createCanvas } from 'canvas';
+import { Configuration } from '../config/configuration';
+import { EthersService } from '../ethers/ethers.service';
+import { OwnTheDogeContractService } from '../ownthedoge-contracts/ownthedoge-contracts.service';
+import { CacheService } from './../cache/cache.service';
 
-const path = require('path');
-const Jimp = require('jimp');
+import * as Jimp from 'jimp';
+import * as path from 'path';
 
 @Injectable()
 export class ImageGeneratorService implements OnModuleInit {
@@ -36,6 +36,7 @@ export class ImageGeneratorService implements OnModuleInit {
     private pixels: OwnTheDogeContractService,
     private ethers: EthersService,
     private config: ConfigService<Configuration>,
+    private readonly cache: CacheService,
     @InjectSentry() private readonly sentryClient: SentryService,
   ) {
     this.pathToMintImage = path.join(__dirname, '..', 'assets/images/mint.png');

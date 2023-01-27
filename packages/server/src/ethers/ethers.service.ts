@@ -120,6 +120,11 @@ export class EthersService implements OnModuleInit {
     return this.provider.lookupAddress(address);
   }
 
+  async refreshEnsCache(address: string) {
+    const ens = await this.getEnsName(address);
+    await this.cache.set(EthersService.getEnsCacheKey(ens));
+  }
+
   getCachedEnsName(address: string) {
     return this.cache.get<string>(EthersService.getEnsCacheKey(address));
   }
