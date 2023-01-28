@@ -14,8 +14,6 @@ import { PixelTransferRepository } from './pixel-transfer/pixel-transfer.reposit
 import { RainbowSwapsRepository } from './rainbow-swaps/rainbow-swaps.repository';
 import { UnstoppableDomainsService } from './unstoppable-domains/unstoppable-domains.service';
 
-export const TEN_HOURS_SECONDS = 60 * 60 * 10;
-
 @Injectable()
 export class AppService implements OnModuleInit {
   private logger = new Logger(AppService.name);
@@ -73,6 +71,58 @@ export class AppService implements OnModuleInit {
     }
   }
 
+  async cachePrices() {
+    try {
+      await Promise.all([
+        this.coingecko.refreshDogePrice(),
+        this.coingecko.refreshEthPrice(),
+        this.coingecko.refreshDogPrice(),
+      ]);
+    } catch (e) {}
+
+    await this.coingecko.refreshPricesByEthereumContractAddresses(
+      await this.getEthereumDonationCurrencyAddresses(),
+    );
+  }
+
+  get wow() {
+    return (
+      '░░░░░░░░░▄░░░░░░░░░░░░░░▄░░░░\n' +
+      '░░░░░░░░▌▒█░░░░░░░░░░░▄▀▒▌░░░\n' +
+      '░░░░░░░░▌▒▒█░░░░░░░░▄▀▒▒▒▐░░░\n' +
+      '░░░░░░░▐▄▀▒▒▀▀▀▀▄▄▄▀▒▒▒▒▒▐░░░\n' +
+      '░░░░░▄▄▀▒░▒▒▒▒▒▒▒▒▒█▒▒▄█▒▐░░░\n' +
+      '░░░▄▀▒▒▒░░░▒▒▒░░░▒▒▒▀██▀▒▌░░░ \n' +
+      '░░▐▒▒▒▄▄▒▒▒▒░░░▒▒▒▒▒▒▒▀▄▒▒▌░░\n' +
+      '░░▌░░▌█▀▒▒▒▒▒▄▀█▄▒▒▒▒▒▒▒█▒▐░░\n' +
+      '░▐░░░▒▒▒▒▒▒▒▒▌██▀▒▒░░░▒▒▒▀▄▌░\n' +
+      '░▌░▒▄██▄▒▒▒▒▒▒▒▒▒░░░░░░▒▒▒▒▌░\n' +
+      '▐▒▀▐▄█▄█▌▄░▀▒▒░░░░░░░░░░▒▒▒▐░\n' +
+      '▐▒▒▐▀▐▀▒░▄▄▒▄▒▒▒▒▒▒░▒░▒░▒▒▒▒▌\n' +
+      '▐▒▒▒▀▀▄▄▒▒▒▄▒▒▒▒▒▒▒▒░▒░▒░▒▒▐░\n' +
+      '░▌▒▒▒▒▒▒▀▀▀▒▒▒▒▒▒░▒░▒░▒░▒▒▒▌░\n' +
+      '░▐▒▒▒▒▒▒▒▒▒▒▒▒▒▒░▒░▒░▒▒▄▒▒▐░░\n' +
+      '░░▀▄▒▒▒▒▒▒▒▒▒▒▒░▒░▒░▒▄▒▒▒▒▌░░\n' +
+      '░░░░▀▄▒▒▒▒▒▒▒▒▒▒▄▄▄▀▒▒▒▒▄▀░░░\n' +
+      '░░░░░░▀▄▄▄▄▄▄▀▀▀▒▒▒▒▒▄▄▀░░░░░\n' +
+      '░░░░░░░░░▒▒▒▒▒▒▒▒▒▒▀▀░░░░░░░░\n' +
+      'wow\n'
+    );
+  }
+
+  private async getEthereumDonationCurrencyAddresses() {
+    const donations = await this.donationsRepo.findMany({
+      where: {
+        blockchain: ChainName.ETHEREUM,
+        currencyContractAddress: { not: null },
+      },
+    });
+    const addresses = donations.map(
+      (donation) => donation.currencyContractAddress,
+    );
+    return Array.from(new Set(addresses));
+  }
+
   private async getDogeAddresses() {
     const donations = await this.donationsRepo.findMany({
       where: {
@@ -110,53 +160,5 @@ export class AppService implements OnModuleInit {
 
     const uniqueAddresses = Array.from(new Set(allAddresses));
     return uniqueAddresses;
-  }
-
-  async cachePrices() {
-    Promise.all([
-      this.coingecko.refreshDogePrice(),
-      this.coingecko.refreshEthPrice(),
-    ]);
-    const donations = await this.donationsRepo.findMany({
-      where: {
-        blockchain: ChainName.ETHEREUM,
-        currencyContractAddress: { not: null },
-      },
-    });
-    const addresses = donations.map(
-      (donation) => donation.currencyContractAddress,
-    );
-    const uniqueAddresses = Array.from(new Set(addresses));
-    console.log('debug:: uniqueAddresses', uniqueAddresses);
-    for (const address of uniqueAddresses) {
-      try {
-        await this.coingecko.refreshCachedPriceByAddress(address);
-      } catch (e) {}
-    }
-  }
-
-  get wow() {
-    return (
-      '░░░░░░░░░▄░░░░░░░░░░░░░░▄░░░░\n' +
-      '░░░░░░░░▌▒█░░░░░░░░░░░▄▀▒▌░░░\n' +
-      '░░░░░░░░▌▒▒█░░░░░░░░▄▀▒▒▒▐░░░\n' +
-      '░░░░░░░▐▄▀▒▒▀▀▀▀▄▄▄▀▒▒▒▒▒▐░░░\n' +
-      '░░░░░▄▄▀▒░▒▒▒▒▒▒▒▒▒█▒▒▄█▒▐░░░\n' +
-      '░░░▄▀▒▒▒░░░▒▒▒░░░▒▒▒▀██▀▒▌░░░ \n' +
-      '░░▐▒▒▒▄▄▒▒▒▒░░░▒▒▒▒▒▒▒▀▄▒▒▌░░\n' +
-      '░░▌░░▌█▀▒▒▒▒▒▄▀█▄▒▒▒▒▒▒▒█▒▐░░\n' +
-      '░▐░░░▒▒▒▒▒▒▒▒▌██▀▒▒░░░▒▒▒▀▄▌░\n' +
-      '░▌░▒▄██▄▒▒▒▒▒▒▒▒▒░░░░░░▒▒▒▒▌░\n' +
-      '▐▒▀▐▄█▄█▌▄░▀▒▒░░░░░░░░░░▒▒▒▐░\n' +
-      '▐▒▒▐▀▐▀▒░▄▄▒▄▒▒▒▒▒▒░▒░▒░▒▒▒▒▌\n' +
-      '▐▒▒▒▀▀▄▄▒▒▒▄▒▒▒▒▒▒▒▒░▒░▒░▒▒▐░\n' +
-      '░▌▒▒▒▒▒▒▀▀▀▒▒▒▒▒▒░▒░▒░▒░▒▒▒▌░\n' +
-      '░▐▒▒▒▒▒▒▒▒▒▒▒▒▒▒░▒░▒░▒▒▄▒▒▐░░\n' +
-      '░░▀▄▒▒▒▒▒▒▒▒▒▒▒░▒░▒░▒▄▒▒▒▒▌░░\n' +
-      '░░░░▀▄▒▒▒▒▒▒▒▒▒▒▄▄▄▀▒▒▒▒▄▀░░░\n' +
-      '░░░░░░▀▄▄▄▄▄▄▀▀▀▒▒▒▒▒▄▄▀░░░░░\n' +
-      '░░░░░░░░░▒▒▒▒▒▒▒▒▒▒▀▀░░░░░░░░\n' +
-      'wow\n'
-    );
   }
 }

@@ -68,8 +68,9 @@ export class AlchemyService implements OnModuleInit {
     }
   }
 
-  getTokenBalances(address: string) {
-    return this.alchemyMainnet.core.getTokenBalances(address);
+  async getTokenBalances(address: string) {
+    const balances = await this.alchemyMainnet.core.getTokenBalances(address);
+    return balances?.tokenBalances;
   }
 
   getTokenMetadata(address: string) {

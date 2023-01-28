@@ -167,7 +167,7 @@ export class AppController {
   @Get('px/price')
   async getPixelUSDPrice() {
     try {
-      const usdPrice = await this.gecko.getDOGUSDPrice();
+      const usdPrice = await this.gecko.getCachedDogPrice();
       const dogPerPixel = 55239.89899;
       const price = Number(usdPrice) * dogPerPixel;
       return { price };

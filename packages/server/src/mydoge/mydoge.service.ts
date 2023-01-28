@@ -1,7 +1,6 @@
 import { HttpService } from '@nestjs/axios';
 import { Injectable, Logger } from '@nestjs/common';
 import { catchError, firstValueFrom } from 'rxjs';
-import { TEN_HOURS_SECONDS } from '../app.service';
 import { CacheService } from '../cache/cache.service';
 
 interface Profile {
@@ -14,7 +13,7 @@ interface Profile {
 export class MydogeService {
   private logger = new Logger(MydogeService.name);
   private readonly baseUrl = 'https://api.mydoge.com';
-  private readonly secondsToCache = 60 * 60;
+  private readonly secondsToCache = 60 * 60 * 10;
 
   private getNameCacheKey(address: string) {
     return `MYDOGE:PROFILE:${address}`;
@@ -26,6 +25,7 @@ export class MydogeService {
   ) {}
 
   async getName(address: string) {
+    this.logger.log(`querying ${address}`);
     const { data } = await firstValueFrom(
       this.http
         .get<{ profile: Profile }>(
@@ -52,7 +52,7 @@ export class MydogeService {
     await this.cache.set(
       this.getNameCacheKey(address),
       await this.getName(address),
-      TEN_HOURS_SECONDS,
+      this.secondsToCache,
     );
   }
 }

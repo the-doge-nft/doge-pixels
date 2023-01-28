@@ -235,36 +235,30 @@ export class DonationsService {
     }
   }
 
-  async getEthereumBalances(): Promise<Balance[]> {
-    const balances: Balance[] = [];
-    let usdPrice = 0;
-    let amount = 0;
-
+  private async getEthBalance() {
     const eth = await this.alchemy.getBalance(this.ethereumAddress);
     console.log(eth);
 
-    try {
-      usdPrice = await this.coingecko.getCachedEthPrice();
-      console.log(usdPrice);
-    } catch (e) {}
+    const usdPrice = await this.coingecko.getCachedEthPrice();
+    console.log(usdPrice);
 
-    try {
-      amount = Number(ethers.utils.formatEther(ethers.BigNumber.from(eth)));
-      console.log(amount);
-    } catch (e) {}
+    const amount = Number(ethers.utils.formatEther(ethers.BigNumber.from(eth)));
+    console.log(amount);
 
     const usdNotional = usdPrice * amount;
     console.log(usdNotional);
+    return { symbol: ETH_CURRENCY_SYMBOL, usdPrice, usdNotional, amount };
+  }
 
-    balances.push({
-      symbol: ETH_CURRENCY_SYMBOL,
-      usdPrice,
-      usdNotional,
-      amount,
-    });
+  async getEthereumBalances(): Promise<Balance[]> {
+    const balances: Balance[] = [];
+    try {
+      balances.push(await this.getEthBalance());
+    } catch (e) {}
 
     const erc20 = await this.alchemy.getTokenBalances(this.ethereumAddress);
-    for (const balance of erc20?.tokenBalances) {
+    for (const balance of erc20) {
+      const { contractAddress } = balance;
       try {
         if (
           !this.donationsRepo.blackListedContractAddresses.includes(
@@ -273,7 +267,7 @@ export class DonationsService {
         ) {
           try {
             const metadata = await this.alchemy.getTokenMetadata(
-              balance.contractAddress,
+              contractAddress,
             );
             const symbol = metadata.symbol;
             const decimals = metadata.decimals;
@@ -281,9 +275,8 @@ export class DonationsService {
               .div(ethers.BigNumber.from(10).pow(decimals))
               .toNumber();
             const usdPrice = await this.coingecko.getCachedPrice(
-              balance.contractAddress,
+              contractAddress,
             );
-
             const usdNotional = usdPrice * amount;
             balances.push({
               symbol,

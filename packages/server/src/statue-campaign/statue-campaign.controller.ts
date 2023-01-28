@@ -49,7 +49,6 @@ export class DonationController {
   // @CacheTTL(60 * 2)
   @Get('/now')
   async getNow() {
-    console.log('now hit');
     const now = await this.statueService.getNow();
     let usdNotional = 0;
     now.ethereum.forEach((bal) => (usdNotional += bal.usdNotional));

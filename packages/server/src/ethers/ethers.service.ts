@@ -3,7 +3,6 @@ import { ConfigService } from '@nestjs/config';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { InjectSentry, SentryService } from '@travelerdev/nestjs-sentry';
 import { ethers } from 'ethers';
-import { TEN_HOURS_SECONDS } from '../app.service';
 import { AppEnv } from '../config/configuration';
 import { Events } from '../events';
 import { CacheService } from './../cache/cache.service';
@@ -11,6 +10,7 @@ import { CacheService } from './../cache/cache.service';
 @Injectable()
 export class EthersService implements OnModuleInit {
   private readonly logger = new Logger(EthersService.name);
+  private secondsToCache = 60 * 60 * 10;
 
   public network: string;
   public provider: ethers.providers.WebSocketProvider;
@@ -123,7 +123,11 @@ export class EthersService implements OnModuleInit {
 
   async refreshEnsCache(address: string) {
     const ens = await this.getEnsName(address);
-    await this.cache.set(this.getEnsCacheKey(address), ens, TEN_HOURS_SECONDS);
+    await this.cache.set(
+      this.getEnsCacheKey(address),
+      ens,
+      this.secondsToCache,
+    );
   }
 
   getCachedEnsName(address: string) {

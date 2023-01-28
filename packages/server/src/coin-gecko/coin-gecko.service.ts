@@ -7,10 +7,13 @@ import { CacheService } from './../cache/cache.service';
 export class CoinGeckoService {
   private logger = new Logger(CoinGeckoService.name);
   private secondsToCache = 5 * 60;
-  private DOGContractAddress = '0xBAac2B4491727D78D2b78815144570b9f2Fe8899';
+  private DOGContractAddress =
+    '0xBAac2B4491727D78D2b78815144570b9f2Fe8899'.toLowerCase();
+  private ETHEREUM_API_ID = 'ethereum';
+  private DOGECOIN_API_ID = 'dogecoin';
 
-  static getPriceCacheKey(address: string) {
-    return `COINGECKO:${address}`;
+  private getPriceCacheKey(addressOrId: string) {
+    return `COINGECKO:${addressOrId}`;
   }
 
   constructor(
@@ -18,15 +21,104 @@ export class CoinGeckoService {
     private readonly cache: CacheService,
   ) {}
 
-  async getPriceByEthereumContractAddress(
+  async getPricesByEthereumContractAddresses(address: string[]) {
+    const vsCurrency = 'usd';
+    const addressesLower = address.map((addr) => addr.toLowerCase());
+    const data = await this.getSimplePriceByAddress(addressesLower, vsCurrency);
+    const prices = {};
+    Object.keys(data).forEach((key) => (prices[key] = data[key][vsCurrency]));
+    return prices;
+  }
+
+  async getPriceByEthereumContractAddress(address: string) {
+    const vsCurrency = 'usd';
+    const addressLower = address.toLowerCase();
+    const data = await this.getSimplePriceByAddress(addressLower, vsCurrency);
+    return data[addressLower][vsCurrency];
+  }
+
+  async getDogPrice() {
+    return this.getPriceByEthereumContractAddress(this.DOGContractAddress);
+  }
+
+  async getDogePrice() {
+    return this.getPriceVsUsd(this.DOGECOIN_API_ID);
+  }
+
+  getCachedPrice(addressOrCurrencyId: string) {
+    return this.cache.get<number>(this.getPriceCacheKey(addressOrCurrencyId));
+  }
+
+  getCachedEthPrice() {
+    return this.getCachedPrice(this.ETHEREUM_API_ID);
+  }
+
+  getCachedDogePrice() {
+    return this.getCachedPrice(this.DOGECOIN_API_ID);
+  }
+
+  getCachedDogPrice() {
+    return this.getCachedPrice(this.DOGContractAddress);
+  }
+
+  async refreshPricesByEthereumContractAddresses(addresses: string[]) {
+    const lowerAddresses = addresses.map((addr) => addr.toLowerCase());
+    const prices = await this.getPricesByEthereumContractAddresses(
+      lowerAddresses,
+    );
+    for (const address of Object.keys(prices)) {
+      const price = prices[address];
+      await this.cache.set(
+        this.getPriceCacheKey(address),
+        price,
+        this.secondsToCache,
+      );
+    }
+    return prices;
+  }
+
+  refreshEthPrice() {
+    return this.refreshCacheBySymbol(this.ETHEREUM_API_ID);
+  }
+
+  refreshDogePrice() {
+    return this.refreshCacheBySymbol(this.DOGECOIN_API_ID);
+  }
+
+  refreshDogPrice() {
+    return this.refreshCacheByAddress(this.DOGContractAddress);
+  }
+
+  private async refreshCacheBySymbol(symbol: string) {
+    const price = await this.getPriceVsUsd(symbol);
+    await this.cache.set(
+      this.getPriceCacheKey(symbol),
+      price,
+      this.secondsToCache,
+    );
+    return price;
+  }
+
+  private async refreshCacheByAddress(address: string) {
+    const addressLower = address.toLowerCase();
+    const price = await this.getPriceByEthereumContractAddress(addressLower);
+    console.log(addressLower, price);
+    await this.cache.set(
+      this.getPriceCacheKey(addressLower),
+      price,
+      this.secondsToCache,
+    );
+    return price;
+  }
+
+  private async getSimplePriceByAddress(
     contractAddress: string | string[],
+    vsCurrency = 'usd',
   ): Promise<number> {
     this.logger.log(`querying coingecko: ${contractAddress}`);
     const address = Array.isArray(contractAddress)
       ? contractAddress.join(',')
       : contractAddress.toLowerCase();
-    const vsCurrency = 'usd';
-
     const { data } = await firstValueFrom(
       this.http
         .get(`https://api.coingecko.com/api/v3/simple/token_price/ethereum`, {
@@ -37,9 +129,7 @@ export class CoinGeckoService {
         })
         .pipe(
           catchError((e) => {
-            this.logger.error(
-              `could not get coingecko price: ${address}:${vsCurrency}`,
-            );
+            this.logger.error(`could not get coingecko price: ${address}`);
             throw new Error(`Could not get price for: ${address}`);
           }),
         ),
@@ -48,7 +138,6 @@ export class CoinGeckoService {
       this.logger.error(`could not get coingecko price: ${address}`);
       throw new Error(`Could not get price for: ${address}`);
     }
-    console.log('data: ', data);
     return data;
   }
 
@@ -78,67 +167,5 @@ export class CoinGeckoService {
       throw new Error(`Could not get price for ${currencyId}`);
     }
     return data[currencyId][usdCurrencyId];
-  }
-
-  async getDOGUSDPrice() {
-    return this.getPriceByEthereumContractAddress(this.DOGContractAddress);
-  }
-
-  async getETHPrice() {
-    return this.getPriceVsUsd('ethereum');
-  }
-
-  async getDogePrice() {
-    return this.getPriceVsUsd('dogecoin');
-  }
-
-  getCachedPrice(addressOrCurrencyId: string) {
-    return this.cache.get<number>(
-      CoinGeckoService.getPriceCacheKey(addressOrCurrencyId),
-    );
-  }
-
-  getCachedEthPrice() {
-    return this.getCachedPrice('ethereum');
-  }
-
-  getCachedDogePrice() {
-    return this.getCachedPrice('dogecoin');
-  }
-
-  async refreshCachedPriceByAddress(address: string) {
-    const price = await this.getPriceByEthereumContractAddress(address);
-    console.log('price', price);
-    await this.cache.set(
-      CoinGeckoService.getPriceCacheKey(address),
-      await this.getPriceByEthereumContractAddress(address),
-      this.secondsToCache,
-    );
-  }
-
-  async refreshCachedPriceBySymbol(symbol: string) {
-    await this.cache.set(
-      CoinGeckoService.getPriceCacheKey(symbol),
-      await this.getPriceVsUsd(symbol),
-      this.secondsToCache,
-    );
-  }
-
-  async refreshEthPrice() {
-    const id = 'ethereum';
-    await this.cache.set(
-      CoinGeckoService.getPriceCacheKey(id),
-      await this.getPriceVsUsd(id),
-      this.secondsToCache,
-    );
-  }
-
-  async refreshDogePrice() {
-    const id = 'dogecoin';
-    await this.cache.set(
-      CoinGeckoService.getPriceCacheKey(id),
-      await this.getPriceVsUsd(id),
-      this.secondsToCache,
-    );
   }
 }

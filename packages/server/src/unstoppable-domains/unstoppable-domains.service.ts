@@ -1,12 +1,12 @@
 import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { Resolution } from '@unstoppabledomains/resolution';
-import { TEN_HOURS_SECONDS } from '../app.service';
 import { CacheService } from './../cache/cache.service';
 
 @Injectable()
 export class UnstoppableDomainsService implements OnModuleInit {
   private readonly logger = new Logger(UnstoppableDomainsService.name);
   private resolution: Resolution;
+  private readonly secondsToCache = 60 * 60 * 10;
 
   constructor(private readonly cache: CacheService) {}
 
@@ -35,7 +35,7 @@ export class UnstoppableDomainsService implements OnModuleInit {
     return this.cache.set(
       this.getNameCacheKey(address),
       await this.getName(address),
-      TEN_HOURS_SECONDS,
+      this.secondsToCache,
     );
   }
 }
