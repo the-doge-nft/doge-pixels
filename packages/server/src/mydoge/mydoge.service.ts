@@ -26,27 +26,22 @@ export class MydogeService {
   ) {}
 
   async getName(address: string) {
-    const profile = await this.cache.getOrQueryAndCache(
-      `MYDOGE:PROFILE:${address}`,
-      async () => {
-        const { data } = await firstValueFrom(
-          this.http
-            .get<Profile>(this.baseUrl + '/wallet/' + address + '/profile')
-            .pipe(
-              catchError((e) => {
-                if (e.response) {
-                  this.logger.log(e.response);
-                }
-                this.logger.error(e);
-                throw new Error(`Could not get profile address ${address}`);
-              }),
-            ),
-        );
-        return data;
-      },
-      this.secondsToCache,
+    const { data } = await firstValueFrom(
+      this.http
+        .get<{ profile: Profile }>(
+          this.baseUrl + '/wallet/' + address + '/profile',
+        )
+        .pipe(
+          catchError((e) => {
+            if (e.response) {
+              this.logger.log(e.response);
+            }
+            this.logger.error(e);
+            throw new Error(`Could not get profile address ${address}`);
+          }),
+        ),
     );
-    return profile?.username;
+    return data?.profile?.username;
   }
 
   getCachedName(address: string) {
@@ -54,10 +49,9 @@ export class MydogeService {
   }
 
   async refreshCachedName(address: string) {
-    const name = await this.getName(address);
     await this.cache.set(
       this.getNameCacheKey(address),
-      name,
+      await this.getName(address),
       TEN_HOURS_SECONDS,
     );
   }

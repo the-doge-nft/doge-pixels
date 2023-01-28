@@ -43,6 +43,7 @@ export interface Configuration {
   nomicsKey: string;
   alchemyKey: string;
   chainAnalysisKey: string;
+  blockCypherKey: string;
 }
 
 const configuration: Configuration = {
@@ -84,6 +85,7 @@ const configuration: Configuration = {
   nomicsKey: process.env.NOMICS_API_KEY,
   alchemyKey: process.env.ALCHEMY_KEY,
   chainAnalysisKey: process.env.CHAINANLYSIS_KEY,
+  blockCypherKey: process.env.BLOCKCYPHER_KEY,
 };
 
 export default configuration;

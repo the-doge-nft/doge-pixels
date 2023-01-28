@@ -45,10 +45,11 @@ export class DonationController {
     return await this.statueService.getLeaderBoard();
   }
 
-  @CacheKey('STATUECAMPAIGN:NOW')
-  @CacheTTL(60 * 2)
+  // @CacheKey('STATUECAMPAIGN:NOW')
+  // @CacheTTL(60 * 2)
   @Get('/now')
   async getNow() {
+    console.log('now hit');
     const now = await this.statueService.getNow();
     let usdNotional = 0;
     now.ethereum.forEach((bal) => (usdNotional += bal.usdNotional));

@@ -33,6 +33,7 @@ import { DonationController } from './statue-campaign/statue-campaign.controller
 import { StatueCampaignService } from './statue-campaign/statue-campaign.service';
 import { TwitterService } from './twitter/twitter.service';
 import { UnstoppableDomainsService } from './unstoppable-domains/unstoppable-domains.service';
+import { BlockcypherService } from './blockcypher/blockcypher.service';
 
 @Module({
   imports: [
@@ -94,6 +95,7 @@ import { UnstoppableDomainsService } from './unstoppable-domains/unstoppable-dom
     MydogeService,
     ChainanalysisService,
     AppService,
+    BlockcypherService,
   ],
 })
 export class AppModule {}

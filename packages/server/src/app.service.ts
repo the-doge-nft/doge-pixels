@@ -39,38 +39,53 @@ export class AppService implements OnModuleInit {
 
   syncNames() {
     Promise.all([
-      this.cacheDogeNames(),
-      this.cacheUdNames(),
-      this.cacheEnsNames(),
+      // this.cacheDogeNames(),
+      // this.cacheUdNames(),
+      // this.cacheEnsNames(),
       this.cachePrices(),
-    ]).then(() => this.logger.log('Name cache done syncing'));
+    ]).then(() => this.logger.log('Cache refreshed'));
   }
 
   async cacheDogeNames() {
-    const donations = await this.donationsRepo.findMany({
-      where: {
-        blockchain: ChainName.DOGECOIN,
-        currency: DOGE_CURRENCY_SYMBOL,
-      },
-    });
-    for (const donation of donations) {
-      await this.myDoge.refreshCachedName(donation.fromAddress);
-      await this.myDoge.refreshCachedName(donation.toAddress);
+    const addresses = await this.getDogeAddresses();
+    for (const address of addresses) {
+      try {
+        await this.myDoge.refreshCachedName(address);
+      } catch (e) {}
     }
   }
 
   async cacheUdNames() {
     const addresses = await this.getEthereumAddresses();
     for (const address of addresses) {
-      await this.ud.refreshNameCache(address);
+      try {
+        await this.ud.refreshNameCache(address);
+      } catch (e) {}
     }
   }
 
   async cacheEnsNames() {
     const addresses = await this.getEthereumAddresses();
     for (const address of addresses) {
-      await this.ethers.refreshEnsCache(address);
+      try {
+        await this.ethers.refreshEnsCache(address);
+      } catch (e) {}
     }
+  }
+
+  private async getDogeAddresses() {
+    const donations = await this.donationsRepo.findMany({
+      where: {
+        blockchain: ChainName.DOGECOIN,
+        currency: DOGE_CURRENCY_SYMBOL,
+      },
+    });
+    const fromAddresses = donations.map((donation) => donation.fromAddress);
+    const toAddresses = donations.map((donation) => donation.toAddress);
+    const uniqueAddresses = Array.from(
+      new Set(fromAddresses.concat(toAddresses)),
+    );
+    return uniqueAddresses;
   }
 
   private async getEthereumAddresses(): Promise<string[]> {
@@ -98,9 +113,26 @@ export class AppService implements OnModuleInit {
   }
 
   async cachePrices() {
-    const dogePrice = await this.coingecko.getDogePrice();
-    const dogPrice = await this.coingecko.getDOGUSDPrice();
-    const ethPrice = await this.coingecko.getETHPrice();
+    Promise.all([
+      this.coingecko.refreshDogePrice(),
+      this.coingecko.refreshEthPrice(),
+    ]);
+    const donations = await this.donationsRepo.findMany({
+      where: {
+        blockchain: ChainName.ETHEREUM,
+        currencyContractAddress: { not: null },
+      },
+    });
+    const addresses = donations.map(
+      (donation) => donation.currencyContractAddress,
+    );
+    const uniqueAddresses = Array.from(new Set(addresses));
+    console.log('debug:: uniqueAddresses', uniqueAddresses);
+    for (const address of uniqueAddresses) {
+      try {
+        await this.coingecko.refreshCachedPriceByAddress(address);
+      } catch (e) {}
+    }
   }
 
   get wow() {

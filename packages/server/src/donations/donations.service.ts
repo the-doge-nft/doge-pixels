@@ -8,6 +8,7 @@ import {
 } from 'alchemy-sdk';
 import { ethers } from 'ethers';
 import { AlchemyService } from '../alchemy/alchemy.service';
+import { BlockcypherService } from '../blockcypher/blockcypher.service';
 import { sleepAndTryAgain } from '../helpers/sleep';
 import { CoinGeckoService } from './../coin-gecko/coin-gecko.service';
 import {
@@ -50,6 +51,7 @@ export class DonationsService {
     private readonly donationsRepo: DonationsRepository,
     private readonly sochain: SochainService,
     private readonly coingecko: CoinGeckoService,
+    private readonly blockcypher: BlockcypherService,
     @InjectSentry() private readonly sentryClient: SentryService,
   ) {}
 
@@ -235,11 +237,24 @@ export class DonationsService {
 
   async getEthereumBalances(): Promise<Balance[]> {
     const balances: Balance[] = [];
+    let usdPrice = 0;
+    let amount = 0;
 
     const eth = await this.alchemy.getBalance(this.ethereumAddress);
-    const usdPrice = await this.coingecko.getETHPrice();
-    const amount = Number(ethers.utils.formatEther(ethers.BigNumber.from(eth)));
+    console.log(eth);
+
+    try {
+      usdPrice = await this.coingecko.getETHPrice();
+      console.log(usdPrice);
+    } catch (e) {}
+
+    try {
+      amount = Number(ethers.utils.formatEther(ethers.BigNumber.from(eth)));
+      console.log(amount);
+    } catch (e) {}
+
     const usdNotional = usdPrice * amount;
+    console.log(usdNotional);
 
     balances.push({
       symbol: ETH_CURRENCY_SYMBOL,
@@ -251,38 +266,37 @@ export class DonationsService {
     const erc20 = await this.alchemy.getTokenBalances(this.ethereumAddress);
     for (const balance of erc20?.tokenBalances) {
       try {
-        const metadata = await this.alchemy.getTokenMetadata(
-          balance.contractAddress,
-        );
-        const symbol = metadata.symbol;
-        const decimals = metadata.decimals;
-        const amount = ethers.BigNumber.from(balance.tokenBalance)
-          .div(ethers.BigNumber.from(10).pow(decimals))
-          .toNumber();
-        let usdPrice = 0;
-
         if (
           !this.donationsRepo.blackListedContractAddresses.includes(
             balance.contractAddress,
           )
         ) {
           try {
-            usdPrice = await this.coingecko.getPriceByEthereumContractAddress(
+            const metadata = await this.alchemy.getTokenMetadata(
               balance.contractAddress,
             );
+            const symbol = metadata.symbol;
+            const decimals = metadata.decimals;
+            const amount = ethers.BigNumber.from(balance.tokenBalance)
+              .div(ethers.BigNumber.from(10).pow(decimals))
+              .toNumber();
+            const usdPrice = await this.coingecko.getCachedPrice(
+              balance.contractAddress,
+            );
+
+            const usdNotional = usdPrice * amount;
+            balances.push({
+              symbol,
+              usdPrice,
+              usdNotional,
+              amount,
+            });
           } catch (e) {
             this.logger.error(
               `Could not get usd price for: ${balance.contractAddress}`,
             );
             this.sentryClient.instance().captureException(e);
           }
-          const usdNotional = usdPrice * amount;
-          balances.push({
-            symbol,
-            usdPrice,
-            usdNotional,
-            amount,
-          });
         }
       } catch (e) {
         this.logger.error(
@@ -297,8 +311,13 @@ export class DonationsService {
   }
 
   async getDogeBalances(): Promise<Balance> {
-    const myDogeBalance = await this.sochain.getBalance(this.myDogeAddress);
-    const soDogeBalance = await this.sochain.getBalance(this.soDogeTipAddress);
+    const myDogeBalance = await this.blockcypher.getBalance(this.myDogeAddress);
+    const soDogeBalance = await this.blockcypher.getBalance(
+      this.soDogeTipAddress,
+    );
+    this.logger.log(`myDogeBalance: ${myDogeBalance}`);
+    this.logger.log(`soDogeBalance: ${soDogeBalance}`);
+
     const totalBalance = myDogeBalance + soDogeBalance;
     const dogePrice = await this.coingecko.getDogePrice();
     return {

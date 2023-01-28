@@ -20,16 +20,15 @@ export class RainbowSwapsRepository {
       donatedUSDNotional: number;
     })[] = [];
     for (const swap of swaps) {
-      const clientEns = await this.ethers.getEnsName(swap.clientAddress);
+      const clientEns = await this.ethers.getCachedEnsName(swap.clientAddress);
       let donatedCurrencyPrice: number;
       try {
         if (swap.donatedCurrencyAddress === null) {
-          donatedCurrencyPrice = await this.coingecko.getETHPrice();
+          donatedCurrencyPrice = await this.coingecko.getCachedEthPrice();
         } else {
-          donatedCurrencyPrice =
-            await this.coingecko.getPriceByEthereumContractAddress(
-              swap.donatedCurrencyAddress,
-            );
+          donatedCurrencyPrice = await this.coingecko.getCachedPrice(
+            swap.donatedCurrencyAddress,
+          );
         }
       } catch (e) {
         donatedCurrencyPrice = 0;
