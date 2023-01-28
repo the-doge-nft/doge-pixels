@@ -41,12 +41,11 @@ export class DonationController {
   // @CacheTTL(30)
   @Get('/leaderboard')
   async getLeaderboard() {
-    // @next -- update this to be per address
     return await this.statueService.getLeaderBoard();
   }
 
-  // @CacheKey('STATUECAMPAIGN:NOW')
-  // @CacheTTL(60 * 2)
+  @CacheKey('STATUECAMPAIGN:NOW')
+  @CacheTTL(60 * 2)
   @Get('/now')
   async getNow() {
     const now = await this.statueService.getNow();
@@ -60,8 +59,8 @@ export class DonationController {
     };
   }
 
-  // @CacheKey('STATUECAMPAIGN:CONFIRM')
-  // @CacheTTL(30)
+  @CacheKey('STATUECAMPAIGN:CONFIRM')
+  @CacheTTL(30)
   @Get('/confirm')
   async confirm() {
     const dogecoinAddress = this.donationsService.myDogeAddress;

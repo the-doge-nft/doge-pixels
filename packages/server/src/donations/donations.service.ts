@@ -288,9 +288,6 @@ export class DonationsService {
     const soDogeBalance = await this.blockcypher.getBalance(
       this.soDogeTipAddress,
     );
-    this.logger.log(`myDogeBalance: ${JSON.stringify(myDogeBalance)}`);
-    this.logger.log(`soDogeBalance: ${JSON.stringify(soDogeBalance)}`);
-
     const totalBalance = myDogeBalance + soDogeBalance;
     const dogePrice = await this.coingecko.getCachedDogePrice();
     return {
