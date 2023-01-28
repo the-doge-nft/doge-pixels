@@ -18,6 +18,6 @@ export class BlockcypherService {
         }),
       ),
     );
-    return data;
+    return data?.final_balance / 10 ** 8;
   }
 }

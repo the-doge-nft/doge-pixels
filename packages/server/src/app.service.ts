@@ -1,4 +1,5 @@
 import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
+import { Cron, CronExpression } from '@nestjs/schedule';
 import { ChainName } from '@prisma/client';
 import { InjectSentry, SentryService } from '@travelerdev/nestjs-sentry';
 import { AlchemyService } from './alchemy/alchemy.service';
@@ -28,20 +29,21 @@ export class AppService implements OnModuleInit {
     private readonly pixelTranserRepo: PixelTransferRepository,
     private readonly ud: UnstoppableDomainsService,
     private readonly coingecko: CoinGeckoService,
+    private readonly rainbowSwapsRepo: RainbowSwapsRepository,
     @InjectSentry() private readonly sentryClient: SentryService,
   ) {}
 
   onModuleInit() {
-    this.syncNames();
+    // this.cacheNames();
+    // this.cachePrices();
   }
 
-  syncNames() {
+  cacheNames() {
     Promise.all([
       // this.cacheDogeNames(),
       // this.cacheUdNames(),
       // this.cacheEnsNames(),
-      this.cachePrices(),
-    ]).then(() => this.logger.log('Cache refreshed'));
+    ]);
   }
 
   async cacheDogeNames() {
@@ -71,18 +73,17 @@ export class AppService implements OnModuleInit {
     }
   }
 
+  @Cron(CronExpression.EVERY_MINUTE)
   async cachePrices() {
+    const addresses = await this.getEthereumDonationCurrencyAddresses();
     try {
       await Promise.all([
         this.coingecko.refreshDogePrice(),
         this.coingecko.refreshEthPrice(),
         this.coingecko.refreshDogPrice(),
+        this.coingecko.refreshPricesByEthereumContractAddresses(addresses),
       ]);
     } catch (e) {}
-
-    await this.coingecko.refreshPricesByEthereumContractAddresses(
-      await this.getEthereumDonationCurrencyAddresses(),
-    );
   }
 
   get wow() {
@@ -117,10 +118,14 @@ export class AppService implements OnModuleInit {
         currencyContractAddress: { not: null },
       },
     });
-    const addresses = donations.map(
+    const swaps = await this.rainbowSwapsRepo.findMany({
+      where: { donatedCurrencyAddress: { not: null } },
+    });
+    const donationAddresses = donations.map(
       (donation) => donation.currencyContractAddress,
     );
-    return Array.from(new Set(addresses));
+    const swapAddresses = swaps.map((swap) => swap.donatedCurrencyAddress);
+    return Array.from(new Set(donationAddresses.concat(swapAddresses)));
   }
 
   private async getDogeAddresses() {

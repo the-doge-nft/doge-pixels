@@ -11,7 +11,7 @@ export class StatueCampaignService implements OnModuleInit {
 
   async onModuleInit() {
     this.logger.log('🐕 Statue campaign service init');
-    // this.rainbowSwaps.init();
+    // await this.rainbowSwaps.init();
     // this.donationsService.init();
   }
 
@@ -22,17 +22,6 @@ export class StatueCampaignService implements OnModuleInit {
     private readonly donationsRepo: DonationsRepository,
   ) {}
 
-  // rainbow swaps
-  // @Cron(CronExpression.EVERY_2_HOURS)
-  // private syncRainbowSwaps() {
-  //   this.rainbowSwaps.syncRecentDOGSwapsForAllNetworks();
-  // }
-
-  // @Cron(CronExpression.EVERY_HOUR)
-  // private syncAllRainbowSwaps() {
-  //   this.rainbowSwaps.syncAllNetworks();
-  // }
-
   // doge donations
   // @Cron(CronExpression.EVERY_5_MINUTES)
   // private syncDogeTxs() {
@@ -42,17 +31,6 @@ export class StatueCampaignService implements OnModuleInit {
   // @Cron(CronExpression.EVERY_5_HOURS)
   // private syncAllDogeDonation() {
   //   this.donationsService.syncAllDogeDonations();
-  // }
-
-  // ethereum donations
-  // @Cron(CronExpression.EVERY_30_MINUTES)
-  // private syncEthereumDonations() {
-  //   this.donationsService.syncRecentEthereumDonations();
-  // }
-
-  // @Cron(CronExpression.EVERY_5_HOURS)
-  // private syncAllEthereumDonations() {
-  //   this.donationsService.syncAllEthereumTransfers();
   // }
 
   async getLeaderBoard() {
@@ -123,12 +101,11 @@ export class StatueCampaignService implements OnModuleInit {
     swaps: Balance[];
   }> {
     const ethereumBalances = await this.donationsService.getEthereumBalances();
-    // const dogecoinBalance = await this.donationsService.getDogeBalances();
+    const dogecoinBalance = await this.donationsService.getDogeBalances();
     const rainbowBalances = await this.rainbowSwaps.getRainbowBalances();
     return {
       ethereum: ethereumBalances,
-      // dogecoin: [dogecoinBalance],
-      dogecoin: [],
+      dogecoin: [dogecoinBalance],
       swaps: rainbowBalances,
     };
   }

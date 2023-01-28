@@ -6,7 +6,7 @@ import { CacheService } from './../cache/cache.service';
 @Injectable()
 export class CoinGeckoService {
   private logger = new Logger(CoinGeckoService.name);
-  private secondsToCache = 5 * 60;
+  private secondsToCache = 10 * 60;
   private DOGContractAddress =
     '0xBAac2B4491727D78D2b78815144570b9f2Fe8899'.toLowerCase();
   private ETHEREUM_API_ID = 'ethereum';
@@ -46,7 +46,9 @@ export class CoinGeckoService {
   }
 
   getCachedPrice(addressOrCurrencyId: string) {
-    return this.cache.get<number>(this.getPriceCacheKey(addressOrCurrencyId));
+    return this.cache.get<number>(
+      this.getPriceCacheKey(addressOrCurrencyId.toLowerCase()),
+    );
   }
 
   getCachedEthPrice() {

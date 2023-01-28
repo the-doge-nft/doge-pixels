@@ -57,22 +57,11 @@ export class RainbowSwapsService {
   async syncAllNetworks() {
     this.logger.log('syncing all mainnet swaps');
     await this.syncAllDOGSwaps(Network.ETH_MAINNET);
-
-    // SKIP OTHER NETWORKS FOR NOW AS ALCHEMY DOES NOT SUPPORT INTERNAL TRANSFERS WHICH MAKES ACCURATE TRACKING DIFFICULT
-
-    // this.logger.log('syncing all arbitrum swaps');
-    // await this.syncAllDOGSwaps(Network.ARB_MAINNET);
-    // this.logger.log('syncing all matic swaps');
-    // await this.syncAllDOGSwaps(Network.MATIC_MAINNET);
   }
 
   async syncRecentDOGSwapsForAllNetworks() {
     this.logger.log('syncing recent mainnet swaps');
     await this.syncRecentDOGSwaps(Network.ETH_MAINNET);
-    // this.logger.log('syncing recent arbitrum swaps');
-    // await this.syncRecentDOGSwaps(Network.ARB_MAINNET);
-    // this.logger.log('syncing recent matic swaps');
-    // await this.syncRecentDOGSwaps(Network.MATIC_MAINNET);
   }
 
   private async syncRecentDOGSwaps(network: SupportedNetwork) {
@@ -110,7 +99,7 @@ export class RainbowSwapsService {
 
   async syncAllDOGSwaps(network: SupportedNetwork) {
     const transfers = await this.getAllDOGTransfersToRouter(network);
-    this.upsertDOGSwaps(transfers, network);
+    await this.upsertDOGSwaps(transfers, network);
   }
 
   // @next -- investigate if we should be listening to transfers on all networks or not
@@ -201,6 +190,7 @@ export class RainbowSwapsService {
     network: SupportedNetwork,
   ) {
     for (const transfer of transfers) {
+      console.log('transfer', transfer.hash);
       const blockNumber = ethers.BigNumber.from(transfer.blockNum);
       const allTransfers = (
         await this.getRouterTransfersByBlock(blockNumber.toHexString(), network)

@@ -23,22 +23,22 @@ export class DonationController {
     private readonly donationsService: DonationsService,
   ) {}
 
-  @CacheKey('STATUECAMPAIGN:SWAPS')
-  @CacheTTL(30)
+  // @CacheKey('STATUECAMPAIGN:SWAPS')
+  // @CacheTTL(30)
   @Get('/swaps')
   getSwaps() {
     return this.rainbowSwapService.getAllDonationSwaps();
   }
 
-  @CacheKey('STATUECAMPAIGN:DONATIONS')
-  @CacheTTL(30)
+  // @CacheKey('STATUECAMPAIGN:DONATIONS')
+  // @CacheTTL(30)
   @Get('/donations')
   getDonations() {
     return this.donationsService.getAllDonations();
   }
 
-  @CacheKey('STATUECAMPAIGN:LEADERBOARD')
-  @CacheTTL(30)
+  // @CacheKey('STATUECAMPAIGN:LEADERBOARD')
+  // @CacheTTL(30)
   @Get('/leaderboard')
   async getLeaderboard() {
     // @next -- update this to be per address
@@ -60,8 +60,8 @@ export class DonationController {
     };
   }
 
-  @CacheKey('STATUECAMPAIGN:CONFIRM')
-  @CacheTTL(30)
+  // @CacheKey('STATUECAMPAIGN:CONFIRM')
+  // @CacheTTL(30)
   @Get('/confirm')
   async confirm() {
     const dogecoinAddress = this.donationsService.myDogeAddress;

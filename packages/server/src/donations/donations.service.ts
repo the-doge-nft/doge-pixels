@@ -237,16 +237,9 @@ export class DonationsService {
 
   private async getEthBalance() {
     const eth = await this.alchemy.getBalance(this.ethereumAddress);
-    console.log(eth);
-
     const usdPrice = await this.coingecko.getCachedEthPrice();
-    console.log(usdPrice);
-
     const amount = Number(ethers.utils.formatEther(ethers.BigNumber.from(eth)));
-    console.log(amount);
-
     const usdNotional = usdPrice * amount;
-    console.log(usdNotional);
     return { symbol: ETH_CURRENCY_SYMBOL, usdPrice, usdNotional, amount };
   }
 
@@ -259,45 +252,32 @@ export class DonationsService {
     const erc20 = await this.alchemy.getTokenBalances(this.ethereumAddress);
     for (const balance of erc20) {
       const { contractAddress } = balance;
-      try {
-        if (
-          !this.donationsRepo.blackListedContractAddresses.includes(
-            balance.contractAddress,
-          )
-        ) {
-          try {
-            const metadata = await this.alchemy.getTokenMetadata(
-              contractAddress,
-            );
-            const symbol = metadata.symbol;
-            const decimals = metadata.decimals;
-            const amount = ethers.BigNumber.from(balance.tokenBalance)
-              .div(ethers.BigNumber.from(10).pow(decimals))
-              .toNumber();
-            const usdPrice = await this.coingecko.getCachedPrice(
-              contractAddress,
-            );
-            const usdNotional = usdPrice * amount;
-            balances.push({
-              symbol,
-              usdPrice,
-              usdNotional,
-              amount,
-            });
-          } catch (e) {
-            this.logger.error(
-              `Could not get usd price for: ${balance.contractAddress}`,
-            );
-            this.sentryClient.instance().captureException(e);
-          }
+      if (
+        !this.donationsRepo.blackListedContractAddresses.includes(
+          balance.contractAddress,
+        )
+      ) {
+        try {
+          const metadata = await this.alchemy.getTokenMetadata(contractAddress);
+          const symbol = metadata.symbol;
+          const decimals = metadata.decimals;
+          const amount = ethers.BigNumber.from(balance.tokenBalance)
+            .div(ethers.BigNumber.from(10).pow(decimals))
+            .toNumber();
+          const usdPrice = await this.coingecko.getCachedPrice(contractAddress);
+          const usdNotional = usdPrice * amount;
+          balances.push({
+            symbol,
+            usdPrice,
+            usdNotional,
+            amount,
+          });
+        } catch (e) {
+          this.logger.error(
+            `Could not get balance for: ${balance.contractAddress}`,
+          );
+          this.sentryClient.instance().captureException(e);
         }
-      } catch (e) {
-        this.logger.error(
-          `Could not get metadata for: ${balance.contractAddress}, continuing`,
-        );
-        this.logger.error(e);
-        this.sentryClient.instance().captureException(e);
-        continue;
       }
     }
     return balances;
@@ -308,11 +288,11 @@ export class DonationsService {
     const soDogeBalance = await this.blockcypher.getBalance(
       this.soDogeTipAddress,
     );
-    this.logger.log(`myDogeBalance: ${myDogeBalance}`);
-    this.logger.log(`soDogeBalance: ${soDogeBalance}`);
+    this.logger.log(`myDogeBalance: ${JSON.stringify(myDogeBalance)}`);
+    this.logger.log(`soDogeBalance: ${JSON.stringify(soDogeBalance)}`);
 
     const totalBalance = myDogeBalance + soDogeBalance;
-    const dogePrice = await this.coingecko.getDogePrice();
+    const dogePrice = await this.coingecko.getCachedDogePrice();
     return {
       symbol: DOGE_CURRENCY_SYMBOL,
       amount: totalBalance,

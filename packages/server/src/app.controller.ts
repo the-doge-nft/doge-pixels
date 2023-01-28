@@ -235,6 +235,11 @@ export class AppController {
 
   @Get('sync/names')
   syncNames() {
-    return this.app.syncNames();
+    return this.app.cacheNames();
+  }
+
+  @Get('sync/prices')
+  syncPrices() {
+    return this.app.cachePrices();
   }
 }
