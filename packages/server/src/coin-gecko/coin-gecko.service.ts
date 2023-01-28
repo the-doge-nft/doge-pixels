@@ -104,7 +104,6 @@ export class CoinGeckoService {
   private async refreshCacheByAddress(address: string) {
     const addressLower = address.toLowerCase();
     const price = await this.getPriceByEthereumContractAddress(addressLower);
-    console.log(addressLower, price);
     await this.cache.set(
       this.getPriceCacheKey(addressLower),
       price,

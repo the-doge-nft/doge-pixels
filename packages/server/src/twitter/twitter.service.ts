@@ -1,15 +1,15 @@
 import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import { OnEvent } from '@nestjs/event-emitter';
+import { InjectSentry, SentryService } from '@travelerdev/nestjs-sentry';
 import { Configuration } from '../config/configuration';
 import { EthersService } from '../ethers/ethers.service';
-import { OnEvent } from '@nestjs/event-emitter';
 import { Events, PixelTransferEventPayload } from '../events';
 import { ImageGeneratorService } from '../image-generator/image-generator.service';
-import { InjectSentry, SentryService } from '@travelerdev/nestjs-sentry';
 
+import * as crypto from 'crypto';
 import * as Twitter from 'twitter';
 import { AwsService } from '../aws/aws.service';
-import * as crypto from 'crypto';
 
 @Injectable()
 export class TwitterService implements OnModuleInit {
@@ -100,7 +100,6 @@ export class TwitterService implements OnModuleInit {
     const filename = `${uuid}.png`;
     const _data = new Buffer(data, 'base64');
     const res = await this.aws.uploadToS3(filename, _data, 'image/png');
-    console.log('debug:: res', res);
     return { uuid };
   }
 
