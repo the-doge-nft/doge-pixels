@@ -61,12 +61,10 @@ export class DonationsRepository {
       const isDoge = donation.currency === DOGE_CURRENCY_SYMBOL;
       if (isDoge) {
         explorerUrl = this.sochain.getTxExplorerUrl(donation.txHash);
-
         donatedCurrencyPrice = await this.coingecko.getCachedPrice('dogecoin');
         fromMyDogeName = await this.mydoge.getCachedName(donation.fromAddress);
       } else {
         explorerUrl = `https://etherscan.io/tx/${donation.txHash}`;
-
         if (donation.currency === ETH_CURRENCY_SYMBOL) {
           donatedCurrencyPrice = await this.coingecko.getCachedPrice(
             'ethereum',

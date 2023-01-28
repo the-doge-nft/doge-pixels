@@ -122,9 +122,6 @@ export class StatueCampaignService implements OnModuleInit {
       }
       return 1;
     });
-
-    // console.log(JSON.stringify(_donations, undefined, 2));
-
     return { swaps: _swaps, donations: _donations };
   }
 

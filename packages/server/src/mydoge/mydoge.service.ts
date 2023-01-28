@@ -16,7 +16,7 @@ export class MydogeService {
   private readonly secondsToCache = 60 * 60 * 10;
 
   private getNameCacheKey(address: string) {
-    return `MYDOGE:PROFILE:${address}`;
+    return `MYDOGE:PROFILE:${address.toLowerCase()}`;
   }
 
   constructor(
@@ -28,9 +28,7 @@ export class MydogeService {
     this.logger.log(`querying ${address}`);
     const { data } = await firstValueFrom(
       this.http
-        .get<{ profile: Profile }>(
-          this.baseUrl + '/wallet/' + address + '/profile',
-        )
+        .get<Profile>(this.baseUrl + '/wallet/' + address + '/profile')
         .pipe(
           catchError((e) => {
             if (e.response) {
@@ -41,7 +39,7 @@ export class MydogeService {
           }),
         ),
     );
-    return data?.profile?.username;
+    return data?.username;
   }
 
   getCachedName(address: string) {
