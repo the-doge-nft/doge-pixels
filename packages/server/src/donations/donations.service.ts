@@ -244,7 +244,7 @@ export class DonationsService {
     console.log(eth);
 
     try {
-      usdPrice = await this.coingecko.getETHPrice();
+      usdPrice = await this.coingecko.getCachedEthPrice();
       console.log(usdPrice);
     } catch (e) {}
 

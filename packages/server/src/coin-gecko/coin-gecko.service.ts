@@ -19,10 +19,12 @@ export class CoinGeckoService {
   ) {}
 
   async getPriceByEthereumContractAddress(
-    contractAddress: string,
+    contractAddress: string | string[],
   ): Promise<number> {
     this.logger.log(`querying coingecko: ${contractAddress}`);
-    const address = contractAddress.toLowerCase();
+    const address = Array.isArray(contractAddress)
+      ? contractAddress.join(',')
+      : contractAddress.toLowerCase();
     const vsCurrency = 'usd';
 
     const { data } = await firstValueFrom(
@@ -42,13 +44,12 @@ export class CoinGeckoService {
           }),
         ),
     );
-    if (!data || !data?.[address]?.[vsCurrency]) {
-      this.logger.error(
-        `could not get coingecko price: ${address}:${vsCurrency}`,
-      );
+    if (!data) {
+      this.logger.error(`could not get coingecko price: ${address}`);
       throw new Error(`Could not get price for: ${address}`);
     }
-    return data[address][vsCurrency];
+    console.log('data: ', data);
+    return data;
   }
 
   private async getPriceVsUsd(currencyId: string) {
@@ -106,6 +107,8 @@ export class CoinGeckoService {
   }
 
   async refreshCachedPriceByAddress(address: string) {
+    const price = await this.getPriceByEthereumContractAddress(address);
+    console.log('price', price);
     await this.cache.set(
       CoinGeckoService.getPriceCacheKey(address),
       await this.getPriceByEthereumContractAddress(address),
