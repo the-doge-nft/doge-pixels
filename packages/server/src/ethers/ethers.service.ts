@@ -17,7 +17,7 @@ export class EthersService implements OnModuleInit {
   public zeroAddress = ethers.constants.AddressZero;
 
   private getEnsCacheKey(address: string) {
-    return `ens-2:${address}`;
+    return `ens:${address}`;
   }
 
   constructor(
