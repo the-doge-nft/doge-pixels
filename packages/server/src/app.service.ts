@@ -34,15 +34,16 @@ export class AppService implements OnModuleInit {
   ) {}
 
   onModuleInit() {
-    // this.cacheNames();
-    // this.cachePrices();
+    this.cacheNames();
+    this.cachePrices();
   }
 
+  @Cron(CronExpression.EVERY_5_HOURS)
   cacheNames() {
     Promise.all([
-      // this.cacheDogeNames(),
-      // this.cacheUdNames(),
-      // this.cacheEnsNames(),
+      this.cacheDogeNames(),
+      this.cacheUdNames(),
+      this.cacheEnsNames(),
     ]);
   }
 
