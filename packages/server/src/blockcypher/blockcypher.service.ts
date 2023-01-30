@@ -1,13 +1,25 @@
 import { HttpService } from '@nestjs/axios';
 import { Injectable, Logger } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { catchError, firstValueFrom } from 'rxjs';
+import * as WebSocket from 'ws';
+import { Configuration } from '../config/configuration';
 
 @Injectable()
 export class BlockcypherService {
   private readonly logger = new Logger(BlockcypherService.name);
   private readonly baseUrl = 'https://api.blockcypher.com/v1/doge/main';
+  private ws: WebSocket;
 
-  constructor(private readonly http: HttpService) {}
+  constructor(
+    private readonly http: HttpService,
+    private readonly config: ConfigService<Configuration>,
+  ) {
+    const token = this.config.get('blockCypherKey');
+    this.ws = new WebSocket(
+      `wss://socket.blockcypher.com/v1/btc/main?token=${token}`,
+    );
+  }
 
   async getBalance(address: string) {
     const { data } = await firstValueFrom(
