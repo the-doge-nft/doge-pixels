@@ -55,6 +55,7 @@ import { UnstoppableDomainsService } from './unstoppable-domains/unstoppable-dom
       useFactory: async (config: ConfigService<Configuration>) => ({
         dsn: config.get('sentryDns'),
         debug: true,
+        logLevels: ['debug'],
       }),
       inject: [ConfigService],
     }),

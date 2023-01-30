@@ -1,10 +1,11 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { Campaign, ChainName } from '@prisma/client';
 import { BlockcypherService } from './../blockcypher/blockcypher.service';
 import { DonationsService } from './../donations/donations.service';
 
 @Injectable()
 export class PhService {
+  private logger = new Logger(PhService.name);
   private dogeAddress = 'DNk1wuxV4DqiPMvqnwXU6R1AirdB7YZh32';
 
   constructor(
@@ -36,5 +37,17 @@ export class PhService {
       },
     });
     console.log('donations', donations);
+  }
+
+  processBody(body: any) {
+    this.logger.log(JSON.stringify(body, null, 2));
+  }
+
+  createWebhook(body: any) {
+    return this.blockcypher.postCreateWebhook(body);
+  }
+
+  getWebhooks() {
+    return this.blockcypher.getWebhooks();
   }
 }
