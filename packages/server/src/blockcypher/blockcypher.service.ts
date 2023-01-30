@@ -18,6 +18,34 @@ export class BlockcypherService {
         }),
       ),
     );
-    return data?.final_balance / 10 ** 8;
+    return this.toWholeUnits(data.final_balance);
+  }
+
+  async getAddress(address: string) {
+    const { data } = await firstValueFrom(
+      this.http.get(this.baseUrl + '/addrs/' + address).pipe(
+        catchError((e) => {
+          this.logger.error(e);
+          throw e;
+        }),
+      ),
+    );
+    return data;
+  }
+
+  async getAddressFull(address: string) {
+    const { data } = await firstValueFrom(
+      this.http.get(this.baseUrl + '/addrs/' + address + '/full').pipe(
+        catchError((e) => {
+          this.logger.error(e);
+          throw e;
+        }),
+      ),
+    );
+    return data;
+  }
+
+  private toWholeUnits(amount: number) {
+    return amount / 10 ** 8;
   }
 }

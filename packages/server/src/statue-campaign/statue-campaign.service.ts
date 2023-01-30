@@ -39,8 +39,8 @@ export class StatueCampaignService implements OnModuleInit {
   }
 
   init() {
-    this.syncEthereumTransfers();
-    this.syncAllDogeDonations();
+    // this.syncEthereumTransfers();
+    // this.syncAllDogeDonations();
   }
 
   constructor(
@@ -113,7 +113,7 @@ export class StatueCampaignService implements OnModuleInit {
     };
     const donationLeaderBoard = {};
     const swapLeaderBoard = {};
-    const donations = await this.getBronzeTheDogeLeaderboardDonations();
+    const donations = await this.getDonationsLeaderboard();
     const swaps = await this.rainbowSwaps.getValidDonationSwaps();
 
     for (const donation of donations) {
@@ -255,7 +255,7 @@ export class StatueCampaignService implements OnModuleInit {
     });
   }
 
-  async getBronzeTheDogeLeaderboardDonations() {
+  async getDonationsLeaderboard() {
     // donations end at 12/6 ETC
     return this.donations.findMany({
       orderBy: {
