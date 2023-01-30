@@ -7,8 +7,8 @@ import { CacheService } from './cache/cache.service';
 import { CoinGeckoService } from './coin-gecko/coin-gecko.service';
 import {
   DOGE_CURRENCY_SYMBOL,
-  DonationsRepository,
-} from './donations/donations.repository';
+  DonationsService,
+} from './donations/donations.service';
 import { EthersService } from './ethers/ethers.service';
 import { MydogeService } from './mydoge/mydoge.service';
 import { PixelTransferRepository } from './pixel-transfer/pixel-transfer.repository';
@@ -22,7 +22,6 @@ export class AppService implements OnModuleInit {
   constructor(
     private readonly alchemy: AlchemyService,
     private readonly ethers: EthersService,
-    private readonly donationsRepo: DonationsRepository,
     private readonly cache: CacheService,
     private readonly myDoge: MydogeService,
     private readonly swapsRepo: RainbowSwapsRepository,
@@ -30,6 +29,7 @@ export class AppService implements OnModuleInit {
     private readonly ud: UnstoppableDomainsService,
     private readonly coingecko: CoinGeckoService,
     private readonly rainbowSwapsRepo: RainbowSwapsRepository,
+    private readonly donations: DonationsService,
     @InjectSentry() private readonly sentryClient: SentryService,
   ) {}
 
@@ -113,7 +113,7 @@ export class AppService implements OnModuleInit {
   }
 
   private async getEthereumDonationCurrencyAddresses() {
-    const donations = await this.donationsRepo.findMany({
+    const donations = await this.donations.findMany({
       where: {
         blockchain: ChainName.ETHEREUM,
         currencyContractAddress: { not: null },
@@ -130,7 +130,7 @@ export class AppService implements OnModuleInit {
   }
 
   private async getDogeAddresses() {
-    const donations = await this.donationsRepo.findMany({
+    const donations = await this.donations.findMany({
       where: {
         blockchain: ChainName.DOGECOIN,
         currency: DOGE_CURRENCY_SYMBOL,
@@ -145,7 +145,7 @@ export class AppService implements OnModuleInit {
   }
 
   private async getEthereumAddresses(): Promise<string[]> {
-    const donations = await this.donationsRepo.findMany({
+    const donations = await this.donations.findMany({
       where: { blockchain: ChainName.ETHEREUM },
     });
     const swaps = await this.swapsRepo.findMany();

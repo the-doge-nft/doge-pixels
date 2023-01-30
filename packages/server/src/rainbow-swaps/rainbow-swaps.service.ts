@@ -10,8 +10,7 @@ import {
 import { ethers } from 'ethers';
 import { AlchemyService } from '../alchemy/alchemy.service';
 import { CoinGeckoService } from '../coin-gecko/coin-gecko.service';
-import { ETH_CURRENCY_SYMBOL } from '../donations/donations.repository';
-import { Balance } from '../donations/donations.service';
+import { Balance, ETH_CURRENCY_SYMBOL } from '../donations/donations.service';
 import { EthersService } from '../ethers/ethers.service';
 import { sleep } from '../helpers/sleep';
 import { SupportedNetwork } from './../alchemy/alchemy.service';

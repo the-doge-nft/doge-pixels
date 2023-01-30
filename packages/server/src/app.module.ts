@@ -11,18 +11,20 @@ import { AlchemyService } from './alchemy/alchemy.service';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AwsService } from './aws/aws.service';
+import { BlockcypherService } from './blockcypher/blockcypher.service';
 import { CacheService } from './cache/cache.service';
 import { ChainanalysisService } from './chainanalysis/chainanalysis.service';
 import { CoinGeckoService } from './coin-gecko/coin-gecko.service';
 import configuration, { Configuration } from './config/configuration';
 import { DiscordService } from './discord/discord.service';
-import { DonationsRepository } from './donations/donations.repository';
 import { DonationsService } from './donations/donations.service';
 import { EthersService } from './ethers/ethers.service';
 import { ImageGeneratorService } from './image-generator/image-generator.service';
 import { IndexController } from './index/index.controller';
 import { MydogeService } from './mydoge/mydoge.service';
 import { OwnTheDogeContractService } from './ownthedoge-contracts/ownthedoge-contracts.service';
+import { PhController } from './ph/ph.controller';
+import { PhService } from './ph/ph.service';
 import { PixelTransferRepository } from './pixel-transfer/pixel-transfer.repository';
 import { PixelTransferService } from './pixel-transfer/pixel-transfer.service';
 import { PrismaService } from './prisma.service';
@@ -33,7 +35,6 @@ import { DonationController } from './statue-campaign/statue-campaign.controller
 import { StatueCampaignService } from './statue-campaign/statue-campaign.service';
 import { TwitterService } from './twitter/twitter.service';
 import { UnstoppableDomainsService } from './unstoppable-domains/unstoppable-domains.service';
-import { BlockcypherService } from './blockcypher/blockcypher.service';
 
 @Module({
   imports: [
@@ -70,7 +71,12 @@ import { BlockcypherService } from './blockcypher/blockcypher.service';
     }),
     ScheduleModule.forRoot(),
   ],
-  controllers: [AppController, IndexController, DonationController],
+  controllers: [
+    AppController,
+    IndexController,
+    DonationController,
+    PhController,
+  ],
   providers: [
     PrismaService,
     EthersService,
@@ -89,13 +95,13 @@ import { BlockcypherService } from './blockcypher/blockcypher.service';
     RainbowSwapsRepository,
     RainbowSwapsService,
     DonationsService,
-    DonationsRepository,
     SochainService,
     CacheService,
     MydogeService,
     ChainanalysisService,
     AppService,
     BlockcypherService,
+    PhService,
   ],
 })
 export class AppModule {}

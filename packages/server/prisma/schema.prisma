@@ -60,6 +60,11 @@ enum ChainName {
   ETHEREUM
 }
 
+enum Campaign {
+  STATUE
+  PH
+}
+
 model Donations {
   id                      Int       @id @default(autoincrement())
   blockNumber             Int
@@ -71,4 +76,5 @@ model Donations {
   currencyContractAddress String?
   txHash                  String    @unique
   amount                  Float
+  campaign                Campaign  @default(STATUE)
 }

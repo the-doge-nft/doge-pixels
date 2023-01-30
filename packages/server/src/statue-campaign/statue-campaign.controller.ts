@@ -6,8 +6,6 @@ import {
   Get,
   UseInterceptors,
 } from '@nestjs/common';
-import { DonationsRepository } from '../donations/donations.repository';
-import { DonationsService } from '../donations/donations.service';
 import { RainbowSwapsRepository } from '../rainbow-swaps/rainbow-swaps.repository';
 import { RainbowSwapsService } from '../rainbow-swaps/rainbow-swaps.service';
 import { StatueCampaignService } from './statue-campaign.service';
@@ -19,8 +17,6 @@ export class DonationController {
     private readonly rainbowSwapRepo: RainbowSwapsRepository,
     private readonly rainbowSwapService: RainbowSwapsService,
     private readonly statueService: StatueCampaignService,
-    private readonly donationsRepo: DonationsRepository,
-    private readonly donationsService: DonationsService,
   ) {}
 
   // @CacheKey('STATUECAMPAIGN:SWAPS')
@@ -34,7 +30,7 @@ export class DonationController {
   // @CacheTTL(30)
   @Get('/donations')
   getDonations() {
-    return this.donationsService.getAllDonations();
+    return this.statueService.getAllDonations();
   }
 
   // @CacheKey('STATUECAMPAIGN:LEADERBOARD')
@@ -63,8 +59,8 @@ export class DonationController {
   @CacheTTL(30)
   @Get('/confirm')
   async confirm() {
-    const dogecoinAddress = this.donationsService.myDogeAddress;
-    const ethereumAddress = this.donationsService.ethereumAddress;
+    const dogecoinAddress = this.statueService.myDogeAddress;
+    const ethereumAddress = this.statueService.ethereumAddress;
     return {
       dogecoinAddress,
       ethereumAddress,
@@ -75,7 +71,7 @@ export class DonationController {
   @CacheTTL(30)
   @Get('/sync/doge')
   async syncAllDoge() {
-    await this.donationsService.syncAllDogeDonations();
+    await this.statueService.syncAllDogeDonations();
     return { success: true };
   }
 
@@ -83,7 +79,7 @@ export class DonationController {
   @CacheTTL(30)
   @Get('/sync/eth')
   async syncAllEth() {
-    await this.donationsService.syncAllEthereumTransfers();
+    await this.statueService.syncEthereumTransfers();
     return { success: true };
   }
 

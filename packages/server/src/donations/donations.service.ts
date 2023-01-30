@@ -1,26 +1,20 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { ChainName, Donations } from '@prisma/client';
+import { ChainName, Donations, Prisma } from '@prisma/client';
 import { InjectSentry, SentryService } from '@travelerdev/nestjs-sentry';
-import {
-  AssetTransfersCategory,
-  AssetTransfersOrder,
-  AssetTransfersWithMetadataResult,
-} from 'alchemy-sdk';
+import { AssetTransfersWithMetadataResult } from 'alchemy-sdk';
 import { ethers } from 'ethers';
 import { AlchemyService } from '../alchemy/alchemy.service';
-import { BlockcypherService } from '../blockcypher/blockcypher.service';
+import { CoinGeckoService } from '../coin-gecko/coin-gecko.service';
+import { EthersService } from '../ethers/ethers.service';
 import { sleepAndTryAgain } from '../helpers/sleep';
-import { CoinGeckoService } from './../coin-gecko/coin-gecko.service';
+import { MydogeService } from '../mydoge/mydoge.service';
+import { PrismaService } from '../prisma.service';
+import { UnstoppableDomainsService } from '../unstoppable-domains/unstoppable-domains.service';
 import {
   SochainService,
   Transaction,
   TxReceived,
 } from './../sochain/sochain.service';
-import {
-  DOGE_CURRENCY_SYMBOL,
-  DonationsRepository,
-  ETH_CURRENCY_SYMBOL,
-} from './donations.repository';
 
 export interface Balance {
   symbol: string;
@@ -29,6 +23,16 @@ export interface Balance {
   usdPrice: number;
 }
 
+export const DOGE_CURRENCY_SYMBOL = 'DOGE';
+export const ETH_CURRENCY_SYMBOL = 'ETH';
+
+export interface DonationsAfterGet extends Donations {
+  currencyUSDNotional: number;
+  explorerUrl: string;
+  fromEns: string | null;
+  fromMyDogeName: string | null;
+  fromUD: string | null;
+}
 @Injectable()
 export class DonationsService {
   private logger = new Logger(DonationsService.name);
@@ -36,83 +40,24 @@ export class DonationsService {
   soDogeTipAddress = 'D7XihpaUjiCqvPrky2xEyfvgoJeUjMKQ6E';
   ethereumAddress = '0x633aC73fB70247257E0c3A1142278235aFa358ac';
 
-  private txIdsToFilter = [
-    '0x1bd3cbae22469b3801eea1d336818034443a4849f37b8c3de4cb178d9ba8ad96',
-    '0xe396d17f229b01eea8cc1e3c6c799019660f8706fde500235d8119c4df8e0529',
-    '0x79e50251330c2bfe16c176f5286408a95cb4b0f696c502ec54318d3cc4b6ba0b',
-    '0x6f412bb523f4521025801a42dbeea5a3e3109ad6a3d9821e9e85300847bd51c4',
-    '0x481e730947648be7005e0c336b69b32741fdbc07c4555a2ab7db923fd788b2b0',
-    '0x7aeab291e207abee000c9074bf9c5e2222673dbb0c485efc77db33593999234b',
-    '0x0714a47f7e33807a183f67dc5a8c7024ce9347e819231454727ec0960aee88ed',
+  blackListedContractAddresses = [
+    '0xb187916e2e927f3bb27035689bc93ebb910af279',
+    '0xdf781bba6f9eefb1a74bb39f6df5e282c5976636',
+    '0x643695D282f6BA237afe27FFE0Acd89a86b50d3e',
   ];
 
   constructor(
     private readonly alchemy: AlchemyService,
-    private readonly donationsRepo: DonationsRepository,
     private readonly sochain: SochainService,
+    private readonly prisma: PrismaService,
     private readonly coingecko: CoinGeckoService,
-    private readonly blockcypher: BlockcypherService,
+    private readonly ethers: EthersService,
+    private readonly mydoge: MydogeService,
+    private readonly ud: UnstoppableDomainsService,
     @InjectSentry() private readonly sentryClient: SentryService,
   ) {}
 
-  init() {
-    this.logger.log('💸 Donation service init');
-    this.syncAllEthereumTransfers();
-    this.syncAllDogeDonations();
-    // @next -- DEBUG THIS IS NOT WORKING FOR SOME REASON
-    // listen to transfers realtime
-    // this.listenForNewEthereumDonations();
-  }
-
-  async syncAllDogeDonations() {
-    await this.syncAllDogeDonationsForAddress(this.myDogeAddress);
-    await this.syncAllDogeDonationsForAddress(this.soDogeTipAddress);
-  }
-
-  async syncRecentDogeDonations() {
-    this.syncMostRecentDogeDonationsForAddress(this.myDogeAddress);
-    this.syncMostRecentDogeDonationsForAddress(this.soDogeTipAddress);
-  }
-
-  private async syncMostRecentDogeDonationsForAddress(address: string) {
-    const mostRecentDonation =
-      await this.donationsRepo.getMostRecentDogeDonationForAddress(address);
-    try {
-      if (mostRecentDonation) {
-        await this.syncDogeDonationsFromMostRecent(mostRecentDonation);
-      } else {
-        await this.syncAllDogeDonationsForAddress(address);
-      }
-    } catch (e) {
-      this.logger.error(
-        `Could not sync Doge donations for address: ${address}`,
-      );
-      this.sentryClient.instance().captureException(e);
-    }
-  }
-
-  private async syncDogeDonationsFromMostRecent(donation: Donations) {
-    this.logger.log(
-      `Syncing dogecoin donations from block number ${donation.blockNumber} : hash ${donation.txHash}`,
-    );
-    // check if there are any new txs past our most recent synced tx
-    const donations = await this.sochain.getAllTxsReceivedToAddress(
-      donation.toAddress,
-      donation.txHash,
-    );
-    await this.upsertDogeDonations(donations, donation.toAddress);
-  }
-
-  async syncAllDogeDonationsForAddress(address: string) {
-    this.logger.log(`Syncing all dogecoin donations for address: ${address}`);
-    const receivedTxs = await this.sochain.getAllTxsReceivedToAddress(address);
-    await this.upsertDogeDonations(receivedTxs, address);
-  }
-
-  private async upsertDogeDonations(
-    receivedTxs: TxReceived[],
-    toAddress: string,
-  ) {
+  async upsertDogeDonations(receivedTxs: TxReceived[], toAddress: string) {
     for (const receivedTx of receivedTxs) {
       try {
         const tx: Transaction = await sleepAndTryAgain(
@@ -126,7 +71,7 @@ export class DonationsService {
           continue;
         }
         const fromAddress = tx.inputs[0].address;
-        await this.donationsRepo.upsert({
+        await this.upsert({
           fromAddress,
           toAddress,
           blockNumber: tx.block_no,
@@ -143,67 +88,7 @@ export class DonationsService {
     }
   }
 
-  listenForNewEthereumDonations() {
-    this.alchemy.listenForTransfersToAddress(this.ethereumAddress, (args) =>
-      this.onNewTransfer(args),
-    );
-  }
-
-  private onNewTransfer(args: any) {
-    this.logger.log(`NEW TX HIT: ${JSON.stringify(args)}}`);
-  }
-
-  async syncRecentEthereumDonations() {
-    const donation = await this.donationsRepo.getMostRecentEthereumDonation();
-    try {
-      if (donation) {
-        this.logger.log(
-          `Syncing ethereum transfers from block: ${donation.blockNumber}`,
-        );
-
-        await this.syncEthereumTransfersFromBlock(donation.blockNumber);
-      } else {
-        this.logger.log('Syncing all ethereum transfers');
-
-        await this.syncAllEthereumTransfers();
-      }
-    } catch (e) {
-      this.logger.error('Could not sync ethereum transfers');
-      this.logger.error(e);
-      this.sentryClient.instance().captureException(e);
-    }
-  }
-
-  private async syncEthereumTransfersFromBlock(blockNumber: number) {
-    const transfers = await this.getEthereumTransfers(
-      ethers.BigNumber.from(blockNumber).toHexString(),
-    );
-    await this.upsertEthereumDonations(transfers);
-  }
-
-  async syncAllEthereumTransfers() {
-    const transfers = await this.getEthereumTransfers();
-    await this.upsertEthereumDonations(transfers);
-  }
-
-  private async getEthereumTransfers(fromBlock?: string) {
-    const data = await this.alchemy.getAssetTransfers({
-      order: AssetTransfersOrder.ASCENDING,
-      toAddress: this.ethereumAddress,
-      category: [AssetTransfersCategory.ERC20, AssetTransfersCategory.EXTERNAL],
-      maxCount: 1000,
-      withMetadata: true,
-      fromBlock,
-    });
-    if (data.pageKey) {
-      throw new Error("There is paging data and we don't support currently");
-    }
-    return data?.transfers;
-  }
-
-  private async upsertEthereumDonations(
-    transfers: AssetTransfersWithMetadataResult[],
-  ) {
+  async upsertEthereumDonations(transfers: AssetTransfersWithMetadataResult[]) {
     for (const transfer of transfers) {
       try {
         const currency = transfer.asset;
@@ -214,7 +99,7 @@ export class DonationsService {
           continue;
         }
 
-        await this.donationsRepo.upsert({
+        await this.upsert({
           blockchain: ChainName.ETHEREUM,
           blockCreatedAt: new Date(transfer.metadata.blockTimestamp),
           currency: transfer.asset,
@@ -235,102 +120,112 @@ export class DonationsService {
     }
   }
 
-  private async getEthBalance() {
-    const eth = await this.alchemy.getBalance(this.ethereumAddress);
-    const usdPrice = await this.coingecko.getCachedEthPrice();
-    const amount = Number(ethers.utils.formatEther(ethers.BigNumber.from(eth)));
-    const usdNotional = usdPrice * amount;
-    return { symbol: ETH_CURRENCY_SYMBOL, usdPrice, usdNotional, amount };
-  }
-
-  async getEthereumBalances(): Promise<Balance[]> {
-    const balances: Balance[] = [];
-    try {
-      balances.push(await this.getEthBalance());
-    } catch (e) {}
-
-    const erc20 = await this.alchemy.getTokenBalances(this.ethereumAddress);
-    for (const balance of erc20) {
-      const { contractAddress } = balance;
+  private async afterGetDonations(
+    donations: Donations[],
+  ): Promise<DonationsAfterGet[]> {
+    const data: DonationsAfterGet[] = [];
+    for (const donation of donations) {
+      // skip past any blacklisted addresses
       if (
-        !this.donationsRepo.blackListedContractAddresses.includes(
-          balance.contractAddress,
+        this.blackListedContractAddresses.includes(
+          donation.currencyContractAddress,
         )
       ) {
-        try {
-          const metadata = await this.alchemy.getTokenMetadata(contractAddress);
-          const symbol = metadata.symbol;
-          const decimals = metadata.decimals;
-          const amount = ethers.BigNumber.from(balance.tokenBalance)
-            .div(ethers.BigNumber.from(10).pow(decimals))
-            .toNumber();
-          const usdPrice = await this.coingecko.getCachedPrice(contractAddress);
-          const usdNotional = usdPrice * amount;
-          balances.push({
-            symbol,
-            usdPrice,
-            usdNotional,
-            amount,
-          });
-        } catch (e) {
-          this.logger.error(
-            `Could not get balance for: ${balance.contractAddress}`,
+        continue;
+      }
+
+      let fromMyDogeName = null;
+      let fromEns = null;
+      let donatedCurrencyPrice = 0;
+      let fromUD = null;
+      let explorerUrl: string;
+
+      const isDoge = donation.currency === DOGE_CURRENCY_SYMBOL;
+      if (isDoge) {
+        explorerUrl = this.sochain.getTxExplorerUrl(donation.txHash);
+        donatedCurrencyPrice = await this.coingecko.getCachedPrice('dogecoin');
+        fromMyDogeName = await this.mydoge.getCachedName(donation.fromAddress);
+      } else {
+        explorerUrl = `https://etherscan.io/tx/${donation.txHash}`;
+        if (donation.currency === ETH_CURRENCY_SYMBOL) {
+          donatedCurrencyPrice = await this.coingecko.getCachedPrice(
+            'ethereum',
           );
-          this.sentryClient.instance().captureException(e);
+        } else if (donation.currencyContractAddress) {
+          donatedCurrencyPrice = await this.coingecko.getCachedPrice(
+            donation.currencyContractAddress,
+          );
         }
       }
+
+      if (donation.blockchain === ChainName.ETHEREUM) {
+        fromEns = await this.ethers.getCachedEnsName(donation.fromAddress);
+        fromUD = await this.ud.getCachedName(donation.fromAddress);
+      }
+
+      const currencyUSDNotional = donatedCurrencyPrice * donation.amount;
+
+      data.push({
+        ...donation,
+        currencyUSDNotional,
+        explorerUrl,
+        fromEns,
+        fromMyDogeName,
+        fromUD,
+      });
     }
-    return balances;
+    return data;
   }
 
-  async getDogeBalances(): Promise<Balance> {
-    const myDogeBalance = await this.blockcypher.getBalance(this.myDogeAddress);
-    const soDogeBalance = await this.blockcypher.getBalance(
-      this.soDogeTipAddress,
-    );
-    const totalBalance = myDogeBalance + soDogeBalance;
-    const dogePrice = await this.coingecko.getCachedDogePrice();
-    return {
-      symbol: DOGE_CURRENCY_SYMBOL,
-      amount: totalBalance,
-      usdNotional: totalBalance * dogePrice,
-      usdPrice: dogePrice,
-    };
-  }
-
-  async getAllDonations() {
-    return this.donationsRepo.findMany({
-      orderBy: {
-        blockCreatedAt: 'desc',
+  upsert(donation: Prisma.DonationsCreateInput) {
+    return this.prisma.donations.upsert({
+      where: { txHash: donation.txHash },
+      update: {
+        ...donation,
       },
-      where: {
-        fromAddress: {
-          notIn: [this.myDogeAddress, this.soDogeTipAddress],
-        },
-        txHash: {
-          notIn: this.txIdsToFilter,
-        },
+      create: {
+        ...donation,
       },
     });
   }
 
-  async getLeaderboardDonations() {
-    // donations end at 12/6 ETC
-    return this.donationsRepo.findMany({
-      orderBy: {
-        blockCreatedAt: 'desc',
-      },
-      where: {
-        fromAddress: {
-          notIn: [this.myDogeAddress, this.soDogeTipAddress],
+  async findManyNoAfters(args: Prisma.DonationsFindManyArgs) {
+    return this.prisma.donations.findMany(args);
+  }
+
+  async findMany(
+    args: Prisma.DonationsFindManyArgs,
+  ): Promise<DonationsAfterGet[]> {
+    const donations = await this.prisma.donations.findMany(args);
+    return this.afterGetDonations(donations);
+  }
+
+  async getMostRecentDogeDonationForAddress(toAddress: string) {
+    return (
+      await this.prisma.donations.findMany({
+        where: {
+          blockchain: ChainName.DOGECOIN,
+          currency: DOGE_CURRENCY_SYMBOL,
+          toAddress,
         },
-        blockCreatedAt: {
-          lte: new Date('2022-12-07T05:10:59Z'),
+        orderBy: { blockCreatedAt: 'desc' },
+      })
+    )?.[0];
+  }
+
+  async getMostRecentEthereumDonation() {
+    return (
+      await this.prisma.donations.findMany({
+        where: {
+          AND: {
+            blockchain: ChainName.ETHEREUM,
+            currencyContractAddress: {
+              notIn: this.blackListedContractAddresses,
+            },
+          },
         },
-        txHash: {
-          notIn: this.txIdsToFilter,
-        },
-      },
-    });
+        orderBy: { blockCreatedAt: 'desc' },
+      })
+    )?.[0];
   }
 }

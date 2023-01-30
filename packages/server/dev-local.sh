@@ -9,8 +9,10 @@
 
 set -eu
 
-export SCRIPTPATH="$( cd "$(dirname "$0")" >/dev/null 2>&1 ; pwd -P )"
-
+export SCRIPTPATH="$(
+    cd "$(dirname "$0")" >/dev/null 2>&1
+    pwd -P
+)"
 
 spacedEcho() {
     echo ""
@@ -19,11 +21,10 @@ spacedEcho() {
 }
 
 removePreviousBuildMaybe() {
-  if [ -d "$SCRIPTPATH/dist" ]
-  then
-    spacedEcho "removing old dist"
-    rm -r dist/
-  fi
+    if [ -d "$SCRIPTPATH/dist" ]; then
+        spacedEcho "removing old dist"
+        rm -r dist/
+    fi
 }
 
 up() {
@@ -45,11 +46,11 @@ up() {
 
     spacedEcho "spinning up api"
     if [[ "${1-false}" == true ]]; then
-      spacedEcho "building api image"
-      docker-compose up --build -d api;
+        spacedEcho "building api image"
+        docker-compose up --build -d api
     else
-      docker-compose up -d api
-    fi;
+        docker-compose up -d api
+    fi
 
     spacedEcho "listening to logs"
     docker-compose logs -f
