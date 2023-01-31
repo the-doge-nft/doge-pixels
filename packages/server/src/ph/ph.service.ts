@@ -66,7 +66,7 @@ export class PhService {
     this.logger.log(JSON.stringify(body, null, 2));
   }
 
-  isHookPingSafe(req: Request) {
-    return this.blockcypher.isHookPingSafe(req);
+  getIsHookPingSafe(req: Request) {
+    return this.blockcypher.getIsHookPingSafe(req);
   }
 }

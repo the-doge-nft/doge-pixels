@@ -145,11 +145,11 @@ export class BlockcypherService implements OnModuleInit {
     return data;
   }
 
-  isHookPingSafe(request: Request) {
+  getIsHookPingSafe(request: Request) {
     this.logger.log('verifying webhook ping');
     const signature = request.headers.signature;
     this.logger.log(signature);
-    const parsedSignature = httpSignature.parsedSignature(signature, {
+    const parsedSignature = httpSignature.parseSignature(signature, {
       headers: ['(request-target)', 'digest', 'date'],
     });
     this.logger.log(parsedSignature);

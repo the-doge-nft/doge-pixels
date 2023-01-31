@@ -64,7 +64,7 @@ export class PhController {
 
   @Post('blockcypher/webhook/tx')
   postWebhookTx(@Body() body: any, @Req() req: Request) {
-    if (this.ph.isHookPingSafe(req)) {
+    if (this.ph.getIsHookPingSafe(req)) {
       return this.ph.processWebhook(body);
     } else {
       this.logger.error('Could not process webhook');
