@@ -28,13 +28,13 @@ export class AppService implements OnModuleInit {
   ) {}
 
   onModuleInit() {
-    // this.cacheNames();
-    // this.cachePrices();
+    this.cacheNames();
+    this.cachePrices();
   }
 
   @Cron(CronExpression.EVERY_5_HOURS)
-  cacheNames() {
-    Promise.all([
+  async cacheNames() {
+    await Promise.all([
       this.cacheDogeNames(),
       this.cacheUdNames(),
       this.cacheEnsNames(),
@@ -72,12 +72,17 @@ export class AppService implements OnModuleInit {
   async cachePrices() {
     const addresses = await this.getEthereumDonationCurrencyAddresses();
     try {
-      await Promise.all([
+      const promises = [
         this.coingecko.refreshDogePrice(),
         this.coingecko.refreshEthPrice(),
         this.coingecko.refreshDogPrice(),
-        this.coingecko.refreshPricesByEthereumContractAddresses(addresses),
-      ]);
+      ];
+      if (addresses.length > 0) {
+        promises.push(
+          this.coingecko.refreshPricesByEthereumContractAddresses(addresses),
+        );
+      }
+      await Promise.all(promises);
     } catch (e) {}
   }
 

@@ -66,7 +66,7 @@ enum Campaign {
 }
 
 model Donations {
-  id                      Int       @id @default(autoincrement())
+  id                      Int                   @id @default(autoincrement())
   blockNumber             Int
   blockCreatedAt          DateTime
   fromAddress             String
@@ -74,7 +74,18 @@ model Donations {
   blockchain              ChainName
   currency                String
   currencyContractAddress String?
-  txHash                  String    @unique
+  txHash                  String                @unique
   amount                  Float
-  campaign                Campaign  @default(STATUE)
+  campaign                Campaign              @default(STATUE)
+  WebhookRequests         DonationHookRequest[]
+}
+
+model DonationHookRequest {
+  id           Int       @id @default(autoincrement())
+  insertedAt   DateTime  @default(now())
+  donationId   Int
+  donation     Donations @relation(fields: [donationId], references: [id])
+  url          String
+  responseCode Int?
+  response     String?
 }

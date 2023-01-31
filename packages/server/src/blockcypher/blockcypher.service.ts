@@ -175,7 +175,7 @@ export class BlockcypherService implements OnModuleInit {
     );
   }
 
-  private toWholeUnits(amount: number) {
+  toWholeUnits(amount: number) {
     return amount / 10 ** 8;
   }
 }

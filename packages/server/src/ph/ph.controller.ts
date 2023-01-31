@@ -21,6 +21,11 @@ export class PhController {
     return this.ph.getBalance();
   }
 
+  @Get('donations')
+  getDonations() {
+    return this.ph.getDonations();
+  }
+
   @Get('leaderboard')
   getLeaderboard() {
     return this.ph.getBalance();
@@ -61,6 +66,9 @@ export class PhController {
   getWebhookById(@Param() params: { id: string }) {
     return this.ph.getWebhookById(params.id);
   }
+
+  // @Get('sendaping/:id')
+  // sendAPing(@Param() params: { id: string }) {}
 
   @Post('blockcypher/webhook/tx')
   postWebhookTx(@Body() body: ConfirmedTx, @Req() req: Request) {
