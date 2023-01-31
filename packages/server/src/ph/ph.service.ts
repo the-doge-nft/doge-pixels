@@ -1,3 +1,4 @@
+import { HttpService } from '@nestjs/axios';
 import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Campaign, ChainName } from '@prisma/client';
@@ -6,8 +7,10 @@ import { ConfirmedTx } from '../blockcypher/blockcypher.interfaces';
 import { Configuration } from '../config/configuration';
 import { BlockcypherService } from './../blockcypher/blockcypher.service';
 import { AppEnv } from './../config/configuration';
+import { DonationHookRequestService } from './../donation-hook-request/donation-hook-request.service';
 import {
   DOGE_CURRENCY_SYMBOL,
+  DonationsAfterGet,
   DonationsService,
 } from './../donations/donations.service';
 import { MydogeService } from './../mydoge/mydoge.service';
@@ -22,6 +25,8 @@ export class PhService {
     private readonly blockcypher: BlockcypherService,
     private readonly donations: DonationsService,
     private readonly mydoge: MydogeService,
+    private readonly http: HttpService,
+    private readonly donationHook: DonationHookRequestService,
     private readonly config: ConfigService<Configuration>,
   ) {
     if (this.config.get('appEnv') === AppEnv.production) {
@@ -83,8 +88,41 @@ export class PhService {
   }
 
   async processWebhook(tx: ConfirmedTx) {
+    this.logger.log(`processing tx ${tx.hash}...`);
     const donation = await this.upsertTx(tx);
     // blockcypher webhook should not send us duplicates, but lets make sure
+    return donation;
+  }
+
+  async pingWebhook(donation: DonationsAfterGet) {
+    const donationId = donation.id;
+    const url = this.phHookUrl;
+    let isSuccessful = false;
+    let responseCode: number;
+    let response: string;
+    try {
+      const res = await this.http.axiosRef.post(this.phHookUrl, donation);
+      this.logger.log(`ph hook success: ${donation.id}`);
+
+      isSuccessful = true;
+      responseCode = res.status;
+      response = JSON.stringify(res.data);
+    } catch (e) {
+      this.logger.error(`ph hook error: ${donation.id}`);
+
+      isSuccessful = false;
+      responseCode = e.response?.status;
+      response = JSON.stringify(e.response?.data);
+    } finally {
+      await this.donationHook.create({
+        data: { donationId, url, isSuccessful, responseCode, response },
+      });
+    }
+  }
+
+  async sendAPing(id: number) {
+    const donation = await this.donations.findFirstOrThrow({ where: { id } });
+    // return this.pingWebhook(donation);
     return donation;
   }
 
@@ -102,7 +140,10 @@ export class PhService {
     );
 
     if (donationOutputs.length === 0) {
-      this.logger.error('no dogecoin donation output -- this shouldnt happen');
+      this.logger.log(
+        'dogecoin donation address not in output -- this is an outgoing tx from the address -- skipping',
+      );
+      return;
     }
 
     let amount = 0;

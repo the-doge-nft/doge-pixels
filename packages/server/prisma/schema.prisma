@@ -86,6 +86,8 @@ model DonationHookRequest {
   donationId   Int
   donation     Donations @relation(fields: [donationId], references: [id])
   url          String
+  attempt      Int       @default(0)
+  isSuccessful Boolean   @default(false)
   responseCode Int?
   response     String?
 }

@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Body,
   Controller,
   Get,
@@ -67,8 +68,14 @@ export class PhController {
     return this.ph.getWebhookById(params.id);
   }
 
-  // @Get('sendaping/:id')
-  // sendAPing(@Param() params: { id: string }) {}
+  @Get('sendaping/:id')
+  sendAPing(@Param() params: { id: string }) {
+    return this.ph.sendAPing(Number(params.id)).catch((e) => {
+      this.logger.error(e);
+      this.logger.error('Could not find donation');
+      throw new BadRequestException('Could not find donation');
+    });
+  }
 
   @Post('blockcypher/webhook/tx')
   postWebhookTx(@Body() body: ConfirmedTx, @Req() req: Request) {

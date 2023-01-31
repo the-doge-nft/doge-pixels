@@ -120,6 +120,46 @@ export class DonationsService {
     }
   }
 
+  private async afterGet(donation: Donations) {
+    let fromMyDogeName = null;
+    let fromEns = null;
+    let donatedCurrencyPrice = 0;
+    let fromUD = null;
+    let explorerUrl: string;
+
+    const isDoge = donation.currency === DOGE_CURRENCY_SYMBOL;
+    if (isDoge) {
+      explorerUrl = this.sochain.getTxExplorerUrl(donation.txHash);
+      donatedCurrencyPrice = await this.coingecko.getCachedPrice('dogecoin');
+      fromMyDogeName = await this.mydoge.getCachedName(donation.fromAddress);
+    } else {
+      explorerUrl = `https://etherscan.io/tx/${donation.txHash}`;
+      if (donation.currency === ETH_CURRENCY_SYMBOL) {
+        donatedCurrencyPrice = await this.coingecko.getCachedPrice('ethereum');
+      } else if (donation.currencyContractAddress) {
+        donatedCurrencyPrice = await this.coingecko.getCachedPrice(
+          donation.currencyContractAddress,
+        );
+      }
+    }
+
+    if (donation.blockchain === ChainName.ETHEREUM) {
+      fromEns = await this.ethers.getCachedEnsName(donation.fromAddress);
+      fromUD = await this.ud.getCachedName(donation.fromAddress);
+    }
+
+    const currencyUSDNotional = donatedCurrencyPrice * donation.amount;
+
+    return {
+      ...donation,
+      currencyUSDNotional,
+      explorerUrl,
+      fromEns,
+      fromMyDogeName,
+      fromUD,
+    };
+  }
+
   private async afterGetDonations(
     donations: Donations[],
   ): Promise<DonationsAfterGet[]> {
@@ -133,46 +173,7 @@ export class DonationsService {
       ) {
         continue;
       }
-
-      let fromMyDogeName = null;
-      let fromEns = null;
-      let donatedCurrencyPrice = 0;
-      let fromUD = null;
-      let explorerUrl: string;
-
-      const isDoge = donation.currency === DOGE_CURRENCY_SYMBOL;
-      if (isDoge) {
-        explorerUrl = this.sochain.getTxExplorerUrl(donation.txHash);
-        donatedCurrencyPrice = await this.coingecko.getCachedPrice('dogecoin');
-        fromMyDogeName = await this.mydoge.getCachedName(donation.fromAddress);
-      } else {
-        explorerUrl = `https://etherscan.io/tx/${donation.txHash}`;
-        if (donation.currency === ETH_CURRENCY_SYMBOL) {
-          donatedCurrencyPrice = await this.coingecko.getCachedPrice(
-            'ethereum',
-          );
-        } else if (donation.currencyContractAddress) {
-          donatedCurrencyPrice = await this.coingecko.getCachedPrice(
-            donation.currencyContractAddress,
-          );
-        }
-      }
-
-      if (donation.blockchain === ChainName.ETHEREUM) {
-        fromEns = await this.ethers.getCachedEnsName(donation.fromAddress);
-        fromUD = await this.ud.getCachedName(donation.fromAddress);
-      }
-
-      const currencyUSDNotional = donatedCurrencyPrice * donation.amount;
-
-      data.push({
-        ...donation,
-        currencyUSDNotional,
-        explorerUrl,
-        fromEns,
-        fromMyDogeName,
-        fromUD,
-      });
+      data.push(await this.afterGet(donation));
     }
     return data;
   }
@@ -198,6 +199,11 @@ export class DonationsService {
   ): Promise<DonationsAfterGet[]> {
     const donations = await this.prisma.donations.findMany(args);
     return this.afterGetDonations(donations);
+  }
+
+  async findFirstOrThrow(args: Prisma.DonationsFindFirstOrThrowArgs) {
+    const donation = await this.prisma.donations.findFirstOrThrow(args);
+    return this.afterGet(donation);
   }
 
   async getMostRecentDogeDonationForAddress(toAddress: string) {
