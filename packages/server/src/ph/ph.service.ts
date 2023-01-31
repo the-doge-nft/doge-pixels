@@ -64,6 +64,7 @@ export class PhService {
 
   processWebhook(body: ConfirmedTx) {
     this.logger.log(JSON.stringify(body, null, 2));
+    return 'yeet';
   }
 
   getIsHookPingSafe(req: Request) {

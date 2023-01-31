@@ -147,25 +147,31 @@ export class BlockcypherService implements OnModuleInit {
 
   getIsHookPingSafe(request: Request) {
     this.logger.log('verifying webhook ping');
-    const signature = request.headers.signature;
-    this.logger.log(signature);
-    const parsedSignature = httpSignature.parseSignature(signature, {
+
+    const parsedSignature = httpSignature.parse(request, {
       headers: ['(request-target)', 'digest', 'date'],
+      authorizationHeaderName: 'signature',
     });
     this.logger.log(parsedSignature);
+
     const expectedSignature = `(request-target): ${request.method.toLowerCase()} ${
       request.url
     }
 digest: ${request.headers['digest']}
 date: ${request.headers['date']}`;
     this.logger.log(expectedSignature);
-    const verifier = crypto.createVerify('sha256');
+
+    const verifier = crypto.createVerify('SHA256');
     verifier.update(expectedSignature);
-    return verifier.verify(
-      this.signingPubKey,
-      parsedSignature.signature,
-      'base64',
-    );
+
+    const publicKeyPEM = `-----BEGIN PUBLIC KEY-----\n${this.signingPubKey}\n-----END PUBLIC KEY-----`;
+    const pem = crypto.createPublicKey({
+      key: publicKeyPEM,
+      format: 'pem',
+      type: 'pkcs1',
+    });
+
+    return verifier.verify(pem, parsedSignature.signingString, 'base64');
   }
 
   private toWholeUnits(amount: number) {

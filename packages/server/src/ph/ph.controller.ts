@@ -64,9 +64,18 @@ export class PhController {
 
   @Post('blockcypher/webhook/tx')
   postWebhookTx(@Body() body: any, @Req() req: Request) {
-    if (this.ph.getIsHookPingSafe(req)) {
-      return this.ph.processWebhook(body);
-    } else {
+    try {
+      const isValid = this.ph.getIsHookPingSafe(req);
+      if (isValid) {
+        this.logger.log('processing valid webhookd');
+        return this.ph.processWebhook(body);
+      } else {
+        this.logger.error('Could not verify webhook');
+        this.logger.error(JSON.stringify(body, null, 2));
+        this.logger.error(req);
+        throw new BadRequestException("Couldn't verify webhook");
+      }
+    } catch (e) {
       this.logger.error('Could not process webhook');
       this.logger.error(JSON.stringify(body, null, 2));
       this.logger.error(req);
