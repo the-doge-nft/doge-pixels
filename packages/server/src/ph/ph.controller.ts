@@ -42,7 +42,9 @@ export class PhController {
 
   @Get('blockcypher/webhook/create')
   postWebhookCreate() {
-    return this.ph.createWebhook();
+    return this.ph.createWebhook(
+      'https://staging.api.ownthedoge.com/ph/blockcypher/webhook/tx',
+    );
   }
 
   @Get('blockcypher/webhook')

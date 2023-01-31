@@ -41,12 +41,12 @@ export class PhService {
     console.log('donations', donations);
   }
 
-  createWebhook() {
+  createWebhook(url: string) {
     return this.blockcypher.createWebhook({
       event: 'confirmed-tx',
       address: this.dogeAddress,
       confirmations: 6,
-      url: 'https://eo3yagn2cw9n30r.m.pipedream.net',
+      url,
     });
   }
 
