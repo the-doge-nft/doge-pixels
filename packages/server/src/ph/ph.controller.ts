@@ -99,4 +99,9 @@ export class PhController {
     //   throw new BadRequestException('Could not verify webhook');
     // }
   }
+
+  @Get('hooks')
+  getHooks() {
+    return this.ph.getHooks();
+  }
 }

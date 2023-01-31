@@ -2,6 +2,7 @@ import { HttpService } from '@nestjs/axios';
 import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Campaign, ChainName } from '@prisma/client';
+import { InjectSentry, SentryService } from '@travelerdev/nestjs-sentry';
 import { Request } from 'express';
 import { ConfirmedTx } from '../blockcypher/blockcypher.interfaces';
 import { Configuration } from '../config/configuration';
@@ -28,15 +29,14 @@ export class PhService {
     private readonly http: HttpService,
     private readonly donationHook: DonationHookRequestService,
     private readonly config: ConfigService<Configuration>,
+    @InjectSentry() private readonly sentryClient: SentryService,
   ) {
     if (this.config.get('appEnv') === AppEnv.production) {
       throw new Error('No url yet');
     } else {
-      this.phHookUrl = 'http://testnet.pleasr.house/api/dogecoin/hook';
+      this.phHookUrl = 'http://testnet.pleasr.house/api/webhooks/donations';
     }
   }
-
-  // init() {}
 
   getAddress() {
     return this.blockcypher.getAddress(this.dogeAddress);
@@ -90,47 +90,15 @@ export class PhService {
   async processWebhook(tx: ConfirmedTx) {
     this.logger.log(`processing tx ${tx.hash}...`);
     const donation = await this.upsertTx(tx);
+
+    try {
+      await this.pingWebhook(donation);
+    } catch (e) {
+      this.logger.error(e);
+    }
+
     // blockcypher webhook should not send us duplicates, but lets make sure
     return donation;
-  }
-
-  async pingWebhook(donation: DonationsAfterGet) {
-    const donationId = donation.id;
-    const url = this.phHookUrl;
-    let isSuccessful = false;
-    let responseCode: number;
-    let response: string;
-    try {
-      const res = await this.http.axiosRef.post(this.phHookUrl, donation);
-      this.logger.log(`ph hook success: ${donation.id}`);
-
-      isSuccessful = true;
-      responseCode = res.status;
-      response = JSON.stringify(res.data);
-    } catch (e) {
-      this.logger.error(`ph hook error: ${donation.id}`);
-
-      isSuccessful = false;
-      responseCode = e.response?.status;
-      response = JSON.stringify(e.response?.data);
-    } finally {
-      await this.donationHook.create({
-        data: { donationId, url, isSuccessful, responseCode, response },
-      });
-    }
-  }
-
-  async sendAPing(id: number) {
-    const donation = await this.donations.findFirstOrThrow({ where: { id } });
-    // return this.pingWebhook(donation);
-    return donation;
-  }
-
-  getDonations() {
-    return this.donations.findMany({
-      where: { campaign: Campaign.PH },
-      orderBy: { blockCreatedAt: 'desc' },
-    });
   }
 
   async upsertTx(tx: ConfirmedTx) {
@@ -169,6 +137,73 @@ export class PhService {
       toAddress: this.dogeAddress,
       fromAddress,
     });
-    return this.donations.findMany({ where: { id: donation.id } });
+    return this.donations.findFirstOrThrow({ where: { id: donation.id } });
+  }
+
+  async pingWebhook(donation: DonationsAfterGet) {
+    const donationId = donation.id;
+    const url = this.phHookUrl;
+    let isSuccessful = false;
+    let responseCode: number;
+    let response: string;
+    try {
+      const res = await this.sendWebhookRequest(donation);
+      this.logger.log(`ph hook success: ${donation.id}`);
+
+      isSuccessful = true;
+      responseCode = res.status;
+      response = JSON.stringify(res.data);
+    } catch (e) {
+      this.logger.error(`ph hook error: ${donation.id}`);
+
+      isSuccessful = false;
+      responseCode = e.response?.status;
+      response = JSON.stringify(e.response?.data);
+
+      this.sentryClient.instance().captureException(e);
+    } finally {
+      await this.donationHook.create({
+        data: { donationId, url, isSuccessful, responseCode, response },
+      });
+    }
+  }
+
+  sendWebhookRequest(donation: DonationsAfterGet) {
+    this.logger.log(`sending hook to ph: ${donation.txHash}`);
+    this.logger.log(`sending donation: ${JSON.stringify(donation, null, 2)}`);
+    return this.http.axiosRef.post(this.phHookUrl, donation, {
+      headers: {
+        'Content-Type': 'application/json',
+        'X-API-Key': this.config.get('phSecret'),
+      },
+    });
+  }
+
+  async sendAPing(id: number) {
+    const donation = await this.donations.findFirstOrThrow({ where: { id } });
+    try {
+      const res = await this.sendWebhookRequest(donation);
+      this.logger.log(`ph hook success: ${donation.id}`);
+      this.logger.log(`ph hook response: ${JSON.stringify(res.data)}`);
+      this.logger.log(`ph hook response code: ${res.status}`);
+    } catch (e) {
+      this.logger.error("Could not send a ping to PH's webhook");
+      this.logger.log(`ph hook success: ${donation.id}`);
+      this.logger.log(`ph hook response: ${JSON.stringify(e?.response?.data)}`);
+      this.logger.log(`ph hook response code: ${e?.response.status}`);
+      this.sentryClient.instance().captureException(e);
+    }
+    return donation;
+  }
+
+  getDonations() {
+    return this.donations.findMany({
+      where: { campaign: Campaign.PH },
+      orderBy: { blockCreatedAt: 'desc' },
+    });
+  }
+
+  getHooks() {
+    return this.donationHook.findMany({ orderBy: { insertedAt: 'desc' } });
   }
 }
