@@ -34,7 +34,7 @@ export class PhService {
     if (this.config.get('appEnv') === AppEnv.production) {
       throw new Error('No url yet');
     } else {
-      this.phHookUrl = 'http://testnet.pleasr.house/api/webhooks/donations';
+      this.phHookUrl = 'https://testnet.pleasr.house/api/webhooks/donations';
     }
   }
 
