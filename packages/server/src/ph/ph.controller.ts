@@ -1,8 +1,19 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import {
+  BadRequestException,
+  Body,
+  Controller,
+  Get,
+  Logger,
+  Param,
+  Post,
+  Req,
+} from '@nestjs/common';
+import { Request } from 'express';
 import { PhService } from './ph.service';
 
 @Controller('ph')
 export class PhController {
+  private readonly logger = new Logger(PhController.name);
   constructor(private readonly ph: PhService) {}
 
   @Get('balance')
@@ -29,18 +40,35 @@ export class PhController {
     return address;
   }
 
-  @Post('blockcypher/webhook/create')
-  postWebhookCreate(@Body() body: any) {
-    return this.ph.createWebhook(body);
+  @Get('blockcypher/webhook/create')
+  postWebhookCreate() {
+    return this.ph.createWebhook();
   }
 
-  @Get('blockcypher/webhook/create')
+  @Get('blockcypher/webhook')
   getWebhooks() {
-    return this.ph.getWebhooks();
+    return this.ph.listWebhooks();
+  }
+
+  @Get('blockcypher/webhook/delete/:id')
+  deleteWebhook(@Param() params: { id: string }) {
+    return this.ph.deleteWebhook(params.id);
+  }
+
+  @Get('blockcypher/webhook/:id')
+  getWebhookById(@Param() params: { id: string }) {
+    return this.ph.getWebhookById(params.id);
   }
 
   @Post('blockcypher/webhook/tx')
-  postWebhookTx(@Body() body: any) {
-    return this.ph.processBody(body);
+  postWebhookTx(@Body() body: any, @Req() req: Request) {
+    if (this.ph.isHookPingSafe(req)) {
+      return this.ph.processWebhook(body);
+    } else {
+      this.logger.error('Could not process webhook');
+      this.logger.error(JSON.stringify(body, null, 2));
+      this.logger.error(req);
+      throw new BadRequestException('Could not verify webhook');
+    }
   }
 }

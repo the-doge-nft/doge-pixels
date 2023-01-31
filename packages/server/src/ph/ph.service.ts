@@ -1,5 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { Campaign, ChainName } from '@prisma/client';
+import { Request } from 'express';
+import { ConfirmedTx } from '../blockcypher/blockcypher.interfaces';
 import { BlockcypherService } from './../blockcypher/blockcypher.service';
 import { DonationsService } from './../donations/donations.service';
 
@@ -39,15 +41,32 @@ export class PhService {
     console.log('donations', donations);
   }
 
-  processBody(body: any) {
+  createWebhook() {
+    return this.blockcypher.createWebhook({
+      event: 'confirmed-tx',
+      address: this.dogeAddress,
+      confirmations: 6,
+      url: 'https://eo3yagn2cw9n30r.m.pipedream.net',
+    });
+  }
+
+  deleteWebhook(id: string) {
+    return this.blockcypher.deleteWebhook(id);
+  }
+
+  listWebhooks() {
+    return this.blockcypher.listWebhooks();
+  }
+
+  getWebhookById(id: string) {
+    return this.blockcypher.getWebhookById(id);
+  }
+
+  processWebhook(body: ConfirmedTx) {
     this.logger.log(JSON.stringify(body, null, 2));
   }
 
-  createWebhook(body: any) {
-    return this.blockcypher.postCreateWebhook(body);
-  }
-
-  getWebhooks() {
-    return this.blockcypher.getWebhooks();
+  isHookPingSafe(req: Request) {
+    return this.blockcypher.isHookPingSafe(req);
   }
 }

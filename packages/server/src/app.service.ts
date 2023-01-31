@@ -1,9 +1,6 @@
 import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { ChainName } from '@prisma/client';
-import { InjectSentry, SentryService } from '@travelerdev/nestjs-sentry';
-import { AlchemyService } from './alchemy/alchemy.service';
-import { CacheService } from './cache/cache.service';
 import { CoinGeckoService } from './coin-gecko/coin-gecko.service';
 import {
   DOGE_CURRENCY_SYMBOL,
@@ -20,9 +17,7 @@ export class AppService implements OnModuleInit {
   private logger = new Logger(AppService.name);
 
   constructor(
-    private readonly alchemy: AlchemyService,
     private readonly ethers: EthersService,
-    private readonly cache: CacheService,
     private readonly myDoge: MydogeService,
     private readonly swapsRepo: RainbowSwapsRepository,
     private readonly pixelTranserRepo: PixelTransferRepository,
@@ -30,7 +25,6 @@ export class AppService implements OnModuleInit {
     private readonly coingecko: CoinGeckoService,
     private readonly rainbowSwapsRepo: RainbowSwapsRepository,
     private readonly donations: DonationsService,
-    @InjectSentry() private readonly sentryClient: SentryService,
   ) {}
 
   onModuleInit() {

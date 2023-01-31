@@ -1,6 +1,9 @@
 import { HttpService } from '@nestjs/axios';
 import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import * as crypto from 'crypto';
+import { Request } from 'express';
+import * as httpSignature from 'http-signature';
 import { catchError, firstValueFrom } from 'rxjs';
 import * as WebSocket from 'ws';
 import { Configuration } from '../config/configuration';
@@ -10,12 +13,15 @@ export class BlockcypherService implements OnModuleInit {
   private readonly logger = new Logger(BlockcypherService.name);
   private readonly baseUrl = 'https://api.blockcypher.com/v1/doge/main';
   private ws: WebSocket;
+  private token: string;
+  private signingPubKey =
+    'MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEflgGqpIAC9k65JicOPBgXZUExen4rWLq05KwYmZHphTU/fmi3Oe/ckyxo2w3Ayo/SCO/rU2NB90jtCJfz9i1ow==';
 
   constructor(
     private readonly http: HttpService,
     private readonly config: ConfigService<Configuration>,
   ) {
-    const token = this.config.get('blockCypherKey');
+    this.token = this.config.get('blockCypherKey');
     // this.ws = new WebSocket(
     //   `ws://socket.blockcypher.com/v1/btc/main?token=${token}`,
     // );
@@ -38,21 +44,27 @@ export class BlockcypherService implements OnModuleInit {
     // };
   }
 
+  private get authConfig() {
+    return { params: { token: this.token } };
+  }
+
   async getBalance(address: string) {
     const { data } = await firstValueFrom(
-      this.http.get(this.baseUrl + '/addrs/' + address + '/balance').pipe(
-        catchError((e) => {
-          this.logger.error(e);
-          throw e;
-        }),
-      ),
+      this.http
+        .get(this.baseUrl + '/addrs/' + address + '/balance', this.authConfig)
+        .pipe(
+          catchError((e) => {
+            this.logger.error(e);
+            throw e;
+          }),
+        ),
     );
     return this.toWholeUnits(data.final_balance);
   }
 
   async getAddress(address: string) {
     const { data } = await firstValueFrom(
-      this.http.get(this.baseUrl + '/addrs/' + address).pipe(
+      this.http.get(this.baseUrl + '/addrs/' + address, this.authConfig).pipe(
         catchError((e) => {
           this.logger.error(e);
           throw e;
@@ -64,7 +76,54 @@ export class BlockcypherService implements OnModuleInit {
 
   async getAddressFull(address: string) {
     const { data } = await firstValueFrom(
-      this.http.get(this.baseUrl + '/addrs/' + address + '/full').pipe(
+      this.http
+        .get(this.baseUrl + '/addrs/' + address + '/full', this.authConfig)
+        .pipe(
+          catchError((e) => {
+            this.logger.error(e);
+            throw e;
+          }),
+        ),
+    );
+    return data;
+  }
+
+  // https://www.blockcypher.com/dev/bitcoin/#using-webhooks
+  async createWebhook(event: object) {
+    const { data } = await firstValueFrom(
+      this.http
+        .post(
+          this.baseUrl + '/hooks',
+          { ...event, signKey: 'preset' },
+          this.authConfig,
+        )
+        .pipe(
+          catchError((e) => {
+            this.logger.error(e);
+            throw e;
+          }),
+        ),
+    );
+    return data;
+  }
+
+  async deleteWebhook(id: string) {
+    const { data } = await firstValueFrom(
+      this.http
+        .delete(this.baseUrl + '/hooks' + `/${id}`, this.authConfig)
+        .pipe(
+          catchError((e) => {
+            this.logger.error(e);
+            throw e;
+          }),
+        ),
+    );
+    return data;
+  }
+
+  async listWebhooks() {
+    const { data } = await firstValueFrom(
+      this.http.get(this.baseUrl + '/hooks', this.authConfig).pipe(
         catchError((e) => {
           this.logger.error(e);
           throw e;
@@ -74,9 +133,9 @@ export class BlockcypherService implements OnModuleInit {
     return data;
   }
 
-  async postCreateWebhook(event: object) {
+  async getWebhookById(id: string) {
     const { data } = await firstValueFrom(
-      this.http.post(this.baseUrl + '/hooks', event).pipe(
+      this.http.get(this.baseUrl + '/hooks' + `/${id}`, this.authConfig).pipe(
         catchError((e) => {
           this.logger.error(e);
           throw e;
@@ -86,16 +145,27 @@ export class BlockcypherService implements OnModuleInit {
     return data;
   }
 
-  async getWebhooks() {
-    const { data } = await firstValueFrom(
-      this.http.get(this.baseUrl + '/hooks').pipe(
-        catchError((e) => {
-          this.logger.error(e);
-          throw e;
-        }),
-      ),
+  isHookPingSafe(request: Request) {
+    this.logger.log('verifying webhook ping');
+    const signature = request.headers.signature;
+    this.logger.log(signature);
+    const parsedSignature = httpSignature.parsedSignature(signature, {
+      headers: ['(request-target)', 'digest', 'date'],
+    });
+    this.logger.log(parsedSignature);
+    const expectedSignature = `(request-target): ${request.method.toLowerCase()} ${
+      request.url
+    }
+digest: ${request.headers['digest']}
+date: ${request.headers['date']}`;
+    this.logger.log(expectedSignature);
+    const verifier = crypto.createVerify('sha256');
+    verifier.update(expectedSignature);
+    return verifier.verify(
+      this.signingPubKey,
+      parsedSignature.signature,
+      'base64',
     );
-    return data;
   }
 
   private toWholeUnits(amount: number) {
