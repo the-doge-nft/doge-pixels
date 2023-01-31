@@ -1,5 +1,4 @@
 import {
-  BadRequestException,
   Body,
   Controller,
   Get,
@@ -9,6 +8,7 @@ import {
   Req,
 } from '@nestjs/common';
 import { Request } from 'express';
+import { ConfirmedTx } from 'src/blockcypher/blockcypher.interfaces';
 import { PhService } from './ph.service';
 
 @Controller('ph')
@@ -63,23 +63,25 @@ export class PhController {
   }
 
   @Post('blockcypher/webhook/tx')
-  postWebhookTx(@Body() body: any, @Req() req: Request) {
-    try {
-      const isValid = this.ph.getIsHookPingSafe(req);
-      if (isValid) {
-        this.logger.log('processing valid webhookd');
-        return this.ph.processWebhook(body);
-      } else {
-        this.logger.error('Could not verify webhook');
-        this.logger.error(JSON.stringify(body, null, 2));
-        this.logger.error(req);
-        throw new BadRequestException("Couldn't verify webhook");
-      }
-    } catch (e) {
-      this.logger.error('Could not process webhook');
-      this.logger.error(JSON.stringify(body, null, 2));
-      this.logger.error(req);
-      throw new BadRequestException('Could not verify webhook');
-    }
+  postWebhookTx(@Body() body: ConfirmedTx, @Req() req: Request) {
+    return this.ph.processWebhook(body);
+    // try {
+    // const isValid = this.ph.getIsHookPingSafe(req);
+    // if (isValid) {
+    // this.logger.log('processing valid webhookd');
+    // return this.ph.processWebhook(body);
+    // } else {
+    // this.logger.error('Could not verify webhook');
+    // this.logger.error(JSON.stringify(body, null, 2));
+    // this.logger.error(JSON.stringify(req.headers, null, 2));
+    // throw new BadRequestException("Couldn't verify webhook");
+    // }
+    // } catch (e) {
+    //   this.logger.error('Could not process webhook');
+    //   this.logger.error(e);
+    //   // this.logger.error(JSON.stringify(body, null, 2));
+    //   // this.logger.error(JSON.stringify(req.headers, null, 2));
+    //   throw new BadRequestException('Could not verify webhook');
+    // }
   }
 }

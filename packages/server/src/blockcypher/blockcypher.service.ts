@@ -145,6 +145,7 @@ export class BlockcypherService implements OnModuleInit {
     return data;
   }
 
+  // @next -- not working rn
   getIsHookPingSafe(request: Request) {
     this.logger.log('verifying webhook ping');
 
@@ -154,24 +155,24 @@ export class BlockcypherService implements OnModuleInit {
     });
     this.logger.log(parsedSignature);
 
-    const expectedSignature = `(request-target): ${request.method.toLowerCase()} ${
-      request.url
-    }
-digest: ${request.headers['digest']}
-date: ${request.headers['date']}`;
-    this.logger.log(expectedSignature);
+    const publicKeyPEM = `-----BEGIN PUBLIC KEY-----\n${Buffer.from(
+      this.signingPubKey,
+      'base64',
+    )}\n-----END PUBLIC KEY-----`;
 
-    const verifier = crypto.createVerify('SHA256');
-    verifier.update(expectedSignature);
-
-    const publicKeyPEM = `-----BEGIN PUBLIC KEY-----\n${this.signingPubKey}\n-----END PUBLIC KEY-----`;
     const pem = crypto.createPublicKey({
       key: publicKeyPEM,
       format: 'pem',
-      type: 'pkcs1',
     });
 
-    return verifier.verify(pem, parsedSignature.signingString, 'base64');
+    // console.log(pem);
+
+    return crypto.verify(
+      'ECDSA-SHA256',
+      Buffer.from(parsedSignature.signingString),
+      Buffer.from(publicKeyPEM),
+      Buffer.from(parsedSignature.params.signature),
+    );
   }
 
   private toWholeUnits(amount: number) {
