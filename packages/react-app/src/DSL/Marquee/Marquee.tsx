@@ -1,16 +1,19 @@
-import { Box, Flex } from "@chakra-ui/react";
 import React, { PropsWithChildren } from "react";
-import styles from "./Marquee.module.css";
+import RFM from "react-fast-marquee";
 
-interface MarqueProps {}
+interface MarqueProps {
+  pauseOnHover?: boolean;
+  pauseOnClick?: boolean;
+  direction?: "left" | "right";
+  speed?: number;
+  loop?: number;
+}
 
-const Marquee: React.FC<PropsWithChildren<MarqueProps>> = ({ children }) => {
+const Marquee: React.FC<PropsWithChildren<MarqueProps>> = ({ children, ...rest }) => {
   return (
-    <Box overflowX={"hidden"} position={"relative"} transform={"translateZ(0)"}>
-      <Flex position={"relative"} className={styles["scroll-left"]}>
-        {children}
-      </Flex>
-    </Box>
+    <RFM gradient={false} {...rest}>
+      {children}
+    </RFM>
   );
 };
 

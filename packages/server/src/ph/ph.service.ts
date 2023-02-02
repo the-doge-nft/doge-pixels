@@ -1,5 +1,5 @@
 import { HttpService } from '@nestjs/axios';
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Campaign, ChainName } from '@prisma/client';
 import { InjectSentry, SentryService } from '@travelerdev/nestjs-sentry';
@@ -17,9 +17,9 @@ import {
 import { MydogeService } from './../mydoge/mydoge.service';
 
 @Injectable()
-export class PhService {
+export class PhService implements OnModuleInit {
   private logger = new Logger(PhService.name);
-  private dogeAddress = 'DNk1wuxV4DqiPMvqnwXU6R1AirdB7YZh32';
+  private dogeAddress: string;
   private phHookUrl: string;
 
   constructor(
@@ -32,10 +32,20 @@ export class PhService {
     @InjectSentry() private readonly sentryClient: SentryService,
   ) {
     if (this.config.get('appEnv') === AppEnv.production) {
-      throw new Error('No url yet');
+      this.phHookUrl = 'https://pleasr.house/api/webhooks/donations';
+      this.dogeAddress = 'D7JykcnAKNVmreu97EcdRY58n4q5MrTRzV';
     } else {
       this.phHookUrl = 'https://testnet.pleasr.house/api/webhooks/donations';
+      this.dogeAddress = 'DNk1wuxV4DqiPMvqnwXU6R1AirdB7YZh32';
     }
+  }
+
+  onModuleInit() {
+    return this.syncMostRecentDonations();
+  }
+
+  syncMostRecentDonations() {
+    return;
   }
 
   getAddress() {

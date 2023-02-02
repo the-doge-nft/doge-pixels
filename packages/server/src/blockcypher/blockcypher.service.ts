@@ -22,26 +22,10 @@ export class BlockcypherService implements OnModuleInit {
     private readonly config: ConfigService<Configuration>,
   ) {
     this.token = this.config.get('blockCypherKey');
-    // this.ws = new WebSocket(
-    //   `ws://socket.blockcypher.com/v1/btc/main?token=${token}`,
-    // );
   }
 
   onModuleInit() {
-    this.init();
-  }
-
-  init() {
-    // this.logger.log('ws on message');
-    // this.ws.on('error', (e) => {
-    //   this.logger.error(e);
-    // });
-    // this.ws.onmessage = (e: any) => {
-    //   console.log(e);
-    // };
-    // this.ws.onopen = (event) => {
-    //   this.ws.send(JSON.stringify({ event: 'unconfirmed-tx' }));
-    // };
+    console.log('debug::');
   }
 
   private get authConfig() {
@@ -164,8 +148,6 @@ export class BlockcypherService implements OnModuleInit {
       key: publicKeyPEM,
       format: 'pem',
     });
-
-    // console.log(pem);
 
     return crypto.verify(
       'ECDSA-SHA256',

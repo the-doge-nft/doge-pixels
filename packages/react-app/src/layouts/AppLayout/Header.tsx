@@ -25,10 +25,10 @@ const Header = observer(() => {
   return (
     <Box>
       <Flex mb={{ base: 0, md: 6 }}>
-        <Flex alignItems={"center"} w={"full"} gap={6}>
+        <Flex alignItems={"center"} w={"full"} gap={6} position={"relative"}>
           <Box
-            top={{ base: 8, md: 0 }}
-            left={{ base: 5, md: 0 }}
+            top={{ base: 2, md: 0 }}
+            left={{ base: 2, md: 0 }}
             bg={lightOrDarkMode(colorMode, "yellow.50", darkModeGradient)}
             zIndex={10}
             position={{ base: "absolute", md: "relative" }}
