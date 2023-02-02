@@ -53,7 +53,7 @@ const Button = ({
         __css={styles.button}
         onClick={() => {
           if (onClick) {
-            onClick()
+            onClick();
           }
         }}
         isLoading={isLoading}
@@ -63,7 +63,7 @@ const Button = ({
           setIsHover(true);
         }}
         onTouchEnd={() => {
-          setIsHover(false)
+          setIsHover(false);
         }}
       >
         <Typography variant={buttonTypographyMap[size]} color={"inherit"} overflow={"hidden"} textOverflow={"ellipsis"}>
@@ -80,31 +80,21 @@ const Button = ({
 };
 
 export const ConnectWalletButton = () => {
-  return <ConnectButton.Custom>
-    {({
-      account,
-      chain,
-      openAccountModal,
-      openChainModal,
-      openConnectModal,
-      authenticationStatus,
-      mounted
-    }) => {
-      const connected = mounted && account && chain && (!authenticationStatus || authenticationStatus === 'authenticated')
-      if (!connected) {
-        return <Button onClick={openConnectModal}>
-          Connect
-        </Button>
-      }
+  return (
+    <ConnectButton.Custom>
+      {({ account, chain, openChainModal, openConnectModal }) => {
+        const connected = !!account && !!chain;
+        if (!connected) {
+          return <Button onClick={openConnectModal}>Connect</Button>;
+        }
 
-      if (chain.unsupported) {
-        return <Button onClick={openChainModal}>
-          Wrong network
-        </Button>
-      }
-      return <UserDropdown />
-    }}
-  </ConnectButton.Custom>
-}
+        if (chain.unsupported) {
+          return <Button onClick={openChainModal}>Wrong network</Button>;
+        }
+        return <UserDropdown />;
+      }}
+    </ConnectButton.Custom>
+  );
+};
 
 export default Button;

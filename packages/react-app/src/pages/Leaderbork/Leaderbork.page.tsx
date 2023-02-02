@@ -280,6 +280,7 @@ const LeaderborkPage = observer(function LeaderborkPage() {
                 {(store.selectedOwnerTab === SelectedOwnerTab.Activity || !store.selectedAddress) &&
                   store.transfers.map(transfer => (
                     <RouterLink
+                      key={`router-link-leaderboark-${transfer.uniqueTransferId}`}
                       to={
                         store.selectedOwner
                           ? generatePath(`/leaderbork/:address/${SelectedOwnerTab.Activity}/:activityId`, {

@@ -33,7 +33,6 @@ const useWeb3WagmiSync = () => {
   useEffect(() => {
     if (chain && targetChain?.id === chain?.id && signer && provider) {
       AppStore.web3.connect(signer, chain, provider);
-      console.log("debug:: chain", chain);
     }
 
     if (AppStore.web3.signer && !chain && !signer) {

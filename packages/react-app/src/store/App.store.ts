@@ -21,7 +21,6 @@ class _AppStore {
   }
 
   init() {
-    console.log("DEBUG:: APP STORE INIT");
     this.rwd.init();
     this.web3.init();
     this.modals.init();

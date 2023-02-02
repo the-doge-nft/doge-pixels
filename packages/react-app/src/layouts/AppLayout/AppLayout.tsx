@@ -48,7 +48,7 @@ export const HeaderMarquee = () => {
       borderBottom={"1px"}
       borderColor={lightOrDarkMode(colorMode, "black", "white")}
     >
-      <Marquee speed={75} pauseOnHover>
+      <Marquee speed={55} pauseOnHover>
         <Box px={4} py={2}>
           <Typography
             variant={TVariant.PresStart12}
@@ -67,11 +67,11 @@ export const HeaderMarquee = () => {
               Buy $DOG
             </Link>{" "}
             for very fun ...{" "}
-            <Link to={"https://pixels.ownthedoge.com"} size={"sm"} color={linkColor}>
+            <Link isExternal to={"https://pixels.ownthedoge.com"} size={"sm"} color={linkColor}>
               Mint Doge Pixels
             </Link>{" "}
             for much wow ... Help guide where the Doge goes next in the{" "}
-            <Link to={"https://dao.ownthedoge.com"} size={"sm"} color={linkColor}>
+            <Link isExternal to={"https://dao.ownthedoge.com"} size={"sm"} color={linkColor}>
               Doge DAO
             </Link>
           </Typography>

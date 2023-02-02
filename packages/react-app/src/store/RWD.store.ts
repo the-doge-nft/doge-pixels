@@ -19,7 +19,6 @@ class RWDStore {
   init() {
     this.isMobile = this.getIsMobile();
     window.addEventListener("resize", () => {
-      console.log("debug:: get is mobile");
       this.isMobile = this.getIsMobile();
     });
   }

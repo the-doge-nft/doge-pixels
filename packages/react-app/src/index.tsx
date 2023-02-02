@@ -42,18 +42,11 @@ customDarkTheme.colors.modalBorder = "white";
 const Index = () => {
   const { colorMode } = useColorMode();
   return (
-    <>
-      <ColorModeScript initialColorMode={theme.config.initialColorMode} />
-      <WagmiConfig client={wagmiClient}>
-        <ChakraProvider theme={theme} resetCSS>
-          <RainbowKitProvider chains={chains} theme={colorMode === "light" ? customLightTheme : customDarkTheme}>
-            <Fonts />
-            <App />
-            <ToastContainer />
-          </RainbowKitProvider>
-        </ChakraProvider>
-      </WagmiConfig>
-    </>
+    <RainbowKitProvider chains={chains} theme={colorMode === "light" ? customLightTheme : customDarkTheme}>
+      <Fonts />
+      <App />
+      <ToastContainer />
+    </RainbowKitProvider>
   );
 };
 
@@ -61,7 +54,12 @@ const container = document.getElementById("root");
 const root = createRoot(container);
 root.render(
   <React.StrictMode>
-    <Index />
+    <ColorModeScript initialColorMode={theme.config.initialColorMode} />
+    <WagmiConfig client={wagmiClient}>
+      <ChakraProvider theme={theme} resetCSS>
+        <Index />
+      </ChakraProvider>
+    </WagmiConfig>
   </React.StrictMode>,
 );
 

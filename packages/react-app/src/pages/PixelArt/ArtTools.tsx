@@ -14,10 +14,9 @@ const ArtTools = observer(({ store }: { store: PixelArtPageStore }) => {
         <VStack spacing={1}>
           {pixelArtTools.map((entry, index: number) => {
             return (
-              <Tooltip offset={[0, 14]} placement={"left"} label={entry.description}>
+              <Tooltip key={`art-tool-${index}`} offset={[0, 14]} placement={"left"} label={entry.description}>
                 <ArtToolIcon
                   icon={entry.icon}
-                  key={`art-tool-${index}`}
                   bg={
                     store.selectedToolIndex === index
                       ? colorMode === "light"
