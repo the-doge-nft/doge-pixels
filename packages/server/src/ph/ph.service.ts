@@ -4,7 +4,7 @@ import { ConfigService } from '@nestjs/config';
 import { Campaign, ChainName } from '@prisma/client';
 import { InjectSentry, SentryService } from '@travelerdev/nestjs-sentry';
 import { Request } from 'express';
-import { ConfirmedTx } from '../blockcypher/blockcypher.interfaces';
+import { Tx } from '../blockcypher/blockcypher.interfaces';
 import { Configuration } from '../config/configuration';
 import { BlockcypherService } from './../blockcypher/blockcypher.service';
 import { AppEnv } from './../config/configuration';
@@ -41,23 +41,37 @@ export class PhService implements OnModuleInit {
   }
 
   onModuleInit() {
-    return this.syncMostRecentDonations();
+    return this.syncDonations();
   }
 
-  syncMostRecentDonations() {
-    return;
+  async syncDonations() {
+    const recentDonation = await this.donations.findFirst({
+      where: {
+        blockchain: ChainName.DOGECOIN,
+        campaign: Campaign.PH,
+      },
+      orderBy: {
+        blockNumber: 'desc',
+      },
+    });
+    if (recentDonation) {
+      await this.syncDonationsFromBlock(recentDonation.blockNumber);
+    } else {
+      await this.syncAllDonations();
+    }
   }
 
-  getAddress() {
-    return this.blockcypher.getAddress(this.dogeAddress);
+  async syncDonationsFromBlock(blockNumber: number) {
+    const data = await this.blockcypher.getAllAddressesFull(
+      this.dogeAddress,
+      blockNumber,
+    );
+    await this.upsertTxs(data.txs);
   }
 
-  getAddressFull() {
-    return this.blockcypher.getAddressFull(this.dogeAddress);
-  }
-
-  getBalance() {
-    return this.blockcypher.getBalance(this.dogeAddress);
+  async syncAllDonations() {
+    const data = await this.blockcypher.getAllAddressesFull(this.dogeAddress);
+    await this.upsertTxs(data.txs);
   }
 
   async getLeaderboard() {
@@ -97,32 +111,38 @@ export class PhService implements OnModuleInit {
     return this.blockcypher.getIsHookPingSafe(req);
   }
 
-  async processWebhook(tx: ConfirmedTx) {
+  async processWebhook(tx: Tx) {
     this.logger.log(`processing tx ${tx.hash}...`);
-    const donation = await this.upsertTx(tx);
+    if (this.getIsTxDonation(tx)) {
+      const donation = await this.upsertTx(tx);
 
-    try {
-      await this.pingWebhook(donation);
-    } catch (e) {
-      this.logger.error(e);
+      try {
+        await this.sendPhWebhookWithRetry(donation);
+      } catch (e) {
+        this.logger.error(e);
+      }
+      return donation;
+    } else {
+      this.logger.log(`hook from blockcypher is not a donation: ${tx.hash}`);
+      return 'success';
     }
-
-    // blockcypher webhook should not send us duplicates, but lets make sure
-    return donation;
   }
 
-  async upsertTx(tx: ConfirmedTx) {
-    // more than one output can have the same address but is extremely rare
+  async upsertTxs(txs: Array<Tx>) {
+    for (const tx of txs) {
+      if (this.getIsTxDonation(tx)) {
+        await this.upsertTx(tx);
+      } else {
+        this.logger.log(`tx ${tx.hash} is not a donation`);
+      }
+    }
+  }
+
+  async upsertTx(tx: Tx) {
+    // more than one output can have the same address but is rare
     const donationOutputs = tx.outputs.filter((output) =>
       output.addresses.includes(this.dogeAddress),
     );
-
-    if (donationOutputs.length === 0) {
-      this.logger.log(
-        'dogecoin donation address not in output -- this is an outgoing tx from the address -- skipping',
-      );
-      return;
-    }
 
     let amount = 0;
     for (const output of donationOutputs) {
@@ -150,25 +170,52 @@ export class PhService implements OnModuleInit {
     return this.donations.findFirstOrThrow({ where: { id: donation.id } });
   }
 
-  async pingWebhook(donation: DonationsAfterGet) {
+  getIsTxDonation(tx: Tx) {
+    const isFromDonationAddress = tx.inputs.some((input) =>
+      input.addresses.includes(this.dogeAddress),
+    );
+
+    if (isFromDonationAddress) {
+      this.logger.log(
+        `${tx.hash}: dogecoin donation address in input -- this is an incoming tx to the address -- skipping`,
+      );
+      return false;
+    }
+
+    // more than one output can have the same address but is rare
+    const donationOutputs = tx.outputs.filter((output) =>
+      output.addresses.includes(this.dogeAddress),
+    );
+
+    if (donationOutputs.length === 0) {
+      this.logger.log(
+        `${tx.hash}: dogecoin donation address not in output -- this is an outgoing tx from the address -- skipping`,
+      );
+      return false;
+    }
+  }
+
+  async sendPhWebhookWithRetry(donation: DonationsAfterGet) {
     const donationId = donation.id;
     const url = this.phHookUrl;
     let isSuccessful = false;
     let responseCode: number;
     let response: string;
     try {
-      const res = await this.sendWebhookRequest(donation);
-      this.logger.log(`ph hook success: ${donation.id}`);
+      const res = await this.sendPhHook(donation);
+      this.logger.log(`ph hook success for donation: ${donation.id}`);
 
       isSuccessful = true;
       responseCode = res.status;
       response = JSON.stringify(res.data);
     } catch (e) {
-      this.logger.error(`ph hook error: ${donation.id}`);
-
       isSuccessful = false;
       responseCode = e.response?.status;
       response = JSON.stringify(e.response?.data);
+
+      this.logger.error(
+        `ph hook error for donation: ${donation.id} -- received response: ${responseCode}`,
+      );
 
       this.sentryClient.instance().captureException(e);
     } finally {
@@ -178,7 +225,7 @@ export class PhService implements OnModuleInit {
     }
   }
 
-  sendWebhookRequest(donation: DonationsAfterGet) {
+  sendPhHook(donation: DonationsAfterGet) {
     this.logger.log(`sending hook to ph: ${donation.txHash}`);
     this.logger.log(`sending donation: ${JSON.stringify(donation, null, 2)}`);
     return this.http.axiosRef.post(this.phHookUrl, donation, {
@@ -187,23 +234,6 @@ export class PhService implements OnModuleInit {
         'X-API-Key': this.config.get('phSecret'),
       },
     });
-  }
-
-  async sendAPing(id: number) {
-    const donation = await this.donations.findFirstOrThrow({ where: { id } });
-    try {
-      const res = await this.sendWebhookRequest(donation);
-      this.logger.log(`ph hook success: ${donation.id}`);
-      this.logger.log(`ph hook response: ${JSON.stringify(res.data)}`);
-      this.logger.log(`ph hook response code: ${res.status}`);
-    } catch (e) {
-      this.logger.error("Could not send a ping to PH's webhook");
-      this.logger.log(`ph hook success: ${donation.id}`);
-      this.logger.log(`ph hook response: ${JSON.stringify(e?.response?.data)}`);
-      this.logger.log(`ph hook response code: ${e?.response.status}`);
-      this.sentryClient.instance().captureException(e);
-    }
-    return donation;
   }
 
   getDonations() {
@@ -215,5 +245,34 @@ export class PhService implements OnModuleInit {
 
   getHooks() {
     return this.donationHook.findMany({ orderBy: { insertedAt: 'desc' } });
+  }
+
+  getAddress() {
+    return this.blockcypher.getAddress(this.dogeAddress);
+  }
+
+  getAddressFull() {
+    return this.blockcypher.getAllAddressesFull(this.dogeAddress);
+  }
+
+  getBalance() {
+    return this.blockcypher.getBalance(this.dogeAddress);
+  }
+
+  async DEV_HOOK_PING(id: number) {
+    const donation = await this.donations.findFirstOrThrow({ where: { id } });
+    try {
+      const res = await this.sendPhHook(donation);
+      this.logger.log(`ph hook success: ${donation.id}`);
+      this.logger.log(`ph hook response: ${JSON.stringify(res.data)}`);
+      this.logger.log(`ph hook response code: ${res.status}`);
+    } catch (e) {
+      this.logger.error("Could not send a ping to PH's webhook");
+      this.logger.log(`ph hook success: ${donation.id}`);
+      this.logger.log(`ph hook response: ${JSON.stringify(e?.response?.data)}`);
+      this.logger.log(`ph hook response code: ${e?.response.status}`);
+      this.sentryClient.instance().captureException(e);
+    }
+    return donation;
   }
 }

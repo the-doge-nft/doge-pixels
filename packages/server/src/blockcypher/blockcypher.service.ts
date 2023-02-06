@@ -7,6 +7,7 @@ import * as httpSignature from 'http-signature';
 import { catchError, firstValueFrom } from 'rxjs';
 import * as WebSocket from 'ws';
 import { Configuration } from '../config/configuration';
+import { Address } from './blockcypher.interfaces';
 
 @Injectable()
 export class BlockcypherService implements OnModuleInit {
@@ -25,7 +26,7 @@ export class BlockcypherService implements OnModuleInit {
   }
 
   onModuleInit() {
-    console.log('debug::');
+    this.logger.log('blockcypher init');
   }
 
   private get authConfig() {
@@ -58,10 +59,33 @@ export class BlockcypherService implements OnModuleInit {
     return data;
   }
 
-  async getAddressFull(address: string) {
+  async getAllAddressesFull(address: string, after?: number) {
+    const txs = [];
+    const data = await this.getAddressFull(address, undefined, after);
+    txs.concat(data.txs);
+
+    let hasMore = data.hasMore;
+    while (hasMore) {
+      const lastTx = data.txs[data.txs.length - 1];
+      console.log(lastTx.block_height);
+      const newData = await this.getAddressFull(address, lastTx.block_height);
+      txs.concat(newData.txs);
+      hasMore = newData.hasMore;
+    }
+    return data;
+  }
+
+  async getAddressFull(address: string, before?: number, after?: number) {
     const { data } = await firstValueFrom(
       this.http
-        .get(this.baseUrl + '/addrs/' + address + '/full', this.authConfig)
+        .get<Address>(this.baseUrl + '/addrs/' + address + '/full', {
+          params: {
+            ...this.authConfig.params,
+            limit: 50,
+            txlimit: 1000,
+            before,
+          },
+        })
         .pipe(
           catchError((e) => {
             this.logger.error(e);

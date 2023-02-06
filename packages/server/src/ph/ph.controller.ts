@@ -8,14 +8,19 @@ import {
   Post,
   Req,
 } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { Request } from 'express';
-import { ConfirmedTx } from 'src/blockcypher/blockcypher.interfaces';
+import { Tx } from 'src/blockcypher/blockcypher.interfaces';
+import { AppEnv } from './../config/configuration';
 import { PhService } from './ph.service';
 
 @Controller('ph')
 export class PhController {
   private readonly logger = new Logger(PhController.name);
-  constructor(private readonly ph: PhService) {}
+  constructor(
+    private readonly ph: PhService,
+    private readonly config: ConfigService,
+  ) {}
 
   @Get('balance')
   getBalance() {
@@ -39,18 +44,20 @@ export class PhController {
     return address;
   }
 
-  @Get('address/full')
-  async getAddressFull() {
-    const address = await this.ph.getAddressFull();
-    console.log(JSON.stringify(address, null, 2));
-    return address;
-  }
+  // @Get('address/full')
+  // async getAddressFull() {
+  //   const address = await this.ph.getAddressFull();
+  //   console.log(JSON.stringify(address, null, 2));
+  //   return address;
+  // }
 
   @Get('blockcypher/webhook/create')
   postWebhookCreate() {
-    return this.ph.createWebhook(
-      'https://staging.api.ownthedoge.com/ph/blockcypher/webhook/tx',
-    );
+    let url = 'https://staging.api.ownthedoge.com/ph/blockcypher/webhook/tx';
+    if (this.config.get('AppEnv') === AppEnv.production) {
+      url = 'https://api.ownthedoge.com/ph/blockcypher/webhook/tx';
+    }
+    return this.ph.createWebhook(url);
   }
 
   @Get('blockcypher/webhook')
@@ -70,7 +77,10 @@ export class PhController {
 
   @Get('sendaping/:id')
   sendAPing(@Param() params: { id: string }) {
-    return this.ph.sendAPing(Number(params.id)).catch((e) => {
+    if (this.config.get('AppEnv') === AppEnv.production) {
+      throw new BadRequestException('✨no✨');
+    }
+    return this.ph.DEV_HOOK_PING(Number(params.id)).catch((e) => {
       this.logger.error(e);
       this.logger.error('Could not find donation');
       throw new BadRequestException('Could not find donation');
@@ -78,7 +88,7 @@ export class PhController {
   }
 
   @Post('blockcypher/webhook/tx')
-  postWebhookTx(@Body() body: ConfirmedTx, @Req() req: Request) {
+  postWebhookTx(@Body() body: Tx, @Req() req: Request) {
     return this.ph.processWebhook(body);
     // try {
     // const isValid = this.ph.getIsHookPingSafe(req);
