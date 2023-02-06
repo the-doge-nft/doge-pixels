@@ -5,6 +5,11 @@ import { EthersService } from '../ethers/ethers.service';
 import { CacheService } from './../cache/cache.service';
 import { PrismaService } from './../prisma.service';
 
+export interface RainbowSwapAfterGet extends RainbowSwaps {
+  clientEns: string;
+  donatedUSDNotional: number;
+}
+
 @Injectable()
 export class RainbowSwapsRepository {
   constructor(
@@ -15,10 +20,7 @@ export class RainbowSwapsRepository {
   ) {}
 
   private async afterGetSwaps(swaps: RainbowSwaps[]) {
-    const data: (RainbowSwaps & {
-      clientEns: string;
-      donatedUSDNotional: number;
-    })[] = [];
+    const data: Array<RainbowSwapAfterGet> = [];
     for (const swap of swaps) {
       const clientEns = await this.ethers.getCachedEnsName(swap.clientAddress);
       let donatedCurrencyPrice: number;

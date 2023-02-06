@@ -14,7 +14,10 @@ import { Balance, ETH_CURRENCY_SYMBOL } from '../donations/donations.service';
 import { EthersService } from '../ethers/ethers.service';
 import { sleep } from '../helpers/sleep';
 import { SupportedNetwork } from './../alchemy/alchemy.service';
-import { RainbowSwapsRepository } from './rainbow-swaps.repository';
+import {
+  RainbowSwapAfterGet,
+  RainbowSwapsRepository,
+} from './rainbow-swaps.repository';
 
 @Injectable()
 export class RainbowSwapsService {
@@ -423,5 +426,25 @@ export class RainbowSwapsService {
         blockCreatedAt: 'desc',
       },
     });
+  }
+
+  getLeaderboard(swaps: Array<RainbowSwapAfterGet>, prices: object) {
+    const leaderboard = {};
+    for (const swap of swaps) {
+      const swapPrice = prices[swap.donatedCurrency];
+      const donatedSwapNotional = swap.donatedAmount * swapPrice;
+      const address = swap.clientAddress;
+      if (Object.keys(leaderboard).includes(address)) {
+        leaderboard[address].swaps.push(swap);
+        leaderboard[address].usdNotional += donatedSwapNotional;
+      } else {
+        leaderboard[address] = {
+          ens: swap.clientEns,
+          swaps: [swap],
+          usdNotional: donatedSwapNotional,
+        };
+      }
+    }
+    return leaderboard;
   }
 }

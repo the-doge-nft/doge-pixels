@@ -242,4 +242,45 @@ export class DonationsService {
       })
     )?.[0];
   }
+
+  async getLeaderboard(donations: Array<DonationsAfterGet>, prices?: object) {
+    const leaderboard = {};
+    for (const donation of donations) {
+      let donatedCurrencyPrice = 0;
+      if (prices?.[donation.currency]) {
+        donatedCurrencyPrice = prices[donation.currency];
+      } else {
+        if (donation.currencyContractAddress) {
+          try {
+            donatedCurrencyPrice = await this.coingecko.getCachedPrice(
+              donation.currencyContractAddress,
+            );
+          } catch (e) {}
+        } else {
+          try {
+            donatedCurrencyPrice = await this.coingecko.getCachedPrice(
+              donation.currency,
+            );
+          } catch (e) {}
+        }
+      }
+
+      const oldUsdNotional = donation.amount * donatedCurrencyPrice;
+      const address = donation.fromAddress;
+
+      if (Object.keys(leaderboard).includes(address)) {
+        leaderboard[address].donations.push(donation);
+        leaderboard[address].usdNotional += oldUsdNotional;
+      } else {
+        leaderboard[address] = {
+          myDogeName: donation.fromMyDogeName,
+          ens: donation.fromEns,
+          ud: donation.fromUD,
+          donations: [donation],
+          usdNotional: oldUsdNotional,
+        };
+      }
+    }
+    return leaderboard;
+  }
 }

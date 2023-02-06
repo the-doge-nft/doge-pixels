@@ -1,7 +1,6 @@
 import { HttpService } from '@nestjs/axios';
 import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { Cron, CronExpression } from '@nestjs/schedule';
 import { Campaign, ChainName } from '@prisma/client';
 import { InjectSentry, SentryService } from '@travelerdev/nestjs-sentry';
 import { Request } from 'express';
@@ -45,6 +44,7 @@ export class PhService implements OnModuleInit {
     return this.syncDonations();
   }
 
+  // @Cron(CronExpression.EVERY_10_MINUTES)
   async syncDonations() {
     const recentDonation = await this.donations.findFirst({
       where: {
@@ -69,7 +69,7 @@ export class PhService implements OnModuleInit {
     await this.upsertTxs(txs);
   }
 
-  @Cron(CronExpression.EVERY_30_MINUTES)
+  // @Cron(CronExpression.EVERY_30_MINUTES)
   async syncAllDonations() {
     this.logger.log('syncing all ph dogecoin donations');
     const txs = await this.blockcypher.getAllTxs(this.dogeAddress);
@@ -77,15 +77,16 @@ export class PhService implements OnModuleInit {
   }
 
   async getLeaderboard() {
-    const donations = this.donations.findMany({
+    const donations = await this.donations.findMany({
       orderBy: { blockCreatedAt: 'desc' },
       where: {
         campaign: Campaign.PH,
         blockCreatedAt: { gte: new Date('2023-01-01T00:00:00Z') },
-        blockchain: ChainName.ETHEREUM,
+        blockchain: ChainName.DOGECOIN,
+        currency: DOGE_CURRENCY_SYMBOL,
       },
     });
-    console.log('donations', donations);
+    return this.donations.getLeaderboard(donations);
   }
 
   createWebhook(url: string) {

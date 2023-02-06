@@ -34,7 +34,7 @@ export class PhController {
 
   @Get('leaderboard')
   getLeaderboard() {
-    return this.ph.getBalance();
+    return this.ph.getLeaderboard();
   }
 
   @Get('address')

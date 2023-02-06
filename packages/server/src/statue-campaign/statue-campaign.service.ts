@@ -111,69 +111,40 @@ export class StatueCampaignService implements OnModuleInit {
       SOS: 0.0000001113,
       GRT: 0.06423,
     };
-    const donationLeaderBoard = {};
-    const swapLeaderBoard = {};
-    const donations = await this.getDonationsLeaderboard();
-    const swaps = await this.rainbowSwaps.getValidDonationSwaps();
+    const donationLeaderBoard = this.donations.getLeaderboard(
+      await this.getDonationsLeaderboard(),
+      leaderBoardPrices,
+    );
 
-    for (const donation of donations) {
-      const donatedCurrencyPrice = leaderBoardPrices[donation.currency];
-      const oldUsdNotional = donation.amount * donatedCurrencyPrice;
-      const address = donation.fromAddress;
+    const swapLeaderBoard = this.rainbowSwaps.getLeaderboard(
+      await this.rainbowSwaps.getValidDonationSwaps(),
+      leaderBoardPrices,
+    );
 
-      if (Object.keys(donationLeaderBoard).includes(address)) {
-        donationLeaderBoard[address].donations.push(donation);
-        donationLeaderBoard[address].usdNotional += oldUsdNotional;
-      } else {
-        donationLeaderBoard[address] = {
-          myDogeName: donation.fromMyDogeName,
-          ens: donation.fromEns,
-          ud: donation.fromUD,
-          donations: [donation],
-          usdNotional: oldUsdNotional,
-        };
-      }
-    }
+    const donations = Object.keys(donationLeaderBoard)
+      .map((address) => ({
+        address,
+        ...donationLeaderBoard[address],
+      }))
+      .sort((a, b) => {
+        if (a.usdNotional > b.usdNotional) {
+          return -1;
+        }
+        return 1;
+      });
 
-    for (const swap of swaps) {
-      const swapPrice = leaderBoardPrices[swap.donatedCurrency];
-      const donatedSwapNotional = swap.donatedAmount * swapPrice;
-      const address = swap.clientAddress;
-      if (Object.keys(swapLeaderBoard).includes(address)) {
-        swapLeaderBoard[address].swaps.push(swap);
-        swapLeaderBoard[address].usdNotional += donatedSwapNotional;
-      } else {
-        swapLeaderBoard[address] = {
-          ens: swap.clientEns,
-          swaps: [swap],
-          usdNotional: donatedSwapNotional,
-        };
-      }
-    }
-
-    const _donations = Object.keys(donationLeaderBoard).map((address) => ({
-      address,
-      ...donationLeaderBoard[address],
-    }));
-
-    const _swaps = Object.keys(swapLeaderBoard).map((address) => ({
-      address,
-      ...swapLeaderBoard[address],
-    }));
-
-    _swaps.sort((a, b) => {
-      if (a.usdNotional > b.usdNotional) {
-        return -1;
-      }
-      return 1;
-    });
-    _donations.sort((a, b) => {
-      if (a.usdNotional > b.usdNotional) {
-        return -1;
-      }
-      return 1;
-    });
-    return { swaps: _swaps, donations: _donations };
+    const swaps = Object.keys(swapLeaderBoard)
+      .map((address) => ({
+        address,
+        ...swapLeaderBoard[address],
+      }))
+      .sort((a, b) => {
+        if (a.usdNotional > b.usdNotional) {
+          return -1;
+        }
+        return 1;
+      });
+    return { swaps, donations };
   }
 
   private async getEthBalance() {
