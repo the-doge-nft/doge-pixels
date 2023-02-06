@@ -44,13 +44,6 @@ export class PhController {
     return address;
   }
 
-  // @Get('address/full')
-  // async getAddressFull() {
-  //   const address = await this.ph.getAddressFull();
-  //   console.log(JSON.stringify(address, null, 2));
-  //   return address;
-  // }
-
   @Get('blockcypher/webhook/create')
   postWebhookCreate() {
     let url = 'https://staging.api.ownthedoge.com/ph/blockcypher/webhook/tx';

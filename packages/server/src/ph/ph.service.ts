@@ -138,6 +138,32 @@ export class PhService implements OnModuleInit {
     }
   }
 
+  getIsTxDonation(tx: Tx) {
+    const isFromDonationAddress = tx.inputs.some((input) =>
+      input.addresses.includes(this.dogeAddress),
+    );
+
+    if (isFromDonationAddress) {
+      this.logger.log(
+        `${tx.hash}: dogecoin donation address in input -- this is an incoming tx to the address -- skipping`,
+      );
+      return false;
+    }
+
+    // more than one output can have the same address but is rare
+    const donationOutputs = tx.outputs.filter((output) =>
+      output.addresses.includes(this.dogeAddress),
+    );
+
+    if (donationOutputs.length === 0) {
+      this.logger.log(
+        `${tx.hash}: dogecoin donation address not in output -- this is an outgoing tx from the address -- skipping`,
+      );
+      return false;
+    }
+    return true;
+  }
+
   async upsertTx(tx: Tx) {
     // more than one output can have the same address but is rare
     const donationOutputs = tx.outputs.filter((output) =>
@@ -168,31 +194,6 @@ export class PhService implements OnModuleInit {
       fromAddress,
     });
     return this.donations.findFirstOrThrow({ where: { id: donation.id } });
-  }
-
-  getIsTxDonation(tx: Tx) {
-    const isFromDonationAddress = tx.inputs.some((input) =>
-      input.addresses.includes(this.dogeAddress),
-    );
-
-    if (isFromDonationAddress) {
-      this.logger.log(
-        `${tx.hash}: dogecoin donation address in input -- this is an incoming tx to the address -- skipping`,
-      );
-      return false;
-    }
-
-    // more than one output can have the same address but is rare
-    const donationOutputs = tx.outputs.filter((output) =>
-      output.addresses.includes(this.dogeAddress),
-    );
-
-    if (donationOutputs.length === 0) {
-      this.logger.log(
-        `${tx.hash}: dogecoin donation address not in output -- this is an outgoing tx from the address -- skipping`,
-      );
-      return false;
-    }
   }
 
   async sendPhWebhookWithRetry(donation: DonationsAfterGet) {
