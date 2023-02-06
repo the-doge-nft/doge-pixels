@@ -1,6 +1,7 @@
 import { HttpService } from '@nestjs/axios';
 import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import { Cron, CronExpression } from '@nestjs/schedule';
 import { Campaign, ChainName } from '@prisma/client';
 import { InjectSentry, SentryService } from '@travelerdev/nestjs-sentry';
 import { Request } from 'express';
@@ -62,16 +63,17 @@ export class PhService implements OnModuleInit {
   }
 
   async syncDonationsFromBlock(blockNumber: number) {
-    const data = await this.blockcypher.getAllAddressesFull(
-      this.dogeAddress,
-      blockNumber,
-    );
-    await this.upsertTxs(data.txs);
+    this.logger.log(`syncing ph donations from: ${blockNumber}`);
+    const txs = await this.blockcypher.getAllTxs(this.dogeAddress, blockNumber);
+    this.logger.log(`got ${txs.length} donations`);
+    await this.upsertTxs(txs);
   }
 
+  @Cron(CronExpression.EVERY_30_MINUTES)
   async syncAllDonations() {
-    const data = await this.blockcypher.getAllAddressesFull(this.dogeAddress);
-    await this.upsertTxs(data.txs);
+    this.logger.log('syncing all ph dogecoin donations');
+    const txs = await this.blockcypher.getAllTxs(this.dogeAddress);
+    await this.upsertTxs(txs);
   }
 
   async getLeaderboard() {
@@ -253,7 +255,7 @@ export class PhService implements OnModuleInit {
   }
 
   getAddressFull() {
-    return this.blockcypher.getAllAddressesFull(this.dogeAddress);
+    return this.blockcypher.getAllTxs(this.dogeAddress);
   }
 
   getBalance() {

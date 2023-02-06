@@ -203,6 +203,9 @@ export class DonationsService {
 
   async findFirst(args: Prisma.DonationsFindFirstArgs) {
     const donation = await this.prisma.donations.findFirst(args);
+    if (!donation) {
+      return donation;
+    }
     return this.afterGet(donation);
   }
 

@@ -116,7 +116,7 @@ export class CoinGeckoService {
     contractAddress: string | string[],
     vsCurrency = 'usd',
   ): Promise<number> {
-    this.logger.log(`querying coingecko: ${contractAddress}`);
+    // this.logger.log(`querying coingecko: ${contractAddress}`);
     const address = Array.isArray(contractAddress)
       ? contractAddress.join(',')
       : contractAddress.toLowerCase();
@@ -143,7 +143,7 @@ export class CoinGeckoService {
   }
 
   private async getPriceVsUsd(currencyId: string) {
-    this.logger.log(`querying coingecko: ${currencyId}`);
+    // this.logger.log(`querying coingecko: ${currencyId}`);
     const usdCurrencyId = 'usd';
 
     const { data } = await firstValueFrom(

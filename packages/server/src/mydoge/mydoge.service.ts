@@ -25,7 +25,7 @@ export class MydogeService {
   ) {}
 
   async getName(address: string) {
-    this.logger.log(`querying ${address}`);
+    // this.logger.log(`querying ${address}`);
     const { data } = await firstValueFrom(
       this.http
         .get<Profile>(this.baseUrl + '/wallet/' + address + '/profile')

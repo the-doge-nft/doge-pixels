@@ -117,7 +117,7 @@ export class EthersService implements OnModuleInit {
   }
 
   async getEnsName(address: string) {
-    this.logger.log(`querying ens: ${address}`);
+    // this.logger.log(`querying ens: ${address}`);
     return this.provider.lookupAddress(address);
   }
 

@@ -19,7 +19,7 @@ export class UnstoppableDomainsService implements OnModuleInit {
   }
 
   private async reverseUrl(address: string) {
-    this.logger.log(`querying ud: ${address}`);
+    // this.logger.log(`querying ud: ${address}`);
     return this.resolution.reverse(address);
   }
 

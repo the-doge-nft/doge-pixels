@@ -7,7 +7,8 @@ import * as httpSignature from 'http-signature';
 import { catchError, firstValueFrom } from 'rxjs';
 import * as WebSocket from 'ws';
 import { Configuration } from '../config/configuration';
-import { Address } from './blockcypher.interfaces';
+import { sleep } from '../helpers/sleep';
+import { Address, Tx } from './blockcypher.interfaces';
 
 @Injectable()
 export class BlockcypherService implements OnModuleInit {
@@ -59,23 +60,36 @@ export class BlockcypherService implements OnModuleInit {
     return data;
   }
 
-  async getAllAddressesFull(address: string, after?: number) {
-    const txs = [];
+  async getAllTxs(address: string, after?: number): Promise<Array<Tx>> {
+    let txs = [];
     const data = await this.getAddressFull(address, undefined, after);
-    txs.concat(data.txs);
+    txs = txs.concat(data.txs);
 
     let hasMore = data.hasMore;
     while (hasMore) {
-      const lastTx = data.txs[data.txs.length - 1];
-      console.log(lastTx.block_height);
-      const newData = await this.getAddressFull(address, lastTx.block_height);
-      txs.concat(newData.txs);
+      this.logger.log(`paging blockcypher for ${address}:${txs.length}`);
+      const lastTx = txs[txs.length - 1];
+      const newData = await this.getAddressFull(
+        address,
+        lastTx.block_height,
+        after,
+      );
+      txs = txs.concat(newData.txs);
+
       hasMore = newData.hasMore;
+      this.logger.log(`HAS MORE: ${hasMore}`);
+
+      // don't get rate limited by blockcypher
+      await sleep(1);
     }
-    return data;
+    return txs;
   }
 
-  async getAddressFull(address: string, before?: number, after?: number) {
+  private async getAddressFull(
+    address: string,
+    before?: number,
+    after?: number,
+  ) {
     const { data } = await firstValueFrom(
       this.http
         .get<Address>(this.baseUrl + '/addrs/' + address + '/full', {
@@ -84,6 +98,7 @@ export class BlockcypherService implements OnModuleInit {
             limit: 50,
             txlimit: 1000,
             before,
+            after,
           },
         })
         .pipe(
