@@ -107,4 +107,9 @@ export class PhController {
   getHooks() {
     return this.ph.getHooks();
   }
+
+  @Get('donations/syncall')
+  syncAllDonations() {
+    return this.ph.syncAllDonations();
+  }
 }
