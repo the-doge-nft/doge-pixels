@@ -111,7 +111,7 @@ export class StatueCampaignService implements OnModuleInit {
       SOS: 0.0000001113,
       GRT: 0.06423,
     };
-    const donationLeaderBoard = this.donations.getLeaderboard(
+    const donationLeaderBoard = await this.donations.getLeaderboard(
       await this.getDonationsLeaderboard(),
       leaderBoardPrices,
     );
