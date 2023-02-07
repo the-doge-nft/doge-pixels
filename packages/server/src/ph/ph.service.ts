@@ -7,7 +7,6 @@ import { Request } from 'express';
 import { Tx } from '../blockcypher/blockcypher.interfaces';
 import { Configuration } from '../config/configuration';
 import { BlockcypherService } from './../blockcypher/blockcypher.service';
-import { AppEnv } from './../config/configuration';
 import { DonationHookRequestService } from './../donation-hook-request/donation-hook-request.service';
 import {
   DOGE_CURRENCY_SYMBOL,
@@ -31,7 +30,7 @@ export class PhService implements OnModuleInit {
     private readonly config: ConfigService<Configuration>,
     @InjectSentry() private readonly sentryClient: SentryService,
   ) {
-    if (this.config.get('appEnv') === AppEnv.production) {
+    if (this.config.get('isProd')) {
       this.phHookUrl = 'https://pleasr.house/api/webhooks/donations';
       this.dogeAddress = 'D7JykcnAKNVmreu97EcdRY58n4q5MrTRzV';
     } else {

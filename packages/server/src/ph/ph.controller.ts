@@ -45,7 +45,7 @@ export class PhController {
   @Get('blockcypher/webhook/create')
   postWebhookCreate() {
     let url = 'https://staging.api.ownthedoge.com/ph/blockcypher/webhook/tx';
-    if (this.config.get('AppEnv') === AppEnv.production) {
+    if (this.config.get('isProd')) {
       url = 'https://api.ownthedoge.com/ph/blockcypher/webhook/tx';
     }
     return this.ph.createWebhook(url);
