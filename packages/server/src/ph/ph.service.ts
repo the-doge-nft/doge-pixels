@@ -232,6 +232,7 @@ export class PhService implements OnModuleInit {
     this.logger.log(`sending hook to ph: ${donation.txHash}`);
     this.logger.log(`sending donation: ${JSON.stringify(donation, null, 2)}`);
     this.logger.log(`leeeaaaaaak: ${this.config.get('phSecret')[0]}}`);
+    this.logger.log(new Date().toDateString());
     return this.http.axiosRef.post(this.phHookUrl, donation, {
       headers: {
         'Content-Type': 'application/json',
