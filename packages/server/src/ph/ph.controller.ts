@@ -39,9 +39,7 @@ export class PhController {
 
   @Get('address')
   async getAddress() {
-    const address = await this.ph.getAddress();
-    console.log(JSON.stringify(address, null, 2));
-    return address;
+    return this.ph.getAddress();
   }
 
   @Get('blockcypher/webhook/create')
@@ -71,7 +69,7 @@ export class PhController {
   @Get('sendaping/:id')
   sendAPing(@Param() params: { id: string }) {
     if (this.config.get('AppEnv') === AppEnv.production) {
-      throw new BadRequestException('✨no✨');
+      throw new BadRequestException('✨ no thx ✨');
     }
     return this.ph.DEV_HOOK_PING(Number(params.id)).catch((e) => {
       this.logger.error(e);
@@ -80,6 +78,7 @@ export class PhController {
     });
   }
 
+  // @next
   @Post('blockcypher/webhook/tx')
   postWebhookTx(@Body() body: Tx, @Req() req: Request) {
     return this.ph.processWebhook(body);
