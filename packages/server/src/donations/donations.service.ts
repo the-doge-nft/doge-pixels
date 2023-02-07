@@ -281,6 +281,16 @@ export class DonationsService {
         };
       }
     }
-    return leaderboard;
+    return Object.keys(leaderboard)
+      .map((address) => ({
+        address,
+        ...leaderboard[address],
+      }))
+      .sort((a, b) => {
+        if (a.usdNotional > b.usdNotional) {
+          return -1;
+        }
+        return 1;
+      });
   }
 }

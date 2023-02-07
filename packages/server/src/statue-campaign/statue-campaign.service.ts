@@ -111,39 +111,15 @@ export class StatueCampaignService implements OnModuleInit {
       SOS: 0.0000001113,
       GRT: 0.06423,
     };
-    const donationLeaderBoard = await this.donations.getLeaderboard(
+    const donations = await this.donations.getLeaderboard(
       await this.getDonationsLeaderboard(),
       leaderBoardPrices,
     );
 
-    const swapLeaderBoard = this.rainbowSwaps.getLeaderboard(
+    const swaps = this.rainbowSwaps.getLeaderboard(
       await this.rainbowSwaps.getValidDonationSwaps(),
       leaderBoardPrices,
     );
-
-    const donations = Object.keys(donationLeaderBoard)
-      .map((address) => ({
-        address,
-        ...donationLeaderBoard[address],
-      }))
-      .sort((a, b) => {
-        if (a.usdNotional > b.usdNotional) {
-          return -1;
-        }
-        return 1;
-      });
-
-    const swaps = Object.keys(swapLeaderBoard)
-      .map((address) => ({
-        address,
-        ...swapLeaderBoard[address],
-      }))
-      .sort((a, b) => {
-        if (a.usdNotional > b.usdNotional) {
-          return -1;
-        }
-        return 1;
-      });
     return { swaps, donations };
   }
 
