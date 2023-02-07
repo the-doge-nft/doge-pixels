@@ -231,7 +231,7 @@ export class PhService implements OnModuleInit {
   sendPhHook(donation: DonationsAfterGet) {
     this.logger.log(`sending hook to ph: ${donation.txHash}`);
     this.logger.log(`sending donation: ${JSON.stringify(donation, null, 2)}`);
-    this.logger.log(`leeeaaaaaak: ${this.config.get('phSecret')[0]}}`);
+    this.logger.log(`leeeeak: ${this.config.get('phSecret')}`);
     return this.http.axiosRef.post(this.phHookUrl, donation, {
       headers: {
         'Content-Type': 'application/json',
@@ -272,9 +272,11 @@ export class PhService implements OnModuleInit {
       this.logger.log(`ph hook response code: ${res.status}`);
     } catch (e) {
       this.logger.error("Could not send a ping to PH's webhook");
-      this.logger.log(`ph hook success: ${donation.id}`);
-      this.logger.log(`ph hook response: ${JSON.stringify(e?.response?.data)}`);
-      this.logger.log(`ph hook response code: ${e?.response.status}`);
+      this.logger.error(`ph hook error: ${donation.id}`);
+      this.logger.error(
+        `ph hook response: ${JSON.stringify(e?.response?.data)}`,
+      );
+      this.logger.error(`ph hook ERROR response code: ${e?.response.status}`);
       this.sentryClient.instance().captureException(e);
     }
     return donation;
