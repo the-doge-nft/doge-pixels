@@ -11,15 +11,20 @@ import {
 import { ConfigService } from '@nestjs/config';
 import { Request } from 'express';
 import { Tx } from 'src/blockcypher/blockcypher.interfaces';
+import { CacheService } from './../cache/cache.service';
 import { AppEnv } from './../config/configuration';
 import { PhService } from './ph.service';
 
+export const TOTAL_CACHE_KEY = 'PH:TOTAL';
+
 @Controller('ph')
+// @UseInterceptors(CacheInterceptor)
 export class PhController {
   private readonly logger = new Logger(PhController.name);
   constructor(
     private readonly ph: PhService,
     private readonly config: ConfigService,
+    private readonly cache: CacheService,
   ) {}
 
   @Get('balance')
@@ -100,6 +105,18 @@ export class PhController {
     //   // this.logger.error(JSON.stringify(req.headers, null, 2));
     //   throw new BadRequestException('Could not verify webhook');
     // }
+  }
+
+  @Get('total')
+  async getTotal() {
+    const cache = await this.cache.get(TOTAL_CACHE_KEY);
+    if (cache) {
+      return cache;
+    } else {
+      const data = await this.ph.getTotalReceived();
+      await this.cache.set(TOTAL_CACHE_KEY, data, 60 * 30);
+      return data;
+    }
   }
 
   @Get('hooks')

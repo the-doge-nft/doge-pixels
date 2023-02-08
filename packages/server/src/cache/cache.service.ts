@@ -15,6 +15,10 @@ export class CacheService {
     return this.cache.set<T>(key, value === null ? this.NULL : value, { ttl });
   }
 
+  del(key: string) {
+    return this.cache.del(key);
+  }
+
   async getOrQueryAndCache<T>(
     key: string,
     getData: () => Promise<T>,

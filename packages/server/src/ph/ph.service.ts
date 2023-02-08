@@ -8,6 +8,8 @@ import { Request } from 'express';
 import { Tx } from '../blockcypher/blockcypher.interfaces';
 import { Configuration } from '../config/configuration';
 import { BlockcypherService } from './../blockcypher/blockcypher.service';
+import { CacheService } from './../cache/cache.service';
+import { CoinGeckoService } from './../coin-gecko/coin-gecko.service';
 import { DonationHookRequestService } from './../donation-hook-request/donation-hook-request.service';
 import {
   DOGE_CURRENCY_SYMBOL,
@@ -15,6 +17,7 @@ import {
   DonationsService,
 } from './../donations/donations.service';
 import { MydogeService } from './../mydoge/mydoge.service';
+import { TOTAL_CACHE_KEY } from './ph.controller';
 
 @Injectable()
 export class PhService implements OnModuleInit {
@@ -28,6 +31,8 @@ export class PhService implements OnModuleInit {
     private readonly mydoge: MydogeService,
     private readonly http: HttpService,
     private readonly donationHook: DonationHookRequestService,
+    private readonly coingecko: CoinGeckoService,
+    private readonly cache: CacheService,
     private readonly config: ConfigService<Configuration>,
     @InjectSentry() private readonly sentryClient: SentryService,
   ) {
@@ -71,9 +76,17 @@ export class PhService implements OnModuleInit {
 
   @Cron(CronExpression.EVERY_30_MINUTES)
   async syncAllDonations() {
+    try {
+      await this.deleteTotalCache();
+    } catch (e) {}
     this.logger.log('syncing all ph dogecoin donations');
     const txs = await this.blockcypher.getAllTxs(this.dogeAddress);
     await this.upsertTxs(txs);
+  }
+
+  private deleteTotalCache() {
+    this.logger.log(`clearing total cache`);
+    return this.cache.del(TOTAL_CACHE_KEY);
   }
 
   async getLeaderboard() {
@@ -116,9 +129,12 @@ export class PhService implements OnModuleInit {
 
   async processWebhook(tx: Tx) {
     this.logger.log(`processing tx ${tx.hash}...`);
+    try {
+      await this.deleteTotalCache();
+    } catch (e) {}
+
     if (this.getIsTxDonation(tx)) {
       const donation = await this.upsertTx(tx);
-
       try {
         await this.sendPhWebhookWithRetry(donation);
       } catch (e) {
@@ -246,6 +262,17 @@ export class PhService implements OnModuleInit {
       where: { campaign: Campaign.PH },
       orderBy: { blockCreatedAt: 'desc' },
     });
+  }
+
+  async getTotalReceived() {
+    const data = await this.getAddress();
+    const totalReceived = this.blockcypher.toWholeUnits(data.total_received);
+    const dogePrice = await this.coingecko.getCachedDogePrice();
+    return {
+      totalReceived,
+      dogePrice,
+      usdNotional: Number(Number(totalReceived * dogePrice).toFixed(2)),
+    };
   }
 
   getHooks() {
