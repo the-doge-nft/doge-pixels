@@ -17,7 +17,7 @@ import {
   DonationsService,
 } from './../donations/donations.service';
 import { MydogeService } from './../mydoge/mydoge.service';
-import { TOTAL_CACHE_KEY } from './ph.controller';
+import { LEADERBOARD_CACHE_KEY, TOTAL_CACHE_KEY } from './ph.controller';
 
 export interface Total {
   totalReceived: number;
@@ -74,6 +74,10 @@ export class PhService implements OnModuleInit {
   }
 
   async syncDonationsFromBlock(blockNumber: number) {
+    try {
+      await this.deleteTotalCache();
+      await this.deleteLeaderboardCache();
+    } catch (e) {}
     this.logger.log(`syncing ph donations from: ${blockNumber}`);
     const txs = await this.blockcypher.getAllTxs(this.dogeAddress, blockNumber);
     this.logger.log(`got ${txs.length} donations`);
@@ -84,6 +88,7 @@ export class PhService implements OnModuleInit {
   async syncAllDonations() {
     try {
       await this.deleteTotalCache();
+      await this.deleteLeaderboardCache();
     } catch (e) {}
     this.logger.log('syncing all ph dogecoin donations');
     const txs = await this.blockcypher.getAllTxs(this.dogeAddress);
@@ -93,6 +98,11 @@ export class PhService implements OnModuleInit {
   private deleteTotalCache() {
     this.logger.log(`clearing total cache`);
     return this.cache.del(TOTAL_CACHE_KEY);
+  }
+
+  private deleteLeaderboardCache() {
+    this.logger.log(`clearing leaderboard cache`);
+    return this.cache.del(LEADERBOARD_CACHE_KEY);
   }
 
   async getLeaderboard() {
@@ -137,6 +147,7 @@ export class PhService implements OnModuleInit {
     this.logger.log(`processing tx ${tx.hash}...`);
     try {
       await this.deleteTotalCache();
+      await this.deleteLeaderboardCache();
     } catch (e) {}
 
     if (this.getIsTxDonation(tx)) {

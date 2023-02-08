@@ -6,10 +6,8 @@ import {
   Logger,
   Param,
   Post,
-  Req,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { Request } from 'express';
 import { Tx } from '../blockcypher/blockcypher.interfaces';
 import { CoinGeckoService } from '../coin-gecko/coin-gecko.service';
 import { CacheService } from './../cache/cache.service';
@@ -17,6 +15,7 @@ import { AppEnv } from './../config/configuration';
 import { PhService, Total } from './ph.service';
 
 export const TOTAL_CACHE_KEY = 'PH:TOTAL';
+export const LEADERBOARD_CACHE_KEY = 'PH:LEADERBOARD';
 
 @Controller('ph')
 // @UseInterceptors(CacheInterceptor)
@@ -40,8 +39,15 @@ export class PhController {
   }
 
   @Get('leaderboard')
-  getLeaderboard() {
-    return this.ph.getLeaderboard();
+  async getLeaderboard() {
+    const cache = await this.cache.get(LEADERBOARD_CACHE_KEY);
+    if (cache) {
+      return cache;
+    } else {
+      const data = await this.ph.getLeaderboard();
+      await this.cache.set(LEADERBOARD_CACHE_KEY, data, 60);
+      return data;
+    }
   }
 
   @Get('address')
@@ -85,28 +91,9 @@ export class PhController {
     });
   }
 
-  // @next
   @Post('blockcypher/webhook/tx')
-  postWebhookTx(@Body() body: Tx, @Req() req: Request) {
+  postWebhookTx(@Body() body: Tx) {
     return this.ph.processWebhook(body);
-    // try {
-    // const isValid = this.ph.getIsHookPingSafe(req);
-    // if (isValid) {
-    // this.logger.log('processing valid webhookd');
-    // return this.ph.processWebhook(body);
-    // } else {
-    // this.logger.error('Could not verify webhook');
-    // this.logger.error(JSON.stringify(body, null, 2));
-    // this.logger.error(JSON.stringify(req.headers, null, 2));
-    // throw new BadRequestException("Couldn't verify webhook");
-    // }
-    // } catch (e) {
-    //   this.logger.error('Could not process webhook');
-    //   this.logger.error(e);
-    //   // this.logger.error(JSON.stringify(body, null, 2));
-    //   // this.logger.error(JSON.stringify(req.headers, null, 2));
-    //   throw new BadRequestException('Could not verify webhook');
-    // }
   }
 
   @Get('total')
