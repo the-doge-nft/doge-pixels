@@ -148,7 +148,9 @@ export class DonationsService {
       fromUD = await this.ud.getCachedName(donation.fromAddress);
     }
 
-    const currencyUSDNotional = donatedCurrencyPrice * donation.amount;
+    const currencyUSDNotional = Number(
+      donatedCurrencyPrice * donation.amount,
+    ).toFixed(2);
 
     return {
       ...donation,
