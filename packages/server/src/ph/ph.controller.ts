@@ -12,6 +12,7 @@ import { Tx } from '../blockcypher/blockcypher.interfaces';
 import { CoinGeckoService } from '../coin-gecko/coin-gecko.service';
 import { CacheService } from './../cache/cache.service';
 import { AppEnv } from './../config/configuration';
+import { MydogeService } from './../mydoge/mydoge.service';
 import { PhService, Total } from './ph.service';
 
 export const TOTAL_CACHE_KEY = 'PH:TOTAL';
@@ -26,6 +27,7 @@ export class PhController {
     private readonly config: ConfigService,
     private readonly cache: CacheService,
     private readonly coingecko: CoinGeckoService,
+    private readonly mydoge: MydogeService,
   ) {}
 
   @Get('balance')
@@ -121,5 +123,10 @@ export class PhController {
   @Get('donations/syncall')
   syncAllDonations() {
     return this.ph.syncAllDonations();
+  }
+
+  @Get('mydoge/:address')
+  getMyDogeAddress(@Param() params: { address: string }) {
+    return this.mydoge.refreshCachedName(params.address);
   }
 }

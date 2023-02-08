@@ -47,10 +47,12 @@ export class MydogeService {
   }
 
   async refreshCachedName(address: string) {
+    const name = await this.getName(address);
     await this.cache.set(
       this.getNameCacheKey(address),
-      await this.getName(address),
+      name,
       this.secondsToCache,
     );
+    return name;
   }
 }
