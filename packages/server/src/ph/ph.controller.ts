@@ -10,10 +10,11 @@ import {
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Request } from 'express';
-import { Tx } from 'src/blockcypher/blockcypher.interfaces';
+import { Tx } from '../blockcypher/blockcypher.interfaces';
+import { CoinGeckoService } from '../coin-gecko/coin-gecko.service';
 import { CacheService } from './../cache/cache.service';
 import { AppEnv } from './../config/configuration';
-import { PhService } from './ph.service';
+import { PhService, Total } from './ph.service';
 
 export const TOTAL_CACHE_KEY = 'PH:TOTAL';
 
@@ -25,6 +26,7 @@ export class PhController {
     private readonly ph: PhService,
     private readonly config: ConfigService,
     private readonly cache: CacheService,
+    private readonly coingecko: CoinGeckoService,
   ) {}
 
   @Get('balance')
@@ -109,9 +111,14 @@ export class PhController {
 
   @Get('total')
   async getTotal() {
-    const cache = await this.cache.get(TOTAL_CACHE_KEY);
+    const cache = await this.cache.get<Total>(TOTAL_CACHE_KEY);
     if (cache) {
-      return cache;
+      const dogePrice = await this.coingecko.getCachedDogePrice();
+      return {
+        ...cache,
+        dogePrice,
+        usdNotional: Number(Number(cache.totalReceived * dogePrice).toFixed(2)),
+      };
     } else {
       const data = await this.ph.getTotalReceived();
       await this.cache.set(TOTAL_CACHE_KEY, data, 60 * 30);

@@ -19,6 +19,12 @@ import {
 import { MydogeService } from './../mydoge/mydoge.service';
 import { TOTAL_CACHE_KEY } from './ph.controller';
 
+export interface Total {
+  totalReceived: number;
+  dogePrice: number;
+  usdNotional: number;
+}
+
 @Injectable()
 export class PhService implements OnModuleInit {
   private logger = new Logger(PhService.name);
@@ -264,7 +270,7 @@ export class PhService implements OnModuleInit {
     });
   }
 
-  async getTotalReceived() {
+  async getTotalReceived(): Promise<Total> {
     const data = await this.getAddress();
     const totalReceived = this.blockcypher.toWholeUnits(data.total_received);
     const dogePrice = await this.coingecko.getCachedDogePrice();
