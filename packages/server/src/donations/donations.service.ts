@@ -149,8 +149,8 @@ export class DonationsService {
     }
 
     const currencyUSDNotional = Number(
-      donatedCurrencyPrice * donation.amount,
-    ).toFixed(2);
+      Number(donatedCurrencyPrice * donation.amount).toFixed(2),
+    );
 
     return {
       ...donation,
