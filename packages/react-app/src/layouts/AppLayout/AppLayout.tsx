@@ -73,7 +73,7 @@ export const HeaderMarquee = () => {
             for much wow ... Help guide where the Doge goes next in the{" "}
             <Link isExternal to={"https://dao.ownthedoge.com"} size={"sm"} color={linkColor}>
               Doge DAO
-            </Link>
+            </Link>{" "}
             ...
           </Typography>
         </Box>
