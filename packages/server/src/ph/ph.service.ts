@@ -1,6 +1,7 @@
 import { HttpService } from '@nestjs/axios';
 import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import { Cron, CronExpression } from '@nestjs/schedule';
 import { Campaign, ChainName } from '@prisma/client';
 import { InjectSentry, SentryService } from '@travelerdev/nestjs-sentry';
 import { Request } from 'express';
@@ -68,7 +69,7 @@ export class PhService implements OnModuleInit {
     await this.upsertTxs(txs);
   }
 
-  // @Cron(CronExpression.EVERY_30_MINUTES)
+  @Cron(CronExpression.EVERY_30_MINUTES)
   async syncAllDonations() {
     this.logger.log('syncing all ph dogecoin donations');
     const txs = await this.blockcypher.getAllTxs(this.dogeAddress);
