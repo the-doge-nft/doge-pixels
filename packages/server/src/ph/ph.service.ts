@@ -152,11 +152,11 @@ export class PhService implements OnModuleInit {
 
     if (this.getIsTxDonation(tx)) {
       const donation = await this.upsertTx(tx);
-      try {
-        await this.sendPhWebhookWithRetry(donation);
-      } catch (e) {
-        this.logger.error(e);
-      }
+      // try {
+      //   await this.sendPhWebhookWithRetry(donation);
+      // } catch (e) {
+      //   this.logger.error(e);
+      // }
       return donation;
     } else {
       this.logger.log(`hook from blockcypher is not a donation: ${tx.hash}`);
