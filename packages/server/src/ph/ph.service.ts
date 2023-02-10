@@ -1,7 +1,6 @@
 import { HttpService } from '@nestjs/axios';
-import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { Cron, CronExpression } from '@nestjs/schedule';
 import { Campaign, ChainName } from '@prisma/client';
 import { InjectSentry, SentryService } from '@travelerdev/nestjs-sentry';
 import { Request } from 'express';
@@ -26,7 +25,7 @@ export interface Total {
 }
 
 @Injectable()
-export class PhService implements OnModuleInit {
+export class PhService {
   private logger = new Logger(PhService.name);
   private dogeAddress: string;
   private phHookUrl: string;
@@ -49,10 +48,6 @@ export class PhService implements OnModuleInit {
       this.phHookUrl = 'https://testnet.pleasr.house/api/webhooks/donations';
       this.dogeAddress = 'DNk1wuxV4DqiPMvqnwXU6R1AirdB7YZh32';
     }
-  }
-
-  onModuleInit() {
-    return this.syncDonations();
   }
 
   // @Cron(CronExpression.EVERY_10_MINUTES)
@@ -84,7 +79,7 @@ export class PhService implements OnModuleInit {
     await this.upsertTxs(txs);
   }
 
-  @Cron(CronExpression.EVERY_30_MINUTES)
+  // @Cron(CronExpression.EVERY_30_MINUTES)
   async syncAllDonations() {
     try {
       await this.deleteTotalCache();
@@ -115,7 +110,8 @@ export class PhService implements OnModuleInit {
         currency: DOGE_CURRENCY_SYMBOL,
       },
     });
-    return this.donations.getLeaderboard(donations);
+    const dogePrice = 0.08;
+    return this.donations.getLeaderboard(donations, { DOGE: dogePrice });
   }
 
   createWebhook(url: string) {
