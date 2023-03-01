@@ -74,7 +74,15 @@ export const HeaderMarquee = () => {
             <Link isExternal to={"https://dao.ownthedoge.com"} size={"sm"} color={linkColor}>
               Doge DAO
             </Link>{" "}
-            ...
+            ... Get a chance to{" "}
+            <Link isExternal to={"https://meethedoge.com"} size={"sm"} color={linkColor}>
+              Meet the Doge
+            </Link>{" "}
+            ...{" "}
+            <Link isExternal to={"https://muchwowfilm.com"} size={"sm"} color={linkColor}>
+              Watch the Doge
+            </Link>{" "}
+            on the big screen ...
           </Typography>
         </Box>
       </Marquee>

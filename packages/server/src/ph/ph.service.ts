@@ -1,7 +1,6 @@
 import { HttpService } from '@nestjs/axios';
-import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { Cron, CronExpression } from '@nestjs/schedule';
 import { Campaign, ChainName } from '@prisma/client';
 import { InjectSentry, SentryService } from '@travelerdev/nestjs-sentry';
 import { Request } from 'express';
@@ -17,7 +16,7 @@ import {
   DonationsService,
 } from './../donations/donations.service';
 import { MydogeService } from './../mydoge/mydoge.service';
-import { TOTAL_CACHE_KEY } from './ph.controller';
+import { LEADERBOARD_CACHE_KEY, TOTAL_CACHE_KEY } from './ph.controller';
 
 export interface Total {
   totalReceived: number;
@@ -26,7 +25,7 @@ export interface Total {
 }
 
 @Injectable()
-export class PhService implements OnModuleInit {
+export class PhService {
   private logger = new Logger(PhService.name);
   private dogeAddress: string;
   private phHookUrl: string;
@@ -51,10 +50,6 @@ export class PhService implements OnModuleInit {
     }
   }
 
-  onModuleInit() {
-    return this.syncDonations();
-  }
-
   // @Cron(CronExpression.EVERY_10_MINUTES)
   async syncDonations() {
     const recentDonation = await this.donations.findFirst({
@@ -74,16 +69,21 @@ export class PhService implements OnModuleInit {
   }
 
   async syncDonationsFromBlock(blockNumber: number) {
+    try {
+      await this.deleteTotalCache();
+      await this.deleteLeaderboardCache();
+    } catch (e) {}
     this.logger.log(`syncing ph donations from: ${blockNumber}`);
     const txs = await this.blockcypher.getAllTxs(this.dogeAddress, blockNumber);
     this.logger.log(`got ${txs.length} donations`);
     await this.upsertTxs(txs);
   }
 
-  @Cron(CronExpression.EVERY_30_MINUTES)
+  // @Cron(CronExpression.EVERY_30_MINUTES)
   async syncAllDonations() {
     try {
       await this.deleteTotalCache();
+      await this.deleteLeaderboardCache();
     } catch (e) {}
     this.logger.log('syncing all ph dogecoin donations');
     const txs = await this.blockcypher.getAllTxs(this.dogeAddress);
@@ -93,6 +93,11 @@ export class PhService implements OnModuleInit {
   private deleteTotalCache() {
     this.logger.log(`clearing total cache`);
     return this.cache.del(TOTAL_CACHE_KEY);
+  }
+
+  private deleteLeaderboardCache() {
+    this.logger.log(`clearing leaderboard cache`);
+    return this.cache.del(LEADERBOARD_CACHE_KEY);
   }
 
   async getLeaderboard() {
@@ -105,7 +110,8 @@ export class PhService implements OnModuleInit {
         currency: DOGE_CURRENCY_SYMBOL,
       },
     });
-    return this.donations.getLeaderboard(donations);
+    const dogePrice = 0.08;
+    return this.donations.getLeaderboard(donations, { DOGE: dogePrice });
   }
 
   createWebhook(url: string) {
@@ -137,15 +143,16 @@ export class PhService implements OnModuleInit {
     this.logger.log(`processing tx ${tx.hash}...`);
     try {
       await this.deleteTotalCache();
+      await this.deleteLeaderboardCache();
     } catch (e) {}
 
     if (this.getIsTxDonation(tx)) {
       const donation = await this.upsertTx(tx);
-      try {
-        await this.sendPhWebhookWithRetry(donation);
-      } catch (e) {
-        this.logger.error(e);
-      }
+      // try {
+      //   await this.sendPhWebhookWithRetry(donation);
+      // } catch (e) {
+      //   this.logger.error(e);
+      // }
       return donation;
     } else {
       this.logger.log(`hook from blockcypher is not a donation: ${tx.hash}`);

@@ -9,6 +9,14 @@ export interface PerkItem {
 class PerksStore {
   items: PerkItem[] = [
     {
+      title: "First Doge",
+      description:
+        "This is the FIRST EVER Kabosu photo taken by Atsuko Sato and the first posted on her blog years before Doge became a global phenomenon.",
+      link: "https://zora.co/collections/0xbd494f7450aba56d7207b1f35b8b2de6622fd7b8",
+      date: "2022-02-09",
+      isLive: false,
+    },
+    {
       title: "Nounlet #69",
       description: "Claim fractions of Nounlet #69",
       link: "https://ownthedoge.com/nounlet",

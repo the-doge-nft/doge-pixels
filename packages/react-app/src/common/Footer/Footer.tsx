@@ -23,6 +23,7 @@ const Footer = observer(() => {
         <HStack justifyContent={"flex-end"} alignItems={"center"} spacing={2} opacity={0.5}>
           <a
             target={"_blank"}
+            rel="noreferrer"
             href={"https://discord.com/invite/thedogenft"}
             style={{ display: "flex", alignItems: "center" }}
           >
@@ -30,6 +31,7 @@ const Footer = observer(() => {
           </a>
           <a
             target={"_blank"}
+            rel="noreferrer"
             href={"https://twitter.com/ownthedoge"}
             style={{ display: "flex", alignItems: "center" }}
           >
@@ -62,7 +64,14 @@ const FooterItem: React.FC<{ title: string; items: { title: string; link: string
       </Typography>
       <Grid templateRows={"1fr 1fr 1fr"}>
         {items.map(item => (
-          <Link key={`${item.title}`} opacity={0.5} size="sm" target={"_blank"} variant={Type.ComicSans} href={item.link}>
+          <Link
+            key={`${item.title}`}
+            opacity={0.5}
+            size="sm"
+            target={"_blank"}
+            variant={Type.ComicSans}
+            href={item.link}
+          >
             {item.title}
           </Link>
         ))}
