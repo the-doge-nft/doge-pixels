@@ -57,6 +57,12 @@ export class AppController {
     return this.pixelTransferService.getBalances();
   }
 
+  @Get('config/refresh/all')
+  async getConfigRefreshedAll() {
+    await this.pixelTransferService.syncAll();
+    return this.pixelTransferService.getBalances();
+  }
+
   @Post('transfers/:address')
   async postTransfersByAddress(
     @Param() { address }: { address: string },
