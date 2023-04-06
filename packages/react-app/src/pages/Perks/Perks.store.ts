@@ -14,7 +14,7 @@ class PerksStore {
         "Introducing the Doge Couch, the ultimate statement piece for your virtual living room in the metaverse! This ain't just any ordinary couch - this is a 3-Dimensional masterpiece based on a 3d scan of the original couch that Doge sits upon. That's right, the one and only original couch that was in the headlines for being auctioned by @PleaseDAO for 21ETH is now available to grace your digital living space!",
       link: "https://app.manifold.xyz/c/the-doge-couch",
       date: "2023-03-01",
-      isLive: true,
+      isLive: false,
     },
     {
       title: "First Doge",
@@ -29,7 +29,7 @@ class PerksStore {
       description: "Claim fractions of Nounlet #69",
       link: "https://ownthedoge.com/nounlet",
       date: "2023-01-02",
-      isLive: true,
+      isLive: false,
     },
     {
       title: "Lords of Dogetown",
@@ -98,7 +98,7 @@ class PerksStore {
         "All pixel holders get a free mint from The Doge Academy's PFP project. With this NFT, one also gets a chance to choose one course this semester from the plethora of courses offered.",
       link: "https://thedogeacademy.com/",
       date: "2022-06-01",
-      isLive: true,
+      isLive: false,
     },
   ];
 }
