@@ -13,6 +13,7 @@ export class EthersService implements OnModuleInit {
   private secondsToCache = 60 * 60 * 10;
 
   public network: string;
+  public chainId: number;
   public provider: ethers.providers.WebSocketProvider;
   public zeroAddress = ethers.constants.AddressZero;
 
@@ -32,10 +33,13 @@ export class EthersService implements OnModuleInit {
     const appEnv = this.configService.get('appEnv');
     if (appEnv === AppEnv.production) {
       this.network = 'mainnet';
+      this.chainId = 0;
     } else if (appEnv === AppEnv.development || appEnv === AppEnv.staging) {
       this.network = 'goerli';
+      this.chainId = 5;
     } else if (appEnv === AppEnv.test) {
       this.network = 'localhost';
+      this.chainId = 5;
     } else {
       throw new Error('App environment unknown');
     }

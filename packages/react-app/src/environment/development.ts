@@ -3,7 +3,7 @@ const developmentEnv = {
   api: {
     baseURL: "https://staging.api.ownthedoge.com",
     // baseURL: "",
-    // proxyURL: "http://localhost:3003",
+    proxyURL: "http://localhost:3003",
   },
   app: {
     availableTokens: {

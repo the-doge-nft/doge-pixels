@@ -5,6 +5,7 @@ import { isDevModeEnabled } from "./environment/helpers";
 import AppLayout from "./layouts/AppLayout/AppLayout";
 import DSLPage from "./pages/DSL.page";
 import FourOhFour from "./pages/FourOhFour";
+import FreeMoneyPage from "./pages/FreeMoney.page";
 import LeaderborkPage from "./pages/Leaderbork/Leaderbork.page";
 import { SelectedOwnerTab } from "./pages/Leaderbork/Leaderbork.store";
 import MobileHomePage from "./pages/MobileHome/MobileHome.page";
@@ -29,6 +30,7 @@ export enum NamedRoutes {
   RAINBOW = "rainbow",
   PRIVACY = "privacy",
   TERMS = "terms",
+  FREEMONEY = "freemoney",
 }
 
 export interface AppRouteInterface {
@@ -186,6 +188,19 @@ const routes: AppRouteInterface[] = [
     mobileName: "DOGE",
     showOnMobile: true,
     showOnDesktop: true,
+    displayOrder: 0,
+    icon: "person",
+  },
+  {
+    path: "/freemoney",
+    name: NamedRoutes.FREEMONEY,
+    exact: true,
+    layout: AppLayout,
+    component: FreeMoneyPage,
+    desktopName: "",
+    mobileName: "",
+    showOnMobile: false,
+    showOnDesktop: false,
     displayOrder: 0,
     icon: "person",
   },

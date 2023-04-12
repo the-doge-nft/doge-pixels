@@ -91,3 +91,33 @@ model DonationHookRequest {
   responseCode Int?
   response     String?
 }
+
+enum TokenType {
+  ERC20
+  ERC721
+  ERC1155
+}
+
+model CurrencyDrip {
+  id                  Int      @id @default(autoincrement())
+  blockNumber         Int
+  blockCreatedAt      DateTime
+  insertedAt          DateTime @default(now())
+  from                String
+  to                  String
+  currencyTokenId     String?
+  currencyAmountAtoms String
+  currencyId          Int
+  currency            Currency @relation(fields: [currencyId], references: [id])
+  txId                String   @unique
+}
+
+model Currency {
+  id              Int            @id @default(autoincrement())
+  type            TokenType
+  contractAddress String         @unique
+  decimals        Int
+  symbol          String?
+  name            String?
+  CurrencyDrip    CurrencyDrip[]
+}

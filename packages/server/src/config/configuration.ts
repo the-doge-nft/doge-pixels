@@ -45,6 +45,7 @@ export interface Configuration {
   chainAnalysisKey: string;
   blockCypherKey: string;
   phSecret: string;
+  dripKey: string;
 }
 
 const configuration: Configuration = {
@@ -88,6 +89,7 @@ const configuration: Configuration = {
   chainAnalysisKey: process.env.CHAINANLYSIS_KEY,
   blockCypherKey: process.env.BLOCKCYPHER_KEY,
   phSecret: process.env.PH_SECRET,
+  dripKey: process.env.DRIP_KEY,
 };
 
 export default configuration;

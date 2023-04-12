@@ -18,6 +18,7 @@ import { CoinGeckoService } from './coin-gecko/coin-gecko.service';
 import { DiscordService } from './discord/discord.service';
 import { PostTransfersDto } from './dto/PostTransfers.dto';
 import { EthersService } from './ethers/ethers.service';
+import { FreeMoneyService } from './free-money/free-money.service';
 import { OwnTheDogeContractService } from './ownthedoge-contracts/ownthedoge-contracts.service';
 import { PixelTransferRepository } from './pixel-transfer/pixel-transfer.repository';
 import { PixelTransferService } from './pixel-transfer/pixel-transfer.service';
@@ -37,6 +38,7 @@ export class AppController {
     private readonly discord: DiscordService,
     private readonly gecko: CoinGeckoService,
     private readonly app: AppService,
+    private readonly freeMoney: FreeMoneyService,
     @Inject(CACHE_MANAGER) private cacheManager: Cache,
     @InjectSentry() private readonly sentryClient: SentryService,
   ) {}
@@ -247,5 +249,19 @@ export class AppController {
   @Get('sync/prices')
   syncPrices() {
     return this.app.cachePrices();
+  }
+
+  @Post('freemoney')
+  async getFreeMoney(@Body() { address }: { address: string }) {
+    if (await this.freeMoney.canGet(address)) {
+      return this.freeMoney.drip(address);
+    } else {
+      throw new BadRequestException("WOW you've already been paid, congrats!");
+    }
+  }
+
+  @Get('freemoney/balance')
+  async getFreeMoneyBalance() {
+    return this.freeMoney.getBalance();
   }
 }
