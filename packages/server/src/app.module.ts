@@ -38,6 +38,7 @@ import { UnstoppableDomainsService } from './unstoppable-domains/unstoppable-dom
 import { DonationHookRequestService } from './donation-hook-request/donation-hook-request.service';
 import { FreeMoneyService } from './free-money/free-money.service';
 import { CurrencyDripService } from './currency-drip/currency-drip.service';
+import { CurrencyService } from './currency/currency.service';
 
 @Module({
   imports: [
@@ -109,6 +110,7 @@ import { CurrencyDripService } from './currency-drip/currency-drip.service';
     DonationHookRequestService,
     FreeMoneyService,
     CurrencyDripService,
+    CurrencyService,
   ],
 })
 export class AppModule {}

@@ -11,4 +11,8 @@ export class CurrencyDripService {
   findFirst(args?: Prisma.CurrencyDripFindFirstArgs) {
     return this.prisma.currencyDrip.findFirst(args);
   }
+
+  create(args?: Prisma.CurrencyDripCreateArgs) {
+    return this.prisma.currencyDrip.create(args);
+  }
 }

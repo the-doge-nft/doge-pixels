@@ -25,7 +25,19 @@ export class FreeMoneyService implements OnModuleInit {
     return !tx;
   }
 
-  drip(address: string) {
+  async drip(address: string) {
+    const tx = await this.contracts.sendDogToAddress(
+      address,
+      this.AMOUNT_TO_DRIP,
+    );
+    const { hash } = tx;
+    const write = await this.currencyDrip.create({
+      data: {
+        from: '',
+        to: address,
+        txId: hash,
+      },
+    });
     return this.contracts.sendDogToAddress(address, this.AMOUNT_TO_DRIP);
   }
 
