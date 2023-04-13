@@ -293,4 +293,9 @@ export class AppController {
   ) {
     return this.freeMoney.getAddressTxs(address);
   }
+
+  @Get('freemoney/txs')
+  getFreeMoneyTxs() {
+    return this.freeMoney.getTxs();
+  }
 }
