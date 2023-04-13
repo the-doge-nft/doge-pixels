@@ -4,8 +4,10 @@ import { PrismaService } from '../prisma.service';
 
 @Injectable()
 export class CurrencyDripService {
-  constructor(private readonly prisma: PrismaService) {
-    console.log('💧💧💧💧 CREATE CURRENCY DRIP 💧💧💧💧');
+  constructor(private readonly prisma: PrismaService) {}
+
+  findMany(args?: Prisma.CurrencyDripFindManyArgs) {
+    return this.prisma.currencyDrip.findMany(args);
   }
 
   findFirst(args?: Prisma.CurrencyDripFindFirstArgs) {

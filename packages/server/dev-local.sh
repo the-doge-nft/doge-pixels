@@ -67,7 +67,7 @@ up() {
 
     __spacedEcho "listening to logs"
 
-    dbPush
+    dbMigrate
     dbSeed
 
     docker-compose logs -f
@@ -93,6 +93,11 @@ dbSeed() {
 dbGenerate() {
     __spacedEcho "generating prisma client"
     __runInApiContainer yarn prisma:generate
+}
+
+dbMigrate() {
+    __spacedEcho "migrating db"
+    __runInApiContainer yarn prisma:migrate
 }
 
 repl() {
@@ -128,6 +133,9 @@ Usage:
 
     dev-local.sh dbseed:
         seed data located in prisma/seed.ts to local database
+
+    dev-local.sh dbmigrate:
+        run prisma migrations
 
     dev-local.sh repl:
         start a REPL for super dev powers. read more here: https://docs.nestjs.com/recipes/repl
@@ -167,6 +175,10 @@ case $1 in
 
 "dbgenerate")
     dbGenerate
+    ;;
+
+"dbmigrate")
+    dbMigrate
     ;;
 
 "repl")

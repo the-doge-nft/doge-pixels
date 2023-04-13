@@ -5,6 +5,7 @@ import { InjectSentry, SentryService } from '@travelerdev/nestjs-sentry';
 import { ethers } from 'ethers';
 import { AppEnv } from '../config/configuration';
 import { Events } from '../events';
+import { formatAddress } from '../helpers/strings';
 import { CacheService } from './../cache/cache.service';
 
 @Injectable()
@@ -140,7 +141,7 @@ export class EthersService implements OnModuleInit {
 
   getIsValidEthereumAddress(address: string) {
     try {
-      ethers.utils.getAddress(address);
+      formatAddress(address);
       return true;
     } catch (e) {
       return false;
@@ -153,6 +154,6 @@ export class EthersService implements OnModuleInit {
   }
 
   getIsAddressEqual(addr1: string, addr2: string) {
-    return ethers.utils.getAddress(addr1) === ethers.utils.getAddress(addr2);
+    return formatAddress(addr1) === formatAddress(addr2);
   }
 }

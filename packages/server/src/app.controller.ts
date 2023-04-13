@@ -18,7 +18,11 @@ import { CoinGeckoService } from './coin-gecko/coin-gecko.service';
 import { DiscordService } from './discord/discord.service';
 import { PostTransfersDto } from './dto/PostTransfers.dto';
 import { EthersService } from './ethers/ethers.service';
-import { FreeMoneyService } from './free-money/free-money.service';
+import {
+  AlreadyClaimedError,
+  FreeMoneyService,
+  InvalidSignatureError,
+} from './free-money/free-money.service';
 import { OwnTheDogeContractService } from './ownthedoge-contracts/ownthedoge-contracts.service';
 import { PixelTransferRepository } from './pixel-transfer/pixel-transfer.repository';
 import { PixelTransferService } from './pixel-transfer/pixel-transfer.service';
@@ -252,16 +256,32 @@ export class AppController {
   }
 
   @Post('freemoney')
-  async getFreeMoney(@Body() { address }: { address: string }) {
-    if (await this.freeMoney.canGet(address)) {
+  async getFreeMoney(
+    @Body() { address, signature }: { address: string; signature: string },
+  ) {
+    try {
+      await this.freeMoney.validateDrip(address, signature);
       return this.freeMoney.drip(address);
-    } else {
-      throw new BadRequestException("WOW you've already been paid, congrats!");
+    } catch (e) {
+      if (e instanceof AlreadyClaimedError) {
+        throw new BadRequestException("🐕✋  You've already claimed   ✋🐕");
+      } else if (e instanceof InvalidSignatureError) {
+        throw new BadRequestException('Invalid signature');
+      } else {
+        throw new BadRequestException('Error');
+      }
     }
   }
 
   @Get('freemoney/balance')
   async getFreeMoneyBalance() {
     return this.freeMoney.getBalance();
+  }
+
+  @Get('freemoney/txs/:address')
+  async getFreeMoneyBalanceByAddress(
+    @Param() { address }: { address: string },
+  ) {
+    return this.freeMoney.getAddressTxs(address);
   }
 }

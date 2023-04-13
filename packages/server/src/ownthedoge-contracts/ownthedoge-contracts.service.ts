@@ -9,11 +9,13 @@ import {
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { EventEmitter2, OnEvent } from '@nestjs/event-emitter';
+import { TokenType } from '@prisma/client';
 import { InjectSentry, SentryService } from '@travelerdev/nestjs-sentry';
 import { ethers, Signer } from 'ethers';
 import { Configuration } from '../config/configuration';
 import * as KobosuJson from '../constants/kobosu.json';
 import * as ABI from '../contracts/hardhat_contracts.json';
+import { CurrencyService } from '../currency/currency.service';
 import { EthersService } from '../ethers/ethers.service';
 import { Events, PixelTransferEventPayload } from '../events';
 import { PixelTransferService } from '../pixel-transfer/pixel-transfer.service';
@@ -36,6 +38,7 @@ export class OwnTheDogeContractService implements OnModuleInit {
     private configService: ConfigService<Configuration>,
     private eventEmitter: EventEmitter2,
     private http: HttpService,
+    private currency: CurrencyService,
     @InjectSentry() private readonly sentryClient: SentryService,
   ) {}
 
@@ -50,7 +53,7 @@ export class OwnTheDogeContractService implements OnModuleInit {
     this.onProviderConnected(provider);
   }
 
-  private get isConnectedToContracts() {
+  get isConnectedToContracts() {
     return !!this.pxContract && !!this.dogContract;
   }
 
@@ -69,6 +72,28 @@ export class OwnTheDogeContractService implements OnModuleInit {
     await this.connectToContracts(provider);
     this.initPixelListener();
     await this.pixelTransferService.syncRecentTransfers();
+    await this.upsertDogCurrency();
+  }
+
+  private async upsertDogCurrency() {
+    const symbol = await this.dogContract.symbol();
+    const name = await this.dogContract.name();
+    const decimals = await this.dogContract.decimals();
+    const { dog: contractAddress } = this.getContractAddresses();
+
+    await this.currency.upsert({
+      where: {
+        contractAddress,
+      },
+      create: {
+        contractAddress,
+        type: TokenType.ERC20,
+        symbol,
+        name,
+        decimals,
+      },
+      update: {},
+    });
   }
 
   private async connectToContracts(
@@ -225,11 +250,9 @@ export class OwnTheDogeContractService implements OnModuleInit {
     return this.http.get(uri).toPromise();
   }
 
-  async sendDogToAddress(to: string, amount: number) {
-    // DOG also has 18 decimals
+  async sendDogToAddressFromDripAddress(to: string, amount: number) {
     const amountAtoms = ethers.utils.parseEther(amount.toString());
-    console.log();
-    console.log(`amount atoms: ${amountAtoms} -- to: ${to}`);
+    console.log(`sending: ${amountAtoms} -- to: ${to}`);
     const contract = await this.getDogContract(this.dripDogSigner);
     return contract.transfer(to, amountAtoms);
   }
@@ -241,5 +264,9 @@ export class OwnTheDogeContractService implements OnModuleInit {
     const formattedBalance = ethers.utils.formatEther(balance.toString());
     this.logger.log(`Drip Dog balance: ${formattedBalance}`);
     return formattedBalance;
+  }
+
+  getDogDripAddress() {
+    return this.dripDogSigner.address;
   }
 }

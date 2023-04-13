@@ -100,8 +100,6 @@ enum TokenType {
 
 model CurrencyDrip {
   id                  Int      @id @default(autoincrement())
-  blockNumber         Int
-  blockCreatedAt      DateTime
   insertedAt          DateTime @default(now())
   from                String
   to                  String

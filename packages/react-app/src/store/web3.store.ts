@@ -4,8 +4,8 @@ import { Provider, Signer } from "@wagmi/core";
 import { BigNumber, Contract, ethers } from "ethers";
 import { computed, makeObservable, observable } from "mobx";
 import { DOG20, PX } from "../../../hardhat/types";
-import deployedContracts from "../contracts/hardhat_contracts.json";
 import { showErrorToast } from "../DSL/Toast/Toast";
+import deployedContracts from "../contracts/hardhat_contracts.json";
 import env from "../environment";
 import { ObjectKeys } from "../helpers/objects";
 import { abbreviate } from "../helpers/strings";
@@ -341,6 +341,10 @@ class Web3Store extends Reactionable(Web3providerStore) {
       // @next -- we need to query for ENS or UD here
       return shouldAbbreviate ? abbreviate(address, 4) : address;
     }
+  }
+
+  signMessage(message: string) {
+    return this.signer.signMessage(message);
   }
 }
 

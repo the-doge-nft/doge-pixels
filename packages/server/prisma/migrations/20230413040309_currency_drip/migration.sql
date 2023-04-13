@@ -4,8 +4,6 @@ CREATE TYPE "TokenType" AS ENUM ('ERC20', 'ERC721', 'ERC1155');
 -- CreateTable
 CREATE TABLE "CurrencyDrip" (
     "id" SERIAL NOT NULL,
-    "blockNumber" INTEGER NOT NULL,
-    "blockCreatedAt" TIMESTAMP(3) NOT NULL,
     "insertedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "from" TEXT NOT NULL,
     "to" TEXT NOT NULL,
