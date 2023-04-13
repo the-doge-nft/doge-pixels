@@ -34,7 +34,7 @@ export class EthersService implements OnModuleInit {
     const appEnv = this.configService.get('appEnv');
     if (appEnv === AppEnv.production) {
       this.network = 'mainnet';
-      this.chainId = 0;
+      this.chainId = 1;
     } else if (appEnv === AppEnv.development || appEnv === AppEnv.staging) {
       this.network = 'goerli';
       this.chainId = 5;
