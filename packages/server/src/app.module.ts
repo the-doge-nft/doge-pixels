@@ -36,6 +36,9 @@ import { StatueCampaignService } from './statue-campaign/statue-campaign.service
 import { TwitterService } from './twitter/twitter.service';
 import { UnstoppableDomainsService } from './unstoppable-domains/unstoppable-domains.service';
 import { DonationHookRequestService } from './donation-hook-request/donation-hook-request.service';
+import { FreeMoneyService } from './free-money/free-money.service';
+import { CurrencyDripService } from './currency-drip/currency-drip.service';
+import { CurrencyService } from './currency/currency.service';
 
 @Module({
   imports: [
@@ -105,6 +108,9 @@ import { DonationHookRequestService } from './donation-hook-request/donation-hoo
     BlockcypherService,
     PhService,
     DonationHookRequestService,
+    FreeMoneyService,
+    CurrencyDripService,
+    CurrencyService,
   ],
 })
 export class AppModule {}

@@ -18,6 +18,13 @@ import { CoinGeckoService } from './coin-gecko/coin-gecko.service';
 import { DiscordService } from './discord/discord.service';
 import { PostTransfersDto } from './dto/PostTransfers.dto';
 import { EthersService } from './ethers/ethers.service';
+import {
+  AlreadyClaimedError,
+  FreeMoneyService,
+  InvalidSignatureError,
+  NotEnoughBalanceError,
+  NotEnoughEthBalanceError,
+} from './free-money/free-money.service';
 import { OwnTheDogeContractService } from './ownthedoge-contracts/ownthedoge-contracts.service';
 import { PixelTransferRepository } from './pixel-transfer/pixel-transfer.repository';
 import { PixelTransferService } from './pixel-transfer/pixel-transfer.service';
@@ -37,6 +44,7 @@ export class AppController {
     private readonly discord: DiscordService,
     private readonly gecko: CoinGeckoService,
     private readonly app: AppService,
+    private readonly freeMoney: FreeMoneyService,
     @Inject(CACHE_MANAGER) private cacheManager: Cache,
     @InjectSentry() private readonly sentryClient: SentryService,
   ) {}
@@ -247,5 +255,47 @@ export class AppController {
   @Get('sync/prices')
   syncPrices() {
     return this.app.cachePrices();
+  }
+
+  @Post('freemoney')
+  async getFreeMoney(
+    @Body() { address, signature }: { address: string; signature: string },
+  ) {
+    this.logger.log('FREEMONEY REQUEST');
+    try {
+      await this.freeMoney.validateDrip(address, signature);
+      return this.freeMoney.drip(address);
+    } catch (e) {
+      if (e instanceof AlreadyClaimedError) {
+        throw new BadRequestException("🐕✋  You've already claimed   ✋🐕");
+      } else if (e instanceof InvalidSignatureError) {
+        throw new BadRequestException('Invalid signature');
+      } else if (
+        e instanceof NotEnoughEthBalanceError ||
+        e instanceof NotEnoughBalanceError
+      ) {
+        throw new BadRequestException('Not enough balance');
+      } else {
+        this.logger.error(e);
+        throw new BadRequestException('Error');
+      }
+    }
+  }
+
+  @Get('freemoney/balance')
+  async getFreeMoneyBalance() {
+    return this.freeMoney.getFormattedBalance();
+  }
+
+  @Get('freemoney/txs/:address')
+  async getFreeMoneyBalanceByAddress(
+    @Param() { address }: { address: string },
+  ) {
+    return this.freeMoney.getAddressTxs(address);
+  }
+
+  @Get('freemoney/txs')
+  getFreeMoneyTxs() {
+    return this.freeMoney.getTxs();
   }
 }

@@ -1,5 +1,5 @@
 import { ChakraProvider, ColorModeScript, useColorMode } from "@chakra-ui/react";
-import { darkTheme, lightTheme, RainbowKitProvider } from "@rainbow-me/rainbowkit";
+import { RainbowKitProvider, darkTheme, lightTheme } from "@rainbow-me/rainbowkit";
 import "@rainbow-me/rainbowkit/styles.css";
 import * as Sentry from "@sentry/react";
 import { Integrations } from "@sentry/tracing";

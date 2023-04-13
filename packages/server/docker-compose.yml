@@ -1,6 +1,6 @@
 version: '3.8'
 services:
-  db:
+  postgres:
     image: postgres:14-alpine
     ports:
       - '15432:5432'
@@ -24,6 +24,7 @@ services:
       - redis:/data
 
   api:
+    container_name: doge-pixels-api
     build:
         context: .
         dockerfile: doge-pixels.Dockerfile
@@ -36,12 +37,12 @@ services:
       - .env
     # https://github.com/prisma/prisma/issues/1385
     environment:
-      DATABASE_URL: postgresql://${POSTGRES_USER:?No postgres user proivded}:${POSTGRES_PASSWORD:?No db password provided}@db:5432/${POSTGRES_DB:?No db provided}?schema=public
+      DATABASE_URL: postgresql://${POSTGRES_USER:?No postgres user proivded}:${POSTGRES_PASSWORD:?No db password provided}@postgres:5432/${POSTGRES_DB:?No db provided}?schema=public
     command: yarn start:debug
     ports:
       - '${PORT}:${PORT}'
     depends_on:
-      - db
+      - postgres
       - redis
 
 

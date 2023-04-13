@@ -1,3 +1,4 @@
+import { Provider } from '@ethersproject/providers';
 import { HttpService } from '@nestjs/axios';
 import {
   forwardRef,
@@ -8,11 +9,13 @@ import {
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { EventEmitter2, OnEvent } from '@nestjs/event-emitter';
+import { TokenType } from '@prisma/client';
 import { InjectSentry, SentryService } from '@travelerdev/nestjs-sentry';
-import { ethers } from 'ethers';
+import { ethers, Signer } from 'ethers';
 import { Configuration } from '../config/configuration';
 import * as KobosuJson from '../constants/kobosu.json';
 import * as ABI from '../contracts/hardhat_contracts.json';
+import { CurrencyService } from '../currency/currency.service';
 import { EthersService } from '../ethers/ethers.service';
 import { Events, PixelTransferEventPayload } from '../events';
 import { PixelTransferService } from '../pixel-transfer/pixel-transfer.service';
@@ -22,6 +25,7 @@ export class OwnTheDogeContractService implements OnModuleInit {
   private readonly logger = new Logger(OwnTheDogeContractService.name);
   private pxContract: ethers.Contract;
   private dogContract: ethers.Contract;
+  private dripDogSigner: ethers.Wallet;
 
   public imageWidth = 640;
   public imageHeight = 480;
@@ -34,6 +38,7 @@ export class OwnTheDogeContractService implements OnModuleInit {
     private configService: ConfigService<Configuration>,
     private eventEmitter: EventEmitter2,
     private http: HttpService,
+    private currency: CurrencyService,
     @InjectSentry() private readonly sentryClient: SentryService,
   ) {}
 
@@ -48,7 +53,7 @@ export class OwnTheDogeContractService implements OnModuleInit {
     this.onProviderConnected(provider);
   }
 
-  private get isConnectedToContracts() {
+  get isConnectedToContracts() {
     return !!this.pxContract && !!this.dogContract;
   }
 
@@ -59,31 +64,66 @@ export class OwnTheDogeContractService implements OnModuleInit {
     this.logger.log(logMessage);
     this.sentryClient.instance().captureMessage(logMessage);
 
+    this.dripDogSigner = new ethers.Wallet(
+      this.configService.get('dripKey'),
+      provider,
+    );
+
     await this.connectToContracts(provider);
     this.initPixelListener();
     await this.pixelTransferService.syncRecentTransfers();
+    await this.upsertDogCurrency();
+  }
+
+  private async upsertDogCurrency() {
+    const symbol = await this.dogContract.symbol();
+    const name = await this.dogContract.name();
+    const decimals = await this.dogContract.decimals();
+    const { dog: contractAddress } = this.getContractAddresses();
+
+    await this.currency.upsert({
+      where: {
+        contractAddress,
+      },
+      create: {
+        contractAddress,
+        type: TokenType.ERC20,
+        symbol,
+        name,
+        decimals,
+      },
+      update: {},
+    });
   }
 
   private async connectToContracts(
     provider: ethers.providers.WebSocketProvider,
   ) {
-    const { chainId } = await provider.getNetwork();
+    this.pxContract = await this.getPxContract(provider);
+    this.dogContract = await this.getDogContract(provider);
+  }
+
+  async getPxContract(signerOrProvider: Signer | Provider) {
     const pxContractInfo =
-      ABI[chainId][this.ethersService.network].contracts['PX'];
-
-    const dogContractInfo =
-      ABI[chainId][this.ethersService.network].contracts['DOG20'];
-
-    this.pxContract = new ethers.Contract(
+      ABI[this.ethersService.chainId][this.ethersService.network].contracts[
+        'PX'
+      ];
+    return new ethers.Contract(
       pxContractInfo.address,
       pxContractInfo.abi,
-      provider,
+      signerOrProvider,
     );
+  }
 
-    this.dogContract = new ethers.Contract(
+  async getDogContract(signerOrProvider: any) {
+    const dogContractInfo =
+      ABI[this.ethersService.chainId][this.ethersService.network].contracts[
+        'DOG20'
+      ];
+    return new ethers.Contract(
       dogContractInfo.address,
       dogContractInfo.abi,
-      provider,
+      signerOrProvider,
     );
   }
 
@@ -208,5 +248,33 @@ export class OwnTheDogeContractService implements OnModuleInit {
     // todo instead of querying the contract -- query the DB first to ensure the token has been minted actually
     const uri = await this.getPixelURI(tokenId);
     return this.http.get(uri).toPromise();
+  }
+
+  async sendDogToAddressFromDripAddress(to: string, amount: number) {
+    const amountAtoms = ethers.utils.parseEther(amount.toString());
+    console.log(`sending: ${amountAtoms} -- to: ${to}`);
+    const contract = await this.getDogContract(this.dripDogSigner);
+    return contract.transfer(to, amountAtoms);
+  }
+
+  async getDogDripBalance() {
+    return this.dogContract.balanceOf(this.dripDogSigner.address);
+  }
+
+  getDogDripAddress() {
+    return this.dripDogSigner.address;
+  }
+
+  async getEthTxFeesForERC20Transfer(from, to, amount) {
+    const gasLimit = await this.dogContract.estimateGas.transfer(to, amount, {
+      from,
+    });
+    const gasPrice = await this.ethersService.provider.getGasPrice();
+    const gasCost = gasLimit.mul(gasPrice);
+    return gasCost.toString();
+  }
+
+  async getDripEthBalance() {
+    return this.ethersService.provider.getBalance(this.dripDogSigner.address);
   }
 }
