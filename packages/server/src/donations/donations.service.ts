@@ -7,6 +7,7 @@ import { AlchemyService } from '../alchemy/alchemy.service';
 import { CoinGeckoService } from '../coin-gecko/coin-gecko.service';
 import { EthersService } from '../ethers/ethers.service';
 import { sleepAndTryAgain } from '../helpers/sleep';
+import { formatAddress } from '../helpers/strings';
 import { MydogeService } from '../mydoge/mydoge.service';
 import { PrismaService } from '../prisma.service';
 import { UnstoppableDomainsService } from '../unstoppable-domains/unstoppable-domains.service';
@@ -106,10 +107,10 @@ export class DonationsService {
           amount: transfer.value,
           blockNumber: ethers.BigNumber.from(transfer.blockNum).toNumber(),
           txHash: transfer.hash,
-          fromAddress: ethers.utils.getAddress(transfer.from),
-          toAddress: ethers.utils.getAddress(transfer.to),
+          fromAddress: formatAddress(transfer.from),
+          toAddress: formatAddress(transfer.to),
           currencyContractAddress: transfer.rawContract.address
-            ? ethers.utils.getAddress(transfer.rawContract.address)
+            ? formatAddress(transfer.rawContract.address)
             : null,
         });
       } catch (e) {

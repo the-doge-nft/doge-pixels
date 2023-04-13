@@ -13,6 +13,7 @@ import { CoinGeckoService } from '../coin-gecko/coin-gecko.service';
 import { Balance, ETH_CURRENCY_SYMBOL } from '../donations/donations.service';
 import { EthersService } from '../ethers/ethers.service';
 import { sleep } from '../helpers/sleep';
+import { formatAddress } from '../helpers/strings';
 import { SupportedNetwork } from './../alchemy/alchemy.service';
 import {
   RainbowSwapAfterGet,
@@ -351,15 +352,15 @@ export class RainbowSwapsService {
       blockNumber,
       donatedCurrency,
       donatedAmount,
-      clientAddress: ethers.utils.getAddress(clientAddress),
+      clientAddress: formatAddress(clientAddress),
       baseCurrencyAddress: baseCurrencyAddress
-        ? ethers.utils.getAddress(baseCurrencyAddress)
+        ? formatAddress(baseCurrencyAddress)
         : null,
       quoteCurrencyAddress: quoteCurrencyAddress
-        ? ethers.utils.getAddress(quoteCurrencyAddress)
+        ? formatAddress(quoteCurrencyAddress)
         : null,
       donatedCurrencyAddress: donatedCurrencyAddress
-        ? ethers.utils.getAddress(donatedCurrencyAddress)
+        ? formatAddress(donatedCurrencyAddress)
         : null,
     };
   }

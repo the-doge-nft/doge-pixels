@@ -5,6 +5,7 @@ import { InjectSentry, SentryService } from '@travelerdev/nestjs-sentry';
 import { ethers } from 'ethers';
 import { AppEnv } from '../config/configuration';
 import { Events } from '../events';
+import { formatAddress } from '../helpers/strings';
 import { CacheService } from './../cache/cache.service';
 
 @Injectable()
@@ -13,6 +14,7 @@ export class EthersService implements OnModuleInit {
   private secondsToCache = 60 * 60 * 10;
 
   public network: string;
+  public chainId: number;
   public provider: ethers.providers.WebSocketProvider;
   public zeroAddress = ethers.constants.AddressZero;
 
@@ -32,10 +34,13 @@ export class EthersService implements OnModuleInit {
     const appEnv = this.configService.get('appEnv');
     if (appEnv === AppEnv.production) {
       this.network = 'mainnet';
+      this.chainId = 1;
     } else if (appEnv === AppEnv.development || appEnv === AppEnv.staging) {
       this.network = 'goerli';
+      this.chainId = 5;
     } else if (appEnv === AppEnv.test) {
       this.network = 'localhost';
+      this.chainId = 5;
     } else {
       throw new Error('App environment unknown');
     }
@@ -136,7 +141,7 @@ export class EthersService implements OnModuleInit {
 
   getIsValidEthereumAddress(address: string) {
     try {
-      ethers.utils.getAddress(address);
+      formatAddress(address);
       return true;
     } catch (e) {
       return false;
@@ -149,6 +154,6 @@ export class EthersService implements OnModuleInit {
   }
 
   getIsAddressEqual(addr1: string, addr2: string) {
-    return ethers.utils.getAddress(addr1) === ethers.utils.getAddress(addr2);
+    return formatAddress(addr1) === formatAddress(addr2);
   }
 }
