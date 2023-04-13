@@ -22,6 +22,8 @@ import {
   AlreadyClaimedError,
   FreeMoneyService,
   InvalidSignatureError,
+  NotEnoughBalanceError,
+  NotEnoughEthBalanceError,
 } from './free-money/free-money.service';
 import { OwnTheDogeContractService } from './ownthedoge-contracts/ownthedoge-contracts.service';
 import { PixelTransferRepository } from './pixel-transfer/pixel-transfer.repository';
@@ -259,6 +261,7 @@ export class AppController {
   async getFreeMoney(
     @Body() { address, signature }: { address: string; signature: string },
   ) {
+    this.logger.log('FREEMONEY REQUEST');
     try {
       await this.freeMoney.validateDrip(address, signature);
       return this.freeMoney.drip(address);
@@ -267,7 +270,13 @@ export class AppController {
         throw new BadRequestException("🐕✋  You've already claimed   ✋🐕");
       } else if (e instanceof InvalidSignatureError) {
         throw new BadRequestException('Invalid signature');
+      } else if (
+        e instanceof NotEnoughEthBalanceError ||
+        e instanceof NotEnoughBalanceError
+      ) {
+        throw new BadRequestException('Not enough balance');
       } else {
+        this.logger.error(e);
         throw new BadRequestException('Error');
       }
     }
@@ -275,7 +284,7 @@ export class AppController {
 
   @Get('freemoney/balance')
   async getFreeMoneyBalance() {
-    return this.freeMoney.getBalance();
+    return this.freeMoney.getFormattedBalance();
   }
 
   @Get('freemoney/txs/:address')

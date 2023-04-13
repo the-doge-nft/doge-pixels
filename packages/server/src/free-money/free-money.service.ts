@@ -7,6 +7,8 @@ import { OwnTheDogeContractService } from '../ownthedoge-contracts/ownthedoge-co
 
 export class AlreadyClaimedError extends Error {}
 export class InvalidSignatureError extends Error {}
+export class NotEnoughBalanceError extends Error {}
+export class NotEnoughEthBalanceError extends Error {}
 
 @Injectable()
 export class FreeMoneyService implements OnModuleInit {
@@ -38,6 +40,24 @@ export class FreeMoneyService implements OnModuleInit {
     );
     if (formatAddress(recoveredAddress) !== formatAddress(address)) {
       throw new InvalidSignatureError();
+    }
+
+    const balance = await this.otd.getDogDripBalance();
+    if (ethers.BigNumber.from(balance).lt(this.AMOUNT_TO_DRIP)) {
+      throw new NotEnoughBalanceError();
+    }
+
+    const estimatedTxFee = await this.otd.getEthTxFeesForERC20Transfer(
+      this.otd.getDogDripAddress(),
+      address,
+      ethers.utils.parseEther(this.AMOUNT_TO_DRIP.toString()),
+    );
+    const ethBalance = await this.otd.getDripEthBalance();
+    console.log(
+      `ESTIMATED FEE BALANCE: ${estimatedTxFee} -- ETH BALANCE: ${ethBalance}`,
+    );
+    if (ethers.BigNumber.from(estimatedTxFee).gt(ethBalance)) {
+      throw new NotEnoughEthBalanceError();
     }
 
     return true;
@@ -78,8 +98,9 @@ export class FreeMoneyService implements OnModuleInit {
     };
   }
 
-  getBalance() {
-    return this.otd.getDogDripBalance();
+  async getFormattedBalance() {
+    const balance = await this.otd.getDogDripBalance();
+    return ethers.utils.formatEther(balance.toString());
   }
 
   getAddressTxs(address: string) {

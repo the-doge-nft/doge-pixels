@@ -56,7 +56,6 @@ export default class FreeMoneyPageStore extends Reactionable(EmptyClass) {
         })
         .finally(() => (this.isLoading = false));
     } catch (e) {
-    } finally {
       this.isLoading = false;
     }
   }

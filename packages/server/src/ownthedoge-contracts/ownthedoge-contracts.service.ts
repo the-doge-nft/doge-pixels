@@ -258,15 +258,23 @@ export class OwnTheDogeContractService implements OnModuleInit {
   }
 
   async getDogDripBalance() {
-    const balance = await this.dogContract.balanceOf(
-      this.dripDogSigner.address,
-    );
-    const formattedBalance = ethers.utils.formatEther(balance.toString());
-    this.logger.log(`Drip Dog balance: ${formattedBalance}`);
-    return formattedBalance;
+    return this.dogContract.balanceOf(this.dripDogSigner.address);
   }
 
   getDogDripAddress() {
     return this.dripDogSigner.address;
+  }
+
+  async getEthTxFeesForERC20Transfer(from, to, amount) {
+    const gasLimit = await this.dogContract.estimateGas.transfer(to, amount, {
+      from,
+    });
+    const gasPrice = await this.ethersService.provider.getGasPrice();
+    const gasCost = gasLimit.mul(gasPrice);
+    return gasCost.toString();
+  }
+
+  async getDripEthBalance() {
+    return this.ethersService.provider.getBalance(this.dripDogSigner.address);
   }
 }
