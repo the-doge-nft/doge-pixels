@@ -2,12 +2,12 @@ import { Box, Flex, useColorMode } from "@chakra-ui/react";
 import { AnimatePresence, motion } from "framer-motion";
 import { observer } from "mobx-react-lite";
 import { useEffect } from "react";
-import Footer from "../../common/Footer/Footer";
 import Icon from "../../DSL/Icon/Icon";
 import Link from "../../DSL/Link/Link";
 import Marquee from "../../DSL/Marquee/Marquee";
 import { lightOrDarkMode } from "../../DSL/Theme";
 import Typography, { TVariant } from "../../DSL/Typography/Typography";
+import Footer from "../../common/Footer/Footer";
 import AppStore from "../../store/App.store";
 import Header from "./Header";
 import NavLinks from "./NavLinks";
@@ -55,7 +55,7 @@ export const HeaderMarquee = () => {
             whiteSpace={"pre"}
             color={lightOrDarkMode(colorMode, "white", "white")}
           >
-            Own the Doge ... Own a piece of internet history ...{" "}
+            Own the Doge{" "}
             <Link
               isExternal
               size={"sm"}
@@ -66,23 +66,52 @@ export const HeaderMarquee = () => {
             >
               Buy $DOG
             </Link>{" "}
-            for very fun ...{" "}
-            <Link isExternal to={"https://pixels.ownthedoge.com"} size={"sm"} color={linkColor}>
-              Mint Doge Pixels
-            </Link>{" "}
-            for much wow ... Help guide where the Doge goes next in the{" "}
-            <Link isExternal to={"https://dao.ownthedoge.com"} size={"sm"} color={linkColor}>
-              Doge DAO
-            </Link>{" "}
-            ... Get a chance to{" "}
-            <Link isExternal to={"https://meethedoge.com"} size={"sm"} color={linkColor}>
-              Meet the Doge
-            </Link>{" "}
-            ...{" "}
-            <Link isExternal to={"https://muchwowfilm.com"} size={"sm"} color={linkColor}>
-              Watch the Doge
-            </Link>{" "}
-            on the big screen ...
+            ... Own a piece of internet history{" "}
+            <Link
+              isExternal
+              size={"sm"}
+              color={linkColor}
+              to={
+                "https://app.sushi.com/swap?inputCurrency=ETH&outputCurrency=0xBAac2B4491727D78D2b78815144570b9f2Fe8899"
+              }
+            >
+              Buy $DOG
+            </Link>
+            {" ... "} For very fun{" "}
+            <Link
+              isExternal
+              size={"sm"}
+              color={linkColor}
+              to={
+                "https://app.sushi.com/swap?inputCurrency=ETH&outputCurrency=0xBAac2B4491727D78D2b78815144570b9f2Fe8899"
+              }
+            >
+              Buy $DOG
+            </Link>
+            {" ... "} For many wows{" "}
+            <Link
+              isExternal
+              size={"sm"}
+              color={linkColor}
+              to={
+                "https://app.sushi.com/swap?inputCurrency=ETH&outputCurrency=0xBAac2B4491727D78D2b78815144570b9f2Fe8899"
+              }
+            >
+              Buy $DOG
+            </Link>
+            {" ... "}
+            Own the Doge{" "}
+            <Link
+              isExternal
+              size={"sm"}
+              color={linkColor}
+              to={
+                "https://app.sushi.com/swap?inputCurrency=ETH&outputCurrency=0xBAac2B4491727D78D2b78815144570b9f2Fe8899"
+              }
+            >
+              Buy $DOG
+            </Link>
+            {" ... "}
           </Typography>
         </Box>
       </Marquee>
