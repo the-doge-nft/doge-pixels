@@ -10,6 +10,7 @@ const productionEnv = {
       WETH: { decimals: 18, contractAddress: "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2" },
       WBTC: { decimals: 8, contractAddress: "0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599" },
       NFD: { decimals: 18, contractAddress: "0xDFDb7f72c1F195C5951a234e8DB9806EB0635346" },
+      WDOGE: { decimals: 8, contractAddress: "0x8aa9381b2544b48c26f3b850F6e07E2c5161EB3e" },
     },
     targetChainId: 1,
     targetNetworkName: "mainnet",
