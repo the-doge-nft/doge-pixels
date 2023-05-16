@@ -9,7 +9,6 @@ import "./PX.sol";
  * This mock just provides a public safeMint, mint, and burn functions for testing purposes
  */
 contract PXMock_V2 is PX {
-
     function __PXMock_init(
         string memory name_,
         string memory symbol_,
@@ -44,7 +43,7 @@ contract PXMock_V2 is PX {
         DOG_TO_PIXEL_SATOSHIS = amount;
     }
 
-    function v2Test() public returns (uint256 ret){
+    function v2Test() public returns (uint256 ret) {
         ret = puppersRemaining;
     }
 }
