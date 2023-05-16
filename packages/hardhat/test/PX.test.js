@@ -18,6 +18,7 @@ const runTests = (withUpgrade) => {
     const MOCK_HEIGHT = Math.floor(480 * CROP);
     const MOCK_SUPPLY = MOCK_WIDTH * MOCK_HEIGHT;
     const MOCK_URI = "ipfs://dog-repo/";
+    const MOCK_URI_V2 = "https://metadata.pixels.ownthedoge.com/";
     const DOG_TO_PIXEL_SATOSHIS = ethers.BigNumber.from("5523989899").mul(
       10 ** 13
     );
@@ -86,11 +87,20 @@ const runTests = (withUpgrade) => {
 
       // Test upgrading the contract
       if (withUpgrade) {
-        const PXV2 = await ethers.getContractFactory("PXMock_V2");
+        const PXMockV2 = await ethers.getContractFactory("PXV2");
         console.log("Upgrading PX...");
-        await upgrades.upgradeProxy(PX.address, PXV2);
-        PX = await PXV2.attach(PX.address);
-        console.log("PX upgraded");
+        await upgrades.upgradeProxy(PX.address, PXMockV2);
+        PX = await PXMockV2.attach(PX.address);
+        console.log("Setting admin address for upgrade");
+
+        let tx = await PX.setAdmin(owner.address);
+        await tx.wait();
+
+        console.log("Setting new baseURI");
+        tx = await PX.setBaseURI(MOCK_URI_V2);
+        await tx.wait();
+        console.log("New baseURI set to", MOCK_URI_V2);
+        console.log("PX upgraded to V2");
       }
     });
 
@@ -143,11 +153,12 @@ const runTests = (withUpgrade) => {
       }
       if (tokenId) {
         const idWithOffset = tokenId.toNumber();
-        expect(await PX.tokenURI(tokenId)).to.equal(
-          `${MOCK_URI}metadata-sh${getShardIndex(
-            idWithOffset
-          )}/metadata-${idWithOffset}.json`
-        );
+        const expectedURI = withUpgrade
+          ? `${MOCK_URI_V2}${idWithOffset}`
+          : `${MOCK_URI}metadata-sh${getShardIndex(
+              idWithOffset
+            )}/metadata-${idWithOffset}.json`;
+        expect(await PX.tokenURI(tokenId)).to.equal(expectedURI);
         return tokenId;
       } else {
         throw new Error("Transfer event was not fired");
@@ -228,8 +239,8 @@ const runTests = (withUpgrade) => {
     context("supply", function () {
       if (withUpgrade) {
         it("check if contract is upgraded", async function () {
-          // if contract is not upgraded, v2Test() call will throw
-          await PX.v2Test();
+          // if contract is not upgraded, admin() call will throw
+          await PX.admin();
         });
       }
       it("sender should be an owner of new pixel after calling mint()", async function () {

@@ -17,6 +17,9 @@ module.exports = async (args) => {
   const { deployer } = await getNamedAccounts();
   const chainId = await getChainId();
 
+  // PROXY INFO HERE
+  // https://docs.openzeppelin.com/upgrades-plugins/1.x/
+
   const pxProxyAddress = fs.readFileSync(
     path.join(__dirname, "..", ".openzeppelin", "px_proxy_address_" + chainId),
     "utf8"
@@ -30,7 +33,7 @@ module.exports = async (args) => {
   console.log("IMPL ADDR: " + currentImplAddress);
   // const PX = await ethers.getContractAt("PX", "0x3a851Ea6f854813A52eeE4b9924f9536861a0558");
   // console.log('Upgrading PX...');
-  const PXV3 = await ethers.getContractFactory("PXMock_V3");
+  const PXV3 = await ethers.getContractFactory("PXV2");
   const res = await upgrades.upgradeProxy(pxProxyAddress, PXV3);
   console.log("after upgradeProxy()");
   // console.log(res);
@@ -46,4 +49,4 @@ module.exports = async (args) => {
 // PX_V3.SOL: 0x2E0DDeC3d85E0eC072EC6E6bE7380e6005BAC5F6
 //
 // 0x999AE4B770E0A3D4855dE27D8A14417B67dCF8C6
-module.exports.tags = ["PXV3"];
+module.exports.tags = ["PXV2"];
