@@ -16,8 +16,8 @@ const OpenSeaLink: React.FC<OpenSeaLinkProps> = observer(({ pixelId }) => {
       size={"sm"}
       href={
         isDevModeEnabled() || isStaging()
-          ? `https://testnets.opensea.io/assets/${AppStore.web3.pxContractAddress}/${pixelId}`
-          : `https://opensea.io/assets/${AppStore.web3.pxContractAddress}/${pixelId}`
+          ? `https://testnets.opensea.io/assets/ethereum/${AppStore.web3.pxContractAddress}/${pixelId}`
+          : `https://opensea.io/assets/ethereum/${AppStore.web3.pxContractAddress}/${pixelId}`
       }
     >
       <Icon fill={"white"} icon={"openSea"} boxSize={5} />
