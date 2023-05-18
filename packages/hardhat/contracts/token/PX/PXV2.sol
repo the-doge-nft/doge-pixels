@@ -14,11 +14,31 @@ import "./PX.sol";
 contract PXV2 is PX {
     address public admin;
     bool public v2Initialized;
+    address public DOG_20_FEE_ADDRESS_V2;
+    uint256 public DOG_20_FEE_AMOUNT_V2;
 
     function setAdmin(address _admin) public {
         require(!v2Initialized);
         admin = _admin;
         v2Initialized;
+    }
+
+    /**
+     * @dev Base URI for computing {tokenURI}.
+     */
+    function setBaseURI(string memory uri) public {
+        require(_msgSender() == admin, "Only admin can set base URI");
+        BASE_URI = uri;
+    }
+
+    function setFeeAddress(address _feeAddress) public {
+        require(_msgSender() == admin, "Only admin can set the fee address");
+        DOG_20_FEE_ADDRESS_V2 = _feeAddress;
+    }
+
+    function setFeeAmount(uint256 _feeAmount) public {
+        require(_msgSender() == admin, "Only admin can set the fee amount");
+        DOG_20_FEE_AMOUNT_V2 = _feeAmount;
     }
 
     //
@@ -41,13 +61,12 @@ contract PXV2 is PX {
                 : "";
     }
 
-    /**
-     * @dev Base URI for computing {tokenURI}. If set, the resulting URI for each
-     * token will be the concatenation of the `baseURI` and the `tokenId`. Empty
-     * by default, can be overriden in child contracts.
-     */
-    function setBaseURI(string memory uri) public {
-        require(_msgSender() == admin, "Only admin can set base URI");
-        BASE_URI = uri;
+    function processCollateralAfterBurn(uint256 totalAmount) internal override {
+        // transfer collateral to the burner
+        // 1% is taken for fees, from that FEES_AMOUNT_DEV AND FEES_AMOUNT_PLEASR are distributed between developers and PleasrDAO
+        uint256 feeAmount = (totalAmount * DOG_20_FEE_AMOUNT_V2) / 100 / 100;
+        uint256 burnerAmount = totalAmount - feeAmount;
+        DOG20.transfer(DOG_20_FEE_ADDRESS_V2, feeAmount);
+        DOG20.transfer(_msgSender(), burnerAmount);
     }
 }

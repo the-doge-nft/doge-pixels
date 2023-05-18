@@ -100,6 +100,17 @@ const runTests = (withUpgrade) => {
         tx = await PX.setBaseURI(MOCK_URI_V2);
         await tx.wait();
         console.log("New baseURI set to", MOCK_URI_V2);
+
+        console.log("Setting new fee address");
+        tx = await PX.setFeeAddress(addr1.address);
+        await tx.wait();
+        console.log(`New fee address set to: ${addr1.address}`);
+
+        console.log("Setting new fees amount");
+        tx = await PX.setFeeAmount();
+        await tx.wait();
+        console.log("New fee amount set");
+
         console.log("PX upgraded to V2");
       }
     });
