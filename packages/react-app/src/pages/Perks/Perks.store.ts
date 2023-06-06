@@ -9,6 +9,14 @@ export interface PerkItem {
 class PerksStore {
   items: PerkItem[] = [
     {
+      title: "Doge x Bad Luck Brian",
+      description:
+        "Doge meets Bad Luck Brian in Kabosu's hometown of Sakura City, Japan! Top 100 pixels holders get 4 free mints, and the rest of pixel holders get 3 free!",
+      link: "https://zora.co/collect/0x36daf12d18b00389bac65b04bdc9013b1b3514d7",
+      date: "2023-06-06",
+      isLive: true,
+    },
+    {
       title: "The Doge Couch",
       description:
         "Introducing the Doge Couch, the ultimate statement piece for your virtual living room in the metaverse! This ain't just any ordinary couch - this is a 3-Dimensional masterpiece based on a 3d scan of the original couch that Doge sits upon. That's right, the one and only original couch that was in the headlines for being auctioned by @PleaseDAO for 21ETH is now available to grace your digital living space!",
