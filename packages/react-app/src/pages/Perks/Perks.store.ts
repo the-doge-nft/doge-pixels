@@ -14,7 +14,7 @@ class PerksStore {
         "Doge meets Bad Luck Brian in Kabosu's hometown of Sakura City, Japan! Top 100 pixels holders get 4 free mints, and the rest of pixel holders get 3 free!",
       link: "https://zora.co/collect/0x36daf12d18b00389bac65b04bdc9013b1b3514d7",
       date: "2023-06-06",
-      isLive: true,
+      isLive: false,
     },
     {
       title: "The Doge Couch",
