@@ -1,0 +1,25 @@
+{
+  "name": "Doge Pixel (103, 174)",
+  "description": "Pixel from The Doge NFT at location (103, 174)",
+  "external_url": "https://pixels.thedao.ge/px/1111463",
+  "image": "https://ipfs.pixels.thedao.ge/ipfs/QmWCooiMeDPknGufpdTb1xPGH5FgfyS6p8gyTJHcnN1Pwh/pixels-sh23/1111463.png",
+  "hex": "#cfb168",
+  "attributes": [
+    {
+      "trait_type": "Index",
+      "value": "111463"
+    },
+    {
+      "trait_type": "X Coordinate",
+      "value": "103"
+    },
+    {
+      "trait_type": "Y Coordinate",
+      "value": "174"
+    },
+    {
+      "trait_type": "Hex",
+      "value": "#cfb168"
+    }
+  ]
+}

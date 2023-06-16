@@ -1,0 +1,9 @@
+{
+  "name": "@dog/metadata",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "dependencies": {
+    "jimp": "^0.22.8"
+  }
+}
