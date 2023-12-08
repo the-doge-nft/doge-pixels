@@ -16,7 +16,7 @@ const Footer = observer(() => {
         <Grid templateColumns={{ base: "1fr", sm: "1fr 1fr 1fr" }} columnGap={10} rowGap={8}>
           <FooterItem title={"Talk"} items={socialLinks} />
           <FooterItem title={"Read"} items={readLinks} />
-          <FooterItem title={"Aquire"} items={tradeLinks} />
+          <FooterItem title={"Buy"} items={tradeLinks} />
         </Grid>
       </Box>
       <Flex justifyContent={"flex-end"} alignItems={"center"} mt={5}>

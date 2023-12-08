@@ -28,25 +28,7 @@ export const actionLinks = [
 ];
 
 export const tradeLinks = [
-  { title: "Sushiswap", link: "https://app.sushi.com/swap?outputCurrency=0xbaac2b4491727d78d2b78815144570b9f2fe8899" },
-  {
-    title: "Uniswap",
-    link: "https://app.uniswap.org/#/swap?chain=mainnet&outputCurrency=0xBAac2B4491727D78D2b78815144570b9f2Fe8899&inputCurrency=ETH",
-  },
-  {
-    title: "Cowswap",
-    link: "https://cowswap.exchange/#/swap?outputCurrency=0xBAac2B4491727D78D2b78815144570b9f2Fe8899&inputCurrency=ETH&chain=mainnet",
-  },
-  { title: "MEXC", link: "https://www.mexc.com/exchange/DOG_USDT?inviteCode=1498J" },
-  {
-    title: "Pancakeswap",
-    link: "https://pancakeswap.finance/swap?inputCurrency=0xaa88c603d142c371ea0eac8756123c5805edee03&outputCurrency=wbnb",
-  },
-  {
-    title: "Quick Swap",
-    link: "https://quickswap.exchange/#/swap?inputCurrency=0x7ceb23fd6bc0add59e62ac25578270cff1b9f619&outputCurrency=0xeee3371b89fc43ea970e908536fcddd975135d8a",
-  },
-  { title: "Huobi", link: "https://www.huobi.com/en-us/exchange/dog_usdt?invite_code=d8c53" },
+  { title: "$DOG", link: "https://swap.defillama.com/?chain=ethereum&from=0x0000000000000000000000000000000000000000&to=0xbaac2b4491727d78d2b78815144570b9f2fe8899" },
 ];
 
 export const chains = [
