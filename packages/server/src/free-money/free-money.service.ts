@@ -14,7 +14,7 @@ export class NotEnoughEthBalanceError extends Error {}
 @Injectable()
 export class FreeMoneyService implements OnModuleInit {
   private readonly logger = new Logger(FreeMoneyService.name);
-  private readonly AMOUNT_TO_DRIP = 69;
+  private readonly AMOUNT_TO_DRIP = 4200;
   private readonly messageToSign = 'gib free 69 DOG plz';
 
   constructor(
