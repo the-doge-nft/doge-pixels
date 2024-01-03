@@ -15,7 +15,7 @@ export class NotEnoughEthBalanceError extends Error {}
 export class FreeMoneyService implements OnModuleInit {
   private readonly logger = new Logger(FreeMoneyService.name);
   private readonly AMOUNT_TO_DRIP = 4200;
-  private readonly messageToSign = 'gib free 69 DOG plz';
+  private readonly messageToSign = 'gib free 4200 DOG plz';
 
   constructor(
     private readonly currencyDrip: CurrencyDripService,

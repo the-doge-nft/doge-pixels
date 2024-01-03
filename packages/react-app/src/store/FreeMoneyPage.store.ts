@@ -15,7 +15,7 @@ export default class FreeMoneyPageStore extends Reactionable(EmptyClass) {
   @observable
   isLoading = false;
 
-  private messageToSign = "gib free 69 DOG plz";
+  private messageToSign = "gib free 4200 DOG plz";
 
   constructor() {
     super();
