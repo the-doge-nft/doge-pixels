@@ -1,11 +1,7 @@
 import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { OnEvent } from '@nestjs/event-emitter';
 import { InjectSentry, SentryService } from '@travelerdev/nestjs-sentry';
 import { Configuration } from '../config/configuration';
-import { EthersService } from '../ethers/ethers.service';
-import { Events, PixelTransferEventPayload } from '../events';
-import { ImageGeneratorService } from '../image-generator/image-generator.service';
 
 import * as crypto from 'crypto';
 import * as Twitter from 'twitter';
@@ -18,8 +14,6 @@ export class TwitterService implements OnModuleInit {
 
   constructor(
     private config: ConfigService<Configuration>,
-    private imageGenerator: ImageGeneratorService,
-    private ethers: EthersService,
     private aws: AwsService,
     @InjectSentry() private readonly sentryClient: SentryService,
   ) {}
@@ -33,33 +27,33 @@ export class TwitterService implements OnModuleInit {
     });
   }
 
-  @OnEvent(Events.PIXEL_TRANSFER)
-  async tweetPixelEventImage({
-    from,
-    to,
-    tokenId,
-  }: Omit<
-    PixelTransferEventPayload,
-    'event' | 'blockCreatedAt' | 'blockNumber'
-  >) {
-    this.logger.log(`Posting to twitter:: (${tokenId}) ${from} -> ${to}`);
-    const textContent = await this.imageGenerator.getTextContent(
-      from,
-      to,
-      tokenId,
-    );
+  // @OnEvent(Events.PIXEL_TRANSFER)
+  // async tweetPixelEventImage({
+  //   from,
+  //   to,
+  //   tokenId,
+  // }: Omit<
+  //   PixelTransferEventPayload,
+  //   'event' | 'blockCreatedAt' | 'blockNumber'
+  // >) {
+  //   this.logger.log(`Posting to twitter:: (${tokenId}) ${from} -> ${to}`);
+  //   const textContent = await this.imageGenerator.getTextContent(
+  //     from,
+  //     to,
+  //     tokenId,
+  //   );
 
-    const image = await this.imageGenerator.generatePostImage(
-      from === this.ethers.zeroAddress ? 'mint' : 'burn',
-      tokenId,
-    );
+  //   const image = await this.imageGenerator.generatePostImage(
+  //     from === this.ethers.zeroAddress ? 'mint' : 'burn',
+  //     tokenId,
+  //   );
 
-    let base64Image = await image.getBase64Async('image/png');
-    base64Image = base64Image.replace('data:image/png;base64,', '');
+  //   let base64Image = await image.getBase64Async('image/png');
+  //   base64Image = base64Image.replace('data:image/png;base64,', '');
 
-    const mediaId = await this.uploadImageToTwitter(base64Image);
-    await this.tweet(mediaId, textContent);
-  }
+  //   const mediaId = await this.uploadImageToTwitter(base64Image);
+  //   await this.tweet(mediaId, textContent);
+  // }
 
   private uploadImageToTwitter(mediaData): Promise<string> {
     return new Promise((resolve, _) => {
@@ -103,15 +97,15 @@ export class TwitterService implements OnModuleInit {
     return { uuid };
   }
 
-  public DEBUG_TEST() {
-    if (this.config.get('isDev')) {
-      return this.tweetPixelEventImage({
-        from: '0x0000000000000000000000000000000000000000',
-        to: '0xd801d86C10e2185a8FCBccFB7D7baF0A6C5B6BD5',
-        tokenId: 1191000,
-      });
-    } else {
-      this.logger.log(`DEBUG TEST only available in development mode`);
-    }
-  }
+  // public DEBUG_TEST() {
+  //   if (this.config.get('isDev')) {
+  //     return this.tweetPixelEventImage({
+  //       from: '0x0000000000000000000000000000000000000000',
+  //       to: '0xd801d86C10e2185a8FCBccFB7D7baF0A6C5B6BD5',
+  //       tokenId: 1191000,
+  //     });
+  //   } else {
+  //     this.logger.log(`DEBUG TEST only available in development mode`);
+  //   }
+  // }
 }

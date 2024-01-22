@@ -15,7 +15,6 @@ import { Cache } from 'cache-manager';
 import { ethers } from 'ethers';
 import { AppService } from './app.service';
 import { CoinGeckoService } from './coin-gecko/coin-gecko.service';
-import { DiscordService } from './discord/discord.service';
 import { PostTransfersDto } from './dto/PostTransfers.dto';
 import { EthersService } from './ethers/ethers.service';
 import {
@@ -41,7 +40,6 @@ export class AppController {
     private readonly ethers: EthersService,
     private readonly pixelService: OwnTheDogeContractService,
     private readonly twitter: TwitterService,
-    private readonly discord: DiscordService,
     private readonly gecko: CoinGeckoService,
     private readonly app: AppService,
     private readonly freeMoney: FreeMoneyService,
@@ -235,17 +233,11 @@ export class AppController {
     return { id: uuid };
   }
 
-  @Get('twitter/test')
-  async getTwitterBotTest() {
-    await this.twitter.DEBUG_TEST();
-    return { success: true };
-  }
-
-  @Get('discord/test/:tokenId')
-  async getDiscordBotTest(@Param() params: { tokenId: number }) {
-    await this.discord.DEBUG_TEST(params.tokenId);
-    return { success: true };
-  }
+  // @Get('twitter/test')
+  // async getTwitterBotTest() {
+  //   await this.twitter.DEBUG_TEST();
+  //   return { success: true };
+  // }
 
   @Get('sync/names')
   syncNames() {

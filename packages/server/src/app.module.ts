@@ -11,34 +11,22 @@ import { AlchemyService } from './alchemy/alchemy.service';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AwsService } from './aws/aws.service';
-import { BlockcypherService } from './blockcypher/blockcypher.service';
 import { CacheService } from './cache/cache.service';
 import { ChainanalysisService } from './chainanalysis/chainanalysis.service';
 import { CoinGeckoService } from './coin-gecko/coin-gecko.service';
 import configuration, { Configuration } from './config/configuration';
-import { DiscordService } from './discord/discord.service';
-import { DonationsService } from './donations/donations.service';
+import { CurrencyDripService } from './currency-drip/currency-drip.service';
+import { CurrencyService } from './currency/currency.service';
 import { EthersService } from './ethers/ethers.service';
-import { ImageGeneratorService } from './image-generator/image-generator.service';
+import { FreeMoneyService } from './free-money/free-money.service';
 import { IndexController } from './index/index.controller';
 import { MydogeService } from './mydoge/mydoge.service';
 import { OwnTheDogeContractService } from './ownthedoge-contracts/ownthedoge-contracts.service';
-import { PhController } from './ph/ph.controller';
-import { PhService } from './ph/ph.service';
 import { PixelTransferRepository } from './pixel-transfer/pixel-transfer.repository';
 import { PixelTransferService } from './pixel-transfer/pixel-transfer.service';
 import { PrismaService } from './prisma.service';
-import { RainbowSwapsRepository } from './rainbow-swaps/rainbow-swaps.repository';
-import { RainbowSwapsService } from './rainbow-swaps/rainbow-swaps.service';
-import { SochainService } from './sochain/sochain.service';
-import { DonationController } from './statue-campaign/statue-campaign.controller';
-import { StatueCampaignService } from './statue-campaign/statue-campaign.service';
 import { TwitterService } from './twitter/twitter.service';
 import { UnstoppableDomainsService } from './unstoppable-domains/unstoppable-domains.service';
-import { DonationHookRequestService } from './donation-hook-request/donation-hook-request.service';
-import { FreeMoneyService } from './free-money/free-money.service';
-import { CurrencyDripService } from './currency-drip/currency-drip.service';
-import { CurrencyService } from './currency/currency.service';
 
 @Module({
   imports: [
@@ -79,8 +67,8 @@ import { CurrencyService } from './currency/currency.service';
   controllers: [
     AppController,
     IndexController,
-    DonationController,
-    PhController,
+    // DonationController,
+    // PhController,
   ],
   providers: [
     PrismaService,
@@ -88,29 +76,28 @@ import { CurrencyService } from './currency/currency.service';
     OwnTheDogeContractService,
     PixelTransferRepository,
     TwitterService,
-    DiscordService,
-    ImageGeneratorService,
-    ImageGeneratorService,
+    // ImageGeneratorService,
     AwsService,
     CoinGeckoService,
     PixelTransferService,
     UnstoppableDomainsService,
-    StatueCampaignService,
-    AlchemyService,
-    RainbowSwapsRepository,
-    RainbowSwapsService,
-    DonationsService,
-    SochainService,
     CacheService,
     MydogeService,
     ChainanalysisService,
     AppService,
-    BlockcypherService,
-    PhService,
-    DonationHookRequestService,
+    AlchemyService,
     FreeMoneyService,
     CurrencyDripService,
     CurrencyService,
+    // DiscordService,
+    // StatueCampaignService,
+    // RainbowSwapsRepository,
+    // RainbowSwapsService,
+    // DonationsService,
+    // SochainService,
+    // BlockcypherService,
+    // PhService,
+    // DonationHookRequestService,
   ],
 })
 export class AppModule {}

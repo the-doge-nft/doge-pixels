@@ -1,19 +1,8 @@
 import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
-import {
-  Client,
-  GatewayIntentBits,
-  EmbedBuilder,
-  GuildChannel,
-  TextChannel,
-} from 'discord.js';
 import { ConfigService } from '@nestjs/config';
-import { Configuration } from '../config/configuration';
-import { OnEvent } from '@nestjs/event-emitter';
-import { Events, PixelTransferEventPayload } from '../events';
-import { ImageGeneratorService } from '../image-generator/image-generator.service';
-import { EthersService } from '../ethers/ethers.service';
 import { InjectSentry, SentryService } from '@travelerdev/nestjs-sentry';
 import { S3 } from 'aws-sdk';
+import { Configuration } from '../config/configuration';
 
 @Injectable()
 export class AwsService implements OnModuleInit {
