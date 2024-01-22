@@ -27,7 +27,7 @@ const logAppVersionToConsole = () => {
 };
 
 const useWeb3WagmiSync = () => {
-  const { chain, chains } = useNetwork();
+  const { chain } = useNetwork();
   const { data: signer } = useSigner();
   const provider = useProvider();
   useEffect(() => {
