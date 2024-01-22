@@ -14,7 +14,7 @@ import { ToastContainer } from "./DSL/Toast/Toast";
 import wagmiClient, { chains } from "./services/wagmi";
 
 Sentry.init({
-  dsn: process.env.REACT_APP_SENTRY_DSN,
+  dsn: process.env.NEXT_PUBLIC_SENTRY_DSN,
   integrations: [new Integrations.BrowserTracing()],
   tracesSampleRate: 1.0,
 });

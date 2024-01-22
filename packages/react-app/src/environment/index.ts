@@ -17,6 +17,7 @@ interface Environment {
     targetChainId: number;
     targetNetworkName: string;
     infuraKey: string;
+    walletConnectProjectId: string;
   };
 }
 

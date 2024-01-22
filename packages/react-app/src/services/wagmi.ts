@@ -9,6 +9,7 @@ export const { chains, provider } = configureChains([targetChain], [infuraProvid
 const { connectors } = getDefaultWallets({
   appName: "Doge Pixel Portal",
   chains,
+  projectId: process.env.NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID,
 });
 
 const wagmiClient = createClient({
