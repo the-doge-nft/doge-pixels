@@ -11,13 +11,13 @@ import { ConfigService } from '@nestjs/config';
 import { EventEmitter2, OnEvent } from '@nestjs/event-emitter';
 import { TokenType } from '@prisma/client';
 import { ethers, Signer } from 'ethers';
-import { sleep } from 'src/helpers/sleep';
 import { Configuration } from '../config/configuration';
 import * as KobosuJson from '../constants/kobosu.json';
 import * as ABI from '../contracts/hardhat_contracts.json';
 import { CurrencyService } from '../currency/currency.service';
 import { EthersService } from '../ethers/ethers.service';
 import { Events, PixelTransferEventPayload } from '../events';
+import { sleep } from '../helpers/sleep';
 import { PixelTransferService } from '../pixel-transfer/pixel-transfer.service';
 
 @Injectable()
@@ -39,7 +39,6 @@ export class OwnTheDogeContractService implements OnModuleInit {
     private eventEmitter: EventEmitter2,
     private http: HttpService,
     private currency: CurrencyService,
-    // @InjectSentry() private readonly sentryClient: SentryService,
   ) {}
 
   async onModuleInit() {
@@ -62,7 +61,6 @@ export class OwnTheDogeContractService implements OnModuleInit {
   ) {
     const logMessage = 'Provider connected';
     this.logger.log(logMessage);
-    // this.sentryClient.instance().captureMessage(logMessage);
 
     this.dripDogSigner = new ethers.Wallet(
       this.configService.get('dripKey'),
