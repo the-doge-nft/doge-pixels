@@ -11,6 +11,7 @@ import { ConfigService } from '@nestjs/config';
 import { EventEmitter2, OnEvent } from '@nestjs/event-emitter';
 import { TokenType } from '@prisma/client';
 import { ethers, Signer } from 'ethers';
+import { sleep } from 'src/helpers/sleep';
 import { Configuration } from '../config/configuration';
 import * as KobosuJson from '../constants/kobosu.json';
 import * as ABI from '../contracts/hardhat_contracts.json';
@@ -165,6 +166,7 @@ export class OwnTheDogeContractService implements OnModuleInit {
     const step = 5000;
     const filter = this.pxContract.filters.Transfer(null, null);
     for (let i = fromBlock; i <= toBlock; i += step + 1) {
+      await sleep(500);
       const _logs = await this.pxContract.queryFilter(filter, i, i + step);
       logs.push(..._logs);
     }
