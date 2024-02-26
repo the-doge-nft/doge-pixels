@@ -54,9 +54,6 @@ export class EthersService implements OnModuleInit {
     this.logger.log(logMessage);
     // this.sentryClient.instance().captureMessage(logMessage);
 
-    const infuraWsEndpoint = this.configService.get('infura').wsEndpoint;
-    console.log(infuraWsEndpoint);
-
     if (this.configService.get('appEnv') === AppEnv.test) {
       this.provider = new ethers.providers.WebSocketProvider(
         `ws://127.0.0.1:8545`,

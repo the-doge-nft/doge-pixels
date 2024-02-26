@@ -4,7 +4,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { ScheduleModule } from '@nestjs/schedule';
 import { ServeStaticModule } from '@nestjs/serve-static';
-import * as redisStore from 'cache-manager-redis-store';
+import * as redisStore from 'cache-manager-redis-yet';
 import { join } from 'path';
 import { AlchemyService } from './alchemy/alchemy.service';
 import { AppController } from './app.controller';
@@ -54,12 +54,12 @@ import { UnstoppableDomainsService } from './unstoppable-domains/unstoppable-dom
       useFactory: (config: ConfigService<Configuration>) => {
         console.log(config.get('redis'));
         return {
-          store: redisStore,
+          store: redisStore as unknown as any,
           host: config.get('redis').host,
           port: config.get('redis').port,
           auth_pass: config.get('redis').password,
           ttl: 10,
-          max: 10000,
+          max: 100000,
         };
       },
       inject: [ConfigService],
