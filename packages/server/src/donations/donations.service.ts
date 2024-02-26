@@ -1,6 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { ChainName, Donations, Prisma } from '@prisma/client';
-import { InjectSentry, SentryService } from '@travelerdev/nestjs-sentry';
 import { AssetTransfersWithMetadataResult } from 'alchemy-sdk';
 import { ethers } from 'ethers';
 import { AlchemyService } from '../alchemy/alchemy.service';
@@ -55,7 +54,7 @@ export class DonationsService {
     private readonly ethers: EthersService,
     private readonly mydoge: MydogeService,
     private readonly ud: UnstoppableDomainsService,
-    @InjectSentry() private readonly sentryClient: SentryService,
+    // @InjectSentry() private readonly sentryClient: SentryService,
   ) {}
 
   async upsertDogeDonations(receivedTxs: TxReceived[], toAddress: string) {
@@ -116,7 +115,7 @@ export class DonationsService {
       } catch (e) {
         const message = `could not upsert tx: ${transfer.hash}`;
         this.logger.error(message, e);
-        this.sentryClient.instance().captureException(e);
+        // this.sentryClient.instance().captureException(e);
       }
     }
   }

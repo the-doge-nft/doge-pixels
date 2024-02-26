@@ -1,6 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { ClientSide, EthereumNetwork, RainbowSwaps } from '@prisma/client';
-import { InjectSentry, SentryService } from '@travelerdev/nestjs-sentry';
 import {
   AssetTransfersCategory,
   AssetTransfersOrder,
@@ -30,7 +29,7 @@ export class RainbowSwapsService {
     private readonly ethers: EthersService,
     private readonly rainbowSwapRepo: RainbowSwapsRepository,
     private readonly coingecko: CoinGeckoService,
-    @InjectSentry() private readonly sentryClient: SentryService,
+    // @InjectSentry() private readonly sentryClient: SentryService,
   ) {}
 
   init() {
@@ -85,7 +84,7 @@ export class RainbowSwapsService {
     } catch (e) {
       this.logger.error(`Error getting recent DOG swaps`);
       this.logger.error(e);
-      this.sentryClient.instance().captureException(e);
+      // this.sentryClient.instance().captureException(e);
     }
   }
 
@@ -396,7 +395,7 @@ export class RainbowSwapsService {
       } catch (e) {
         this.logger.error('Could not get rainbow swap balance');
         this.logger.error(e);
-        this.sentryClient.instance().captureException(e);
+        // this.sentryClient.instance().captureException(e);
       }
     }
     return balances;

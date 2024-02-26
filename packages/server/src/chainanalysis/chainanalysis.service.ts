@@ -2,7 +2,6 @@ import { HttpService } from '@nestjs/axios';
 import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Cron, CronExpression } from '@nestjs/schedule';
-import { InjectSentry, SentryService } from '@travelerdev/nestjs-sentry';
 import { catchError, firstValueFrom } from 'rxjs';
 import { Configuration } from '../config/configuration';
 import { PixelTransferService } from '../pixel-transfer/pixel-transfer.service';
@@ -21,7 +20,7 @@ export class ChainanalysisService implements OnModuleInit {
     private readonly config: ConfigService<Configuration>,
     private readonly http: HttpService,
     private readonly pixels: PixelTransferService,
-    @InjectSentry() private readonly sentryClient: SentryService,
+    // @InjectSentry() private readonly sentryClient: SentryService,
   ) {
     this.apiKey = this.config.get('chainAnalysisKey');
     if (this.config.get('isProd')) {
@@ -78,7 +77,7 @@ export class ChainanalysisService implements OnModuleInit {
     );
     if (this.riskStatusToNotify.includes(data.risk)) {
       const message = `[RISK ALERT] ${address} has a risk setting of ${data.risk}`;
-      this.sentryClient.instance().captureMessage(message);
+      // this.sentryClient.instance().captureMessage(message);
       this.logger.log(message);
       this.logger.log(data);
     }
@@ -110,7 +109,7 @@ export class ChainanalysisService implements OnModuleInit {
       throw new EntityNotFoundError(`User has not been registered: ${address}`);
     } else {
       this.logger.error(e);
-      this.sentryClient.instance().captureException(e);
+      // this.sentryClient.instance().captureException(e);
       throw new Error(`Could not get risk status for address: ${address}`);
     }
   }

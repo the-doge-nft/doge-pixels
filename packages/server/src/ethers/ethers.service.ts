@@ -1,7 +1,6 @@
 import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { EventEmitter2 } from '@nestjs/event-emitter';
-import { InjectSentry, SentryService } from '@travelerdev/nestjs-sentry';
 import { ethers } from 'ethers';
 import { AppEnv } from '../config/configuration';
 import { Events } from '../events';
@@ -28,7 +27,7 @@ export class EthersService implements OnModuleInit {
       infura: { wsEndpoint: string };
     }>,
     private eventEmitter: EventEmitter2,
-    @InjectSentry() private readonly sentryClient: SentryService,
+    // @InjectSentry() private readonly sentryClient: SentryService,
     private readonly cache: CacheService,
   ) {
     const appEnv = this.configService.get('appEnv');
@@ -53,7 +52,10 @@ export class EthersService implements OnModuleInit {
   initWS() {
     const logMessage = `Creating WS provider on network: ${this.network}`;
     this.logger.log(logMessage);
-    this.sentryClient.instance().captureMessage(logMessage);
+    // this.sentryClient.instance().captureMessage(logMessage);
+
+    const infuraWsEndpoint = this.configService.get('infura').wsEndpoint;
+    console.log(infuraWsEndpoint);
 
     if (this.configService.get('appEnv') === AppEnv.test) {
       this.provider = new ethers.providers.WebSocketProvider(
@@ -101,7 +103,7 @@ export class EthersService implements OnModuleInit {
     provider._websocket.on('close', (err) => {
       const logMessage = 'Websocket connection closed';
       this.logger.error(logMessage);
-      this.sentryClient.instance().captureMessage(logMessage);
+      // this.sentryClient.instance().captureMessage(logMessage);
 
       if (keepAliveInterval) {
         clearInterval(keepAliveInterval);

@@ -3,7 +3,6 @@ import { ConfigService } from '@nestjs/config';
 import { Client, GatewayIntentBits } from 'discord.js';
 import { Configuration } from '../config/configuration';
 // import { ImageGeneratorService } from '../image-generator/image-generator.service';
-import { InjectSentry, SentryService } from '@travelerdev/nestjs-sentry';
 import { EthersService } from '../ethers/ethers.service';
 
 @Injectable()
@@ -15,7 +14,7 @@ export class DiscordService implements OnModuleInit {
     private readonly config: ConfigService<Configuration>,
     // private readonly imageGenerator: ImageGeneratorService,
     private readonly ethers: EthersService,
-    @InjectSentry() private readonly sentryClient: SentryService,
+    // @InjectSentry() private readonly sentryClient: SentryService,
   ) {}
 
   onModuleInit() {

@@ -1,6 +1,5 @@
 import { HttpService } from '@nestjs/axios';
 import { Injectable, Logger } from '@nestjs/common';
-import { InjectSentry, SentryService } from '@travelerdev/nestjs-sentry';
 import { catchError, firstValueFrom } from 'rxjs';
 import { sleepAndTryAgain } from '../helpers/sleep';
 
@@ -61,7 +60,7 @@ export class SochainService {
   private readonly MAX_TXS_PER_REQUEST = 100;
   constructor(
     private readonly http: HttpService,
-    @InjectSentry() private readonly sentryClient: SentryService,
+    // @InjectSentry() private readonly sentryClient: SentryService,
   ) {}
 
   private async getTxsReceived(
@@ -140,7 +139,7 @@ export class SochainService {
 
   private handleError(e: any) {
     this.logger.error(`sochain error: ${e}`);
-    this.sentryClient.instance().captureException(e);
+    // this.sentryClient.instance().captureException(e);
   }
 
   getTxExplorerUrl(txid: string) {

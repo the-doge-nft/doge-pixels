@@ -1,6 +1,5 @@
 import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { Campaign, Donations } from '@prisma/client';
-import { InjectSentry, SentryService } from '@travelerdev/nestjs-sentry';
 import { AssetTransfersCategory, AssetTransfersOrder } from 'alchemy-sdk';
 import { ethers } from 'ethers';
 import { CoinGeckoService } from '../coin-gecko/coin-gecko.service';
@@ -50,7 +49,7 @@ export class StatueCampaignService implements OnModuleInit {
     private readonly coingecko: CoinGeckoService,
     private readonly blockcypher: BlockcypherService,
     private readonly sochain: SochainService,
-    @InjectSentry() private readonly sentryClient: SentryService,
+    // @InjectSentry() private readonly sentryClient: SentryService,
   ) {}
 
   // doge donations
@@ -164,7 +163,7 @@ export class StatueCampaignService implements OnModuleInit {
           this.logger.error(
             `Could not get balance for: ${balance.contractAddress}`,
           );
-          this.sentryClient.instance().captureException(e);
+          // this.sentryClient.instance().captureException(e);
         }
       }
     }
@@ -267,7 +266,7 @@ export class StatueCampaignService implements OnModuleInit {
       this.logger.error(
         `Could not sync Doge donations for address: ${address}`,
       );
-      this.sentryClient.instance().captureException(e);
+      // this.sentryClient.instance().captureException(e);
     }
   }
 

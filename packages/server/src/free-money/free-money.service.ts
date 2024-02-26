@@ -1,5 +1,4 @@
 import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
-import { InjectSentry, SentryService } from '@travelerdev/nestjs-sentry';
 import { ethers } from 'ethers';
 import { CurrencyDripService } from '../currency-drip/currency-drip.service';
 import { CurrencyService } from '../currency/currency.service';
@@ -21,7 +20,7 @@ export class FreeMoneyService implements OnModuleInit {
     private readonly currencyDrip: CurrencyDripService,
     private readonly otd: OwnTheDogeContractService,
     private readonly currency: CurrencyService,
-    @InjectSentry() private readonly sentry: SentryService,
+    // @InjectSentry() private readonly sentry: SentryService,
   ) {}
 
   onModuleInit() {
@@ -50,13 +49,13 @@ export class FreeMoneyService implements OnModuleInit {
         ethers.utils.parseEther(this.AMOUNT_TO_DRIP.toString()),
       )
     ) {
-      this.sentry
-        .instance()
-        .captureMessage(
-          `NOT ENOUGH DRIP BALANCE -- ${ethers.utils.parseEther(
-            this.AMOUNT_TO_DRIP.toString(),
-          )}`,
-        );
+      // this.sentry
+      //   .instance()
+      //   .captureMessage(
+      //     `NOT ENOUGH DRIP BALANCE -- ${ethers.utils.parseEther(
+      //       this.AMOUNT_TO_DRIP.toString(),
+      //     )}`,
+      //   );
       throw new NotEnoughBalanceError();
     }
 
@@ -70,11 +69,11 @@ export class FreeMoneyService implements OnModuleInit {
       `ESTIMATED FEE BALANCE: ${estimatedTxFee} -- ETH BALANCE: ${ethBalance}`,
     );
     if (ethers.BigNumber.from(estimatedTxFee).gt(ethBalance)) {
-      this.sentry
-        .instance()
-        .captureMessage(
-          `NOT ENOUGH ETH BALANCE -- ESTIMATED: ${estimatedTxFee} -- BALANCE: ${ethBalance}`,
-        );
+      // this.sentry
+      //   .instance()
+      //   .captureMessage(
+      //     `NOT ENOUGH ETH BALANCE -- ESTIMATED: ${estimatedTxFee} -- BALANCE: ${ethBalance}`,
+      //   );
       throw new NotEnoughEthBalanceError();
     }
 

@@ -2,7 +2,6 @@ import { HttpService } from '@nestjs/axios';
 import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Campaign, ChainName } from '@prisma/client';
-import { InjectSentry, SentryService } from '@travelerdev/nestjs-sentry';
 import { Request } from 'express';
 import { Tx } from '../blockcypher/blockcypher.interfaces';
 import { Configuration } from '../config/configuration';
@@ -39,7 +38,7 @@ export class PhService {
     private readonly coingecko: CoinGeckoService,
     private readonly cache: CacheService,
     private readonly config: ConfigService<Configuration>,
-    @InjectSentry() private readonly sentryClient: SentryService,
+    // @InjectSentry() private readonly sentryClient: SentryService,
   ) {
     if (this.config.get('isProd')) {
       this.phHookUrl = 'https://pleasr.house/api/webhooks/donations';
@@ -250,7 +249,7 @@ export class PhService {
         `ph hook error for donation: ${donation.id} -- received response: ${responseCode}`,
       );
 
-      this.sentryClient.instance().captureException(e);
+      // this.sentryClient.instance().captureException(e);
     } finally {
       await this.donationHook.create({
         data: { donationId, url, isSuccessful, responseCode, response },
@@ -318,7 +317,7 @@ export class PhService {
         `ph hook response: ${JSON.stringify(e?.response?.data)}`,
       );
       this.logger.error(`ph hook ERROR response code: ${e?.response.status}`);
-      this.sentryClient.instance().captureException(e);
+      // this.sentryClient.instance().captureException(e);
     }
     return donation;
   }

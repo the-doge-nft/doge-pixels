@@ -4,7 +4,6 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { ScheduleModule } from '@nestjs/schedule';
 import { ServeStaticModule } from '@nestjs/serve-static';
-import { SentryModule } from '@travelerdev/nestjs-sentry';
 import * as redisStore from 'cache-manager-redis-store';
 import { join } from 'path';
 import { AlchemyService } from './alchemy/alchemy.service';
@@ -42,24 +41,27 @@ import { UnstoppableDomainsService } from './unstoppable-domains/unstoppable-dom
     HttpModule.register({
       timeout: 5000,
     }),
-    SentryModule.forRootAsync({
-      imports: [ConfigModule],
-      useFactory: async (config: ConfigService<Configuration>) => ({
-        dsn: config.get('sentryDns'),
-        debug: true,
-        logLevels: ['debug'],
-      }),
-      inject: [ConfigService],
-    }),
+    // SentryModule.forRootAsync({
+    //   imports: [ConfigModule],
+    //   useFactory: async (config: ConfigService<Configuration>) => ({
+    //     dsn: config.get('sentryDns'),
+    //     debug: true,
+    //     logLevels: ['verbose'],
+    //   }),
+    //   inject: [ConfigService],
+    // }),
     CacheModule.registerAsync({
-      useFactory: (config: ConfigService<Configuration>) => ({
-        store: redisStore,
-        host: config.get('redis').host,
-        port: config.get('redis').port,
-        auth_pass: config.get('redis').password,
-        ttl: 10,
-        max: 10000,
-      }),
+      useFactory: (config: ConfigService<Configuration>) => {
+        console.log(config.get('redis'));
+        return {
+          store: redisStore,
+          host: config.get('redis').host,
+          port: config.get('redis').port,
+          auth_pass: config.get('redis').password,
+          ttl: 10,
+          max: 10000,
+        };
+      },
       inject: [ConfigService],
     }),
     ScheduleModule.forRoot(),

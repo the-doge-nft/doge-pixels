@@ -1,6 +1,5 @@
 import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { InjectSentry, SentryService } from '@travelerdev/nestjs-sentry';
 import { S3 } from 'aws-sdk';
 import { Configuration } from '../config/configuration';
 
@@ -11,7 +10,7 @@ export class AwsService implements OnModuleInit {
 
   constructor(
     private readonly config: ConfigService<Configuration>,
-    @InjectSentry() private readonly sentryClient: SentryService,
+    // @InjectSentry() private readonly sentryClient: SentryService,
   ) {
     this.s3Client = new S3({
       accessKeyId: this.config.get('aws').accessKey,

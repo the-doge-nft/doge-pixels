@@ -1,6 +1,5 @@
 import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { InjectSentry, SentryService } from '@travelerdev/nestjs-sentry';
 import { Configuration } from '../config/configuration';
 
 import * as crypto from 'crypto';
@@ -15,7 +14,7 @@ export class TwitterService implements OnModuleInit {
   constructor(
     private config: ConfigService<Configuration>,
     private aws: AwsService,
-    @InjectSentry() private readonly sentryClient: SentryService,
+    // @InjectSentry() private readonly sentryClient: SentryService,
   ) {}
 
   async onModuleInit() {
@@ -65,7 +64,7 @@ export class TwitterService implements OnModuleInit {
             return resolve(data.media_id_string);
           } else {
             this.logger.error(JSON.stringify(err));
-            this.sentryClient.instance().captureException(err);
+            // this.sentryClient.instance().captureException(err);
           }
         },
       );

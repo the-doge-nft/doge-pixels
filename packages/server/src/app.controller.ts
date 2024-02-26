@@ -10,7 +10,6 @@ import {
   Post,
   Render,
 } from '@nestjs/common';
-import { InjectSentry, SentryService } from '@travelerdev/nestjs-sentry';
 import { Cache } from 'cache-manager';
 import { ethers } from 'ethers';
 import { AppService } from './app.service';
@@ -44,7 +43,7 @@ export class AppController {
     private readonly app: AppService,
     private readonly freeMoney: FreeMoneyService,
     @Inject(CACHE_MANAGER) private cacheManager: Cache,
-    @InjectSentry() private readonly sentryClient: SentryService,
+    // @InjectSentry() private readonly sentryClient: SentryService,
   ) {}
 
   @Get('status')
@@ -184,7 +183,7 @@ export class AppController {
       const price = Number(usdPrice) * dogPerPixel;
       return { price };
     } catch (e) {
-      this.sentryClient.instance().captureException(e);
+      // this.sentryClient.instance().captureException(e);
       this.logger.error('Could not get coingecko price');
       return { price: null };
     }
