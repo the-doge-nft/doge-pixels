@@ -48,7 +48,7 @@ export interface Configuration {
   dripKey: string;
 }
 
-const configuration: Configuration = {
+const configuration = () => ({
   port: parseInt(process.env.PORT) || 3000,
   appEnv: (process.env.APP_ENV as AppEnv) || AppEnv.development,
   isProd: (process.env.APP_ENV as AppEnv) === AppEnv.production,
@@ -90,6 +90,6 @@ const configuration: Configuration = {
   blockCypherKey: process.env.BLOCKCYPHER_KEY,
   phSecret: process.env.PH_SECRET,
   dripKey: process.env.DRIP_KEY,
-};
+});
 
 export default configuration;

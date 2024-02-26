@@ -32,7 +32,7 @@ import { UnstoppableDomainsService } from './unstoppable-domains/unstoppable-dom
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      load: [() => configuration],
+      load: [configuration],
     }),
     ServeStaticModule.forRoot({
       rootPath: join(__dirname, 'public'),
