@@ -165,7 +165,7 @@ export class OwnTheDogeContractService implements OnModuleInit {
     const filter = this.pxContract.filters.Transfer(null, null);
     console.log('filter', filter);
     for (let i = fromBlock; i <= toBlock; i += step + 1) {
-      await sleep(0.1);
+      await sleep(0.5);
       const _logs = await this.pxContract.queryFilter(filter, i, i + step);
       console.log('got logs', _logs.length);
       logs.push(..._logs);
