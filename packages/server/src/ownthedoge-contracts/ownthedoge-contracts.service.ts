@@ -163,9 +163,11 @@ export class OwnTheDogeContractService implements OnModuleInit {
     const logs = [];
     const step = 5000;
     const filter = this.pxContract.filters.Transfer(null, null);
+    console.log('filter', filter);
     for (let i = fromBlock; i <= toBlock; i += step + 1) {
-      await sleep(50);
+      await sleep(0.05);
       const _logs = await this.pxContract.queryFilter(filter, i, i + step);
+      console.log('got logs', _logs.length);
       logs.push(..._logs);
     }
     this.logger.log(`Got pixel transfer logs of length: ${logs.length}`);
