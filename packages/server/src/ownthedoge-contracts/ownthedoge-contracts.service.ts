@@ -17,7 +17,6 @@ import * as ABI from '../contracts/hardhat_contracts.json';
 import { CurrencyService } from '../currency/currency.service';
 import { EthersService } from '../ethers/ethers.service';
 import { Events, PixelTransferEventPayload } from '../events';
-import { sleep } from '../helpers/sleep';
 import { PixelTransferService } from '../pixel-transfer/pixel-transfer.service';
 
 @Injectable()
@@ -165,7 +164,6 @@ export class OwnTheDogeContractService implements OnModuleInit {
     const filter = this.pxContract.filters.Transfer(null, null);
     console.log('filter', filter);
     for (let i = fromBlock; i <= toBlock; i += step + 1) {
-      await sleep(0.5);
       const _logs = await this.pxContract.queryFilter(filter, i, i + step);
       console.log('got logs', _logs.length);
       logs.push(..._logs);
