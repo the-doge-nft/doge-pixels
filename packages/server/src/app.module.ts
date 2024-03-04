@@ -51,7 +51,7 @@ import { UnstoppableDomainsService } from './unstoppable-domains/unstoppable-dom
     //   inject: [ConfigService],
     // }),
     CacheModule.register({
-      ttl: 10,
+      ttl: 60 * 60 * 10,
       max: 100000,
     }),
     ScheduleModule.forRoot(),
