@@ -24,7 +24,7 @@ const Footer = observer(() => {
           <a
             target={"_blank"}
             rel="noreferrer"
-            href={"https://discord.com/invite/thedogenft"}
+            href={"https://discord.gg/ownthedoge"}
             style={{ display: "flex", alignItems: "center" }}
           >
             <Icon icon={"discord"} boxSize={5} />
