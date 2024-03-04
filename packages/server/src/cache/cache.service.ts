@@ -13,7 +13,7 @@ export class CacheService {
   }
 
   set<T>(key: string, value?: any, ttl?: number) {
-    return this.cache.set(key, value === null ? this.NULL : value);
+    return this.cache.set(key, value === null ? this.NULL : value, ttl * 1000);
   }
 
   del(key: string) {

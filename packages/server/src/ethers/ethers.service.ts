@@ -28,7 +28,6 @@ export class EthersService implements OnModuleInit {
       infura: { wsEndpoint: string };
     }>,
     private eventEmitter: EventEmitter2,
-    // @InjectSentry() private readonly sentryClient: SentryService,
     @Inject(CACHE_MANAGER) private readonly cache: CacheService,
   ) {
     const appEnv = this.configService.get('appEnv');
@@ -99,7 +98,6 @@ export class EthersService implements OnModuleInit {
     provider._websocket.on('close', (err) => {
       const logMessage = 'Websocket connection closed';
       this.logger.error(logMessage);
-      // this.sentryClient.instance().captureMessage(logMessage);
 
       if (keepAliveInterval) {
         clearInterval(keepAliveInterval);
@@ -120,15 +118,11 @@ export class EthersService implements OnModuleInit {
   }
 
   async getEnsName(address: string) {
-    // this.logger.log(`querying ens: ${address}`);
     return this.provider.lookupAddress(address);
   }
 
   async refreshEnsCache(address: string) {
     const ens = await this.getEnsName(address);
-    this.logger.log(
-      `refreshing ens cache for ${address} to ${ens ? ens : 'null'}`,
-    );
     await this.cache.set(
       this.getEnsCacheKey(address),
       ens,
