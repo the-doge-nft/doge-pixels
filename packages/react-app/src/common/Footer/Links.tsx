@@ -1,6 +1,6 @@
 export const socialLinks = [
   { title: "Twitter", link: "https://twitter.com/ownthedoge" },
-  { title: "Discord", link: "https://discord.com/invite/thedogenft" },
+  { title: "Discord", link: "https://discord.gg/ownthedoge" },
   { title: "Telegram", link: "https://t.me/ownthedoge" },
   { title: "Reddit", link: "https://www.reddit.com/r/ownthedoge/" },
   { title: "Youtube", link: "https://www.youtube.com/channel/UCSKWuhABdkFJ4UpjvlnOrNg" },
