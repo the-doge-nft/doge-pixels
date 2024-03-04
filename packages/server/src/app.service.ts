@@ -14,12 +14,9 @@ export class AppService implements OnModuleInit {
   constructor(
     private readonly ethers: EthersService,
     private readonly myDoge: MydogeService,
-    // private readonly swapsRepo: RainbowSwapsRepository,
     private readonly pixelTranserRepo: PixelTransferRepository,
     private readonly ud: UnstoppableDomainsService,
     private readonly coingecko: CoinGeckoService,
-    // private readonly rainbowSwapsRepo: RainbowSwapsRepository,
-    // private readonly donations: DonationsService,
   ) {}
 
   onModuleInit() {
@@ -29,21 +26,8 @@ export class AppService implements OnModuleInit {
 
   @Cron(CronExpression.EVERY_5_HOURS)
   async cacheNames() {
-    await Promise.all([
-      // this.cacheDogeNames(),
-      this.cacheUdNames(),
-      this.cacheEnsNames(),
-    ]);
+    await Promise.all([this.cacheUdNames(), this.cacheEnsNames()]);
   }
-
-  // async cacheDogeNames() {
-  //   const addresses = await this.getDogeAddresses();
-  //   for (const address of addresses) {
-  //     try {
-  //       await this.myDoge.refreshCachedName(address);
-  //     } catch (e) {}
-  //   }
-  // }
 
   async cacheUdNames() {
     const addresses = await this.getEthereumAddresses();

@@ -53,8 +53,6 @@ export class EthersService implements OnModuleInit {
   initWS() {
     const logMessage = `Creating WS provider on network: ${this.network}`;
     this.logger.log(logMessage);
-    // this.sentryClient.instance().captureMessage(logMessage);
-
     if (this.configService.get('appEnv') === AppEnv.test) {
       this.provider = new ethers.providers.WebSocketProvider(
         `ws://127.0.0.1:8545`,
@@ -128,6 +126,9 @@ export class EthersService implements OnModuleInit {
 
   async refreshEnsCache(address: string) {
     const ens = await this.getEnsName(address);
+    this.logger.log(
+      `refreshing ens cache for ${address} to ${ens ? ens : 'null'}`,
+    );
     await this.cache.set(
       this.getEnsCacheKey(address),
       ens,
