@@ -1,4 +1,5 @@
-import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
+import { CACHE_MANAGER } from '@nestjs/cache-manager';
+import { Inject, Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { ethers } from 'ethers';
@@ -28,7 +29,7 @@ export class EthersService implements OnModuleInit {
     }>,
     private eventEmitter: EventEmitter2,
     // @InjectSentry() private readonly sentryClient: SentryService,
-    private readonly cache: CacheService,
+    @Inject(CACHE_MANAGER) private readonly cache: CacheService,
   ) {
     const appEnv = this.configService.get('appEnv');
     if (appEnv === AppEnv.production) {

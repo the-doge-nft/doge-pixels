@@ -1,11 +1,5 @@
-import {
-  CacheInterceptor,
-  CacheKey,
-  CacheTTL,
-  Controller,
-  Get,
-  UseInterceptors,
-} from '@nestjs/common';
+import { CacheInterceptor, CacheKey, CacheTTL } from '@nestjs/cache-manager';
+import { Controller, Get, UseInterceptors } from '@nestjs/common';
 import { RainbowSwapsRepository } from '../rainbow-swaps/rainbow-swaps.repository';
 import { RainbowSwapsService } from '../rainbow-swaps/rainbow-swaps.service';
 import { StatueCampaignService } from './statue-campaign.service';

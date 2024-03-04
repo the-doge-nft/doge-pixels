@@ -1,7 +1,6 @@
 import {
   BadRequestException,
   Body,
-  CACHE_MANAGER,
   Controller,
   Get,
   Inject,
@@ -27,6 +26,7 @@ import { OwnTheDogeContractService } from './ownthedoge-contracts/ownthedoge-con
 import { PixelTransferRepository } from './pixel-transfer/pixel-transfer.repository';
 import { PixelTransferService } from './pixel-transfer/pixel-transfer.service';
 import { TwitterService } from './twitter/twitter.service';
+import { CACHE_MANAGER } from '@nestjs/cache-manager';
 
 @Controller('/v1')
 export class AppController {
@@ -43,7 +43,6 @@ export class AppController {
     private readonly app: AppService,
     private readonly freeMoney: FreeMoneyService,
     @Inject(CACHE_MANAGER) private cacheManager: Cache,
-    // @InjectSentry() private readonly sentryClient: SentryService,
   ) {}
 
   @Get('status')

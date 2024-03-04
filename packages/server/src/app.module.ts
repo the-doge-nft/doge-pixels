@@ -1,10 +1,10 @@
 import { HttpModule } from '@nestjs/axios';
-import { CacheModule, Module } from '@nestjs/common';
-import { ConfigModule, ConfigService } from '@nestjs/config';
+import { CacheModule } from '@nestjs/cache-manager';
+import { Module } from '@nestjs/common';
+import { ConfigModule } from '@nestjs/config';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { ScheduleModule } from '@nestjs/schedule';
 import { ServeStaticModule } from '@nestjs/serve-static';
-import * as redisStore from 'cache-manager-redis-yet';
 import { join } from 'path';
 import { AlchemyService } from './alchemy/alchemy.service';
 import { AppController } from './app.controller';
@@ -13,7 +13,7 @@ import { AwsService } from './aws/aws.service';
 import { CacheService } from './cache/cache.service';
 import { ChainanalysisService } from './chainanalysis/chainanalysis.service';
 import { CoinGeckoService } from './coin-gecko/coin-gecko.service';
-import configuration, { Configuration } from './config/configuration';
+import configuration from './config/configuration';
 import { CurrencyDripService } from './currency-drip/currency-drip.service';
 import { CurrencyService } from './currency/currency.service';
 import { EthersService } from './ethers/ethers.service';
@@ -50,20 +50,7 @@ import { UnstoppableDomainsService } from './unstoppable-domains/unstoppable-dom
     //   }),
     //   inject: [ConfigService],
     // }),
-    CacheModule.registerAsync({
-      useFactory: (config: ConfigService<Configuration>) => {
-        console.log(config.get('redis'));
-        return {
-          store: redisStore as unknown as any,
-          host: config.get('redis').host,
-          port: config.get('redis').port,
-          auth_pass: config.get('redis').password,
-          ttl: 10,
-          max: 100000,
-        };
-      },
-      inject: [ConfigService],
-    }),
+    CacheModule.register(),
     ScheduleModule.forRoot(),
   ],
   controllers: [
