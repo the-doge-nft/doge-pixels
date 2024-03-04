@@ -7,6 +7,7 @@ import { AppEnv } from '../config/configuration';
 import { Events } from '../events';
 import { formatAddress } from '../helpers/strings';
 import { CacheService } from './../cache/cache.service';
+import { PrismaService } from './../prisma.service';
 
 @Injectable()
 export class EthersService implements OnModuleInit {
@@ -28,6 +29,7 @@ export class EthersService implements OnModuleInit {
       infura: { wsEndpoint: string };
     }>,
     private eventEmitter: EventEmitter2,
+    private prisma: PrismaService,
     @Inject(CACHE_MANAGER) private readonly cache: CacheService,
   ) {
     const appEnv = this.configService.get('appEnv');
@@ -123,15 +125,24 @@ export class EthersService implements OnModuleInit {
 
   async refreshEnsCache(address: string) {
     const ens = await this.getEnsName(address);
-    await this.cache.set(
-      this.getEnsCacheKey(address),
-      ens,
-      this.secondsToCache,
-    );
+    if (!ens) {
+      return;
+    }
+    await this.prisma.user.upsert({
+      where: { address: address.toLowerCase() },
+      update: { ens },
+      create: { address: address.toLowerCase(), ens },
+    });
   }
 
-  getCachedEnsName(address: string) {
-    return this.cache.get<string>(this.getEnsCacheKey(address));
+  async getCachedEnsName(address: string) {
+    const user = await this.prisma.user.findUnique({
+      where: { address: address.toLowerCase() },
+    });
+    if (!user) {
+      return null;
+    }
+    return user.ens;
   }
 
   getIsValidEthereumAddress(address: string) {

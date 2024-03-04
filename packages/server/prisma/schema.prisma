@@ -119,3 +119,8 @@ model Currency {
   name            String?
   CurrencyDrip    CurrencyDrip[]
 }
+
+model User {
+  address String @id
+  ens    String?
+}
