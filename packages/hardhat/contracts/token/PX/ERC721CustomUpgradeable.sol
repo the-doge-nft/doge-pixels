@@ -17,7 +17,13 @@ import "../../proxy/utils/Initializable.sol";
  * the Metadata extension, but not including the Enumerable extension, which is available separately as
  * {ERC721Enumerable}.
  */
-contract ERC721CustomUpgradeable is Initializable, ContextUpgradeable, ERC165Upgradeable, IERC721Upgradeable, IERC721MetadataUpgradeable {
+contract ERC721CustomUpgradeable is
+    Initializable,
+    ContextUpgradeable,
+    ERC165Upgradeable,
+    IERC721Upgradeable,
+    IERC721MetadataUpgradeable
+{
     using AddressUpgradeable for address;
     using StringsUpgradeable for uint256;
 
@@ -42,13 +48,19 @@ contract ERC721CustomUpgradeable is Initializable, ContextUpgradeable, ERC165Upg
     /**
      * @dev Initializes the contract by setting a `name` and a `symbol` to the token collection.
      */
-    function __ERC721Custom_init(string memory name_, string memory symbol_) internal initializer {
+    function __ERC721Custom_init(
+        string memory name_,
+        string memory symbol_
+    ) internal initializer {
         __Context_init_unchained();
         __ERC165_init_unchained();
         __ERC721Custom_init_unchained(name_, symbol_);
     }
 
-    function __ERC721Custom_init_unchained(string memory name_, string memory symbol_) internal initializer {
+    function __ERC721Custom_init_unchained(
+        string memory name_,
+        string memory symbol_
+    ) internal initializer {
         _name = name_;
         _symbol = symbol_;
     }
@@ -56,27 +68,45 @@ contract ERC721CustomUpgradeable is Initializable, ContextUpgradeable, ERC165Upg
     /**
      * @dev See {IERC165-supportsInterface}.
      */
-    function supportsInterface(bytes4 interfaceId) public view virtual override(ERC165Upgradeable, IERC165Upgradeable) returns (bool) {
+    function supportsInterface(
+        bytes4 interfaceId
+    )
+        public
+        view
+        virtual
+        override(ERC165Upgradeable, IERC165Upgradeable)
+        returns (bool)
+    {
         return
-        interfaceId == type(IERC721Upgradeable).interfaceId ||
-        interfaceId == type(IERC721MetadataUpgradeable).interfaceId ||
-        super.supportsInterface(interfaceId);
+            interfaceId == type(IERC721Upgradeable).interfaceId ||
+            interfaceId == type(IERC721MetadataUpgradeable).interfaceId ||
+            super.supportsInterface(interfaceId);
     }
 
     /**
      * @dev See {IERC721-balanceOf}.
      */
-    function balanceOf(address owner) public view virtual override returns (uint256) {
-        require(owner != address(0), "ERC721: balance query for the zero address");
+    function balanceOf(
+        address owner
+    ) public view virtual override returns (uint256) {
+        require(
+            owner != address(0),
+            "ERC721: balance query for the zero address"
+        );
         return _balances[owner];
     }
 
     /**
      * @dev See {IERC721-ownerOf}.
      */
-    function ownerOf(uint256 tokenId) public view virtual override returns (address) {
+    function ownerOf(
+        uint256 tokenId
+    ) public view virtual override returns (address) {
         address owner = _owners[tokenId];
-        require(owner != address(0), "ERC721: owner query for nonexistent token");
+        require(
+            owner != address(0),
+            "ERC721: owner query for nonexistent token"
+        );
         return owner;
     }
 
@@ -97,11 +127,19 @@ contract ERC721CustomUpgradeable is Initializable, ContextUpgradeable, ERC165Upg
     /**
      * @dev See {IERC721Metadata-tokenURI}.
      */
-    function tokenURI(uint256 tokenId) public view virtual override returns (string memory) {
-        require(_exists(tokenId), "ERC721Metadata: URI query for nonexistent token");
+    function tokenURI(
+        uint256 tokenId
+    ) public view virtual override returns (string memory) {
+        require(
+            _exists(tokenId),
+            "ERC721Metadata: URI query for nonexistent token"
+        );
 
         string memory baseURI = _baseURI();
-        return bytes(baseURI).length > 0 ? string(abi.encodePacked(baseURI, tokenId.toString())) : "";
+        return
+            bytes(baseURI).length > 0
+                ? string(abi.encodePacked(baseURI, tokenId.toString()))
+                : "";
     }
 
     /**
@@ -131,8 +169,13 @@ contract ERC721CustomUpgradeable is Initializable, ContextUpgradeable, ERC165Upg
     /**
      * @dev See {IERC721-getApproved}.
      */
-    function getApproved(uint256 tokenId) public view virtual override returns (address) {
-        require(_exists(tokenId), "ERC721: approved query for nonexistent token");
+    function getApproved(
+        uint256 tokenId
+    ) public view virtual override returns (address) {
+        require(
+            _exists(tokenId),
+            "ERC721: approved query for nonexistent token"
+        );
 
         return _tokenApprovals[tokenId];
     }
@@ -140,14 +183,20 @@ contract ERC721CustomUpgradeable is Initializable, ContextUpgradeable, ERC165Upg
     /**
      * @dev See {IERC721-setApprovalForAll}.
      */
-    function setApprovalForAll(address operator, bool approved) public virtual override {
+    function setApprovalForAll(
+        address operator,
+        bool approved
+    ) public virtual override {
         _setApprovalForAll(_msgSender(), operator, approved);
     }
 
     /**
      * @dev See {IERC721-isApprovedForAll}.
      */
-    function isApprovedForAll(address owner, address operator) public view virtual override returns (bool) {
+    function isApprovedForAll(
+        address owner,
+        address operator
+    ) public view virtual override returns (bool) {
         return _operatorApprovals[owner][operator];
     }
 
@@ -160,7 +209,10 @@ contract ERC721CustomUpgradeable is Initializable, ContextUpgradeable, ERC165Upg
         uint256 tokenId
     ) public virtual override {
         //solhint-disable-next-line max-line-length
-        require(_isApprovedOrOwner(_msgSender(), tokenId), "ERC721: transfer caller is not owner nor approved");
+        require(
+            _isApprovedOrOwner(_msgSender(), tokenId),
+            "ERC721: transfer caller is not owner nor approved"
+        );
 
         _transfer(from, to, tokenId);
     }
@@ -185,7 +237,10 @@ contract ERC721CustomUpgradeable is Initializable, ContextUpgradeable, ERC165Upg
         uint256 tokenId,
         bytes memory _data
     ) public virtual override {
-        require(_isApprovedOrOwner(_msgSender(), tokenId), "ERC721: transfer caller is not owner nor approved");
+        require(
+            _isApprovedOrOwner(_msgSender(), tokenId),
+            "ERC721: transfer caller is not owner nor approved"
+        );
         _safeTransfer(from, to, tokenId, _data);
     }
 
@@ -214,7 +269,10 @@ contract ERC721CustomUpgradeable is Initializable, ContextUpgradeable, ERC165Upg
         bytes memory _data
     ) internal virtual {
         _transfer(from, to, tokenId);
-        require(_checkOnERC721Received(from, to, tokenId, _data), "ERC721: transfer to non ERC721Receiver implementer");
+        require(
+            _checkOnERC721Received(from, to, tokenId, _data),
+            "ERC721: transfer to non ERC721Receiver implementer"
+        );
     }
 
     /**
@@ -236,10 +294,18 @@ contract ERC721CustomUpgradeable is Initializable, ContextUpgradeable, ERC165Upg
      *
      * - `tokenId` must exist.
      */
-    function _isApprovedOrOwner(address spender, uint256 tokenId) internal view virtual returns (bool) {
-        require(_exists(tokenId), "ERC721: operator query for nonexistent token");
+    function _isApprovedOrOwner(
+        address spender,
+        uint256 tokenId
+    ) internal view virtual returns (bool) {
+        require(
+            _exists(tokenId),
+            "ERC721: operator query for nonexistent token"
+        );
         address owner = ERC721CustomUpgradeable.ownerOf(tokenId);
-        return (spender == owner || getApproved(tokenId) == spender || isApprovedForAll(owner, spender));
+        return (spender == owner ||
+            getApproved(tokenId) == spender ||
+            isApprovedForAll(owner, spender));
     }
 
     /**
@@ -336,7 +402,10 @@ contract ERC721CustomUpgradeable is Initializable, ContextUpgradeable, ERC165Upg
         address to,
         uint256 tokenId
     ) internal virtual {
-        require(ERC721CustomUpgradeable.ownerOf(tokenId) == from, "ERC721: transfer of token that is not own");
+        require(
+            ERC721CustomUpgradeable.ownerOf(tokenId) == from,
+            "ERC721: transfer of token that is not own"
+        );
         require(to != address(0), "ERC721: transfer to the zero address");
 
         _beforeTokenTransfer(from, to, tokenId);
@@ -393,11 +462,22 @@ contract ERC721CustomUpgradeable is Initializable, ContextUpgradeable, ERC165Upg
         bytes memory _data
     ) private returns (bool) {
         if (to.isContract()) {
-            try IERC721ReceiverUpgradeable(to).onERC721Received(_msgSender(), from, tokenId, _data) returns (bytes4 retval) {
-                return retval == IERC721ReceiverUpgradeable.onERC721Received.selector;
+            try
+                IERC721ReceiverUpgradeable(to).onERC721Received(
+                    _msgSender(),
+                    from,
+                    tokenId,
+                    _data
+                )
+            returns (bytes4 retval) {
+                return
+                    retval ==
+                    IERC721ReceiverUpgradeable.onERC721Received.selector;
             } catch (bytes memory reason) {
                 if (reason.length == 0) {
-                    revert("ERC721Custom: transfer to non ERC721Receiver implementer");
+                    revert(
+                        "ERC721Custom: transfer to non ERC721Receiver implementer"
+                    );
                 } else {
                     assembly {
                         revert(add(32, reason), mload(reason))

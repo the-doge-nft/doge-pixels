@@ -1,21 +1,29 @@
 // deploy/00_deploy_your_contract.js
 
-const {ethers, upgrades, tenderly} = require("hardhat");
+const { ethers, upgrades, tenderly } = require("hardhat");
 
-const prompts = require('prompts');
+const prompts = require("prompts");
 const fs = require("fs");
 const path = require("path");
-const {shouldShowTransactionTypeForHardfork} = require("hardhat/internal/hardhat-network/provider/output");
+const {
+  shouldShowTransactionTypeForHardfork,
+} = require("hardhat/internal/hardhat-network/provider/output");
 
 function sleep(ms) {
-  return new Promise(resolve => setTimeout(resolve, ms));
+  return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
 module.exports = async (args) => {
-  const {getNamedAccounts, deployments, getChainId, ContractFactory, network} = args
+  const {
+    getNamedAccounts,
+    deployments,
+    getChainId,
+    ContractFactory,
+    network,
+  } = args;
   let DOG20Address;
   const chainId = await getChainId();
-  if (args.network.name !== 'localhost' && args.network.name !== 'hardhat') {
+  if (args.network.name !== "localhost" && args.network.name !== "hardhat") {
     // const response = await prompts({
     //                                  type: 'confirm',
     //                                  name: 'value',
@@ -48,19 +56,23 @@ module.exports = async (args) => {
     process.exit(42070);
   }
   if (process.env.DOG20_ADDRESS) {
-    console.info(`[INFO] Got DOG20_ADDRESS, using ${process.env.DOG20_ADDRESS} as DOG ERC20 contract address`);
+    console.info(
+      `[INFO] Got DOG20_ADDRESS, using ${process.env.DOG20_ADDRESS} as DOG ERC20 contract address`
+    );
     DOG20Address = process.env.DOG20_ADDRESS;
   }
-  console.log(`============= config =============`)
-  console.log(`DOG_IPFS_DEPLOY_BASE_URI=${process.env.DOG_IPFS_DEPLOY_BASE_URI}`)
-  console.log(`DOG_IMG_WIDTH=${process.env.DOG_IMG_WIDTH}`)
-  console.log(`DOG_IMG_HEIGHT=${process.env.DOG_IMG_HEIGHT}`)
-  console.log(`==================================`)
+  console.log(`============= config =============`);
+  console.log(
+    `DOG_IPFS_DEPLOY_BASE_URI=${process.env.DOG_IPFS_DEPLOY_BASE_URI}`
+  );
+  console.log(`DOG_IMG_WIDTH=${process.env.DOG_IMG_WIDTH}`);
+  console.log(`DOG_IMG_HEIGHT=${process.env.DOG_IMG_HEIGHT}`);
+  console.log(`==================================`);
   console.log(process.env);
-  console.log(`==================================`)
+  console.log(`==================================`);
 
-  const {deploy} = deployments;
-  const {deployer} = await getNamedAccounts();
+  const { deploy } = deployments;
+  const { deployer } = await getNamedAccounts();
   let deployed;
   // const chainId = await getChainId();
   if (!DOG20Address) {
@@ -69,7 +81,7 @@ module.exports = async (args) => {
       // args: [[deployer,]],
       log: true,
     });
-    DOG20Address = deployed.address
+    DOG20Address = deployed.address;
     const DOG20 = await ethers.getContractAt("DOG20", deployed.address);
   }
   // deployed = await deploy("PX", {
@@ -87,7 +99,7 @@ module.exports = async (args) => {
     parseInt(process.env.DOG_IMG_WIDTH),
     parseInt(process.env.DOG_IMG_HEIGHT),
     process.env.DOG_FEES_ADDRESS_DEV,
-    process.env.DOG_FEES_ADDRESS_PLEASR
+    process.env.DOG_FEES_ADDRESS_PLEASR,
   ];
   if (0) {
     const proxyAdmin = await ethers.getNamedSigner("proxyAdmin");
@@ -127,36 +139,44 @@ module.exports = async (args) => {
   console.log("https://rinkeby.etherscan.io/address/" + PXProxy.address);
   // https://github.com/OpenZeppelin/openzeppelin-upgrades/issues/313
   await sleep(500);
-  const currentImplAddress = await upgrades.erc1967.getImplementationAddress(PXProxy.address);
+  const currentImplAddress = await upgrades.erc1967.getImplementationAddress(
+    PXProxy.address
+  );
   const PXLogic = await ethers.getContractAt("PX", currentImplAddress);
-  await sleep(1500)
+  await sleep(1500);
 
   console.log("Calling __PX_init on " + PXLogic.address + ", with: ");
   console.log(initArgs);
   let res = await PXProxy.__PX_init.apply(PXProxy, initArgs);
   console.log(res);
-  await sleep(1500)
+  await sleep(1500);
   // console.log("Calling 2nd time __PX_init, should fail");
   // res = await PXLogic.__PX_init.apply(PXLogic, initArgs);
   // console.log(res);
-  await sleep(10000)
+  await sleep(10000);
   console.log("====== ====== ====== ====== ====== ======");
   console.log("======      verify deployment      ======");
   console.log("====== ====== ====== ====== ====== ======");
-  console.log("BASE_URI:" + await PXProxy.BASE_URI());
-  console.log("puppersRemaining:" + await PXProxy.puppersRemaining());
+  console.log("BASE_URI:" + (await PXProxy.BASE_URI()));
+  console.log("puppersRemaining:" + (await PXProxy.puppersRemaining()));
   console.log("PROXY ADDR: " + PXProxy.address);
   console.log("IMPL ADDR: " + PXLogic.address);
   console.log("https://goerli.etherscan.io/address/" + PXProxy.address);
   console.log("https://goerli.etherscan.io/address/" + PXLogic.address);
-  fs.writeFileSync(path.join(__dirname, '..', '.openzeppelin', 'px_proxy_address_' + chainId), PXProxy.address);
   fs.writeFileSync(
-    path.join(__dirname, '..', '.openzeppelin', 'px_proxy_abi_' + chainId),
+    path.join(__dirname, "..", ".openzeppelin", "px_proxy_address_" + chainId),
+    PXProxy.address
+  );
+  fs.writeFileSync(
+    path.join(__dirname, "..", ".openzeppelin", "px_proxy_abi_" + chainId),
     JSON.stringify(PXProxy.interface.fragments, null, 2)
   );
-  fs.writeFileSync(path.join(__dirname, '..', '.openzeppelin', 'px_logic_address_' + chainId), PXLogic.address);
   fs.writeFileSync(
-    path.join(__dirname, '..', '.openzeppelin', 'px_logic_abi_' + chainId),
+    path.join(__dirname, "..", ".openzeppelin", "px_logic_address_" + chainId),
+    PXLogic.address
+  );
+  fs.writeFileSync(
+    path.join(__dirname, "..", ".openzeppelin", "px_logic_abi_" + chainId),
     JSON.stringify(PXLogic.interface.fragments, null, 2)
   );
   console.log(`FINISHED ALL`);

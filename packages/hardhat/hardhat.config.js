@@ -1,9 +1,8 @@
 const path = require("path");
 require("dotenv").config({
-                           path: path.resolve(__dirname, '..', '..', '.env')
-
-                         });
-const {utils} = require("ethers");
+  path: path.resolve(__dirname, "..", "..", ".env"),
+});
+const { utils } = require("ethers");
 const chalk = require("chalk");
 
 require("@nomiclabs/hardhat-waffle");
@@ -15,10 +14,10 @@ require("hardhat-gas-reporter");
 require("@eth-optimism/hardhat-ovm");
 require("@nomiclabs/hardhat-ethers");
 
-require('@typechain/hardhat');
-require('@openzeppelin/hardhat-upgrades');
+require("@typechain/hardhat");
+require("@openzeppelin/hardhat-upgrades");
 require("@nomiclabs/hardhat-etherscan");
-const {isAddress, getAddress, formatUnits, parseUnits} = utils;
+const { isAddress, getAddress, formatUnits, parseUnits } = utils;
 
 /*
       📡 This is where you configure your deploy configuration for 🏗 scaffold-eth
@@ -66,7 +65,7 @@ module.exports = {
 
   typechain: {
     outDir: "types",
-    target: "ethers-v5"
+    target: "ethers-v5",
   },
   mocha: {
     timeout: 0,
@@ -92,16 +91,12 @@ module.exports = {
     mainnet: {
       url: `https://eth-mainnet.alchemyapi.io/v2/${process.env.ALCHEMY_MAINNET_KEY}`,
       gasPrice: mainnetGwei * 1000000000,
-      accounts: [
-        process.env.MAINNET_PRV_KEY
-      ]
+      accounts: [process.env.MAINNET_PRV_KEY],
     },
 
     goerli: {
       url: `https://eth-goerli.g.alchemy.com/v2/${process.env.ALCHEMY_GOERLI_KEY}`,
-      accounts: [
-        process.env.GOERLI_PRV_KEY
-      ]
+      accounts: [process.env.GOERLI_PRV_KEY],
     },
   },
   solidity: {
@@ -123,12 +118,12 @@ module.exports = {
     },
   },
   etherscan: {
-    apiKey: process.env.ETHERSCAN_API_KEY
+    apiKey: process.env.ETHERSCAN_API_KEY,
   },
   tenderly: {
-    project: 'DOG_DEPLOY',
-    username: process.env.TENDERLY_USERNAME
-  }
+    project: "DOG_DEPLOY",
+    username: process.env.TENDERLY_USERNAME,
+  },
 };
 
 const DEBUG = false;
@@ -139,7 +134,7 @@ function debug(text) {
   }
 }
 
-task("wallet", "Create a wallet (pk) link", async (_, {ethers}) => {
+task("wallet", "Create a wallet (pk) link", async (_, { ethers }) => {
   const randomWallet = ethers.Wallet.createRandom();
   const privateKey = randomWallet._signingKey().privateKey;
   console.log("🔐 WALLET Generated as " + randomWallet.address + "");
@@ -152,7 +147,7 @@ task("fundedwallet", "Create a wallet (pk) link and fund it with deployer?")
     "Amount of ETH to send to wallet after generating"
   )
   .addOptionalParam("url", "URL to add pk to")
-  .setAction(async (taskArgs, {network, ethers}) => {
+  .setAction(async (taskArgs, { network, ethers }) => {
     const randomWallet = ethers.Wallet.createRandom();
     const privateKey = randomWallet._signingKey().privateKey;
     console.log("🔐 WALLET Generated as " + randomWallet.address + "");
@@ -181,10 +176,10 @@ task("fundedwallet", "Create a wallet (pk) link and fund it with deployer?")
       deployerWallet = deployerWallet.connect(ethers.provider);
       console.log(
         "💵 Sending " +
-        amount +
-        " ETH to " +
-        randomWallet.address +
-        " using deployer account"
+          amount +
+          " ETH to " +
+          randomWallet.address +
+          " using deployer account"
       );
       let sendresult = await deployerWallet.sendTransaction(tx);
       console.log("\n" + url + "/pk#" + privateKey + "\n");
@@ -192,10 +187,10 @@ task("fundedwallet", "Create a wallet (pk) link and fund it with deployer?")
     } else {
       console.log(
         "💵 Sending " +
-        amount +
-        " ETH to " +
-        randomWallet.address +
-        " using local node"
+          amount +
+          " ETH to " +
+          randomWallet.address +
+          " using local node"
       );
       console.log("\n" + url + "/pk#" + privateKey + "\n");
       return send(ethers.provider.getSigner(), tx);
@@ -205,7 +200,7 @@ task("fundedwallet", "Create a wallet (pk) link and fund it with deployer?")
 task(
   "generate",
   "Create a mnemonic for builder deploys",
-  async (_, {ethers}) => {
+  async (_, { ethers }) => {
     const bip39 = require("bip39");
     const hdkey = require("ethereumjs-wallet/hdkey");
     const mnemonic = bip39.generateMnemonic();
@@ -225,8 +220,8 @@ task(
       "0x" + EthUtil.privateToAddress(wallet._privKey).toString("hex");
     console.log(
       "🔐 Account Generated as " +
-      address +
-      " and set as mnemonic in packages/hardhat"
+        address +
+        " and set as mnemonic in packages/hardhat"
     );
     console.log(
       "💬 Use 'yarn run account' to get more information about the deployment account."
@@ -242,7 +237,7 @@ task(
   "Looks for a deployer account that will give leading zeros"
 )
   .addParam("searchFor", "String to search for")
-  .setAction(async (taskArgs, {network, ethers}) => {
+  .setAction(async (taskArgs, { network, ethers }) => {
     let contract_address = "";
     let address;
 
@@ -285,12 +280,12 @@ task(
 
     console.log(
       "⛏  Account Mined as " +
-      address +
-      " and set as mnemonic in packages/hardhat"
+        address +
+        " and set as mnemonic in packages/hardhat"
     );
     console.log(
       "📜 This will create the first contract: " +
-      chalk.magenta("0x" + contract_address)
+        chalk.magenta("0x" + contract_address)
     );
     console.log(
       "💬 Use 'yarn run account' to get more information about the deployment account."
@@ -306,7 +301,7 @@ task(
 task(
   "account",
   "Get balance informations for the deployment account.",
-  async (_, {ethers}) => {
+  async (_, { ethers }) => {
     const hdkey = require("ethereumjs-wallet/hdkey");
     const bip39 = require("bip39");
     let mnemonic = fs.readFileSync("./mnemonic.txt").toString().trim();
@@ -360,19 +355,19 @@ async function addr(ethers, addr) {
   throw `Could not normalize address: ${addr}`;
 }
 
-task("accounts", "Prints the list of accounts", async (_, {ethers}) => {
+task("accounts", "Prints the list of accounts", async (_, { ethers }) => {
   const accounts = await ethers.provider.listAccounts();
   accounts.forEach((account) => console.log(account));
 });
 
-task("blockNumber", "Prints the block number", async (_, {ethers}) => {
+task("blockNumber", "Prints the block number", async (_, { ethers }) => {
   const blockNumber = await ethers.provider.getBlockNumber();
   console.log(blockNumber);
 });
 
 task("balance", "Prints an account's balance")
   .addPositionalParam("account", "The account's address")
-  .setAction(async (taskArgs, {ethers}) => {
+  .setAction(async (taskArgs, { ethers }) => {
     const balance = await ethers.provider.getBalance(
       await addr(ethers, taskArgs.account)
     );
@@ -397,7 +392,7 @@ task("send", "Send ETH")
   .addOptionalParam("gasPrice", "Price you are willing to pay in gwei")
   .addOptionalParam("gasLimit", "Limit of how much gas to spend")
 
-  .setAction(async (taskArgs, {network, ethers}) => {
+  .setAction(async (taskArgs, { network, ethers }) => {
     const from = await addr(ethers, taskArgs.from);
     debug(`Normalized from address: ${from}`);
     const fromSigner = await ethers.provider.getSigner(from);

@@ -103,7 +103,6 @@ contract PX is Initializable, ERC721CustomUpgradeable {
         // !!!! WARNING !!!! !!!! WARNING !!!! !!!! WARNING !!!! !!!! WARNING !!!! !!!! WARNING !!!! !!!! WARNING !!!!
         // !!!! WARNING !!!! _MINT DOES NOT HANDLE TRANSFERING $DOG, PARENT FUNCTION MUST SEND THE TRANSACTION
         // !!!! WARNING !!!! !!!! WARNING !!!! !!!! WARNING !!!! !!!! WARNING !!!! !!!! WARNING !!!! !!!! WARNING !!!!
-
     }
 
     /**
@@ -117,11 +116,13 @@ contract PX is Initializable, ERC721CustomUpgradeable {
      * Emits a {Transfer} event.
      */
     function _burn(uint256 pupper) internal virtual override {
-
         // First part: custom PX _burn() logic
 
         require(pupper != MAGIC_NULL, "Pupper is magic");
-        require(ERC721CustomUpgradeable.ownerOf(pupper) == _msgSender(), "Pupper is not yours");
+        require(
+            ERC721CustomUpgradeable.ownerOf(pupper) == _msgSender(),
+            "Pupper is not yours"
+        );
 
         // swap burnt pupper with one at N+1 index
         uint256 oldIndex = pupperToIndex[pupper];
@@ -138,7 +139,6 @@ contract PX is Initializable, ERC721CustomUpgradeable {
         // !!!! WARNING !!!! !!!! WARNING !!!! !!!! WARNING !!!! !!!! WARNING !!!! !!!! WARNING !!!! !!!! WARNING !!!!
         // !!!! WARNING !!!! _BURN DOES NOT HANDLE TRANSFERING $DOG, PARENT FUNCTION MUST SEND THE TRANSACTION
         // !!!! WARNING !!!! !!!! WARNING !!!! !!!! WARNING !!!! !!!! WARNING !!!! !!!! WARNING !!!! !!!! WARNING !!!!
-
     }
 
     //
@@ -157,17 +157,24 @@ contract PX is Initializable, ERC721CustomUpgradeable {
     // - https://stackoverflow.com/questions/58188832/solidity-generate-unpredictable-random-number-that-does-not-depend-on-input
     //
     function randYish() public view returns (uint256 ret) {
-        uint256 seed = uint256(keccak256(abi.encodePacked(
-                block.timestamp + block.difficulty +
-                ((uint256(keccak256(abi.encodePacked(block.coinbase)))) / (block.timestamp)) +
-                block.gaslimit +
-                ((uint256(keccak256(abi.encodePacked(_msgSender())))) / (block.timestamp)) +
-                block.number +
-                puppersRemaining
-            )));
+        uint256 seed = uint256(
+            keccak256(
+                abi.encodePacked(
+                    block.timestamp +
+                        block.difficulty +
+                        ((
+                            uint256(keccak256(abi.encodePacked(block.coinbase)))
+                        ) / (block.timestamp)) +
+                        block.gaslimit +
+                        ((uint256(keccak256(abi.encodePacked(_msgSender())))) /
+                            (block.timestamp)) +
+                        block.number +
+                        puppersRemaining
+                )
+            )
+        );
         ret = seed;
     }
-
 
     //
     // randYishInRange
@@ -211,7 +218,11 @@ contract PX is Initializable, ERC721CustomUpgradeable {
             _mint(_msgSender(), pupper);
         }
         // transfer collateral to contract's address
-        DOG20.transferFrom(_msgSender(), address(this), qty * DOG_TO_PIXEL_SATOSHIS);
+        DOG20.transferFrom(
+            _msgSender(),
+            address(this),
+            qty * DOG_TO_PIXEL_SATOSHIS
+        );
     }
 
     //
@@ -233,8 +244,10 @@ contract PX is Initializable, ERC721CustomUpgradeable {
     function processCollateralAfterBurn(uint256 totalAmount) internal {
         // transfer collateral to the burner
         // 1% is taken for fees, from that FEES_AMOUNT_DEV AND FEES_AMOUNT_PLEASR are distributed between developers and PleasrDAO
-        uint256 feesAmount1 = totalAmount * DOG20_FEES_AMOUNT_DEV / 100 / 100;
-        uint256 feesAmount2 = totalAmount * DOG20_FEES_AMOUNT_PLEASR / 100 / 100;
+        uint256 feesAmount1 = (totalAmount * DOG20_FEES_AMOUNT_DEV) / 100 / 100;
+        uint256 feesAmount2 = (totalAmount * DOG20_FEES_AMOUNT_PLEASR) /
+            100 /
+            100;
         uint256 burnerAmount = totalAmount - feesAmount1 - feesAmount2;
         DOG20.transfer(DOG20_FEES_ADDRESS_DEV, feesAmount1);
         DOG20.transfer(DOG20_FEES_ADDRESS_PLEASR, feesAmount2);
@@ -247,11 +260,9 @@ contract PX is Initializable, ERC721CustomUpgradeable {
     // Description:
     // Returns pixel index on .png from tokenId
     //
-    function pupperToPixel(uint256 pupper) view public returns (uint256){
+    function pupperToPixel(uint256 pupper) public view returns (uint256) {
         return pupper - INDEX_OFFSET;
     }
-
-
 
     //
     // pupperToPixelCoords
@@ -259,7 +270,9 @@ contract PX is Initializable, ERC721CustomUpgradeable {
     // Description:
     // Returns pixel x,y on .png from tokenId
     //
-    function pupperToPixelCoords(uint256 pupper) view public returns (uint256[2] memory) {
+    function pupperToPixelCoords(
+        uint256 pupper
+    ) public view returns (uint256[2] memory) {
         uint256 index = pupper - INDEX_OFFSET;
         return [index % SHIBA_WIDTH, index / SHIBA_WIDTH];
     }
@@ -269,7 +282,7 @@ contract PX is Initializable, ERC721CustomUpgradeable {
      * token will be the concatenation of the `baseURI` and the `tokenId`. Empty
      * by default, can be overriden in child contracts.
      */
-    function _baseURI() internal view virtual override returns (string memory){
+    function _baseURI() internal view virtual override returns (string memory) {
         return BASE_URI;
     }
 
@@ -278,11 +291,29 @@ contract PX is Initializable, ERC721CustomUpgradeable {
     //
     // Description:
     // TokenUri as x_y
-    function tokenURI(uint256 tokenId) public view virtual override returns (string memory) {
-        require(_exists(tokenId), "ERC721Metadata: URI query for nonexistent token");
+    function tokenURI(
+        uint256 tokenId
+    ) public view virtual override returns (string memory) {
+        require(
+            _exists(tokenId),
+            "ERC721Metadata: URI query for nonexistent token"
+        );
 
         string memory baseURI = _baseURI();
         uint256 shard = 1 + (tokenId - INDEX_OFFSET) / 5000;
-        return bytes(baseURI).length > 0 ? string(abi.encodePacked(baseURI, "metadata-sh", Strings.toString(shard), "/", "metadata-", Strings.toString(tokenId) , ".json")) : "";
+        return
+            bytes(baseURI).length > 0
+                ? string(
+                    abi.encodePacked(
+                        baseURI,
+                        "metadata-sh",
+                        Strings.toString(shard),
+                        "/",
+                        "metadata-",
+                        Strings.toString(tokenId),
+                        ".json"
+                    )
+                )
+                : "";
     }
 }
