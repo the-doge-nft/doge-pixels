@@ -87,7 +87,7 @@ const Header = observer(() => {
             <Flex mr={8} alignItems={"center"}>
               {AppStore.web3.isConnected && chain?.id === targetChain.id && (
                 <Flex alignItems={"center"}>
-                  <Button
+                  {/* <Button
                     size="sm"
                     mr={8}
                     onClick={() => {
@@ -98,7 +98,7 @@ const Header = observer(() => {
                     }}
                   >
                     Mint
-                  </Button>
+                  </Button> */}
                   {AppStore.web3.puppersOwned.length > 0 && (
                     <Button
                       size="sm"

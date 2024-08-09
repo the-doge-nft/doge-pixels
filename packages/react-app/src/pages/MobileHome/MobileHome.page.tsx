@@ -101,14 +101,14 @@ const MobileHomePage = observer(() => {
         </Flex>
       )}
       <Box>
-        {store.isMintDrawerOpen && (
+        {/* {store.isMintDrawerOpen && (
           <MintPixelsDrawer
             isOpen={store.isMintDrawerOpen}
             onClose={() => (store.isMintDrawerOpen = false)}
             onSuccess={() => console.log()}
             goToPixels={() => (store.isMintDrawerOpen = false)}
           />
-        )}
+        )} */}
         {store.isBurnDrawerOpen && (
           <BurnPixelsDrawer
             isOpen={store.isBurnDrawerOpen}

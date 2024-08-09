@@ -47,7 +47,7 @@ const Modals: React.FC<{ store: ViewerStore }> = observer(({ store }) => {
           <ManagePane store={store} />
         </Modal>
       )}
-      {AppStore.modals.isMintModalOpen && (
+      {/* {AppStore.modals.isMintModalOpen && (
         <MintPixelsModal
           isOpen={AppStore.modals.isMintModalOpen}
           onClose={() => (AppStore.modals.isMintModalOpen = false)}
@@ -59,7 +59,7 @@ const Modals: React.FC<{ store: ViewerStore }> = observer(({ store }) => {
             AppStore.modals.isMintMemeModalOpen = false;
           }}
         />
-      )}
+      )} */}
       {AppStore.modals.isBurnModalOpen && (
         <BurnPixelsModal
           defaultPixel={store.selectedPupper}
