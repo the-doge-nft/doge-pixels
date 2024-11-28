@@ -67,6 +67,16 @@ export class AppController {
     return this.pixelTransferService.getBalances();
   }
 
+  @Get('dog/total-supply')
+  async getDogTotalSupply() {
+    return 16_969_696_969;
+  }
+
+  @Get('dog/circulating-supply')
+  async getDogCirculatingSupply() {
+    return 13_089_764_718;
+  }
+
   @Post('transfers/:address')
   async postTransfersByAddress(
     @Param() { address }: { address: string },
